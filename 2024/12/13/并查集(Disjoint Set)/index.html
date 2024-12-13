@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en"><head>
+<title>【算法】并查集 - 红魔咖啡馆</title>
+<meta charset="UTF-8">
+<meta name="keywords" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<meta name="description" content="并查集(Disjoint Set)概念不相交集合：若有n个元素，其中的每个元素如果只属于某个集合，则可以把他们划为不想交集合 问题描述：将编号分别为1-n的n个对象划分为不相交集合，在每个集合中，选择其中某个元素代表所在集合 解决的问题：  合并两个集合 查找某个元素属于哪个集合    定义一个数组set，set[i]代表i所在的集合 我们用每个集合编号最小的元素标记所在集合  实现1如set:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【算法】并查集">
+<meta property="og:url" content="https://izayoisakuye.github.io/2024/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="并查集(Disjoint Set)概念不相交集合：若有n个元素，其中的每个元素如果只属于某个集合，则可以把他们划为不想交集合 问题描述：将编号分别为1-n的n个对象划分为不相交集合，在每个集合中，选择其中某个元素代表所在集合 解决的问题：  合并两个集合 查找某个元素属于哪个集合    定义一个数组set，set[i]代表i所在的集合 我们用每个集合编号最小的元素标记所在集合  实现1如set:">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/compress.png">
+<meta property="article:published_time" content="2024-12-13T03:05:21.031Z">
+<meta property="article:modified_time" content="2024-12-13T03:19:01.116Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/compress.png">
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.css">
+<link rel="stylesheet" href="/lib/mdui_043tiny/mdui.css">
+
+
+<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1734061327748">
+
+<link rel="stylesheet" href="/css/style.css?v=1734061327748">
+
+
+
+
+    
+        <link rel="stylesheet" href="/custom.css?v=1734061327748">
+    
+
+
+
+<script src="/lib/mdui_043tiny/mdui.js" async></script>
+<script src="/lib/fancybox/fancybox.umd.js" async></script>
+<script src="/lib/lax.min.js" async></script>
+
+
+<script async src="/js/app.js?v=1734061327748"></script>
+
+ 
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4D4ZJ9G024"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+
+  gtag("config", "G-4D4ZJ9G024");
+</script>
+
+
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css"><meta name="generator" content="Hexo 7.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head><body class="nexmoe mdui-drawer-body-left"><div id="nexmoe-background"><div class="nexmoe-bg" style="background-image: url(https://s21.ax1x.com/2024/12/05/pATuvH1.jpg)"></div><div class="mdui-appbar mdui-shadow-0"><div class="mdui-toolbar"><a class="mdui-btn mdui-btn-icon mdui-ripple" mdui-drawer="{target: &#039;#drawer&#039;, swipe: true}" title="menu"><i class="mdui-icon nexmoefont icon-menu"></i></a><div class="mdui-toolbar-spacer"></div><a class="mdui-btn mdui-btn-icon" href="/" title="IzayoiSakuye"><img src="https://s21.ax1x.com/2024/12/05/pATKLPf.jpg" alt="IzayoiSakuye"></a></div></div></div><div id="nexmoe-header"><div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="IzayoiSakuye">
+            <img src="https://s21.ax1x.com/2024/12/05/pATKLPf.jpg" alt="IzayoiSakuye" alt="IzayoiSakuye">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>Articles</span>2</div>
+        <div><span>Tags</span>0</div>
+        <div><span>Categories</span>0</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/archive.html" title="文章归档">
+            <i class="mdui-list-item-icon nexmoefont icon-container"></i>
+            <div class="mdui-list-item-content">
+                文章归档
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" target="_blank" rel="noopener" href="https://nexmoe.com/donate.html" title="给我赞助">
+            <i class="mdui-list-item-icon nexmoefont icon-coffee"></i>
+            <div class="mdui-list-item-content">
+                给我赞助
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" target="_blank" rel="noopener" href="https://i.nexmoe.com/" title="关于博主">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博主
+            </div>
+        </a>
+        
+    </div>
+    
+    
+        
+        <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="Search"></label>
+            </form>
+         
+    </div>
+</div>
+
+
+
+
+    
+        
+        <div class="nexmoe-widget-wrap">
+	<div class="nexmoe-widget nexmoe-social">
+		<a
+			class="mdui-ripple"
+			href="https://space.bilibili.com/124721786"
+			target="_blank"
+			mdui-tooltip="{content: '哔哩哔哩'}"
+			style="
+				color: rgb(231, 106, 141);
+				background-color: rgba(231, 106, 141, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-bilibili"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://github.com/IzayoiSakuye"
+			target="_blank"
+			mdui-tooltip="{content: 'GitHub'}"
+			style="
+				color: rgb(25, 23, 23);
+				background-color: rgba(25, 23, 23, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-github"
+			></i> </a
+		><a
+			class="mdui-ripple"
+			href="https://twitter.com/exusiai_pl"
+			target="_blank"
+			mdui-tooltip="{content: 'Twitter'}"
+			style="
+				color: rgb(59, 151, 239);
+				background-color: rgba(59, 151, 239, .1);
+			"
+		>
+			<i
+				class="nexmoefont icon-twitter"
+			></i> </a
+		>
+	</div>
+</div>
+
+    
+        
+        
+
+    
+        
+        
+    
+        
+        
+        
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">Archive</h3>
+    <div class="nexmoe-widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+
+    
+        
+        
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">Recent Posts</h3>
+    <div class="nexmoe-widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/">【算法】并查集</a>
+          </li>
+        
+          <li>
+            <a href="/2024/12/04/hello-world/">梦开始的地方</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+        
+        <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-link">
+		<ul>
+        
+            <li>
+                <a href="" target="_blank" >
+                    <img src="" alt=""></img>
+                    <p></p>
+                </a>
+            </li>
+        
+		</ul>
+    </div>
+</div>
+<style>
+.nexmoe-widget-wrap .nexmoe-link ul li a {
+    text-align : center;
+}
+.nexmoe-widget-wrap .nexmoe-link ul li a img {
+    max-width : 100%;
+}
+.nexmoe-widget-wrap .nexmoe-link ul li a p {
+    margin: 10px 0;
+}
+</style>
+
+    
+   
+    <div class="nexmoe-copyright">
+        &copy; 2024 IzayoiSakuye
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://beian.miit.gov.cn/">鄂ICP备2020018486号</a>
+<br><a target="_blank" href=" ">
+<img src=" " width="150px"></a>
+
+    </div>
+</div><!-- .nexmoe-drawer --></div><div id="nexmoe-content"><div class="nexmoe-primary"><div class="nexmoe-post">
+  <article>
+    
+        <div class="nexmoe-post-cover"> 
+            <img src="https://s21.ax1x.com/2024/12/05/pATuvH1.jpg" alt="【算法】并查集" loading="lazy">
+            <h1>【算法】并查集</h1>
+        </div>
+    
+    
+    <div class="nexmoe-post-meta">
+    <div class="nexmoe-rainbow">
+        <a class="nexmoefont icon-calendar-fill">2024年12月13日</a>
+        
+        
+    </div>
+    
+    
+    
+    
+    
+</div>
+
+    <h1 id="并查集-Disjoint-Set"><a href="#并查集-Disjoint-Set" class="headerlink" title="并查集(Disjoint Set)"></a>并查集(Disjoint Set)</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>不相交集合：若有n个元素，其中的每个元素如果只属于某个集合，则可以把他们划为不想交集合</p>
+<p>问题描述：将编号分别为1-n的n个对象划分为不相交集合，在每个集合中，选择其中某个元素代表所在集合</p>
+<p>解决的问题：</p>
+<ul>
+<li>合并两个集合</li>
+<li>查找某个元素属于哪个集合</li>
+</ul>
+<hr>
+<blockquote>
+<p>定义一个数组set，set[i]代表i所在的集合</p>
+<p>我们用每个集合编号最小的元素标记所在集合</p>
+</blockquote>
+<h2 id="实现1"><a href="#实现1" class="headerlink" title="实现1"></a>实现1</h2><p>如set: 1 2 1 4 2 6 1 6 2 2</p>
+<p>他的不相交集合为{1,3,7}, {4}, {2,5,9,10}, {6,8}</p>
+<h3 id="效率"><a href="#效率" class="headerlink" title="效率"></a>效率</h3><p>查：只需要返回下标对应元素，因为此时对应的就是集合中的最小元素，$O(1)$</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">find1(x)&#123;
+    return set[x];
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>并：合并两个集合后，要找出一个更小的作为代表元素，合并时要遍历set中所有元素，把还是原来元素的改成新的更小元素，$O(n)$</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">merge1(a,b)&#123;
+    i &#x3D; min(a,b);
+    j &#x3D; max(a,b);
+    for (int k&#x3D;1;k&lt;&#x3D;n;k++)&#123;
+        if (set[k]&#x3D;&#x3D;j) set[k]&#x3D;&#x3D;i;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="实现2"><a href="#实现2" class="headerlink" title="实现2"></a>实现2</h2><p><strong>每个集合用一颗有根树表示</strong></p>
+<p>定义一个数组set</p>
+<ul>
+<li>若set[i]&#x3D;i, 则i为该树的根节点，i代表本集合</li>
+<li>若set[i]&#x3D;j, 若j$\neq$i, 则j是i的父节点</li>
+</ul>
+<h3 id="效率-1"><a href="#效率-1" class="headerlink" title="效率"></a>效率</h3><p>查：如果集合对应的不是自己，则自己上面有父节点，将父节点存下来继续查找直到查到根节点，最坏$O(n)$，一般$O(\log n)$</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">find2(x)&#123;
+    r &#x3D; x;
+    while(set[r]!&#x3D;r)&#123;
+        r &#x3D; set[r];
+    &#125;
+    return r;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>并：只需要将根节点改为另一个集合的根节点即可，$O(1)$</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">merge2(a,b)&#123;
+    set[a]&#x3D;b;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h3><p>如何避免最坏情况？</p>
+<p>方法：<strong>将深度小的树合并到深度大的树</strong>，合并后深度不会变化</p>
+<p>效果：合并后，包含k个节点的树最大高度不超过$\lfloor \lg k \rfloor$</p>
+<p>代码： 在合并时记录每棵树的高度，谁的高度大谁是新的根节点</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">merge3(a,b)&#123;
+    if (height(a)&#x3D;&#x3D;height(b))&#123;
+        height(a)&#x3D;height(a)+1;
+        set[b]&#x3D;a;
+    &#125;
+    else if (height(a)&lt;height(b)) set[a]&#x3D;b;
+    else set[b]&#x3D;a;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>此时查找操作的时间复杂度变成了$O(\log n)$</p>
+<h2 id="路径压缩"><a href="#路径压缩" class="headerlink" title="路径压缩"></a>路径压缩</h2><p> 问题：若一棵树的高度很大，查找路径很长，查找量很大的时候，很容易tle</p>
+<p>思想：查找时如果路径较长，则修改信息，让下次查找的时候速度更快</p>
+<p>方案：</p>
+<ul>
+<li>找到根节点</li>
+<li>修改查找路径上的<strong>所有节点</strong>，将它们都指向根节点</li>
+</ul>
+<p><img onerror="imgOnError(this);" data-fancybox="gallery" src="/images/compress.png" alt="djsj" data-caption="djsj" loading="lazy"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">find3(x)&#123;
+    if (set[x]!&#x3D;x) set[x]&#x3D;find3(set[x]); &#x2F;&#x2F;当不是根节点时，调用find3找到其父节点的父节点，并赋给他的父节点，此时x的父节点改为他的父节点的父节点，直到指到他的根节点
+    return set[x];
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><blockquote>
+<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>如题，现在有一个并查集，你需要完成合并和查询操作。</p>
+<h3 id="输入格式"><a href="#输入格式" class="headerlink" title="输入格式"></a>输入格式</h3><p>第一行包含两个整数 $N,M$ ,表示共有 $N$ 个元素和 $M$ 个操作。</p>
+<p>接下来 $M$ 行，每行包含三个整数 $Z_i,X_i,Y_i$ 。</p>
+<p>当 $Z_i&#x3D;1$ 时，将 $X_i$ 与 $Y_i$ 所在的集合合并。</p>
+<p>当 $Z_i&#x3D;2$ 时，输出 $X_i$ 与 $Y_i$ 是否在同一集合内，是的输出<br> <code>Y</code> ；否则输出 <code>N</code> 。</p>
+<h3 id="输出格式"><a href="#输出格式" class="headerlink" title="输出格式"></a>输出格式</h3><p>对于每一个 $Z_i&#x3D;2$ 的操作，都有一行输出，每行包含一个大写字母，为 <code>Y</code> 或者 <code>N</code> 。</p>
+<h3 id="样例-1"><a href="#样例-1" class="headerlink" title="样例 #1"></a>样例 #1</h3><h3 id="样例输入-1"><a href="#样例输入-1" class="headerlink" title="样例输入 #1"></a>样例输入 #1</h3><pre class="line-numbers language-none"><code class="language-none">4 7
+2 1 2
+1 1 2
+2 1 2
+1 3 4
+2 1 4
+1 2 3
+2 1 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="样例输出-1"><a href="#样例输出-1" class="headerlink" title="样例输出 #1"></a>样例输出 #1</h3><pre class="line-numbers language-none"><code class="language-none">N
+Y
+N
+Y<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="提示"><a href="#提示" class="headerlink" title="提示"></a>提示</h3><p>对于 $30%$ 的数据，$N \le 10$，$M \le 20$。</p>
+<p>对于 $70%$ 的数据，$N \le 100$，$M \le 10^3$。</p>
+<p>对于 $100%$ 的数据，$1\le N \le 10^4$，$1\le M \le 2\times 10^5$，$1 \le X_i, Y_i \le N$，$Z_i \in { 1, 2 }$。</p>
+</blockquote>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;iostream&gt;
+
+using namespace std;
+const int N &#x3D; 1e4+10;
+int n,m;
+int disj[N]; &#x2F;&#x2F; 并查集
+&#x2F;&#x2F; 查找操作，使用路径压缩
+int find(int x)&#123;
+  if(disj[x]!&#x3D;x) disj[x]&#x3D;find(disj[x]);
+  return disj[x];
+&#125;
+&#x2F;&#x2F; 合并操作，寻找两者最小根节点并将大的修改成小的
+void merge(int a,int b)&#123;
+  if(find(a)&gt;find(b))disj[find(a)]&#x3D;find(b);
+  else disj[find(b)]&#x3D;find(a);
+&#125;
+int main()&#123;
+  cin &gt;&gt; n &gt;&gt;m;
+  &#x2F;&#x2F; 初始化每一位的根节点是他自己
+  for(int i &#x3D; 1;i&lt;&#x3D;n;i++) disj[i]&#x3D;i;
+  while(m--)&#123;
+    int z, x, y;
+    cin&gt;&gt;z&gt;&gt;x&gt;&gt;y;
+    &#x2F;&#x2F; 进行合并
+    if (z&#x3D;&#x3D;1)&#123;
+      merge(x,y);
+    &#125;
+    else &#123;
+      &#x2F;&#x2F; 如果两者的根节点相同，则属于同一集合
+      if(find(x)&#x3D;&#x3D;find(y)) cout &lt;&lt; &quot;Y&quot;&lt;&lt;endl;
+      else cout &lt;&lt; &quot;N&quot;&lt;&lt;endl;
+    &#125;
+  &#125;
+  return 0;
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    <p><img src=" " loading="lazy"></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>Author：</strong>IzayoiSakuye<br>
+        <strong>Link：</strong><a href="https://izayoisakuye.github.io/2024/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/" title="https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2024&#x2F;12&#x2F;13&#x2F;%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2024&#x2F;12&#x2F;13&#x2F;%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+   
+    
+</div>
+  
+  
+    <script async src="/js/copy-codeblock.js?v=1734061327743"></script>
+  
+
+  
+      <div class="nexmoe-post-footer">
+          请在你的配置文件中设置 slotComment
+
+      </div>
+  
+</div></div><div class="nexmoe-post-right">    <div class="nexmoe-fixed">
+        <div class="nexmoe-tool">
+
+            
+
+            
+            
+            <button class="mdui-fab catalog" style="overflow:unset;">
+                <i class="nexmoefont icon-i-catalog"></i>
+                <div class="nexmoe-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86-Disjoint-Set"><span class="toc-number">1.</span> <span class="toc-text">并查集(Disjoint Set)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B01"><span class="toc-number">1.2.</span> <span class="toc-text">实现1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E7%8E%87"><span class="toc-number">1.2.1.</span> <span class="toc-text">效率</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B02"><span class="toc-number">1.3.</span> <span class="toc-text">实现2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%88%E7%8E%87-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">效率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B9%E8%BF%9B"><span class="toc-number">1.3.2.</span> <span class="toc-text">改进</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9"><span class="toc-number">1.4.</span> <span class="toc-text">路径压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">1.4.1.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF"><span class="toc-number">1.5.</span> <span class="toc-text">模板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.5.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.5.2.</span> <span class="toc-text">输入格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.5.3.</span> <span class="toc-text">输出格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B7%E4%BE%8B-1"><span class="toc-number">1.5.4.</span> <span class="toc-text">样例 #1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%85%A5-1"><span class="toc-number">1.5.5.</span> <span class="toc-text">样例输入 #1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%87%BA-1"><span class="toc-number">1.5.6.</span> <span class="toc-text">样例输出 #1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E7%A4%BA"><span class="toc-number">1.5.7.</span> <span class="toc-text">提示</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </button>
+            
+
+            
+
+            <a href="#nexmoe-content" class="backtop toc-link" aria-label="Back To Top" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+        </div>
+    </div>
+</div></div><div id="nexmoe-footer"><!--!--></div><div id="nexmoe-search-space"><div class="search-container"><div class="search-header"><div class="search-input-container"><input class="search-input" type="text" placeholder="Search" onInput="sinput();"></div><a class="search-close" onclick="sclose();">×</a></div><div class="search-body"></div></div></div><div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2058306854838448" crossorigin="anonymous"></script>
+</div></body></html>
