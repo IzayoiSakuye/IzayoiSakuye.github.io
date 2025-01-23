@@ -14,7 +14,7 @@
 <meta property="og:description" content="(按官方难度排序) A-茕茕孑立之影 考虑特殊情况：若数组中包含1，则一定是1的倍数，可以直接输出-1 考虑一般情况：质数的因数只有1和他本身，又数组中不含1，因此任意一个比该数组中最大数还大的质数肯定不是数组中的倍数，又因为该数都比数组中的数大，因此也不可能是他的倍数 123456789101112131415161718192021222324252627282930313233343">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-01-21T14:15:49.000Z">
-<meta property="article:modified_time" content="2025-01-22T12:15:02.886Z">
+<meta property="article:modified_time" content="2025-01-23T02:30:49.763Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="牛客题解">
 <meta property="article:tag" content="ACM">
@@ -24,15 +24,15 @@
 <link rel="stylesheet" href="/lib/mdui_043tiny/mdui.css">
 
 
-<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1737555624116">
+<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1737599628061">
 
-<link rel="stylesheet" href="/css/style.css?v=1737555624116">
+<link rel="stylesheet" href="/css/style.css?v=1737599628061">
 
 
 
 
     
-        <link rel="stylesheet" href="/custom.css?v=1737555624116">
+        <link rel="stylesheet" href="/custom.css?v=1737599628061">
     
 
 
@@ -42,7 +42,7 @@
 <script src="/lib/lax.min.js" async></script>
 
 
-<script async src="/js/app.js?v=1737555624116"></script>
+<script async src="/js/app.js?v=1737599628061"></script>
 
  
 
@@ -748,6 +748,89 @@ mjx-container[display="true"] + br {
 <span class="line"><span style="color: #24292E">  }</span></span>
 <span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="h-井然有序之窗">H-井然有序之窗</h1>
+<p>对于n个区间选数，区间内数多要尽量放在后面选，因为选择可能性更多</p>
+<p>在选第i个数时，我们的重点是右界的大小，不管左边从哪开始都可以看成从i开始，因为其余的已经放完了</p>
+<p>e.g.</p>
+<table>
+<thead>
+<tr>
+<th>区间</th>
+<th style="text-align: center;">[1,3]</th>
+<th style="text-align: center;">[5,5]</th>
+<th style="text-align: center;">[3,5]</th>
+<th style="text-align: center;">[2,7]</th>
+<th style="text-align: center;">[3,4]</th>
+<th style="text-align: center;">[2,4]</th>
+<th style="text-align: center;">[4,7]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>permutation</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">7</td>
+</tr>
+</tbody>
+</table>
+<p>因此我们可以总结如下步骤</p>
+<ol type="1">
+<li>按左界排序：决定i能不能放进去（左界相等时右界小的在前）</li>
+<li>每次询问i放在哪个区间时，找出对应左界为i的区间，放入右界更小的区间内</li>
+</ol>
+<p>因此需要一个容器来存储区间</p>
+<p>此时，放入的区间应为当前左界为i的区间与左界为i-1且没被用过的区间，要在这些区间中寻找右界更小的区间</p>
+<p>也就是每次往该容器里填入区间，并把容器内所有区间排序，取出右界最小的区间，当前i可以放在该区间内</p>
+<p>故我们可以使用priority_queue实现，且为小根堆</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ios</span><span style="color: #24292E"> ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ull;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">double</span><span style="color: #24292E"> ld;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">double</span><span style="color: #24292E"> pi </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">acos</span><span style="color: #24292E">(</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1.0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> INF </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">0x</span><span style="color: #005CC5">3f3f3f3f</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">double</span><span style="color: #24292E"> eps </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e-</span><span style="color: #005CC5">6</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  ios</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">PII</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">a</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #6A737D">  // 按左端点分类存入区间右端点与区间位置</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> l,r;</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> l </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> r;</span></span>
+<span class="line"><span style="color: #24292E">    a[l].</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">({r,i});</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ans[N];</span></span>
+<span class="line"><span style="color: #24292E">  priority_queue</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">PII,vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">PII</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">,greater</span><span style="color: #D73A49">&lt;&gt;&gt;</span><span style="color: #24292E"> pq;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #6A737D">    // 询问哪个数就把该数所在的区间左界的区间右界与区间位置添入优先队列</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">pr:a[i]) pq.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(pr);</span></span>
+<span class="line"><span style="color: #6A737D">    // 判断当前数是否能从区间中取到，若不能就pop换下一个</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">pq.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">() </span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E"> pq.</span><span style="color: #6F42C1">top</span><span style="color: #24292E">().first</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">i) pq.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #6A737D">    // 若都不能从当前区间中取到，表明不存在满足的，直接-1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (pq.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">()) {</span></span>
+<span class="line"><span style="color: #24292E">      cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // 记录当前数所在的区间位置</span></span>
+<span class="line"><span style="color: #24292E">    ans[pq.</span><span style="color: #6F42C1">top</span><span style="color: #24292E">().second]</span><span style="color: #D73A49">=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">    pq.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> ans[i] </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">' '</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 
     <p><img src=" " loading="lazy"></p>
 
@@ -775,7 +858,7 @@ mjx-container[display="true"] + br {
 </div>
   
   
-    <script async src="/js/copy-codeblock.js?v=1737555624017"></script>
+    <script async src="/js/copy-codeblock.js?v=1737599628012"></script>
   
 
   
@@ -793,7 +876,7 @@ mjx-container[display="true"] + br {
             <button class="mdui-fab catalog" style="overflow:unset;">
                 <i class="nexmoefont icon-i-catalog"></i>
                 <div class="nexmoe-toc">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#a-%E8%8C%95%E8%8C%95%E5%AD%91%E7%AB%8B%E4%B9%8B%E5%BD%B1"><span class="toc-number">1.</span> <span class="toc-text">A-茕茕孑立之影</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#d-%E5%8F%8C%E7%94%9F%E5%8F%8C%E5%AE%BF%E4%B9%8B%E5%86%B3"><span class="toc-number">2.</span> <span class="toc-text">D-双生双宿之决</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#b-%E4%B8%80%E6%B0%94%E8%B4%AF%E9%80%9A%E4%B9%8B%E5%88%83"><span class="toc-number">3.</span> <span class="toc-text">B-一气贯通之刃</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#g-%E4%BA%95%E7%84%B6%E6%9C%89%E5%BA%8F%E4%B9%8B%E8%A1%A1"><span class="toc-number">4.</span> <span class="toc-text">G-井然有序之衡</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#e-%E5%8F%8C%E7%94%9F%E5%8F%8C%E5%AE%BF%E4%B9%8B%E9%94%99"><span class="toc-number">5.</span> <span class="toc-text">E-双生双宿之错</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#a-%E8%8C%95%E8%8C%95%E5%AD%91%E7%AB%8B%E4%B9%8B%E5%BD%B1"><span class="toc-number">1.</span> <span class="toc-text">A-茕茕孑立之影</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#d-%E5%8F%8C%E7%94%9F%E5%8F%8C%E5%AE%BF%E4%B9%8B%E5%86%B3"><span class="toc-number">2.</span> <span class="toc-text">D-双生双宿之决</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#b-%E4%B8%80%E6%B0%94%E8%B4%AF%E9%80%9A%E4%B9%8B%E5%88%83"><span class="toc-number">3.</span> <span class="toc-text">B-一气贯通之刃</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#g-%E4%BA%95%E7%84%B6%E6%9C%89%E5%BA%8F%E4%B9%8B%E8%A1%A1"><span class="toc-number">4.</span> <span class="toc-text">G-井然有序之衡</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#e-%E5%8F%8C%E7%94%9F%E5%8F%8C%E5%AE%BF%E4%B9%8B%E9%94%99"><span class="toc-number">5.</span> <span class="toc-text">E-双生双宿之错</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#h-%E4%BA%95%E7%84%B6%E6%9C%89%E5%BA%8F%E4%B9%8B%E7%AA%97"><span class="toc-number">6.</span> <span class="toc-text">H-井然有序之窗</span></a></li></ol>
                 </div>
             </button>
             
