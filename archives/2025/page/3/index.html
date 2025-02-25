@@ -1,38 +1,32 @@
 <!doctype html>
 <html lang="zh"><head>
-<title>【Python】CS61A——Functional Abstraction - 红魔咖啡馆</title>
+<title>文章归档：2025 - 红魔咖啡馆</title>
 <meta charset="UTF-8">
 <meta name="keywords" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-<meta name="description" content="Functional Abstraction Lambda表达式所在的environment关系 如下例子 12345a &#x3D; 1 def f(g):     a &#x3D; 2     return lambda y:a*g(y) f(lambda y: a+y)(a) 注意行4与行5的lambda函数的区别：  行4的lambda函数是f函数内定义的函数，他的父级为f，因此此时传入的a&#x3D;2">
-<meta property="og:type" content="article">
-<meta property="og:title" content="【Python】CS61A——Functional Abstraction">
-<meta property="og:url" content="https://izayoisakuye.github.io/2025/02/05/CS61A%E2%80%94%E2%80%94Design/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="红魔咖啡馆">
+<meta property="og:url" content="https://izayoisakuye.github.io/archives/2025/page/3/index.html">
 <meta property="og:site_name" content="红魔咖啡馆">
-<meta property="og:description" content="Functional Abstraction Lambda表达式所在的environment关系 如下例子 12345a &#x3D; 1 def f(g):     a &#x3D; 2     return lambda y:a*g(y) f(lambda y: a+y)(a) 注意行4与行5的lambda函数的区别：  行4的lambda函数是f函数内定义的函数，他的父级为f，因此此时传入的a&#x3D;2">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-02-05T08:57:40.971Z">
-<meta property="article:modified_time" content="2025-02-05T08:57:28.693Z">
 <meta property="article:author" content="IzayoiSakuye">
-<meta property="article:tag" content="Python">
-<meta property="article:tag" content="CS61A">
 <meta name="twitter:card" content="summary">
 
 <link rel="stylesheet" href="/lib/fancybox/fancybox.css">
 <link rel="stylesheet" href="/lib/mdui_043tiny/mdui.css">
 
 
-<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1740473145389">
+<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1740473145539">
 
-<link rel="stylesheet" href="/css/style.css?v=1740473145389">
+<link rel="stylesheet" href="/css/style.css?v=1740473145539">
 
 
 
 
     
-        <link rel="stylesheet" href="/custom.css?v=1740473145389">
+        <link rel="stylesheet" href="/custom.css?v=1740473145539">
     
 
 
@@ -42,7 +36,7 @@
 <script src="/lib/lax.min.js" async></script>
 
 
-<script async src="/js/app.js?v=1740473145389"></script>
+<script async src="/js/app.js?v=1740473145539"></script>
 
  
 
@@ -463,20 +457,22 @@ mjx-container[display="true"] + br {
 <img src=" " width="150px"></a>
 
     </div>
-</div><!-- .nexmoe-drawer --></div><div id="nexmoe-content"><div class="nexmoe-primary"><div class="nexmoe-post">
-  <article>
-    
-        <div class="nexmoe-post-cover"> 
-            <img src="https://s21.ax1x.com/2024/12/05/pATuvH1.jpg" alt="【Python】CS61A——Functional Abstraction" loading="lazy">
-            <h1>【Python】CS61A——Functional Abstraction</h1>
-        </div>
-    
-    
-    <div class="nexmoe-post-meta">
+</div><!-- .nexmoe-drawer --></div><div id="nexmoe-content"><div class="nexmoe-primary"><section class="nexmoe-posts">
+    <div class="nexmoe-post">
+        <a href="/2025/01/17/%E7%89%9B%E5%AE%A2%E5%B0%8F%E7%99%BD%E6%9C%88%E8%B5%9B109-C/">
+            
+                <div class="nexmoe-post-cover mdui-ripple"> 
+                    <img src="https://s21.ax1x.com/2024/12/05/pATuvH1.jpg" alt="【题解】牛客小白月赛109-C" loading="lazy">
+                    <h1>【题解】牛客小白月赛109-C</h1>
+                </div>
+            
+        </a>
+
+        <div class="nexmoe-post-meta">
     <div class="nexmoe-rainbow">
-        <a class="nexmoefont icon-calendar-fill">2025年02月05日</a>
+        <a class="nexmoefont icon-calendar-fill">2025年01月17日</a>
         
-            <a class="nexmoefont icon-appstore-fill -link" href="/categories/Python/">Python</a>
+            <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a>
         
         
     </div>
@@ -487,119 +483,46 @@ mjx-container[display="true"] + br {
     
 </div>
 
-    <h1 id="functional-abstraction">Functional Abstraction</h1>
-<h2 id="lambda表达式所在的environment关系">Lambda表达式所在的environment关系</h2>
-<p>如下例子</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(g):</span></span>
-<span class="line"><span style="color: #24292E">    a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> y:a</span><span style="color: #D73A49">*</span><span style="color: #24292E">g(y)</span></span>
-<span class="line"><span style="color: #24292E">f(</span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> y: a</span><span style="color: #D73A49">+</span><span style="color: #24292E">y)(a)</span></span></code></pre></div></div></figure>
-<p>注意行4与行5的lambda函数的区别：</p>
-<ul>
-<li>行4的lambda函数是f函数内定义的函数，他的父级为f，因此此时传入的a=2</li>
-<li>行5的lambda函数是f函数外定义的函数，他的父级为global，因此此时传入的a=1</li>
-</ul>
-<h2 id="choosing-names">Choosing Names</h2>
-<p>给函数或变量命名时，要注重传达意思</p>
-<ul>
-<li><p>命名需要传达与之相关值的意义或目的</p></li>
-<li><p>值的类型最好记录在函数的docstring中</p></li>
-<li><p>函数名一般包括它们的作用，表现或返回值</p></li>
-<li><p>为一些重复使用的复合表达式命名</p></li>
-<li><p>如果需要注释代码，命名可以长一些</p></li>
-<li><p>如果用于数字，数学运算与函数抽象，命名可以短一些</p></li>
-</ul>
-<h2 id="errortraceback">Error&amp;Traceback</h2>
-<p>报错有三种形式：</p>
-<ul>
-<li>Syntax errors：执行前即可发现，通常由于表达式不正确引起</li>
-<li>Runtime
-errors：执行时由python解释器发现的错误。当这些错误发生时，会得到一个Traceback，来提示是在哪里发生了何种错误，错误发生时程序在做什么</li>
-<li>Logical error：不会被解释器发现，需要自己进行测试发现问题</li>
-</ul>
-<h2 id="decorator">Decorator</h2>
-<p>装饰器用于给现有模块（原函数）进行功能拓展，通过接受一个函数来返回一个新的函数或修改原来的函数</p>
-<p>例如：</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">trace1</span><span style="color: #24292E">(fn):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""</span></span>
-<span class="line"><span style="color: #032F62">    return a version of fn that first print before it is called</span></span>
-<span class="line"><span style="color: #032F62">    fn - a function of 1 argument</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">traced</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Calling"</span><span style="color: #24292E">,fn,</span><span style="color: #032F62">"on argument"</span><span style="color: #24292E">,x)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> fn(x)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> traced</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6F42C1">@trace1</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">square</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">*</span><span style="color: #24292E">x</span></span></code></pre></div></div></figure>
-<p>等同于</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">trace1</span><span style="color: #24292E">(fn):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""</span></span>
-<span class="line"><span style="color: #032F62">    return a version of fn that first print before it is called</span></span>
-<span class="line"><span style="color: #032F62">    fn - a function of 1 argument</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">traced</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Calling"</span><span style="color: #24292E">,fn,</span><span style="color: #032F62">"on argument"</span><span style="color: #24292E">,x)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> fn(x)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> traced</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">square</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">*</span><span style="color: #24292E">x</span></span>
-<span class="line"><span style="color: #24292E">square </span><span style="color: #D73A49">=</span><span style="color: #24292E"> trace1(square)</span></span></code></pre></div></div></figure>
-<p>返回值都相同</p>
-<figure class="shiki pythong"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre><code>&gt;&gt;&gt; square(5)
-Calling &lt;function square at 0x000001C1247A9240&gt; on argument 5
-25</code></pre></div></div></figure>
-
-    <p><img src=" " loading="lazy"></p>
-
-  </article>
-
-  
-      
-    <div class="nexmoe-post-copyright">
-        <strong>本文作者：</strong>IzayoiSakuye<br>
-        <strong>本文链接：</strong><a href="https://izayoisakuye.github.io/2025/02/05/CS61A%E2%80%94%E2%80%94Design/" title="https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2025&#x2F;02&#x2F;05&#x2F;CS61A%E2%80%94%E2%80%94Design&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2025&#x2F;02&#x2F;05&#x2F;CS61A%E2%80%94%E2%80%94Design&#x2F;</a><br>
-        
-            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
-
-        
+        <article>
+            
+        </article>
     </div>
 
+    <div class="nexmoe-post">
+        <a href="/2025/01/17/%E6%8C%87%E9%92%88/">
+            
+                <div class="nexmoe-post-cover mdui-ripple"> 
+                    <img src="https://s21.ax1x.com/2024/12/05/pATuvH1.jpg" alt="【C/C++】指针" loading="lazy">
+                    <h1>【C/C++】指针</h1>
+                </div>
+            
+        </a>
 
-  
-  
-  <div class="nexmoe-post-meta nexmoe-rainbow">
-   
+        <div class="nexmoe-post-meta">
+    <div class="nexmoe-rainbow">
+        <a class="nexmoefont icon-calendar-fill">2025年01月17日</a>
+        
+            <a class="nexmoefont icon-appstore-fill -link" href="/categories/C-C/">C/C++</a>
+        
+        
+    </div>
     
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/CS61A/" rel="tag">CS61A</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Python/" rel="tag">Python</a>
+    
+    
+    
     
 </div>
-  
-  
-    <script async src="/js/copy-codeblock.js?v=1740473145354"></script>
-  
 
-  
-      <div class="nexmoe-post-footer">
-          
-      </div>
-  
-</div></div><div class="nexmoe-post-right">    <div class="nexmoe-fixed">
+        <article>
+            
+        </article>
+    </div>
+</section><nav class="nexmoe-page-nav"><a class="extend prev" rel="prev" href="/archives/2025/page/2/"><i class="nexmoefont icon-left"></i></a><a class="page-number" href="/archives/2025/">1</a><a class="page-number" href="/archives/2025/page/2/">2</a><span class="page-number current">3</span></nav></div><div class="nexmoe-post-right">    <div class="nexmoe-fixed">
         <div class="nexmoe-tool">
 
             
 
             
-            
-            <button class="mdui-fab catalog" style="overflow:unset;">
-                <i class="nexmoefont icon-i-catalog"></i>
-                <div class="nexmoe-toc">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#functional-abstraction"><span class="toc-number">1.</span> <span class="toc-text">Functional Abstraction</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%89%80%E5%9C%A8%E7%9A%84environment%E5%85%B3%E7%B3%BB"><span class="toc-number">1.1.</span> <span class="toc-text">Lambda表达式所在的environment关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#choosing-names"><span class="toc-number">1.2.</span> <span class="toc-text">Choosing Names</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#errortraceback"><span class="toc-number">1.3.</span> <span class="toc-text">Error&amp;Traceback</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#decorator"><span class="toc-number">1.4.</span> <span class="toc-text">Decorator</span></a></li></ol></li></ol>
-                </div>
-            </button>
             
 
             

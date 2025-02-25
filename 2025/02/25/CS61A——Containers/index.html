@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="zh"><head>
-<title>【Python】CS61A——Functional Abstraction - 红魔咖啡馆</title>
+<title>【Python】CS61A——Containers - 红魔咖啡馆</title>
 <meta charset="UTF-8">
 <meta name="keywords" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-<meta name="description" content="Functional Abstraction Lambda表达式所在的environment关系 如下例子 12345a &#x3D; 1 def f(g):     a &#x3D; 2     return lambda y:a*g(y) f(lambda y: a+y)(a) 注意行4与行5的lambda函数的区别：  行4的lambda函数是f函数内定义的函数，他的父级为f，因此此时传入的a&#x3D;2">
+<meta name="description" content="Containers Slicing 切片可以简洁的获取列表中的子列表，实质是创建了新的列表而不影响原始列表 如列表odds &#x3D; [3,5,7,9,11]  odds[1:3] -&gt; [5,7] 默认也是包括起始值不包括结束值 odds[:3] -&gt; [3,5,7] 省略开头将从列表头开始算起 odds[1:] -&gt; [5,7,9,11] 省略结尾将覆盖至列表尾">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【Python】CS61A——Functional Abstraction">
-<meta property="og:url" content="https://izayoisakuye.github.io/2025/02/05/CS61A%E2%80%94%E2%80%94Design/index.html">
+<meta property="og:title" content="【Python】CS61A——Containers">
+<meta property="og:url" content="https://izayoisakuye.github.io/2025/02/25/CS61A%E2%80%94%E2%80%94Containers/index.html">
 <meta property="og:site_name" content="红魔咖啡馆">
-<meta property="og:description" content="Functional Abstraction Lambda表达式所在的environment关系 如下例子 12345a &#x3D; 1 def f(g):     a &#x3D; 2     return lambda y:a*g(y) f(lambda y: a+y)(a) 注意行4与行5的lambda函数的区别：  行4的lambda函数是f函数内定义的函数，他的父级为f，因此此时传入的a&#x3D;2">
+<meta property="og:description" content="Containers Slicing 切片可以简洁的获取列表中的子列表，实质是创建了新的列表而不影响原始列表 如列表odds &#x3D; [3,5,7,9,11]  odds[1:3] -&gt; [5,7] 默认也是包括起始值不包括结束值 odds[:3] -&gt; [3,5,7] 省略开头将从列表头开始算起 odds[1:] -&gt; [5,7,9,11] 省略结尾将覆盖至列表尾">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-02-05T08:57:40.971Z">
-<meta property="article:modified_time" content="2025-02-05T08:57:28.693Z">
+<meta property="article:published_time" content="2025-02-25T08:44:27.451Z">
+<meta property="article:modified_time" content="2025-02-25T08:45:19.402Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="CS61A">
@@ -24,15 +24,15 @@
 <link rel="stylesheet" href="/lib/mdui_043tiny/mdui.css">
 
 
-<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1740473145389">
+<link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1740473145364">
 
-<link rel="stylesheet" href="/css/style.css?v=1740473145389">
+<link rel="stylesheet" href="/css/style.css?v=1740473145364">
 
 
 
 
     
-        <link rel="stylesheet" href="/custom.css?v=1740473145389">
+        <link rel="stylesheet" href="/custom.css?v=1740473145364">
     
 
 
@@ -42,7 +42,7 @@
 <script src="/lib/lax.min.js" async></script>
 
 
-<script async src="/js/app.js?v=1740473145389"></script>
+<script async src="/js/app.js?v=1740473145364"></script>
 
  
 
@@ -467,14 +467,14 @@ mjx-container[display="true"] + br {
   <article>
     
         <div class="nexmoe-post-cover"> 
-            <img src="https://s21.ax1x.com/2024/12/05/pATuvH1.jpg" alt="【Python】CS61A——Functional Abstraction" loading="lazy">
-            <h1>【Python】CS61A——Functional Abstraction</h1>
+            <img src="https://s21.ax1x.com/2024/12/05/pATuvH1.jpg" alt="【Python】CS61A——Containers" loading="lazy">
+            <h1>【Python】CS61A——Containers</h1>
         </div>
     
     
     <div class="nexmoe-post-meta">
     <div class="nexmoe-rainbow">
-        <a class="nexmoefont icon-calendar-fill">2025年02月05日</a>
+        <a class="nexmoefont icon-calendar-fill">2025年02月25日</a>
         
             <a class="nexmoefont icon-appstore-fill -link" href="/categories/Python/">Python</a>
         
@@ -487,71 +487,75 @@ mjx-container[display="true"] + br {
     
 </div>
 
-    <h1 id="functional-abstraction">Functional Abstraction</h1>
-<h2 id="lambda表达式所在的environment关系">Lambda表达式所在的environment关系</h2>
-<p>如下例子</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(g):</span></span>
-<span class="line"><span style="color: #24292E">    a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> y:a</span><span style="color: #D73A49">*</span><span style="color: #24292E">g(y)</span></span>
-<span class="line"><span style="color: #24292E">f(</span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> y: a</span><span style="color: #D73A49">+</span><span style="color: #24292E">y)(a)</span></span></code></pre></div></div></figure>
-<p>注意行4与行5的lambda函数的区别：</p>
+    <h1 id="containers">Containers</h1>
+<h2 id="slicing">Slicing</h2>
+<p>切片可以简洁的获取列表中的子列表，实质是创建了新的列表而不影响原始列表</p>
+<p>如列表odds = [3,5,7,9,11]</p>
 <ul>
-<li>行4的lambda函数是f函数内定义的函数，他的父级为f，因此此时传入的a=2</li>
-<li>行5的lambda函数是f函数外定义的函数，他的父级为global，因此此时传入的a=1</li>
+<li>odds[1:3] -&gt; [5,7] 默认也是包括起始值不包括结束值</li>
+<li>odds[:3] -&gt; [3,5,7] 省略开头将从列表头开始算起</li>
+<li>odds[1:] -&gt; [5,7,9,11] 省略结尾将覆盖至列表尾</li>
 </ul>
-<h2 id="choosing-names">Choosing Names</h2>
-<p>给函数或变量命名时，要注重传达意思</p>
+<h2 id="内置函数">内置函数</h2>
+<h3 id="sum">sum</h3>
+<p><code>sum(&lt;可迭代对象&gt;, [起始值])</code></p>
+<p>返回所有可迭代元素和并加上起始值，起始值默认为0</p>
+<p>sum还可以实现列表相加：<code>sum([[2,3],[4]],[])</code>
+<strong>注意起始值类型要和前面相同</strong></p>
+<h3 id="max">max</h3>
+<p><code>max(&lt;可迭代对象&gt;, [键函数])</code></p>
+<p><code>max(a,b,c,..., [键函数])</code></p>
+<p>返回对象中的最大值或返回若干值中的最大值</p>
+<p>键函数：考虑对每个元素执行键函数并根据返回值比较大小（返回原始值）</p>
+<p>e.g. <code>max(range(10), key=lambda x: 7-(x-4)*(x-2))</code></p>
+<h3 id="all">all</h3>
+<p><code>all(&lt;可迭代对象&gt;)</code></p>
+<p>对每个元素执行bool(x)操作，若所有元素都返回True则返回True，否则返回False，空列表返回True</p>
+<p>e.g. <code>all([x&lt;5 for x in range(5)])</code> 返回True</p>
+<h3 id="len">len</h3>
+<p><code>len(&lt;可迭代对象&gt;)</code></p>
+<p>获取某个序列长度</p>
+<h2 id="有关string">有关string</h2>
+<p>string可以用于表示：数据、语言、程序</p>
+<h3 id="表示字符串">表示字符串</h3>
 <ul>
-<li><p>命名需要传达与之相关值的意义或目的</p></li>
-<li><p>值的类型最好记录在函数的docstring中</p></li>
-<li><p>函数名一般包括它们的作用，表现或返回值</p></li>
-<li><p>为一些重复使用的复合表达式命名</p></li>
-<li><p>如果需要注释代码，命名可以长一些</p></li>
-<li><p>如果用于数字，数学运算与函数抽象，命名可以短一些</p></li>
+<li>使用单引号</li>
+<li>使用双引号</li>
+<li>使用一对连续的三个双引号：可以跨行</li>
 </ul>
-<h2 id="errortraceback">Error&amp;Traceback</h2>
-<p>报错有三种形式：</p>
-<ul>
-<li>Syntax errors：执行前即可发现，通常由于表达式不正确引起</li>
-<li>Runtime
-errors：执行时由python解释器发现的错误。当这些错误发生时，会得到一个Traceback，来提示是在哪里发生了何种错误，错误发生时程序在做什么</li>
-<li>Logical error：不会被解释器发现，需要自己进行测试发现问题</li>
-</ul>
-<h2 id="decorator">Decorator</h2>
-<p>装饰器用于给现有模块（原函数）进行功能拓展，通过接受一个函数来返回一个新的函数或修改原来的函数</p>
-<p>例如：</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">trace1</span><span style="color: #24292E">(fn):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""</span></span>
-<span class="line"><span style="color: #032F62">    return a version of fn that first print before it is called</span></span>
-<span class="line"><span style="color: #032F62">    fn - a function of 1 argument</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">traced</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Calling"</span><span style="color: #24292E">,fn,</span><span style="color: #032F62">"on argument"</span><span style="color: #24292E">,x)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> fn(x)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> traced</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6F42C1">@trace1</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">square</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">*</span><span style="color: #24292E">x</span></span></code></pre></div></div></figure>
-<p>等同于</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">trace1</span><span style="color: #24292E">(fn):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""</span></span>
-<span class="line"><span style="color: #032F62">    return a version of fn that first print before it is called</span></span>
-<span class="line"><span style="color: #032F62">    fn - a function of 1 argument</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">traced</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Calling"</span><span style="color: #24292E">,fn,</span><span style="color: #032F62">"on argument"</span><span style="color: #24292E">,x)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> fn(x)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> traced</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">square</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">*</span><span style="color: #24292E">x</span></span>
-<span class="line"><span style="color: #24292E">square </span><span style="color: #D73A49">=</span><span style="color: #24292E"> trace1(square)</span></span></code></pre></div></div></figure>
-<p>返回值都相同</p>
-<figure class="shiki pythong"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre><code>&gt;&gt;&gt; square(5)
-Calling &lt;function square at 0x000001C1247A9240&gt; on argument 5
-25</code></pre></div></div></figure>
+<h3 id="string也是一种sequence">string也是一种sequence</h3>
+<p>求解长度与选择元素与列表相同</p>
+<p><strong>获取到的string中的元素本身也是一个字符串，但只有它本身一个元素</strong></p>
+<p>in与not in可以在字符串中寻找连续字符</p>
+<p>e.g. <code>'here' in 'where's waldo?</code> 返回True</p>
+<h2 id="dictionary">Dictionary</h2>
+<p>dictionary用于存储键值对，使用花括号和冒号分隔键值</p>
+<p>创建：</p>
+<p><code>numerals = {'I':1, 'V':5, 'X':10}</code></p>
+<p>可以用数字，字符串当键值，列表或字典 当值</p>
+<p><strong>注意：键本身不能是列表或字典，键不能重复</strong></p>
+<p>查找：</p>
+<p>输入对应的键来查找对应的值，但不能通过值查找键</p>
+<p><code>numerals['V'] &gt;&gt;&gt; 5</code></p>
+<p>遍历：</p>
+<p>dictionary是键的序列，通过list()创建列表可以获得所有的键，因此可以用for循环遍历所有的键</p>
+<p>使用<code>numerals.value()</code>获得字典中所有的值，存储在一个序列中（非列表）</p>
+<h2 id="dictionary-comprehensions">Dictionary Comprehensions</h2>
+<p>可以使用表达式来创建列表</p>
+<p>格式：<code>{&lt;key exp&gt;: &lt;val exp&gt; for &lt;name&gt; in &lt;iter exp&gt; if &lt;filter exp&gt;}</code></p>
+<p>过程：</p>
+<ol type="1">
+<li>添加以当前作用域为父作用域的新作用域</li>
+<li>建立一个空的result字典存储表达式的值</li>
+<li>对每个<iter exp="">中的元素：
+<ol type="1">
+<li>在新作用域中将<name>绑定到每一个元素</name></li>
+<li>若<filter exp="">为真，则将<key exp="">与<val exp="">配对并添加到result字典中</val></key></filter></li>
+</ol></iter></li>
+</ol>
+<p>e.g.</p>
+<p><code>{x*x: x for x in [1,2,3,4,5] if x&gt;2}</code>
+结果为<code>{9:3, 16:4, 25:3}</code></p>
 
     <p><img src=" " loading="lazy"></p>
 
@@ -561,7 +565,7 @@ Calling &lt;function square at 0x000001C1247A9240&gt; on argument 5
       
     <div class="nexmoe-post-copyright">
         <strong>本文作者：</strong>IzayoiSakuye<br>
-        <strong>本文链接：</strong><a href="https://izayoisakuye.github.io/2025/02/05/CS61A%E2%80%94%E2%80%94Design/" title="https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2025&#x2F;02&#x2F;05&#x2F;CS61A%E2%80%94%E2%80%94Design&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2025&#x2F;02&#x2F;05&#x2F;CS61A%E2%80%94%E2%80%94Design&#x2F;</a><br>
+        <strong>本文链接：</strong><a href="https://izayoisakuye.github.io/2025/02/25/CS61A%E2%80%94%E2%80%94Containers/" title="https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2025&#x2F;02&#x2F;25&#x2F;CS61A%E2%80%94%E2%80%94Containers&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;izayoisakuye.github.io&#x2F;2025&#x2F;02&#x2F;25&#x2F;CS61A%E2%80%94%E2%80%94Containers&#x2F;</a><br>
         
             <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
 
@@ -579,7 +583,7 @@ Calling &lt;function square at 0x000001C1247A9240&gt; on argument 5
 </div>
   
   
-    <script async src="/js/copy-codeblock.js?v=1740473145354"></script>
+    <script async src="/js/copy-codeblock.js?v=1740473145352"></script>
   
 
   
@@ -597,7 +601,7 @@ Calling &lt;function square at 0x000001C1247A9240&gt; on argument 5
             <button class="mdui-fab catalog" style="overflow:unset;">
                 <i class="nexmoefont icon-i-catalog"></i>
                 <div class="nexmoe-toc">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#functional-abstraction"><span class="toc-number">1.</span> <span class="toc-text">Functional Abstraction</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%89%80%E5%9C%A8%E7%9A%84environment%E5%85%B3%E7%B3%BB"><span class="toc-number">1.1.</span> <span class="toc-text">Lambda表达式所在的environment关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#choosing-names"><span class="toc-number">1.2.</span> <span class="toc-text">Choosing Names</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#errortraceback"><span class="toc-number">1.3.</span> <span class="toc-text">Error&amp;Traceback</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#decorator"><span class="toc-number">1.4.</span> <span class="toc-text">Decorator</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#containers"><span class="toc-number">1.</span> <span class="toc-text">Containers</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#slicing"><span class="toc-number">1.1.</span> <span class="toc-text">Slicing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sum"><span class="toc-number">1.2.1.</span> <span class="toc-text">sum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#max"><span class="toc-number">1.2.2.</span> <span class="toc-text">max</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#all"><span class="toc-number">1.2.3.</span> <span class="toc-text">all</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#len"><span class="toc-number">1.2.4.</span> <span class="toc-text">len</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%85%B3string"><span class="toc-number">1.3.</span> <span class="toc-text">有关string</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E7%A4%BA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.3.1.</span> <span class="toc-text">表示字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#string%E4%B9%9F%E6%98%AF%E4%B8%80%E7%A7%8Dsequence"><span class="toc-number">1.3.2.</span> <span class="toc-text">string也是一种sequence</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dictionary"><span class="toc-number">1.4.</span> <span class="toc-text">Dictionary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dictionary-comprehensions"><span class="toc-number">1.5.</span> <span class="toc-text">Dictionary Comprehensions</span></a></li></ol></li></ol>
                 </div>
             </button>
             
