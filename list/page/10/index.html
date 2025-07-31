@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,170 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Environments/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Environments/" class="post-title-link" itemprop="url">【CS61A】CS61A——Environments</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-30 16:23:18" itemprop="dateCreated datePublished" datetime="2025-01-30T16:23:18+08:00">2025-01-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:49:49" itemprop="dateModified" datetime="2025-07-31T17:49:49+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="environments">Environments</h1>
+<h2 id="environments-in-higher-orde-function">Environments in
+Higher-orde function</h2>
+<img src="/CS61A/CS61A%E2%80%94%E2%80%94Environments/image-20250130162319674.png" class="" title="Environments">
+<h2 id="local-names">Local Names</h2>
+<p>e.g.</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(x,y):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> g(x)</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">g</span><span style="color: #24292E">(a):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">y</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>该代码会报错<code>NameError: global name 'y' is not defined</code></p>
+<p>原因很明显：当执行到行4时，系统在g的作用域中找不到y，接着去全局作用域中也找不到y，因而报错</p>
+<p>而对于嵌套函数，函数中定义的函数是可以直接使用嵌套外函数的参数的，因为在同一个作用于下</p>
+<h2 id="function-composition">Function Composition</h2>
+<p>e.g.</p>
+<figure class="shiki python	"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre><code>def make_adder(n):
+    def adder(k):
+        return k+n
+    return adder
+def square(x):
+    return x*x
+def triple(x):
+    return 3*x
+def compose1(f,g):
+    def h(x):
+        return f(g(x))
+    return h</code></pre></div></div></figure>
+<p>compose1函数将两个函数结合起来计算</p>
+<p><code>compose1(triple,square)(5)</code>的结果为225</p>
+<p><code>compose1(square,triple)(5)</code>的结果为75</p>
+<p><code>compose1(square, makek_adder(2))(3)</code>的结果为25</p>
+<p>该函数实际上开辟了两个environments用来分别计算两个函数的return值</p>
+<img src="/CS61A/CS61A%E2%80%94%E2%80%94Environments/image-20250130170617058.png" class="" title="Composition">
+<p>如图中蓝色和绿色的两个environments，每个中都包含了三个作用域，分别用来计算square与make_adder(2)的值，其中make_adder还会先进入adder函数的作用域</p>
+<h2 id="self-reference">Self-Reference</h2>
+<p>e.g.1</p>
+<figure class="shiki py"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print_all</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(x)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> print_all</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">print_all(</span><span style="color: #005CC5">1</span><span style="color: #24292E">)(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>该函数执行后会输出1</p>
+<p>即print_all函数可以在函数体内以return值形式返回自身，因此该函数被调用的次数与第五行后面的括号数一致（即被调用几次）</p>
+<p>e.g.2</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print_sums</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(x)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">next_sum</span><span style="color: #24292E">(y):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> print_sums(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">y)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> next_sum</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">print_sums(</span><span style="color: #005CC5">1</span><span style="color: #24292E">)(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>函数会把括号后面的数依次相加，输出每次相加的和</p>
+<p>首先传入x=1，打印1，定义next_sum函数，print_sums函数返回该函数，并传入y=3，next_sum返回print_sums函数，传入值为x+y=4</p>
+<p>再次打印4，定义next_sum函数，print_sums函数返回该函数，并传入y=5，next_sum返回print_sums函数，传入值为x+y=9</p>
+<p>再次打印9，没有参数传入，结束</p>
+<p>因此要注意调用表达式中传入的参数去了哪里：</p>
+<p>1传入了print_sums，而3和5传入了print_sums的返回值next_sum函数用于求和</p>
+<h2 id="currying">Currying</h2>
+<p>注意以下两种函数</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_adder</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> k:n</span><span style="color: #D73A49">+</span><span style="color: #24292E">k</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add</span><span style="color: #24292E">(x,y):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">+</span><span style="color: #24292E">y</span></span></code></pre></div></div></figure>
+<p>make_adder函数一次调用一个参数，返回一个函数再调用参数</p>
+<p>add函数调用多个参数，返回最终结果</p>
+<p>我们可以用以下函数将add函数转换为make_adder函数</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">curry</span><span style="color: #24292E">(f):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">g</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">h</span><span style="color: #24292E">(y):</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> f(x,y)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> h</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> g</span></span></code></pre></div></div></figure>
+<p>这样，当我们把add函数传入curry函数，我们就可以通过一次调用一个参数的方法实现相同效果</p>
+<p><code>add_three = curry(add)</code></p>
+<p><code>add_three(3)(2) &gt;&gt;&gt; 5</code></p>
+<p>定义：柯里化（Currying）是一种处理多元函数的方法。它产生一系列连锁函数，其中每个函数固定部分参数，并返回一个新函数，用于传回其它剩余参数的功能。</p>
+<p><strong>即它可以把一个多元函数转换为一系列函数，每个函数传入一个参数，即将f(a,b,c)转换为f(a)(b)(c)</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 

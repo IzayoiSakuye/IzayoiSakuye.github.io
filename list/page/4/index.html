@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,124 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%AE%8F%E5%AE%9A%E4%B9%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/C++/%E5%AE%8F%E5%AE%9A%E4%B9%89/" class="post-title-link" itemprop="url">【C/C++】宏定义</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:29:02 / 修改时间：17:29:18" itemprop="dateCreated datePublished" datetime="2025-07-31T17:29:02+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="宏定义">宏定义</h1>
+<h2 id="常量替换">常量替换</h2>
+<p><code>#define 标识符 替换表达式</code></p>
+<p>C++中常用const方式进行常量替换</p>
+<h2 id="条件编译">条件编译</h2>
+<p>可以定义一个空的宏来用于条件编译</p>
+<ul>
+<li><p><code>#ifdef 宏名</code>：若定义了对应宏则执行下面的宏指令</p></li>
+<li><p><code>#else</code>：否则执行else下面的宏指令</p></li>
+<li><p><code>#undef 宏名</code>：取消原来的定义</p></li>
+<li><p><code>#endif</code>：条件编译的结尾</p></li>
+</ul>
+<h2 id="宏函数">宏函数</h2>
+<p><code>#define 标识符(参数列表) 替换表达式</code></p>
+<p>为了防止运算符优先级造成问题，一般要对表达式加上括号</p>
+<p>C++中可以被内联函数取代</p>
+<h2 id="与">#与</h2>
+<ul>
+<li>#将符号转为字符串</li>
+</ul>
+<p>e.g.<code>#define PRINT(a) cout&lt;&lt;#a&lt;&lt;"="&lt;&lt;(a)&lt;&lt;" ";</code></p>
+<ul>
+<li>##将两个表达式连接在一起</li>
+</ul>
+<p>e.g.<code>#define MEMBER(type, a) type m_##a</code></p>
+<h2 id="多行宏定义">多行宏定义</h2>
+<p>若想定义多行宏定义，则需要在每行结尾加一个<br>
+</p>
+<h2 id="可变参的宏函数">可变参的宏函数</h2>
+<p><code>#define 标识符(参数列表,...) 替换表达式</code></p>
+<p>表达式中用<code>__VA_ARGS__</code>标识符表示这些参数，宏展开时，实际参数会替换掉该标识符</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;stdio.h&gt;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">LOG</span><span style="color: #24292E">(</span><span style="color: #E36209">fmt</span><span style="color: #24292E">, ...) printf(fmt, ##__VA_ARGS__)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">LOG</span><span style="color: #24292E">(</span><span style="color: #032F62">"Hello, </span><span style="color: #005CC5">%s\n</span><span style="color: #032F62">"</span><span style="color: #24292E">, </span><span style="color: #032F62">"World"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">LOG</span><span style="color: #24292E">(</span><span style="color: #032F62">"This is a test.</span><span style="color: #005CC5">\n</span><span style="color: #032F62">"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3768,189 +3886,6 @@ namespace可以引入某个命名空间中的所有名称，这样就可以直�
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 <p>离开内部作用域后，对象的引用计数变为0，此时被析构，故wp1指向了空位置，可以判断对象有效性</p>
 <p>使用<code>expired()</code>方法可以询问一个<code>weak_ptr</code>是否有效</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/C++/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" class="post-title-link" itemprop="url">【C++】类型转换</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:20:34 / 修改时间：17:21:34" itemprop="dateCreated datePublished" datetime="2025-07-31T17:20:34+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="类型转换">类型转换</h1>
-<h2 id="隐式转换">隐式转换</h2>
-<p><strong>要求：相互转换的类型兼容</strong></p>
-<p>当一个值被赋值到另一个兼容类型时，会自动发生隐式转换</p>
-<p>但这样会造成精度损失</p>
-<p>类对象之间也可以发生隐式转换</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">SubClass</span><span style="color: #D73A49">*</span><span style="color: #24292E"> pSub </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SubClass</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">BaseClass</span><span style="color: #D73A49">*</span><span style="color: #24292E"> pBase </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pSub;</span></span></code></pre></div></div></figure>
-<p>如上是将子类指针转换为了基类指针，这是常用的类指针间的隐式转换</p>
-<p>若上方<code>SubClass</code>与<code>BaseClass</code>之间没有继承关系，他们的指针是无法进行隐式转换的</p>
-<p>除非重载运算符或构造函数</p>
-<figure class="shiki C++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre><code>class classA{};
-class classB{
-    public: ClassB (const ClassA&amp; a){}
-};</code></pre></div></div></figure>
-<p>这种方法类似于拷贝构造，但参数类型不同，我们称这种为<strong>转换构造函数</strong></p>
-<h2 id="显式转换">显式转换</h2>
-<h3 id="使用变量类型运算符">使用变量类型运算符</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">float</span><span style="color: #24292E"> b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (</span><span style="color: #D73A49">float</span><span style="color: #24292E">)a</span><span style="color: #6A737D"> // 或float(a)</span></span></code></pre></div></div></figure>
-<p>以上将整型a转化为了浮点数</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">SubClass obj;</span></span>
-<span class="line"><span style="color: #24292E">BaseClass</span><span style="color: #D73A49">*</span><span style="color: #24292E"> pBase </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (BaseClass</span><span style="color: #D73A49">*</span><span style="color: #24292E">) </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">obj;</span></span></code></pre></div></div></figure>
-<p>以上将子类对象obj的地址转换成了基类的指针，但若两者没有继承关系，则转换时可能会访问到奇怪的位置</p>
-<h3 id="动态转换">动态转换</h3>
-<p>语法：<code>dynamic_cast &lt;转换类型&gt; (表达式)</code></p>
-<p>只能用于对象的指针和引用的转换</p>
-<p>用于多态类的向下转换（向上转换一定可以成功，故可以直接使用普通类型转换）</p>
-<p>dynamic_cast进行两个阶段的检查：</p>
-<ul>
-<li>编译阶段：检查基类是否是多态类，不是会报错</li>
-<li>运行阶段：检查转换对象是派生类对象，不是会返回空指针</li>
-</ul>
-<p>动态转换需要RTTI</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CDerive</span><span style="color: #24292E">: </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">CBase obj;</span></span>
-<span class="line"><span style="color: #6A737D">// 基类不是多态类，无法转换</span></span>
-<span class="line"><span style="color: #24292E">CDerive </span><span style="color: #D73A49">*</span><span style="color: #24292E">ptr </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">dynamic_cast&lt;</span><span style="color: #24292E">CDerived</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">obj);</span></span></code></pre></div></div></figure>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #D73A49">public:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">virtual</span><span style="color: #24292E"> </span><span style="color: #6F42C1">~CBase</span><span style="color: #24292E">(){}</span></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CDerive</span><span style="color: #24292E">: </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">CBase obj;</span></span>
-<span class="line"><span style="color: #6A737D">// 不是派生类对象，转换失败</span></span>
-<span class="line"><span style="color: #24292E">CDerive </span><span style="color: #D73A49">*</span><span style="color: #24292E">ptr </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">dynamic_cast&lt;</span><span style="color: #24292E">CDerived</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">obj);</span></span></code></pre></div></div></figure>
-<h3 id="静态转换">静态转换</h3>
-<p>语法：<code>static_cast &lt;转换类型&gt; (表达式)</code></p>
-<p>可用于基类到派生类的向下转换与派生类到基类的向上转换</p>
-<p>static_cast只进行编译阶段的检查：检查两个类是否兼容（不要求基类是多态类）</p>
-<p>静态转换可以替代隐式转换</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{};</span></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CDerive</span><span style="color: #24292E">: </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">COther</span><span style="color: #24292E">{};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">CBase </span><span style="color: #D73A49">*</span><span style="color: #24292E">p;</span></span>
-<span class="line"><span style="color: #24292E">CDerive </span><span style="color: #D73A49">*</span><span style="color: #24292E">p1;</span></span>
-<span class="line"><span style="color: #24292E">COther other;</span></span>
-<span class="line"><span style="color: #24292E">CDerive obj;</span></span>
-<span class="line"><span style="color: #6A737D">// </span></span>
-<span class="line"><span style="color: #24292E">p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">static_cast&lt;</span><span style="color: #24292E">CBase</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">obj);</span></span>
-<span class="line"><span style="color: #24292E">p1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">static_cast&lt;</span><span style="color: #24292E">CDerive</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">obj);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 会提示类型转换无效</span></span>
-<span class="line"><span style="color: #24292E">p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">static_cast&lt;</span><span style="color: #24292E">CBase</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">other);</span></span>
-<span class="line"><span style="color: #24292E">p1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">static_cast&lt;</span><span style="color: #24292E">CDerive</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">other);</span></span></code></pre></div></div></figure>
-<h3 id="重解释转换">重解释转换</h3>
-<p>语法：<code>reinterpret_cast &lt;转换类型&gt; (表达式)</code></p>
-<p>用于类指针之间的转换，而不会检查类型是否有效</p>
-<p>也可用于整型与指针间的转换（注意整型的数据范围能容纳指针数值）</p>
-<p>应用：</p>
-<ul>
-<li>与内存和硬件直接交互的底层与接口程序</li>
-<li>与操作系统组件交互</li>
-<li>处理网络或多媒体数据</li>
-</ul>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{};</span></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CDerive</span><span style="color: #24292E">: </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CBase</span><span style="color: #24292E">{};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">COther</span><span style="color: #24292E">{};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">CBase </span><span style="color: #D73A49">*</span><span style="color: #24292E">p;</span></span>
-<span class="line"><span style="color: #24292E">CDerive </span><span style="color: #D73A49">*</span><span style="color: #24292E">p1;</span></span>
-<span class="line"><span style="color: #24292E">COther other;</span></span>
-<span class="line"><span style="color: #24292E">p1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">reinterpret_cast&lt;</span><span style="color: #24292E">CDerive</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">0x</span><span style="color: #005CC5">EF</span><span style="color: #D73A49">L</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> address </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">reinterpret_cast&lt;long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long&gt;</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">other);</span></span></code></pre></div></div></figure>
-<h3 id="常量转换">常量转换</h3>
-<p>语法：<code>const_cast &amp;lt;转换类型&amp;gt; (表达式)</code></p>
-<p>用于常量与非常量之间的转换，转换类型必须是指针或引用</p>
-<p>应用：</p>
-<ul>
-<li>在调用不修改对象但未声明常量参数的函数时，暂时取消对象的常量类型</li>
-<li>临时取消对象中的const属性，以便调用成员函数修改其中成员</li>
-</ul>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">hello</span><span style="color: #24292E">(</span><span style="color: #D73A49">char*</span><span style="color: #24292E"> </span><span style="color: #E36209">str</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">str</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">char*</span><span style="color: #24292E"> str </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">"world!"</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #6F42C1">hello</span><span style="color: #24292E">(</span><span style="color: #D73A49">const_cast&lt;char*&gt;</span><span style="color: #24292E">(str));</span></span></code></pre></div></div></figure>
-<p>注意，进行转换不意味着可以进行修改</p>
 
       
     </div>

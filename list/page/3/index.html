@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,153 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec3-Java%20Basic%202/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61B/Lec3-Java%20Basic%202/" class="post-title-link" itemprop="url">【CS61B】Lec3-Java Basic2</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:36" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="java-basic-2">Java Basic 2</h1>
+<h2 id="声明变量的原理">声明变量的原理</h2>
+<ul>
+<li>计算机留出对应变量类型的内存空间</li>
+<li>Java创建一个内部表用来将变量名与各个位进行对应</li>
+<li>首次声明时，Java不会在这些空间里写入任何东西，但你不可以使用一个未定义的变量，对变量赋值后，才会向里面填充内容</li>
+</ul>
+<h2 id="类的实例化">类的实例化</h2>
+<p>当实例化一个对象时</p>
+<ul>
+<li>Java对类中的每个实例变量分配空间并初始化值</li>
+<li>构造函数用其他一些值填充这些空间</li>
+</ul>
+<p>其中，new关键字的作用类似于寻找并返回新创建的对象的地址</p>
+<h2 id="引用类型">引用类型</h2>
+<p>不属于Java的八种基本类型的类型统称为引用类型</p>
+<p>当声明一个引用类型时：</p>
+<ul>
+<li>Java会分配64bits空间，无论是哪一种对象</li>
+<li>这些空间会被设置为
+<ul>
+<li>Null（二进制位全0）</li>
+<li>该类特定实例的地址</li>
+</ul></li>
+</ul>
+<img src="/CS61B/Lec3-Java%20Basic%202/image-20250708195819240.png" class="" title="内存">
+<h2 id="参数传递">参数传递</h2>
+<p>The Golden Rule of Equals：</p>
+<p>给予变量a与b，<code>a=b</code>的意义为<strong>把b的bits值复制给a</strong></p>
+<p>参数传递的方式按照此规律：即按值传递（有时候值为地址），而不能使用引用（如C++中的&amp;）</p>
+<h2 id="数组的比较">数组的比较</h2>
+<p>Java中，==运算符仅仅是比较两个数组的地址是否相同</p>
+<p>如果需要比较内容是否已知，可以使用<code>Arrays.equals(x,y);</code>方法</p>
+<h2 id="实例递归实现链表">实例：递归实现链表</h2>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec3;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 无限长的整型链表</span></span>
+<span class="line"><span style="color: #6A737D">// 使用递归写</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> first;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntList rest;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">f</span><span style="color: #24292E">, IntList </span><span style="color: #E36209">r</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f;</span></span>
+<span class="line"><span style="color: #24292E">        rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> r;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (rest </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">null</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> rest.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">.first;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">.rest.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(x </span><span style="color: #D73A49">-</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">        IntList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">, L);</span></span>
+<span class="line"><span style="color: #24292E">        L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, L);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(</span><span style="color: #005CC5">2</span><span style="color: #24292E">));</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3084,124 +3231,6 @@ Initialization)</p>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 <p>注意，如果直接用变量作为bind绑定，绑定后修改变量不会影响结果，因为是用值传入的</p>
 <p>如果想用引用传入，使用<code>cref()</code>函数，用于返回一个变量的引用封装器s</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%AE%8F%E5%AE%9A%E4%B9%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/C++/%E5%AE%8F%E5%AE%9A%E4%B9%89/" class="post-title-link" itemprop="url">【C/C++】宏定义</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:29:02 / 修改时间：17:29:18" itemprop="dateCreated datePublished" datetime="2025-07-31T17:29:02+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="宏定义">宏定义</h1>
-<h2 id="常量替换">常量替换</h2>
-<p><code>#define 标识符 替换表达式</code></p>
-<p>C++中常用const方式进行常量替换</p>
-<h2 id="条件编译">条件编译</h2>
-<p>可以定义一个空的宏来用于条件编译</p>
-<ul>
-<li><p><code>#ifdef 宏名</code>：若定义了对应宏则执行下面的宏指令</p></li>
-<li><p><code>#else</code>：否则执行else下面的宏指令</p></li>
-<li><p><code>#undef 宏名</code>：取消原来的定义</p></li>
-<li><p><code>#endif</code>：条件编译的结尾</p></li>
-</ul>
-<h2 id="宏函数">宏函数</h2>
-<p><code>#define 标识符(参数列表) 替换表达式</code></p>
-<p>为了防止运算符优先级造成问题，一般要对表达式加上括号</p>
-<p>C++中可以被内联函数取代</p>
-<h2 id="与">#与</h2>
-<ul>
-<li>#将符号转为字符串</li>
-</ul>
-<p>e.g.<code>#define PRINT(a) cout&lt;&lt;#a&lt;&lt;"="&lt;&lt;(a)&lt;&lt;" ";</code></p>
-<ul>
-<li>##将两个表达式连接在一起</li>
-</ul>
-<p>e.g.<code>#define MEMBER(type, a) type m_##a</code></p>
-<h2 id="多行宏定义">多行宏定义</h2>
-<p>若想定义多行宏定义，则需要在每行结尾加一个<br>
-</p>
-<h2 id="可变参的宏函数">可变参的宏函数</h2>
-<p><code>#define 标识符(参数列表,...) 替换表达式</code></p>
-<p>表达式中用<code>__VA_ARGS__</code>标识符表示这些参数，宏展开时，实际参数会替换掉该标识符</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;stdio.h&gt;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">LOG</span><span style="color: #24292E">(</span><span style="color: #E36209">fmt</span><span style="color: #24292E">, ...) printf(fmt, ##__VA_ARGS__)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">LOG</span><span style="color: #24292E">(</span><span style="color: #032F62">"Hello, </span><span style="color: #005CC5">%s\n</span><span style="color: #032F62">"</span><span style="color: #24292E">, </span><span style="color: #032F62">"World"</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">LOG</span><span style="color: #24292E">(</span><span style="color: #032F62">"This is a test.</span><span style="color: #005CC5">\n</span><span style="color: #032F62">"</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 
       
     </div>
