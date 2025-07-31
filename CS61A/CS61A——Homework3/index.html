@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"izayoisakuye.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Homework 3 Q1: Num Eights 用递归函数求一个数中有几位8 12345678910111213141516171819202122232425262728def num_eights(n):     &quot;&quot;&quot;Returns the number of times 8 appears as a digit of n.      &gt;&gt;&gt; num_eights">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【CS61A】CS61A——Homework 3">
+<meta property="og:url" content="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Homework3/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="Homework 3 Q1: Num Eights 用递归函数求一个数中有几位8 12345678910111213141516171819202122232425262728def num_eights(n):     &quot;&quot;&quot;Returns the number of times 8 appears as a digit of n.      &gt;&gt;&gt; num_eights">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-05T08:58:25.385Z">
+<meta property="article:modified_time" content="2025-07-31T09:50:22.691Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="CS61A">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Homework3/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Homework3/","path":"CS61A/CS61A——Homework3/","title":"【CS61A】CS61A——Homework 3"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【CS61A】CS61A——Homework 3 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">红魔咖啡馆</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#homework-3"><span class="nav-number">1.</span> <span class="nav-text">Homework 3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#q1-num-eights"><span class="nav-number">1.1.</span> <span class="nav-text">Q1: Num Eights</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q2-digit-distance"><span class="nav-number">1.2.</span> <span class="nav-text">Q2: Digit Distance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q3-interleaved-sum"><span class="nav-number">1.3.</span> <span class="nav-text">Q3: Interleaved Sum</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q4-count-coins"><span class="nav-number">1.4.</span> <span class="nav-text">Q4: Count Coins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q5-towers-of-hanoi"><span class="nav-number">1.5.</span> <span class="nav-text">Q5: Towers of Hanoi</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Homework3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【CS61A】CS61A——Homework 3 | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CS61A】CS61A——Homework 3
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-05 16:58:25" itemprop="dateCreated datePublished" datetime="2025-02-05T16:58:25+08:00">2025-02-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:50:22" itemprop="dateModified" datetime="2025-07-31T17:50:22+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="homework-3">Homework 3</h1>
+<h2 id="q1-num-eights">Q1: Num Eights</h2>
+<p>用递归函数求一个数中有几位8</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">num_eights</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Returns the number of times 8 appears as a digit of n.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(3)</span></span>
+<span class="line"><span style="color: #032F62">    0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(8)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(88888888)</span></span>
+<span class="line"><span style="color: #032F62">    8</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(2638)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(86380)</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(12345)</span></span>
+<span class="line"><span style="color: #032F62">    0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">num_eights(8782089)</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># ban all assignment statements</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, 'num_eights',</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">      ['Assign', 'AnnAssign', 'AugAssign', 'NamedExpr', 'For', 'While'])</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">%</span><span style="color: #005CC5">10</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #005CC5">8</span><span style="color: #24292E">: </span><span style="color: #D73A49">return</span><span style="color: #24292E"> num_eights(n</span><span style="color: #D73A49">//</span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">: </span><span style="color: #D73A49">return</span><span style="color: #24292E"> num_eights(n</span><span style="color: #D73A49">//</span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>递归出口：每一位都减完后n==0时</p>
+<p>每次返回时递归调用自身，传入未判断的部分</p>
+<p>若发现该位是8，则返回值加一，否则不变</p>
+<h2 id="q2-digit-distance">Q2: Digit Distance</h2>
+<p>用递归函数求每两位的差的绝对值之和</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">digit_distance</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Determines the digit distance of n.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">digit_distance(3)</span></span>
+<span class="line"><span style="color: #032F62">    0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">digit_distance(777)</span></span>
+<span class="line"><span style="color: #032F62">    0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">digit_distance(314)</span></span>
+<span class="line"><span style="color: #032F62">    5</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">digit_distance(31415926535)</span></span>
+<span class="line"><span style="color: #032F62">    32</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">digit_distance(3464660003)</span></span>
+<span class="line"><span style="color: #032F62">    16</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># ban all loops</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, 'digit_distance',</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">      ['For', 'While'])</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">10</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        res,last </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span><span style="color: #D73A49">//</span><span style="color: #005CC5">10</span><span style="color: #24292E">,n</span><span style="color: #D73A49">%</span><span style="color: #005CC5">10</span></span>
+<span class="line"><span style="color: #24292E">        sec_last </span><span style="color: #D73A49">=</span><span style="color: #24292E"> res</span><span style="color: #D73A49">%</span><span style="color: #005CC5">10</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> digit_distance(res)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">abs</span><span style="color: #24292E">(sec_last</span><span style="color: #D73A49">-</span><span style="color: #24292E">last)</span></span></code></pre></div></div></figure>
+<p>递归出口：当查到最后一位时绝对值为0，返回0</p>
+<p>否则将最后一位与倒数第二位取出，将取完最后一位的剩余部分传入递归函数继续判断，返回值加上两位数绝对值之差</p>
+<h2 id="q3-interleaved-sum">Q3: Interleaved Sum</h2>
+<p>写一个函数，要求对1-n中的所有奇数传入odd_func，所有偶数传入even_func，返回所有数计算后和</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">interleaved_sum</span><span style="color: #24292E">(n, odd_func, even_func):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Compute the sum odd_func(1) + even_func(2) + odd_func(3) + ..., up</span></span>
+<span class="line"><span style="color: #032F62">    to n.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">identity = lambda x: x</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">square = lambda x: x * x</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">triple = lambda x: x * 3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">interleaved_sum(5, identity, square) # 1   + 2*2 + 3   + 4*4 + 5</span></span>
+<span class="line"><span style="color: #032F62">    29</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">interleaved_sum(5, square, identity) # 1*1 + 2   + 3*3 + 4   + 5*5</span></span>
+<span class="line"><span style="color: #032F62">    41</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">interleaved_sum(4, triple, square)   # 1*3 + 2*2 + 3*3 + 4*4</span></span>
+<span class="line"><span style="color: #032F62">    32</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">interleaved_sum(4, square, triple)   # 1*1 + 2*3 + 3*3 + 4*3</span></span>
+<span class="line"><span style="color: #032F62">    28</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, 'interleaved_sum', ['While', 'For', 'Mod']) # ban loops and %</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">check_num</span><span style="color: #24292E">(k):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> k</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> k</span><span style="color: #D73A49">==</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> odd_func(k)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> check_num(k</span><span style="color: #D73A49">+</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #24292E">odd_func(k)</span><span style="color: #D73A49">+</span><span style="color: #24292E">even_func(k</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> check_num(</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>由于题目不让使用循环与取模运算判断奇偶，我们只能使用递归函数</p>
+<p>由于奇数与偶数是分开的，我们可以发现，奇数+2=奇数，奇数+1=偶数</p>
+<p>因此我们可以写一个内嵌函数，让一个计数变量k从1开始，将k传入odd_func，k+1传入even_func</p>
+<p>然后递归调用该函数从k+2开始</p>
+<p>递归出口即k&gt;n或k=n（此时k一定为奇数，直接传入odd_func并返回）</p>
+<h2 id="q4-count-coins">Q4: Count Coins</h2>
+<p>给予n刀乐，把他分为面值分别为1刀乐，5刀乐，10刀乐，25刀乐的四种货币，输出分法数</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">count_coins</span><span style="color: #24292E">(total):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return the number of ways to make change using coins of value of 1, 5, 10, 25.</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_coins(15)</span></span>
+<span class="line"><span style="color: #032F62">    6</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_coins(10)</span></span>
+<span class="line"><span style="color: #032F62">    4</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_coins(20)</span></span>
+<span class="line"><span style="color: #032F62">    9</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_coins(100) # How many ways to make change for a dollar?</span></span>
+<span class="line"><span style="color: #032F62">    242</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_coins(200)</span></span>
+<span class="line"><span style="color: #032F62">    1463</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># ban iteration</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, 'count_coins', ['While', 'For'])</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cal</span><span style="color: #24292E">(total,spl_coin):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> total</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> total</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> spl_coin</span><span style="color: #D73A49">==</span><span style="color: #005CC5">None</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            with_coin </span><span style="color: #D73A49">=</span><span style="color: #24292E"> cal(total</span><span style="color: #D73A49">-</span><span style="color: #24292E">spl_coin,spl_coin)</span></span>
+<span class="line"><span style="color: #24292E">            without_coin </span><span style="color: #D73A49">=</span><span style="color: #24292E"> cal(total,next_smaller_coin(spl_coin))</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> with_coin</span><span style="color: #D73A49">+</span><span style="color: #24292E">without_coin</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> cal(total,</span><span style="color: #005CC5">25</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<h2 id="q5-towers-of-hanoi">Q5: Towers of Hanoi</h2>
+<p>实现汉诺塔游戏并描述每次移动过程</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">move_stack</span><span style="color: #24292E">(n, start, end):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Print the moves required to move n disks on the start pole to the end</span></span>
+<span class="line"><span style="color: #032F62">    pole without violating the rules of Towers of Hanoi.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    n -- number of disks</span></span>
+<span class="line"><span style="color: #032F62">    start -- a pole position, either 1, 2, or 3</span></span>
+<span class="line"><span style="color: #032F62">    end -- a pole position, either 1, 2, or 3</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    There are exactly three poles, and start and end must be different. Assume</span></span>
+<span class="line"><span style="color: #032F62">    that the start pole has at least n disks of increasing size, and the end</span></span>
+<span class="line"><span style="color: #032F62">    pole is either empty or has a top disk larger than the top n start disks.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">move_stack(1, 1, 3)</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">move_stack(2, 1, 3)</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 2</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 2 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">move_stack(3, 1, 3)</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 2</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 3 to rod 2</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 2 to rod 1</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 2 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    Move the top disk from rod 1 to rod 3</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> start </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> end </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> start </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> end, </span><span style="color: #032F62">"Bad start/end"</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">hanoi</span><span style="color: #24292E">(n,start,mid,end):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            print_move(start, end)</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            hanoi(n </span><span style="color: #D73A49">-</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">, start,end, mid)</span></span>
+<span class="line"><span style="color: #24292E">            hanoi(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,start,mid,end)</span></span>
+<span class="line"><span style="color: #24292E">            hanoi(n </span><span style="color: #D73A49">-</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">, mid, start,end)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> hanoi(n,start,</span><span style="color: #005CC5">6</span><span style="color: #D73A49">-</span><span style="color: #24292E">start</span><span style="color: #D73A49">-</span><span style="color: #24292E">end,end)</span></span></code></pre></div></div></figure>
+<p>详见五点七边讲解<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1C14y1V77j/?share_source=copy_web&amp;vd_source=d51bc147506d4e930a5fca5c791cb3d8">视频</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/CS61A/" rel="tag"># CS61A</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/CS61A/CS61A%E2%80%94%E2%80%94Tree%20Recursion/" rel="prev" title="【CS61A】CS61A——Tree Recursion">
+                  <i class="fa fa-angle-left"></i> 【CS61A】CS61A——Tree Recursion
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/CS61A/CS61A%E2%80%94%E2%80%94Sequence/" rel="next" title="【CS61A】CS61A——Sequence">
+                  【CS61A】CS61A——Sequence <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

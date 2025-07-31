@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"izayoisakuye.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Mutablity Objects  对象用于表达信息，是一种包含了数据与行为的数据抽象 有属性的东西都可以作为对象，python中一切皆对象 Python中，优先级最高的对象被称为类（class） 面向对象编程（OOP）：  对象是OOP的核心 OOP使用一种暗喻来组织大型程序 使用一种特殊语法可以提高程序的可读性与组织  很多数据操作都是通过对象实现的 对象可以做许多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【CS61A】CS61A——Mutablity">
+<meta property="og:url" content="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="Mutablity Objects  对象用于表达信息，是一种包含了数据与行为的数据抽象 有属性的东西都可以作为对象，python中一切皆对象 Python中，优先级最高的对象被称为类（class） 面向对象编程（OOP）：  对象是OOP的核心 OOP使用一种暗喻来组织大型程序 使用一种特殊语法可以提高程序的可读性与组织  很多数据操作都是通过对象实现的 对象可以做许多">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/images/Lecture15%E2%80%94%E2%80%94Mutability/function.png">
+<meta property="article:published_time" content="2025-03-19T11:10:30.067Z">
+<meta property="article:modified_time" content="2025-07-31T09:51:45.349Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="CS61A">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/images/Lecture15%E2%80%94%E2%80%94Mutability/function.png">
+
+
+<link rel="canonical" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/","path":"CS61A/CS61A——Mutablity/","title":"【CS61A】CS61A——Mutablity"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【CS61A】CS61A——Mutablity | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">红魔咖啡馆</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mutablity"><span class="nav-number">1.</span> <span class="nav-text">Mutablity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#objects"><span class="nav-number">1.1.</span> <span class="nav-text">Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#e.g.-string"><span class="nav-number">1.2.</span> <span class="nav-text">e.g. String</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mutation-operations"><span class="nav-number">1.3.</span> <span class="nav-text">Mutation Operations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%AF%B9%E8%B1%A1%E6%98%AF%E5%8F%AF%E4%BB%A5%E6%94%B9%E5%8F%98%E7%9A%84"><span class="nav-number">1.3.1.</span> <span class="nav-text">一些对象是可以改变的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%97%B6%E5%8F%91%E7%94%9F%E7%9A%84mutation"><span class="nav-number">1.3.2.</span> <span class="nav-text">函数调用时发生的Mutation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84mutation"><span class="nav-number">1.3.3.</span> <span class="nav-text">表达式的Mutation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tuples"><span class="nav-number">1.4.</span> <span class="nav-text">Tuples</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mutation"><span class="nav-number">1.5.</span> <span class="nav-text">Mutation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%90%8C%E4%B8%8E%E6%94%B9%E5%8F%98"><span class="nav-number">1.5.1.</span> <span class="nav-text">相同与改变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#identity-operators"><span class="nav-number">1.5.2.</span> <span class="nav-text">Identity Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E5%AF%B9%E8%B1%A1%E5%9C%A8%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">1.5.3.</span> <span class="nav-text">可变对象在函数中的默认值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mutable-fuctions"><span class="nav-number">1.6.</span> <span class="nav-text">Mutable Fuctions</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【CS61A】CS61A——Mutablity | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CS61A】CS61A——Mutablity
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-19 19:10:30" itemprop="dateCreated datePublished" datetime="2025-03-19T19:10:30+08:00">2025-03-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:51:45" itemprop="dateModified" datetime="2025-07-31T17:51:45+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="mutablity">Mutablity</h1>
+<h2 id="objects">Objects</h2>
+<ul>
+<li>对象用于表达信息，是一种包含了数据与行为的数据抽象</li>
+<li>有属性的东西都可以作为对象，python中一切皆对象</li>
+<li>Python中，优先级最高的对象被称为类（class）</li>
+<li>面向对象编程（OOP）：
+<ul>
+<li>对象是OOP的核心</li>
+<li>OOP使用一种暗喻来组织大型程序</li>
+<li>使用一种特殊语法可以提高程序的可读性与组织</li>
+</ul></li>
+<li>很多数据操作都是通过对象实现的</li>
+<li>对象可以做许多相关的事情，而函数只能做一件事</li>
+</ul>
+<h2 id="e.g.-string">e.g. String</h2>
+<p>字符串是一种表达文本的数据抽象 ### 字符串的表示
+目前常见的表示方法是用ASCII与Unicode字符集表示字符
+前者包含了控制字符、数字、字母与标点，后者则包含了不同语言中的更多字符</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">from</span><span style="color: #24292E"> unicodedata </span><span style="color: #D73A49">import</span><span style="color: #24292E"> name, lookup</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(name(</span><span style="color: #032F62">'A'</span><span style="color: #24292E">)) </span><span style="color: #6A737D"># 查询字符集中的字符名称</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(lookup(</span><span style="color: #032F62">'BABY'</span><span style="color: #24292E">)) </span><span style="color: #6A737D"># 根据字符名称输出对应字符</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(lookup(</span><span style="color: #032F62">'BABY'</span><span style="color: #24292E">).encode()) </span><span style="color: #6A737D"># 查看该字符的字节编码</span></span></code></pre></div></div></figure>
+<pre><code>LATIN CAPITAL LETTER A
+👶
+b'\xf0\x9f\x91\xb6'</code></pre>
+<h2 id="mutation-operations">Mutation Operations</h2>
+<h3 id="一些对象是可以改变的">一些对象是可以改变的</h3>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">suits </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #032F62">'coin'</span><span style="color: #24292E">, </span><span style="color: #032F62">'string'</span><span style="color: #24292E">, </span><span style="color: #032F62">'myriad'</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">original_suits </span><span style="color: #D73A49">=</span><span style="color: #24292E"> suits</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(suits.pop()) </span><span style="color: #6A737D"># 弹出一个元素（默认最后一个）</span></span>
+<span class="line"><span style="color: #24292E">suits.remove(</span><span style="color: #032F62">'string'</span><span style="color: #24292E">) </span><span style="color: #6A737D"># 移除指定元素</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(suits)</span></span>
+<span class="line"><span style="color: #24292E">suits.append(</span><span style="color: #032F62">'cup'</span><span style="color: #24292E">) </span><span style="color: #6A737D"># 在尾部增加一个元素</span></span>
+<span class="line"><span style="color: #24292E">suits.extend([</span><span style="color: #032F62">'sword'</span><span style="color: #24292E">, </span><span style="color: #032F62">'club'</span><span style="color: #24292E">]) </span><span style="color: #6A737D"># 添加序列中的多个元素来拓展列表</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(suits)</span></span>
+<span class="line"><span style="color: #24292E">suits[</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'spade'</span></span>
+<span class="line"><span style="color: #24292E">suits[</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #032F62">'heart'</span><span style="color: #24292E">, </span><span style="color: #032F62">'diamond'</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(original_suits)</span></span></code></pre></div></div></figure>
+<pre><code>myriad
+['coin']
+['coin', 'cup', 'sword', 'club']
+['heart', 'diamond', 'spade', 'club']</code></pre>
+<p>根据以上代码发现，我们可以对一个对象（suits）进行若干操作来变化其值
+而我们在最初将suits与original_suits进行绑定，故变化也会在original_suits中体现
+综上，所有指向相同对象的names都会受到<strong>Mutation</strong>的影响，其中这里的mutation指对象发生的变化
+只有可变类型的对象才能更改，如列表与字典</p>
+<h3 id="函数调用时发生的mutation">函数调用时发生的Mutation</h3>
+<p>函数可以更改其作用域中任何可变对象的值</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mystery</span><span style="color: #24292E">(s):</span></span>
+<span class="line"><span style="color: #24292E">    s.pop()</span></span>
+<span class="line"><span style="color: #24292E">    s.pop()</span></span>
+<span class="line"><span style="color: #24292E">four </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">mystery(four)</span></span></code></pre></div></div></figure>
+<p>mystery函数实现了对列表对象值的更改，甚至mystery不需要传入参数，直接更改其所在作用域（全局作用域）中four列表的内容</p>
+<h3 id="表达式的mutation">表达式的Mutation</h3>
+<p>表达式的值会随着names绑定值或对象的改变而改变</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">x)</span></span>
+<span class="line"><span style="color: #24292E">x.append(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">x)</span></span></code></pre></div></div></figure>
+<pre><code>[1, 2, 1, 2]
+[1, 2, 3, 1, 2, 3]</code></pre>
+<h2 id="tuples">Tuples</h2>
+<ul>
+<li>元组是一种不可变的序列，使用圆括号包裹起来</li>
+<li>实际上，任何以逗号隔开的元素都会被解释成元组，非必须加圆括号</li>
+<li>使用<code>tuple()</code>创建元组或将其他序列转化为元组</li>
+<li>在单个元素后加一个逗号可以将单个元素转化成元组</li>
+<li>元组可以相加，也可以使用成员运算符in来判断元素是否存在</li>
+<li>由于元组不可变，可以将其作为字典的键使用</li>
+<li>若元组中包含了可变对象，则该对象可以被更改</li>
+</ul>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ([</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">s[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">4</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s)</span></span></code></pre></div></div></figure>
+<pre><code>([4, 2], 3)</code></pre>
+<h2 id="mutation">Mutation</h2>
+<h3 id="相同与改变">相同与改变</h3>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span>
+<span class="line"><span style="color: #24292E">a.append(</span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span></code></pre></div></div></figure>
+<pre><code>True
+True</code></pre>
+<p>在这个例子中，我们可以说a与b是<strong>相同的</strong>，因为b与a绑定到了同一个对象，当对其中一个发生变化，另一个也会同时改变</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span>
+<span class="line"><span style="color: #24292E">b.append(</span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span></code></pre></div></div></figure>
+<p>在这个例子中，a与b是<strong>不同的</strong>，尽管它们曾有过相同的内容，但对b进行改变后，a会随之改变，因此这时二者便不同了</p>
+<h3 id="identity-operators">Identity Operators</h3>
+<p><strong>Identity</strong>： <code>&lt;exp0&gt; is &lt;exp1&gt;</code>
+当两个表达式指向相同对象时返回True <strong>Equality</strong>
+<code>&lt;exp0&gt; == &lt;exp1&gt;</code>
+当两个表达式拥有相同值时返回True</p>
+<p><strong>相同对象始终拥有相等的值，但反之不一定成立</strong></p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">c </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a </span><span style="color: #D73A49">is</span><span style="color: #24292E"> b)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(b </span><span style="color: #D73A49">is</span><span style="color: #24292E"> c)</span></span></code></pre></div></div></figure>
+<pre><code>False
+True</code></pre>
+<h3 id="可变对象在函数中的默认值">可变对象在函数中的默认值</h3>
+<p>函数中声明的默认值是函数值的一部分，而不是每次调用时才生成
+这导致了若该对象是可变的，而且在函数中间进行了修改，则该修改会在下次调用函数时保留
+如下面的代码，每次调用增加的值会保留在默认值中</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(s</span><span style="color: #D73A49">=</span><span style="color: #24292E">[]):</span></span>
+<span class="line"><span style="color: #24292E">    s.append(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(s)</span></span>
+<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(f())</span></span></code></pre></div></div></figure>
+<pre><code>1
+2
+3</code></pre>
+<h2 id="mutable-fuctions">Mutable Fuctions</h2>
+<p>在函数中使用可变对象可以在多次调用时保留上次操作的值</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_withdraw_list</span><span style="color: #24292E">(balance):</span></span>
+<span class="line"><span style="color: #24292E">    b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [balance]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Insufficient funds'</span></span>
+<span class="line"><span style="color: #24292E">        b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">-</span><span style="color: #24292E"> amount</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> withdraw</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">withdraw </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_withdraw_list(</span><span style="color: #005CC5">100</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(withdraw(</span><span style="color: #005CC5">25</span><span style="color: #24292E">))</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(withdraw(</span><span style="color: #005CC5">25</span><span style="color: #24292E">))</span></span>
+<span class="line"><span style="color: #24292E">withdraw(</span><span style="color: #005CC5">100</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<pre><code>75
+50
+'Insufficient funds'</code></pre>
+<p>该函数将存款存在作为可变对象的列表中
+函数中的withdraw函数始终指向列表b并修改其值，该列表总是这个列表，随着时间其中的内容被更改
+为了实现每次更改列表中的值，该函数使用了可变对象来创建了一个可变函数
+<img src="images/Lecture15——Mutability/function.png" alt="function"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/CS61A/" rel="tag"># CS61A</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/CS61A/CS61A%E2%80%94%E2%80%94Trees/" rel="prev" title="【CS61A】CS61A——Trees">
+                  <i class="fa fa-angle-left"></i> 【CS61A】CS61A——Trees
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/Web%E5%BA%94%E7%94%A8%E7%9A%84%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6/" rel="next" title="【计算机网络】Web应用的请求与响应机制">
+                  【计算机网络】Web应用的请求与响应机制 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"izayoisakuye.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="协程 协程函数 若一个函数中出现了以下三个关键字之一，则编译器就知道这是一个协程函数  co_await co_yield co_return  并且，协程函数必须返回一个符合要求的协程对象，若有返回值，需要通过协程对象获得 协程对象 协程函数的返回值是自定义的一个协程对象 模板 通常需要内嵌一个名为promise_type的结构定义，内部需要实现一些函数 1234567">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【C++】协程">
+<meta property="og:url" content="https://izayoisakuye.github.io/C++/%E5%8D%8F%E7%A8%8B/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="协程 协程函数 若一个函数中出现了以下三个关键字之一，则编译器就知道这是一个协程函数  co_await co_yield co_return  并且，协程函数必须返回一个符合要求的协程对象，若有返回值，需要通过协程对象获得 协程对象 协程函数的返回值是自定义的一个协程对象 模板 通常需要内嵌一个名为promise_type的结构定义，内部需要实现一些函数 1234567">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-31T09:25:27.844Z">
+<meta property="article:modified_time" content="2025-07-31T09:26:15.812Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://izayoisakuye.github.io/C++/%E5%8D%8F%E7%A8%8B/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://izayoisakuye.github.io/C++/%E5%8D%8F%E7%A8%8B/","path":"C++/协程/","title":"【C++】协程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【C++】协程 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">红魔咖啡馆</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">协程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">协程函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.2.</span> <span class="nav-text">协程对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.2.1.</span> <span class="nav-text">模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">1.2.2.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#co_yield"><span class="nav-number">1.2.3.</span> <span class="nav-text">co_yield</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%AE%9E%E7%8E%B0%E5%8F%91%E7%94%9F%E5%99%A8generator"><span class="nav-number">1.2.4.</span> <span class="nav-text">应用：实现发生器(Generator)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#co_await"><span class="nav-number">1.2.5.</span> <span class="nav-text">co_await</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%8D%8F%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【C++】协程 | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【C++】协程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:25:27 / 修改时间：17:26:15" itemprop="dateCreated datePublished" datetime="2025-07-31T17:25:27+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="协程">协程</h1>
+<h2 id="协程函数">协程函数</h2>
+<p>若一个函数中出现了以下三个关键字之一，则编译器就知道这是一个协程函数</p>
+<ul>
+<li>co_await</li>
+<li>co_yield</li>
+<li>co_return</li>
+</ul>
+<p>并且，协程函数必须返回一个符合要求的协程对象，若有返回值，需要通过协程对象获得</p>
+<h2 id="协程对象">协程对象</h2>
+<p>协程函数的返回值是自定义的一个协程对象</p>
+<h3 id="模板">模板</h3>
+<p>通常需要内嵌一个名为<code>promise_type</code>的结构定义，内部需要实现一些函数</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;coroutine&gt;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_return_object</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_never</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initial_suspend</span><span style="color: #24292E">() { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_never</span><span style="color: #24292E"> </span><span style="color: #6F42C1">final_suspend</span><span style="color: #24292E">() </span><span style="color: #D73A49">noexcept</span><span style="color: #24292E"> { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">return_void</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">unhandled_exception</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">  };</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"hello world"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_return</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  MyCoroutine coro </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>此时coroFunc刚开始执行就被挂起，MyCoroutine对象也没有实现任何协程，故后面的代码不会执行，稍微进行修改</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;coroutine&gt;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_return_object</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #6A737D">      // 获得协程句柄</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E">&gt;::</span><span style="color: #6F42C1">from_promise</span><span style="color: #24292E">(</span><span style="color: #D73A49">*</span><span style="color: #005CC5">this</span><span style="color: #24292E">));</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_always</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initial_suspend</span><span style="color: #24292E">() { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_always</span><span style="color: #24292E"> </span><span style="color: #6F42C1">final_suspend</span><span style="color: #24292E">() </span><span style="color: #D73A49">noexcept</span><span style="color: #24292E"> { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">return_void</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">unhandled_exception</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">  };</span></span>
+<span class="line"><span style="color: #6A737D">  // 通过构造函数传给新创建的对象</span></span>
+<span class="line"><span style="color: #6A737D">  // 调用了协程句柄的resume函数</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E">&gt; </span><span style="color: #E36209">h</span><span style="color: #24292E">) : </span><span style="color: #6F42C1">handle</span><span style="color: #24292E">(h) {}</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">resume</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (handle) {</span></span>
+<span class="line"><span style="color: #24292E">      handle.</span><span style="color: #6F42C1">resume</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 恢复协程执行</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #D73A49">private:</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::coroutine_handle</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">promise_type</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> handle;</span><span style="color: #6A737D"> // 封装了一个指向协程帧的指针，并提供函数</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"hello world"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_return</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  MyCoroutine coro </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  coro.</span><span style="color: #6F42C1">resume</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 恢复协程执行</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="返回值">返回值</h3>
+<p>若需要提供返回值，则需要将return_void改为return_value，并添加get函数存储并获取反返回值：</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;coroutine&gt;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_return_object</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #6A737D">      // 获得协程句柄</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E">&gt;::</span><span style="color: #6F42C1">from_promise</span><span style="color: #24292E">(</span><span style="color: #D73A49">*</span><span style="color: #005CC5">this</span><span style="color: #24292E">));</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_always</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initial_suspend</span><span style="color: #24292E">() { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_always</span><span style="color: #24292E"> </span><span style="color: #6F42C1">final_suspend</span><span style="color: #24292E">() </span><span style="color: #D73A49">noexcept</span><span style="color: #24292E"> { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">return_value</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">) {_value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v;}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">unhandled_exception</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public:</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get</span><span style="color: #24292E">(){</span><span style="color: #D73A49">return</span><span style="color: #24292E"> _value;}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private:</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> _value;</span><span style="color: #6A737D"> // 存储协程返回值</span></span>
+<span class="line"><span style="color: #24292E">  };</span></span>
+<span class="line"><span style="color: #6A737D">  // 通过构造函数传给新创建的对象</span></span>
+<span class="line"><span style="color: #6A737D">  // 调用了协程句柄的resume函数</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E">&gt; </span><span style="color: #E36209">h</span><span style="color: #24292E">) : </span><span style="color: #6F42C1">handle</span><span style="color: #24292E">(h) {}</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    handle.</span><span style="color: #6F42C1">resume</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 恢复协程执行</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> handle.</span><span style="color: #6F42C1">promise</span><span style="color: #24292E">().</span><span style="color: #6F42C1">get</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 获取协程返回值</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #D73A49">private:</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::coroutine_handle</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">promise_type</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> handle;</span><span style="color: #6A737D"> // 封装了一个指向协程帧的指针，并提供函数</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"hello world"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_return</span><span style="color: #24292E"> </span><span style="color: #005CC5">666</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  MyCoroutine coro </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> coro.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"value= "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> value </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="co_yield">co_yield</h3>
+<p>如果要使用co_yield，需要添加yield_value函数</p>
+<p>由于co_yield不是函数执行的结尾，故需要返回一个可等待对象，并使用co_await对该对象进行等待，即</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">co_yield</span><span style="color: #24292E"> v;</span></span>
+<span class="line"><span style="color: #D73A49">co_await</span><span style="color: #24292E"> promise.</span><span style="color: #6F42C1">yield_value</span><span style="color: #24292E">(v);</span></span></code></pre></div></div></figure>
+<p>或者返回一个suspend_always对象，让程序挂起</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #6F42C1">yield_value</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">) { _value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v; </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::suspend_always{};}</span></span></code></pre></div></div></figure>
+<p>为方便使用，还可以重载一下布尔运算符，通过调用handle的done函数来判断协程是否执行完毕</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">operator</span><span style="color: #24292E"> </span><span style="color: #6F42C1">bool</span><span style="color: #24292E">(){</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">!</span><span style="color: #24292E">handle.</span><span style="color: #6F42C1">done</span><span style="color: #24292E">();}</span></span></code></pre></div></div></figure>
+<p>在主函数中，就可以通过一个循环对协程执行进行挂起和继续操作，并获得每次的返回值</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">MyCoroutine coro </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #D73A49">while</span><span style="color: #24292E">(coro){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> coro.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"value= "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> value </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="应用实现发生器generator">应用：实现发生器(Generator)</h3>
+<blockquote>
+<p>一个斐波那契数列生成器</p>
+</blockquote>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;coroutine&gt;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_return_object</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #6A737D">      // 获得协程句柄</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E">&gt;::</span><span style="color: #6F42C1">from_promise</span><span style="color: #24292E">(</span><span style="color: #D73A49">*</span><span style="color: #005CC5">this</span><span style="color: #24292E">));</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_always</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initial_suspend</span><span style="color: #24292E">() { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">suspend_always</span><span style="color: #24292E"> </span><span style="color: #6F42C1">final_suspend</span><span style="color: #24292E">() </span><span style="color: #D73A49">noexcept</span><span style="color: #24292E"> { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {}; }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">return_value</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">) {_value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v;}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #6F42C1">yield_value</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">) { _value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v; </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::suspend_always{};}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">unhandled_exception</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public:</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get</span><span style="color: #24292E">(){</span><span style="color: #D73A49">return</span><span style="color: #24292E"> _value;}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private:</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> _value;</span><span style="color: #6A737D"> // 存储协程返回值</span></span>
+<span class="line"><span style="color: #24292E">  };</span></span>
+<span class="line"><span style="color: #6A737D">  // 通过构造函数传给新创建的对象</span></span>
+<span class="line"><span style="color: #6A737D">  // 调用了协程句柄的resume函数</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E">&gt; </span><span style="color: #E36209">h</span><span style="color: #24292E">) : </span><span style="color: #6F42C1">handle</span><span style="color: #24292E">(h) {}</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">operator</span><span style="color: #24292E"> </span><span style="color: #6F42C1">bool</span><span style="color: #24292E">(){</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">!</span><span style="color: #24292E">handle.</span><span style="color: #6F42C1">done</span><span style="color: #24292E">();}</span><span style="color: #6A737D"> // 重载bool运算符，判断协程是否完成</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    handle.</span><span style="color: #6F42C1">resume</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 恢复协程执行</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> handle.</span><span style="color: #6F42C1">promise</span><span style="color: #24292E">().</span><span style="color: #6F42C1">get</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 获取协程返回值</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #D73A49">private:</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::coroutine_handle</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">promise_type</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> handle;</span><span style="color: #6A737D"> // 封装了一个指向协程帧的指针，并提供函数</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fib</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">, n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">40</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_yield</span><span style="color: #24292E"> a;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_yield</span><span style="color: #24292E"> b;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(n</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> r </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">b;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">co_yield</span><span style="color: #24292E"> r;</span><span style="color: #6A737D"> // 每生成一项就把协程挂起，等待外部调用resume函数</span></span>
+<span class="line"><span style="color: #24292E">    a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b;</span></span>
+<span class="line"><span style="color: #24292E">    b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> r;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">b;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  MyCoroutine coro </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fib</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(coro){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> value </span><span style="color: #D73A49">=</span><span style="color: #24292E"> coro.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"value= "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> value </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="co_await">co_await</h3>
+<p>语法：<code>co_await 表达式</code></p>
+<p>表达式可以是可等待对象，重载co_await()运算符，也可以是一个promise类型的await_transform()函数，将表达式作为函数参数并返回可等待对象</p>
+<p>可等待类型awaitable的定义如下：</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">awaitable</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">bool</span><span style="color: #24292E"> </span><span style="color: #6F42C1">await_ready</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">await_suspend</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;&gt; </span><span style="color: #E36209">h</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #6F42C1">await_resume</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<p>调用对象时，首先调用await_ready()，若返回值为false，则调用await_suspend()让程序挂起，当协程继续执行后，会接下来执行await_resume()，若返回值为true，则直接执行await_resume()</p>
+<p>内置类型suspend_always中await_ready()返回false，其余两个函数什么都不做，作用是将程序挂起</p>
+<p>内置类型suspend_never中await_ready()返回true，其余两个函数什么都不做</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;coroutine&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;thread&gt;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">: std::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">promise</span><span style="color: #24292E">&gt;{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise_type</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ::</span><span style="color: #6F42C1">promise</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">promise</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_return_object</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {</span><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E">::</span><span style="color: #6F42C1">from_promise</span><span style="color: #24292E">(</span><span style="color: #D73A49">*</span><span style="color: #005CC5">this</span><span style="color: #24292E">)};</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initial_suspend</span><span style="color: #24292E">() { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::suspend_always{}; }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #6F42C1">final_suspend</span><span style="color: #24292E">() </span><span style="color: #D73A49">noexcept</span><span style="color: #24292E"> { </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::suspend_always{}; }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">unhandled_exception</span><span style="color: #24292E">() {}</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">awaitable</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">bool</span><span style="color: #24292E"> </span><span style="color: #6F42C1">await_ready</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"await_ready called"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 返回false表示协程需要挂起</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">await_suspend</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">coroutine_handle</span><span style="color: #24292E">&lt;&gt; </span><span style="color: #E36209">h</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"await_suspend called"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #6A737D">    // 在这里可以执行一些异步操作</span></span>
+<span class="line"><span style="color: #6A737D">    // ...</span></span>
+<span class="line"><span style="color: #24292E">      h.</span><span style="color: #6F42C1">resume</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 恢复协程执行</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> </span><span style="color: #6F42C1">await_resume</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"await_resume called"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">666</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 返回协程的结果</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">};  </span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6F42C1">MyCoroutine</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"coroFunc started"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">co_await</span><span style="color: #24292E"> awaitable{};</span><span style="color: #6A737D"> // 使用协程挂起</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"coroFunc resumed"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  MyCoroutine coro </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">coroFunc</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"main started"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  coro.</span><span style="color: #6F42C1">resume</span><span style="color: #24292E">();</span><span style="color: #6A737D"> // 恢复协程执行</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"main finished"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">main started</span></span>
+<span class="line"><span style="color: #24292E">coroFunc started</span></span>
+<span class="line"><span style="color: #24292E">await_ready called</span></span>
+<span class="line"><span style="color: #24292E">await_suspend called</span></span>
+<span class="line"><span style="color: #24292E">await_resume called</span></span>
+<span class="line"><span style="color: #24292E">coroFunc resumed</span></span>
+<span class="line"><span style="color: #24292E">main finished</span></span></code></pre></div></div></figure>
+<p>根据返回结果，证明了函数调用的顺序是ready-&gt;suspend-&gt;resume</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/C++/%E5%BC%95%E7%94%A8/" rel="prev" title="【C++】引用">
+                  <i class="fa fa-angle-left"></i> 【C++】引用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/C++/%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" rel="next" title="【C++】文件操作">
+                  【C++】文件操作 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

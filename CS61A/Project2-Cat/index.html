@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"izayoisakuye.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Project2-Cat 实现一个金山打字通（？） 具体实现：记录打字速度以及自动修正拼写错误的字符 Phase 1: Typing 实现打字以及检测打字速度相关功能 Problem 1 挑选用户打字的段落 pick函数 参数：  paragraphs：一串字符串记录了打字内容 select：一个函数，检测段落是否能被选择 k：非负数，作为index  思路：  函">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【CS61A】Project2-Cat">
+<meta property="og:url" content="https://izayoisakuye.github.io/CS61A/Project2-Cat/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="Project2-Cat 实现一个金山打字通（？） 具体实现：记录打字速度以及自动修正拼写错误的字符 Phase 1: Typing 实现打字以及检测打字速度相关功能 Problem 1 挑选用户打字的段落 pick函数 参数：  paragraphs：一串字符串记录了打字内容 select：一个函数，检测段落是否能被选择 k：非负数，作为index  思路：  函">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-03T11:03:04.420Z">
+<meta property="article:modified_time" content="2025-07-31T09:53:32.167Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="CS61A">
+<meta property="article:tag" content="Project">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://izayoisakuye.github.io/CS61A/Project2-Cat/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://izayoisakuye.github.io/CS61A/Project2-Cat/","path":"CS61A/Project2-Cat/","title":"【CS61A】Project2-Cat"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【CS61A】Project2-Cat | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">红魔咖啡馆</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#project2-cat"><span class="nav-number">1.</span> <span class="nav-text">Project2-Cat</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#phase-1-typing"><span class="nav-number">1.1.</span> <span class="nav-text">Phase 1: Typing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-1"><span class="nav-number">1.1.1.</span> <span class="nav-text">Problem 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-2"><span class="nav-number">1.1.2.</span> <span class="nav-text">Problem 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-3"><span class="nav-number">1.1.3.</span> <span class="nav-text">Problem 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-4"><span class="nav-number">1.1.4.</span> <span class="nav-text">Problem 4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#phase-2-autocorrect"><span class="nav-number">1.2.</span> <span class="nav-text">Phase 2: Autocorrect</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-5"><span class="nav-number">1.2.1.</span> <span class="nav-text">Problem 5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-6"><span class="nav-number">1.2.2.</span> <span class="nav-text">Problem 6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-7"><span class="nav-number">1.2.3.</span> <span class="nav-text">Problem 7</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#phase-3-multiplayer"><span class="nav-number">1.3.</span> <span class="nav-text">Phase 3: Multiplayer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-8"><span class="nav-number">1.3.1.</span> <span class="nav-text">Problem 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-9"><span class="nav-number">1.3.2.</span> <span class="nav-text">Problem 9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#problem-10"><span class="nav-number">1.3.3.</span> <span class="nav-text">Problem 10</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/Project2-Cat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="【CS61A】Project2-Cat | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CS61A】Project2-Cat
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-03 19:03:04" itemprop="dateCreated datePublished" datetime="2025-03-03T19:03:04+08:00">2025-03-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:53:32" itemprop="dateModified" datetime="2025-07-31T17:53:32+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="project2-cat">Project2-Cat</h1>
+<p>实现一个金山打字通（？）</p>
+<p>具体实现：记录打字速度以及自动修正拼写错误的字符</p>
+<h2 id="phase-1-typing">Phase 1: Typing</h2>
+<p>实现打字以及检测打字速度相关功能</p>
+<h3 id="problem-1">Problem 1</h3>
+<p>挑选用户打字的段落</p>
+<p><strong>pick函数</strong></p>
+<p>参数：</p>
+<ul>
+<li>paragraphs：一串字符串记录了打字内容</li>
+<li>select：一个函数，检测段落是否能被选择</li>
+<li>k：非负数，作为index</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>函数功能实现了用户选择第k个段落作为打字内容</li>
+<li>若选择的k没有对应段落则返回空字符串</li>
+<li>选择的字符串要符合select函数的条件</li>
+<li>符合条件的才能编号第k个字符串</li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">pick</span><span style="color: #24292E">(paragraphs, select, k):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return the Kth paragraph from PARAGRAPHS for which SELECT called on the</span></span>
+<span class="line"><span style="color: #032F62">    paragraph returns True. If there are fewer than K such paragraphs, return</span></span>
+<span class="line"><span style="color: #032F62">    the empty string.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        paragraphs: a list of strings</span></span>
+<span class="line"><span style="color: #032F62">        select: a function that returns True for paragraphs that can be selected</span></span>
+<span class="line"><span style="color: #032F62">        k: an integer</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">ps = ['hi', 'how are you', 'fine']</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = lambda p: len(p) &lt;= 4</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">pick(ps, s, 0)</span></span>
+<span class="line"><span style="color: #032F62">    'hi'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">pick(ps, s, 1)</span></span>
+<span class="line"><span style="color: #032F62">    'fine'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">pick(ps, s, 2)</span></span>
+<span class="line"><span style="color: #032F62">    ''</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 1</span></span>
+<span class="line"><span style="color: #24292E">    valid_para </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> paragraphs:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> select(s):</span></span>
+<span class="line"><span style="color: #24292E">            valid_para.append(s)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> k</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">len</span><span style="color: #24292E">(valid_para):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">''</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> valid_para[k]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 1</span></span></code></pre></div></div></figure>
+<h3 id="problem-2">Problem 2</h3>
+<p>通过给定的关键词选取段落</p>
+<p><strong>about函数</strong></p>
+<p>参数：subject：关键词列表</p>
+<p>思路：</p>
+<ul>
+<li>about函数用于pick函数中的select选项，用于筛选指定关键字的段落</li>
+<li>故它返回的是一个select函数，若段落满足条件则返回True否则返回False</li>
+<li>单词匹配时不区分大小写，但要是一个完整单词，且不能是单词的字串</li>
+<li>可以使用给定的函数remove_punctuation-去除标点，lower-变小写，split-将一句话分割为若干单词存入列表</li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">about</span><span style="color: #24292E">(subject):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return a select function that returns whether</span></span>
+<span class="line"><span style="color: #032F62">    a paragraph contains one of the words in SUBJECT.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        subject: a list of words related to a subject</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">about_dogs = about(['dog', 'dogs', 'pup', 'puppy'])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">pick(['Cute Dog!', 'That is a cat.', 'Nice pup!'], about_dogs, 0)</span></span>
+<span class="line"><span style="color: #032F62">    'Cute Dog!'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">pick(['Cute Dog!', 'That is a cat.', 'Nice pup.'], about_dogs, 1)</span></span>
+<span class="line"><span style="color: #032F62">    'Nice pup.'</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> </span><span style="color: #005CC5">all</span><span style="color: #24292E">([lower(x) </span><span style="color: #D73A49">==</span><span style="color: #24292E"> x </span><span style="color: #D73A49">for</span><span style="color: #24292E"> x </span><span style="color: #D73A49">in</span><span style="color: #24292E"> subject]), </span><span style="color: #032F62">'subjects should be lowercase.'</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 2</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">select</span><span style="color: #24292E">(para):</span></span>
+<span class="line"><span style="color: #24292E">        sp_para </span><span style="color: #D73A49">=</span><span style="color: #24292E"> split(remove_punctuation(para))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span><span style="color: #005CC5">len</span><span style="color: #24292E">(sp_para)):</span></span>
+<span class="line"><span style="color: #24292E">            sp_para[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">lower(sp_para[i])</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> subject:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> sp_para:</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">False</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> select</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 2</span></span></code></pre></div></div></figure>
+<h3 id="problem-3">Problem 3</h3>
+<p>计算已经输入且匹配单词占需要输入内容的百分比</p>
+<p><strong>accuracy函数</strong></p>
+<p>参数：</p>
+<ul>
+<li>typed：已经输入的内容</li>
+<li>source：需要输入的内容</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>按单词顺序匹配指定输入内容，第一个对第一个，第二个对第二个….</li>
+<li>区分大小写，且包含标点符号</li>
+<li>若已经输入内容比需要输入内容长，则长的部分认定为不正确</li>
+<li>若两者均为空字符串则准确率为100.0，若前者为空后者非空或前者非空后者为空则准确率为0.0</li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">accuracy</span><span style="color: #24292E">(typed, source):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return the accuracy (percentage of words typed correctly) of TYPED</span></span>
+<span class="line"><span style="color: #032F62">    when compared to the prefix of SOURCE that was typed.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        typed: a string that may contain typos</span></span>
+<span class="line"><span style="color: #032F62">        source: a string without errors</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('Cute Dog!', 'Cute Dog.')</span></span>
+<span class="line"><span style="color: #032F62">    50.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('A Cute Dog!', 'Cute Dog.')</span></span>
+<span class="line"><span style="color: #032F62">    0.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('cute Dog.', 'Cute Dog.')</span></span>
+<span class="line"><span style="color: #032F62">    50.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('Cute Dog. I say!', 'Cute Dog.')</span></span>
+<span class="line"><span style="color: #032F62">    50.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('Cute', 'Cute Dog.')</span></span>
+<span class="line"><span style="color: #032F62">    100.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('', 'Cute Dog.')</span></span>
+<span class="line"><span style="color: #032F62">    0.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">accuracy('', '')</span></span>
+<span class="line"><span style="color: #032F62">    100.0</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    typed_words </span><span style="color: #D73A49">=</span><span style="color: #24292E"> split(typed)</span></span>
+<span class="line"><span style="color: #24292E">    source_words </span><span style="color: #D73A49">=</span><span style="color: #24292E"> split(source)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 3</span></span>
+<span class="line"><span style="color: #24292E">    cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> t, s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">zip</span><span style="color: #24292E">(typed_words, source_words):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> t</span><span style="color: #D73A49">==</span><span style="color: #24292E">s:</span></span>
+<span class="line"><span style="color: #24292E">            cnt</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(typed_words)</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(source_words)</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">100.0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(typed_words)</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(source_words)</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0.0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> (cnt</span><span style="color: #D73A49">/</span><span style="color: #005CC5">len</span><span style="color: #24292E">(typed_words))</span><span style="color: #D73A49">*</span><span style="color: #005CC5">100</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 3</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>同时遍历两个列表时，使用zip函数解包，因为原代码实现的是遍历一个包含两个列表的元组</li>
+<li>空字符部分特判，因为计算百分比时可能会导致分母为0</li>
+<li>计算的是已经输入字符与需要输入字符匹配的字符个数在已经输入字符中的占比，分母是typed_words的长度</li>
+</ul>
+<h3 id="problem-4">Problem 4</h3>
+<p>按照words/min计算打字速度</p>
+<p><strong>wpm函数</strong></p>
+<p>参数：</p>
+<ul>
+<li>typed：已经输入的内容</li>
+<li>elapsed：总共打字时间（按秒计）</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>wpm的计算是按照字符数来的，单位是每五个字符数，这样可以减少单词长度对结果的影响</li>
+<li><span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -1.238ex;" xmlns="http://www.w3.org/2000/svg" width="16.118ex" height="4.202ex" role="img" focusable="false" viewBox="0 -1310.4 7124 1857.5"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D464" d="M580 385Q580 406 599 424T641 443Q659 443 674 425T690 368Q690 339 671 253Q656 197 644 161T609 80T554 12T482 -11Q438 -11 404 5T355 48Q354 47 352 44Q311 -11 252 -11Q226 -11 202 -5T155 14T118 53T104 116Q104 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Q21 293 29 315T52 366T96 418T161 441Q204 441 227 416T250 358Q250 340 217 250T184 111Q184 65 205 46T258 26Q301 26 334 87L339 96V119Q339 122 339 128T340 136T341 143T342 152T345 165T348 182T354 206T362 238T373 281Q402 395 406 404Q419 431 449 431Q468 431 475 421T483 402Q483 389 454 274T422 142Q420 131 420 107V100Q420 85 423 71T442 42T487 26Q558 26 600 148Q609 171 620 213T632 273Q632 306 619 325T593 357T580 385Z"></path></g><g data-mml-node="mi" transform="translate(716,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path></g><g data-mml-node="mi" transform="translate(1219,0)"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(2374.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mfrac" transform="translate(3430.6,0)"><g data-mml-node="mfrac" transform="translate(941.1,595) scale(0.707)"><g data-mml-node="mrow" transform="translate(220,481.4) scale(0.707)"><g data-mml-node="mi"><text data-variant="normal" transform="scale(1,-1)" font-size="884px" font-family="serif">字</text></g><g data-mml-node="mi" transform="translate(1000,0)"><text data-variant="normal" transform="scale(1,-1)" font-size="884px" font-family="serif">符</text></g><g data-mml-node="mi" transform="translate(2000,0)"><text data-variant="normal" transform="scale(1,-1)" font-size="884px" font-family="serif">数</text></g></g><g data-mml-node="mn" transform="translate(1103.9,-345) scale(0.707)"><path data-c="35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path></g><rect width="2321.3" height="60" x="120" y="220"></rect></g><g data-mml-node="mrow" transform="translate(220,-370.3) scale(0.707)"><g data-mml-node="mi"><text data-variant="normal" transform="scale(1,-1)" font-size="884px" font-family="serif">时</text></g><g data-mml-node="mi" transform="translate(1000,0)"><text data-variant="normal" transform="scale(1,-1)" font-size="884px" font-family="serif">间</text></g><g data-mml-node="mo" transform="translate(2000,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mi" transform="translate(2389,0)"><path data-c="1D45A" d="M21 287Q22 293 24 303T36 341T56 388T88 425T132 442T175 435T205 417T221 395T229 376L231 369Q231 367 232 367L243 378Q303 442 384 442Q401 442 415 440T441 433T460 423T475 411T485 398T493 385T497 373T500 364T502 357L510 367Q573 442 659 442Q713 442 746 415T780 336Q780 285 742 178T704 50Q705 36 709 31T724 26Q752 26 776 56T815 138Q818 149 821 151T837 153Q857 153 857 145Q857 144 853 130Q845 101 831 73T785 17T716 -10Q669 -10 648 17T627 73Q627 92 663 193T700 345Q700 404 656 404H651Q565 404 506 303L499 291L466 157Q433 26 428 16Q415 -11 385 -11Q372 -11 364 -4T353 8T350 18Q350 29 384 161L420 307Q423 322 423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 181Q151 335 151 342Q154 357 154 369Q154 405 129 405Q107 405 92 377T69 316T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(3267,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(3612,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(4212,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g><rect width="3453.4" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></span></li>
+</ul>
+<p>code:</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">wpm</span><span style="color: #24292E">(typed, elapsed):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return the words-per-minute (WPM) of the TYPED string.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        typed: an entered string</span></span>
+<span class="line"><span style="color: #032F62">        elapsed: an amount of time in seconds</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">wpm('hello friend hello buddy hello', 15)</span></span>
+<span class="line"><span style="color: #032F62">    24.0</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">wpm('0123456789',60)</span></span>
+<span class="line"><span style="color: #032F62">    2.0</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> elapsed </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #032F62">'Elapsed time must be positive'</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 4</span></span>
+<span class="line"><span style="color: #24292E">    length </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(typed)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> (length</span><span style="color: #D73A49">/</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span><span style="color: #D73A49">/</span><span style="color: #24292E">(elapsed</span><span style="color: #D73A49">/</span><span style="color: #005CC5">60</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 4</span></span></code></pre></div></div></figure>
+<p>注意：elapsed单位是秒，wpm使用的时间是分钟</p>
+<h2 id="phase-2-autocorrect">Phase 2: Autocorrect</h2>
+<p>按下空格触发单词自动纠正，若最近的一个词接近正确词汇但不正确，则会用正确词汇替代</p>
+<h3 id="problem-5">Problem 5</h3>
+<p>返回一个列表，内部提供了几个接近输入单词的正确单词</p>
+<p>参数：</p>
+<ul>
+<li>typed_word：一个字符串，表示输入的单词</li>
+<li>word_list：源单词列表</li>
+<li>diff_function：评估单词不同程度的函数</li>
+<li>limit：单词能否被更改的阈值</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li><p>autocorrect实现的</p>
+<ul>
+<li>若输入字符已经在word_list中，将会直接返回该字符</li>
+<li>否则会返回基于diff函数计算的不同程度最小的单词</li>
+<li>若输入单词与word_list中最小的不同程度仍大于limit，则返回输入单词</li>
+</ul></li>
+<li><p>所有输入单词和word_list中的单词都是小写且没有标点</p></li>
+<li><p>若多个单词与输入字符不同程度最小相同，则返回最靠前的</p></li>
+<li><p>不同程度可以使用两个单词相同部分长度衡量</p></li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">autocorrect</span><span style="color: #24292E">(typed_word, word_list, diff_function, limit):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Returns the element of WORD_LIST that has the smallest difference</span></span>
+<span class="line"><span style="color: #032F62">    from TYPED_WORD. If multiple words are tied for the smallest difference,</span></span>
+<span class="line"><span style="color: #032F62">    return the one that appears closest to the front of WORD_LIST. If the</span></span>
+<span class="line"><span style="color: #032F62">    difference is greater than LIMIT, instead return TYPED_WORD.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        typed_word: a string representing a word that may contain typos</span></span>
+<span class="line"><span style="color: #032F62">        word_list: a list of strings representing source words</span></span>
+<span class="line"><span style="color: #032F62">        diff_function: a function quantifying the difference between two words</span></span>
+<span class="line"><span style="color: #032F62">        limit: a number</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">ten_diff = lambda w1, w2, limit: 10 # Always returns 10</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">autocorrect("hwllo", ["butter", "hello", "potato"], ten_diff, 20)</span></span>
+<span class="line"><span style="color: #032F62">    'butter'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">first_diff = lambda w1, w2, limit: (1 if w1[0] != w2[0] else 0) # Checks for matching first char</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">autocorrect("tosting", ["testing", "asking", "fasting"], first_diff, 10)</span></span>
+<span class="line"><span style="color: #032F62">    'testing'</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 5</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> typed_word </span><span style="color: #D73A49">in</span><span style="color: #24292E"> word_list:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> typed_word</span></span>
+<span class="line"><span style="color: #24292E">    word_diff </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [diff_function(typed_word, s, limit) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> word_list]</span></span>
+<span class="line"><span style="color: #24292E">    min_diff </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(word_diff)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> min_diff </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> limit:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> typed_word</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> word_list[word_diff.index(min_diff)]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 5</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>可以使用<code>list.index(&lt;val&gt;)</code>获取列表中某值的下标</li>
+</ul>
+<h3 id="problem-6">Problem 6</h3>
+<p>返回为纠正单词需要修改的字符个数</p>
+<p>参数：</p>
+<ul>
+<li>typed：输入单词</li>
+<li>source：目标单词</li>
+<li>limit：最多修改字符数</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li><p>比较个位字符，若不同则执行更改，记录更改数</p></li>
+<li><p>若一边比另一边长，长度的不同也算入更改数</p></li>
+<li><p>若更改数比limit打，则返回任何大于limit的数（为了避免多余的计算）</p></li>
+<li><p>要求使用递归</p></li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">feline_fixes</span><span style="color: #24292E">(typed, source, limit):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A diff function for autocorrect that determines how many letters</span></span>
+<span class="line"><span style="color: #032F62">    in TYPED need to be substituted to create SOURCE, then adds the difference in</span></span>
+<span class="line"><span style="color: #032F62">    their lengths and returns the result.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        typed: a starting word</span></span>
+<span class="line"><span style="color: #032F62">        source: a string representing a desired goal word</span></span>
+<span class="line"><span style="color: #032F62">        limit: a number representing an upper bound on the number of chars that must change</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">big_limit = 10</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">feline_fixes("nice", "rice", big_limit)    # Substitute: n -&gt; r</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">feline_fixes("range", "rungs", big_limit)  # Substitute: a -&gt; u, e -&gt; s</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">feline_fixes("pill", "pillage", big_limit) # Don't substitute anything, length difference of 3.</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">feline_fixes("roses", "arose", big_limit)  # Substitute: r -&gt; a, o -&gt; r, s -&gt; o, e -&gt; s, s -&gt; e</span></span>
+<span class="line"><span style="color: #032F62">    5</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">feline_fixes("rose", "hello", big_limit)   # Substitute: r-&gt;h, o-&gt;e, s-&gt;l, e-&gt;l, length difference of 1.</span></span>
+<span class="line"><span style="color: #032F62">    5</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 6</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># assert False, 'Remove this line'</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">compute</span><span style="color: #24292E">(typed_w,source_w,count):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> count </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> limit:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> limit</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> typed_w </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> source_w </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> count</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> typed_w </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> compute(typed_w,source_w[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],count</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> source_w </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> compute(typed_w[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],source_w,count</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> typed_w[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span><span style="color: #D73A49">==</span><span style="color: #24292E">source_w[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> compute(typed_w[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],source_w[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],count)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> compute(typed_w[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],source_w[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],count</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> compute(typed,source,</span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 6</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>超过limit限制的一律设为limit+1</li>
+<li>通过slice来每次递归往后截取一位字符，比较每次截取后的首字符来判断相同与否，不相同让count+1</li>
+<li>递归出口为两字符串均被截取成空串，返回计数</li>
+<li>长度不同的情况下，已经被截成空串的不再截取，长串继续截取，该情况下直接让count+1</li>
+</ul>
+<h3 id="problem-7">Problem 7</h3>
+<p>返回将输入字符改为目标字符所需要执行的操作次数，操作有以下：</p>
+<ul>
+<li>添加字符</li>
+<li>删除字符</li>
+<li>替换字符</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>typed：输入单词</li>
+<li>source：目标单词</li>
+<li>limit：最多修改字符数</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>比较输入单词与指定单词，寻找不同位置</li>
+<li>若需要修改数量大于limit，则返回任何大于limit的值</li>
+<li>代码需要使用递归，应需要三个递归调用以及两个递归出口</li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">minimum_mewtations</span><span style="color: #24292E">(typed, source, limit):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A diff function that computes the edit distance from TYPED to SOURCE.</span></span>
+<span class="line"><span style="color: #032F62">    This function takes in a string TYPED, a string SOURCE, and a number LIMIT.</span></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        typed: a starting word</span></span>
+<span class="line"><span style="color: #032F62">        source: a string representing a desired goal word</span></span>
+<span class="line"><span style="color: #032F62">        limit: a number representing an upper bound on the number of edits</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">big_limit = 10</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">minimum_mewtations("cats", "scat", big_limit)       # cats -&gt; scats -&gt; scat</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">minimum_mewtations("purng", "purring", big_limit)   # purng -&gt; purrng -&gt; purring</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -&gt; kiteus -&gt; kitteus -&gt; kittens</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># assert False, 'Remove this line'</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> limit</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">: </span><span style="color: #6A737D"># Base cases should go here, you may add more base cases as needed.</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># BEGIN</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># END</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># Recursive cases should go below here</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> typed </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> source </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E">: </span><span style="color: #6A737D"># Feel free to remove or add additional cases</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># BEGIN</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># END</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> typed </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> source </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">""</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">abs</span><span style="color: #24292E">(</span><span style="color: #005CC5">len</span><span style="color: #24292E">(typed)</span><span style="color: #D73A49">-</span><span style="color: #005CC5">len</span><span style="color: #24292E">(source))</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> typed[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> source[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> minimum_mewtations(typed[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],source[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],limit)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        add </span><span style="color: #D73A49">=</span><span style="color: #24292E"> minimum_mewtations(typed,source[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],limit</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        remove </span><span style="color: #D73A49">=</span><span style="color: #24292E"> minimum_mewtations(typed[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],source,limit</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        substitute </span><span style="color: #D73A49">=</span><span style="color: #24292E"> minimum_mewtations(typed[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],source[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:],limit</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># BEGIN</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(add,remove,substitute)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># END</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li><p>和上一个problem类似，使用递归与slice一位位判断</p></li>
+<li><p>三种操作依次递归，并取最小值</p></li>
+</ul>
+<h2 id="phase-3-multiplayer">Phase 3: Multiplayer</h2>
+<p>实现多人对战模式</p>
+<h3 id="problem-8">Problem 8</h3>
+<p>将玩家输入进度与信息传入多人服务器并返回对应信息</p>
+<p><strong>report_progress函数</strong></p>
+<p>参数：</p>
+<ul>
+<li>typed：输入的字符，列表存储</li>
+<li>source：需要输入的字符，列表存储</li>
+<li>user_id：当前玩家id</li>
+<li>upload：上传进度的函数</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>将输入字符与需要输入字符比较，计算输入进度</li>
+<li>输入进度指已经输入正确单词与需要输入正确单词的比例（因此，若中间有一个单词打错，后面再正确也不会记录）</li>
+<li>函数的返回值是计算的进度</li>
+</ul>
+<p>code：</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">report_progress</span><span style="color: #24292E">(typed, source, user_id, upload):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Upload a report of your id and progress so far to the multiplayer server.</span></span>
+<span class="line"><span style="color: #032F62">    Returns the progress so far.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        typed: a list of the words typed so far</span></span>
+<span class="line"><span style="color: #032F62">        source: a list of the words in the typing source</span></span>
+<span class="line"><span style="color: #032F62">        user_id: a number representing the id of the current user</span></span>
+<span class="line"><span style="color: #032F62">        upload: a function used to upload progress to the multiplayer server</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_progress = lambda d: print('ID:', d['id'], 'Progress:', d['progress'])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># The above function displays progress in the format ID: __, Progress: __</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_progress({'id': 1, 'progress': 0.6})</span></span>
+<span class="line"><span style="color: #032F62">    ID: 1 Progress: 0.6</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">typed = ['how', 'are', 'you']</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">source = ['how', 'are', 'you', 'doing', 'today']</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">report_progress(typed, source, 2, print_progress)</span></span>
+<span class="line"><span style="color: #032F62">    ID: 2 Progress: 0.6</span></span>
+<span class="line"><span style="color: #032F62">    0.6</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">report_progress(['how', 'aree'], source, 3, print_progress)</span></span>
+<span class="line"><span style="color: #032F62">    ID: 3 Progress: 0.2</span></span>
+<span class="line"><span style="color: #032F62">    0.2</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 8</span></span>
+<span class="line"><span style="color: #24292E">    typed_count </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> t,s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">zip</span><span style="color: #24292E">(typed,source):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> t </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> s:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">break</span></span>
+<span class="line"><span style="color: #24292E">        typed_count</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    ratio </span><span style="color: #D73A49">=</span><span style="color: #24292E"> typed_count</span><span style="color: #D73A49">/</span><span style="color: #005CC5">len</span><span style="color: #24292E">(source)</span></span>
+<span class="line"><span style="color: #24292E">    upload({</span><span style="color: #032F62">'id'</span><span style="color: #24292E">: user_id, </span><span style="color: #032F62">'progress'</span><span style="color: #24292E">: ratio})</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ratio</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 8</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>判断是否相等时，若发现不等就需要break结束循环</li>
+</ul>
+<h3 id="problem-9">Problem 9</h3>
+<p>计算两个玩家输入每个单词时的用时差</p>
+<p><strong>time_per_word函数</strong></p>
+<p>参数：</p>
+<ul>
+<li>words：按输入顺序排列的单词列表</li>
+<li>timestamps_per_player：一个二维列表，记录了每位玩家开始与结束输入每个单词的时间</li>
+</ul>
+<p><strong>data abstraction：match</strong></p>
+<p>参数：</p>
+<ul>
+<li>words：输入单词组成的单词列表</li>
+<li>times：二维列表，记录了每个玩家输入每个单词需要多长时间，如<code>times[i][j]</code>指玩家i输入单词<code>words[j]</code>所花费的时间</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>timestamps_per_player记录的是每个玩家敲每个单词的开始与结束时间</li>
+<li>传入match后，时间会自动计算为敲每个单词使用的时间（结束-开始），并存入每个单词key对应的value中</li>
+<li>通过get_all_word与get_all_times函数可以返回match中对应的键与值形成的列表</li>
+<li>通过get_word与time函数可以返回指定的键与值</li>
+</ul>
+<p>code:</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">time_per_word</span><span style="color: #24292E">(words, timestamps_per_player):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Given timing data, return a match data abstraction, which contains a</span></span>
+<span class="line"><span style="color: #032F62">    list of words and the amount of time each player took to type each word.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        words: a list of words, in the order they are typed.</span></span>
+<span class="line"><span style="color: #032F62">        timestamps_per_player: A list of lists of timestamps including the time</span></span>
+<span class="line"><span style="color: #032F62">                          the player started typing, followed by the time</span></span>
+<span class="line"><span style="color: #032F62">                          the player finished typing each word.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p = [[75, 81, 84, 90, 92], [19, 29, 35, 36, 38]]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">match = time_per_word(['collar', 'plush', 'blush', 'repute'], p)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">get_all_words(match)</span></span>
+<span class="line"><span style="color: #032F62">    ['collar', 'plush', 'blush', 'repute']</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">get_all_times(match)</span></span>
+<span class="line"><span style="color: #032F62">    [[6, 3, 6, 2], [10, 6, 1, 2]]</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 9</span></span>
+<span class="line"><span style="color: #24292E">    times </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> l </span><span style="color: #D73A49">in</span><span style="color: #24292E"> timestamps_per_player:</span></span>
+<span class="line"><span style="color: #24292E">        each_times </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">len</span><span style="color: #24292E">(l)):</span></span>
+<span class="line"><span style="color: #24292E">            each_times.append(l[i]</span><span style="color: #D73A49">-</span><span style="color: #24292E">l[i</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">])</span></span>
+<span class="line"><span style="color: #24292E">        times.append(each_times)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> match(words,times)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 9</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li><p>该函数的作用是通过调用match函数构造该抽象类型</p></li>
+<li><p>但match函数需要每个单词的时间差，故需要在该函数中处理输入的时间列表（结束-开始）</p></li>
+<li><p>将处理后的列表与传入该函数的单词列表传入match函数并返回获得的抽象类型</p></li>
+</ul>
+<h3 id="problem-10">Problem 10</h3>
+<p>返回每个单词哪位玩家敲得块</p>
+<p><strong>fastest_words函数</strong></p>
+<p>参数：</p>
+<ul>
+<li>match：match函数中获得的抽象数据类型</li>
+</ul>
+<p>思路：</p>
+<ul>
+<li>比较多个玩家输入每个字符时间，选择输入时间最少的</li>
+<li>返回的列表中存储了每个玩家输入最快的单词组成的列表</li>
+<li>若多个玩家输入时间相同，则取编号更小的玩家</li>
+</ul>
+<p>code:</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fastest_words</span><span style="color: #24292E">(match):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return a list of lists of which words each player typed fastest.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    Arguments:</span></span>
+<span class="line"><span style="color: #032F62">        match: a match data abstraction as returned by time_per_word.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p0 = [5, 1, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p1 = [4, 1, 6]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">fastest_words(match(['Just', 'have', 'fun'], [p0, p1]))</span></span>
+<span class="line"><span style="color: #032F62">    [['have', 'fun'], ['Just']]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p0  # input lists should not be mutated</span></span>
+<span class="line"><span style="color: #032F62">    [5, 1, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p1</span></span>
+<span class="line"><span style="color: #032F62">    [4, 1, 6]</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    player_indices </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">len</span><span style="color: #24292E">(get_all_times(match)))  </span><span style="color: #6A737D"># contains an *index* for each player</span></span>
+<span class="line"><span style="color: #24292E">    word_indices </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">len</span><span style="color: #24292E">(get_all_words(match)))    </span><span style="color: #6A737D"># contains an *index* for each word</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># BEGIN PROBLEM 10</span></span>
+<span class="line"><span style="color: #24292E">    result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [[] </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> player_indices]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> word_indices:</span></span>
+<span class="line"><span style="color: #24292E">        min_player </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> j </span><span style="color: #D73A49">in</span><span style="color: #24292E"> player_indices:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> min_player </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> time(match, j, i) </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> time(match, min_player, i):</span></span>
+<span class="line"><span style="color: #24292E">                min_player </span><span style="color: #D73A49">=</span><span style="color: #24292E"> j</span></span>
+<span class="line"><span style="color: #24292E">        result[min_player].append(get_word(match,i))</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># END PROBLEM 10</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>列表中创建多个列表要用for表达式<code>[[] for _ in player_indices]</code></li>
+<li>result列表中下标表示玩家，对应元素表示该玩家最快的单词组成的列表</li>
+<li>我们首先遍历单词，然后遍历玩家找出时间最小的玩家，并将对应单词存入该玩家对应列表</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/CS61A/" rel="tag"># CS61A</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/CS61A/Project1-Hog/" rel="prev" title="【CS61A】Project1-Hog">
+                  <i class="fa fa-angle-left"></i> 【CS61A】Project1-Hog
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/CS61A/CS61A%E2%80%94%E2%80%94Lab3/" rel="next" title="【CS61A】CS61A——Lab3">
+                  【CS61A】CS61A——Lab3 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
