@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-count">102</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,645 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/" class="post-title-link" itemprop="url">【图论】最短路径</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-18 21:49:50" itemprop="dateCreated datePublished" datetime="2025-05-18T21:49:50+08:00">2025-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 18:00:52" itemprop="dateModified" datetime="2025-07-31T18:00:52+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="最短路径">最短路径</h1>
+<h2 id="dijkstra">Dijkstra</h2>
+<h3 id="思路">思路</h3>
+<p>基本步骤：</p>
+<ul>
+<li>选定一个点，满足：
+<ul>
+<li>未被选过</li>
+<li>距离最短</li>
+</ul></li>
+<li>对这个点的所有邻接点尝试<strong>松弛</strong>(如下图，从a到c权值为5，而从a到b到c权值为3，我们用后者代替前者成为最短路，此之为成功的松弛)</li>
+</ul>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/image-20250424221240261.png" class="" title="dij">
+<p>从a开始，依次寻找下一个节点，使得从a到当前节点的路径最短，直到找到结尾</p>
+<p>遍历时，我们依次寻找a到当前节点的最短路径以及最近节点</p>
+<p>当我们得到了最短权值，我们可以反推回a从而获取最短路径</p>
+<p>用矩阵表示如下</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/image-20250424221254089.png" class="" title="dij矩阵">
+<h3 id="代码">代码</h3>
+<p>邻接矩阵</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;&gt;</span><span style="color: #24292E"> G;</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> path;</span></span>
+<span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">dijkstra</span><span style="color: #24292E">(</span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt;&gt; </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">G</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">s</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> G.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dis</span><span style="color: #24292E">(n,</span><span style="color: #D73A49">0x</span><span style="color: #005CC5">3f3f3f3f</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vis</span><span style="color: #24292E">(n,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  dis[s] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[j]</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">(node</span><span style="color: #D73A49">==-</span><span style="color: #005CC5">1</span><span style="color: #D73A49">||</span><span style="color: #24292E">dis[j]</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">dis[node])){</span></span>
+<span class="line"><span style="color: #24292E">        node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (dis[node]</span><span style="color: #D73A49">+</span><span style="color: #24292E">G[node][j]</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">dis[j]){</span></span>
+<span class="line"><span style="color: #24292E">        dis[j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dis[node]</span><span style="color: #D73A49">+</span><span style="color: #24292E">G[node][j];</span></span>
+<span class="line"><span style="color: #24292E">        path[j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    vis[node] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> dis;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #6A737D">// 路径获取</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_path</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">P</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">x){</span></span>
+<span class="line"><span style="color: #24292E">    P.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #6A737D">  // 若该节点前有节点，则先获取前面节点的内容</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (path[x]</span><span style="color: #D73A49">!=-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #6F42C1">get_path</span><span style="color: #24292E">(path[x], P);</span></span>
+<span class="line"><span style="color: #24292E">  P.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(x);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m, s;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s;</span></span>
+<span class="line"><span style="color: #24292E">  path </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt;(n,</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  G </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt;&gt; (n,</span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt;(n, </span><span style="color: #D73A49">0x</span><span style="color: #005CC5">3f3f3f3f</span><span style="color: #24292E">));</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">m;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u,v,w;</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
+<span class="line"><span style="color: #24292E">    u</span><span style="color: #D73A49">--</span><span style="color: #24292E">,v</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">G[u][v])G[u][v]</span><span style="color: #D73A49">=</span><span style="color: #24292E">w;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> G[u][v]</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">min</span><span style="color: #24292E">(G[u][v],w);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> dis </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dijkstra</span><span style="color: #24292E">(G, s</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">auto</span><span style="color: #24292E"> it: dis)cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> it </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">' '</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">ios</span><span style="color: #24292E">::</span><span style="color: #6F42C1">sync_with_stdio</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cin.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cout.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  //cin &gt;&gt; tomorin;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="最小堆优化">最小堆优化</h3>
+<p>上述朴素算法的问题：</p>
+<ul>
+<li>寻找最小点时，通过遍历n个点来获得最小点</li>
+<li>对该点邻接点进行松弛时，我们也是通过遍历去寻找邻接点</li>
+</ul>
+<p>对于以上问题，我们可以选用小根堆与邻接表直接获取，可以实现代码的优化</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> edge, weight, Next, head;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m, s;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> idx</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">dijkstra</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">s</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dis</span><span style="color: #24292E">(n,</span><span style="color: #D73A49">0x</span><span style="color: #005CC5">3f3f3f3f</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vis</span><span style="color: #24292E">(n,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    dis[s]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">    // 最小堆，first记录dis， second记录node</span></span>
+<span class="line"><span style="color: #24292E">    priority_queue</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E">, vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;&gt;</span><span style="color: #24292E">, greater</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;&gt;&gt;</span><span style="color: #24292E"> mh;</span></span>
+<span class="line"><span style="color: #24292E">    mh.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">({dis[s],</span><span style="color: #005CC5">0</span><span style="color: #24292E">});</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">mh.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">()){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> mh.</span><span style="color: #6F42C1">top</span><span style="color: #24292E">().second;</span></span>
+<span class="line"><span style="color: #24292E">        mh.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(vis[node]) </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[node];</span><span style="color: #D73A49">~</span><span style="color: #24292E">i;i</span><span style="color: #D73A49">=</span><span style="color: #24292E">Next[i]){</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (dis[edge[i]]</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">dis[node]</span><span style="color: #D73A49">+</span><span style="color: #24292E">weight[i]){</span></span>
+<span class="line"><span style="color: #24292E">                dis[edge[i]]</span><span style="color: #D73A49">=</span><span style="color: #24292E">dis[node]</span><span style="color: #D73A49">+</span><span style="color: #24292E">weight[i];</span></span>
+<span class="line"><span style="color: #24292E">                mh.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">({dis[edge[i]],edge[i]});</span></span>
+<span class="line"><span style="color: #24292E">            }</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        vis[node]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> dis;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">u</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    edge[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v;</span></span>
+<span class="line"><span style="color: #24292E">    weight[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> w;</span></span>
+<span class="line"><span style="color: #24292E">    Next[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[u];</span></span>
+<span class="line"><span style="color: #24292E">    head[u]</span><span style="color: #D73A49">=</span><span style="color: #24292E">idx</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s;</span></span>
+<span class="line"><span style="color: #24292E">    head </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; (n,</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    edge </span><span style="color: #D73A49">=</span><span style="color: #24292E"> weight </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; (m,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(m</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u, v, w;</span></span>
+<span class="line"><span style="color: #24292E">        cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
+<span class="line"><span style="color: #24292E">        u</span><span style="color: #D73A49">--</span><span style="color: #24292E">,v</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> dis </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dijkstra</span><span style="color: #24292E">(s</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">auto</span><span style="color: #24292E"> it:dis) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> it </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">' '</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="floyd">Floyd</h2>
+<h3 id="思路-1">思路</h3>
+<p>Floyd与Dijkstra都是看节点间的值，但是前者看的是每两点间最短距离</p>
+<p><strong>Dis数组，记录两点距离：</strong></p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/image-20250423210341040.png" class="" title="floyd">
+<p>这里矩阵中每个位置表示两点间的距离，而D上的下标表示从何处中转得到的距离（-1表示不进行中转）</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/image-20250423210633734.png" class="" title="floyd2">
+<p>如此时<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="2.861ex" height="1.887ex" role="img" focusable="false" viewBox="0 -833.9 1264.6 833.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><path data-c="1D437" d="M287 628Q287 635 230 637Q207 637 200 638T193 647Q193 655 197 667T204 682Q206 683 403 683Q570 682 590 682T630 676Q702 659 752 597T803 431Q803 275 696 151T444 3L430 1L236 0H125H72Q48 0 41 2T33 11Q33 13 36 25Q40 41 44 43T67 46Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628ZM703 469Q703 507 692 537T666 584T629 613T590 629T555 636Q553 636 541 636T512 636T479 637H436Q392 637 386 627Q384 623 313 339T242 52Q242 48 253 48T330 47Q335 47 349 47T373 46Q499 46 581 128Q617 164 640 212T683 339T703 469Z"></path></g><g data-mml-node="mn" transform="translate(861,363) scale(0.707)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g></g></g></g></svg></mjx-container></span>为从<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.375ex;" xmlns="http://www.w3.org/2000/svg" width="2.085ex" height="1.377ex" role="img" focusable="false" viewBox="0 -443 921.6 608.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g></g></g></g></svg></mjx-container></span>进行中转得到的两点间距离，且距离可以根据红色式子表示，即经过中转点后的距离与上一步已有距离的最小值</p>
+<p><strong>Path数组，记录经过点(最短路径)</strong></p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/image-20250423211054681.png" class="" title="floyd3">
+<p>Path数组记录了两点间经过的中转点是哪个点，若为直达则记录终点，如<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="4.057ex" height="1.887ex" role="img" focusable="false" viewBox="0 -833.9 1793.1 833.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><path data-c="1D443" d="M287 628Q287 635 230 637Q206 637 199 638T192 648Q192 649 194 659Q200 679 203 681T397 683Q587 682 600 680Q664 669 707 631T751 530Q751 453 685 389Q616 321 507 303Q500 302 402 301H307L277 182Q247 66 247 59Q247 55 248 54T255 50T272 48T305 46H336Q342 37 342 35Q342 19 335 5Q330 0 319 0Q316 0 282 1T182 2Q120 2 87 2T51 1Q33 1 33 11Q33 13 36 25Q40 41 44 43T67 46Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628ZM645 554Q645 567 643 575T634 597T609 619T560 635Q553 636 480 637Q463 637 445 637T416 636T404 636Q391 635 386 627Q384 621 367 550T332 412T314 344Q314 342 395 342H407H430Q542 342 590 392Q617 419 631 471T645 554Z"></path></g><g data-mml-node="TeXAtom" transform="translate(839.5,363) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mn" transform="translate(778,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g></g></g></g></svg></mjx-container></span>指的是没有中转，其中记录的都是终点，<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="2.812ex" height="1.887ex" role="img" focusable="false" viewBox="0 -833.9 1243 833.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msup"><g data-mml-node="mi"><path data-c="1D443" d="M287 628Q287 635 230 637Q206 637 199 638T192 648Q192 649 194 659Q200 679 203 681T397 683Q587 682 600 680Q664 669 707 631T751 530Q751 453 685 389Q616 321 507 303Q500 302 402 301H307L277 182Q247 66 247 59Q247 55 248 54T255 50T272 48T305 46H336Q342 37 342 35Q342 19 335 5Q330 0 319 0Q316 0 282 1T182 2Q120 2 87 2T51 1Q33 1 33 11Q33 13 36 25Q40 41 44 43T67 46Q94 46 127 49Q141 52 146 61Q149 65 218 339T287 628ZM645 554Q645 567 643 575T634 597T609 619T560 635Q553 636 480 637Q463 637 445 637T416 636T404 636Q391 635 386 627Q384 621 367 550T332 412T314 344Q314 342 395 342H407H430Q542 342 590 392Q617 419 631 471T645 554Z"></path></g><g data-mml-node="mn" transform="translate(839.5,363) scale(0.707)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g></g></g></g></svg></mjx-container></span>指经过<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.375ex;" xmlns="http://www.w3.org/2000/svg" width="2.085ex" height="1.377ex" role="img" focusable="false" viewBox="0 -443 921.6 608.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g></g></g></g></svg></mjx-container></span>中转，故<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.339ex;" xmlns="http://www.w3.org/2000/svg" width="7.689ex" height="1.495ex" role="img" focusable="false" viewBox="0 -511 3398.7 661"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g><g data-mml-node="mo" transform="translate(1199.3,0)"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"></path></g><g data-mml-node="msub" transform="translate(2477.1,0)"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path></g></g></g></g></svg></mjx-container></span>对应的值为0，表示中转点为<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.375ex;" xmlns="http://www.w3.org/2000/svg" width="2.085ex" height="1.377ex" role="img" focusable="false" viewBox="0 -443 921.6 608.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g></g></g></g></svg></mjx-container></span></p>
+<p>通过path数组推出最短路径：</p>
+<p>如寻找<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.339ex;" xmlns="http://www.w3.org/2000/svg" width="2.085ex" height="1.342ex" role="img" focusable="false" viewBox="0 -443 921.6 593"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g></g></g></svg></mjx-container></span>到<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.375ex;" xmlns="http://www.w3.org/2000/svg" width="2.085ex" height="1.377ex" role="img" focusable="false" viewBox="0 -443 921.6 608.6"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mn" transform="translate(518,-150) scale(0.707)"><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path></g></g></g></g></svg></mjx-container></span>的最短路径：找到第一行第零列的点对应的点，该点即为到达终点的前一个点；再找到该点对应的点，即为到达该点的前一个点，直到推到起点</p>
+<h3 id="代码-1">代码</h3>
+<p>(邻接矩阵)</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">100</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> M </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">200</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> MAX </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">0x</span><span style="color: #005CC5">10000</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">char</span><span style="color: #24292E"> VertexType ;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> EdgeType;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mat_grph</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  VertexType vertex[N];</span></span>
+<span class="line"><span style="color: #24292E">  EdgeType arc[N][N];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> vertex_num;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> edge_num;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">createGraph</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mat_grph</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">G</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex_num </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">9</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;edge_num </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">15</span><span style="color: #24292E">; </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    G-&gt;vertex[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(i</span><span style="color: #D73A49">==</span><span style="color: #24292E">j) G-&gt;arc[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E"> G-&gt;arc[i][j]</span><span style="color: #D73A49">=</span><span style="color: #24292E">MAX;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">3</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">2</span><span style="color: #24292E">][</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">2</span><span style="color: #24292E">][</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">6</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">9</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">5</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">6</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">6</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">7</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">4</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      G-&gt;arc[j][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E">  G-&gt;arc[i][j];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">floyd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mat_grph</span><span style="color: #24292E"> </span><span style="color: #E36209">G</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> path[N][N];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> dis[N][N];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      dis[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> G.arc[i][j];</span><span style="color: #6A737D"> // 最初的dis数组</span></span>
+<span class="line"><span style="color: #24292E">      path[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> j;</span><span style="color: #6A737D"> // 最初的path数组</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;k</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;k</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(dis[j][k]</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">dis[j][i]</span><span style="color: #D73A49">+</span><span style="color: #24292E">dis[i][k]){</span></span>
+<span class="line"><span style="color: #24292E">          dis[j][k] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dis[j][i]</span><span style="color: #D73A49">+</span><span style="color: #24292E">dis[i][k];</span></span>
+<span class="line"><span style="color: #24292E">          path[j][k] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> path[j][i];</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> k;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">; j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"v</span><span style="color: #005CC5">%d</span><span style="color: #032F62">-&gt;v</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> weight:</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> "</span><span style="color: #24292E">, i, j, dis[i][j]);</span></span>
+<span class="line"><span style="color: #24292E">      k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> path[i][j];</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"path:v</span><span style="color: #005CC5">%d</span><span style="color: #032F62">"</span><span style="color: #24292E">, i);</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">while</span><span style="color: #24292E">(k</span><span style="color: #D73A49">!=</span><span style="color: #24292E">j){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"-&gt;v</span><span style="color: #005CC5">%d</span><span style="color: #032F62">"</span><span style="color: #24292E">, k);</span></span>
+<span class="line"><span style="color: #24292E">        k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> path[k][j];</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"-&gt;v</span><span style="color: #005CC5">%d\n</span><span style="color: #032F62">"</span><span style="color: #24292E">, j);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">\n</span><span style="color: #032F62">"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  mat_grph G;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">createGraph</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">G);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">floyd</span><span style="color: #24292E">(G);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="a">A*</h2>
+<p>解决问题：给定原点与目标点，最少代价路径是什么</p>
+<p>特点：与dijkstra不同，A*算法考虑从原点到当前点的距离+当前点到目标点距离的估计距离，最后排大小</p>
+<style>.ssmvebcmwovi{zoom:50%;}</style>
+
+<p>如该方格，起点为G，终点为U</p>
+<p>从G到U预估走4步，G到G走0步，故参与排序为0+4，放入小根堆，并将原点到当前点距离放入distance表中</p>
+<p>G
+4取出，G到L,N,H,F为1，放入distance，并分别算出到U的预估距离，相加放入小根堆</p>
+<p>在取出堆顶并重复上述操作</p>
+<p>dij可以看作A*每次预估距离都为0，是一个特例</p>
+<h3 id="预估函数">预估函数</h3>
+<p>预估函数是一种吸引力，合适的预估函数（越接近真实距离）会大大提升速度</p>
+<p>要求：预估距离<strong>小于等于</strong>到终点的真实距离</p>
+<p>预估距离经常选择：曼哈顿距离、欧氏距离、对角线距离等</p>
+<p>如：若允许走斜线，曼哈顿距离就不能保证正确性了，此时可以取行与行、列与列间差值最大值</p>
+<h3 id="板子">板子</h3>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> edge, weight, Next, head;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m, s, t;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> idx</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> idis;</span><span style="color: #6A737D"> // 根据需求填入计算合适理想距离</span></span>
+<span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">astar</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">s</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dis</span><span style="color: #24292E">(n,</span><span style="color: #D73A49">0x</span><span style="color: #005CC5">3f3f3f3f</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vis</span><span style="color: #24292E">(n,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    dis[s]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">    // 最小堆，first记录dis， second记录node</span></span>
+<span class="line"><span style="color: #24292E">    priority_queue</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E">, vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;&gt;</span><span style="color: #24292E">, greater</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;&gt;&gt;</span><span style="color: #24292E"> mh;</span></span>
+<span class="line"><span style="color: #24292E">    mh.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">({dis[s]</span><span style="color: #D73A49">+</span><span style="color: #24292E">idis[s],s});</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">mh.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">()){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> mh.</span><span style="color: #6F42C1">top</span><span style="color: #24292E">().second;</span></span>
+<span class="line"><span style="color: #24292E">        mh.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(vis[node]) </span><span style="color: #D73A49">continue</span><span style="color: #24292E">; </span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s</span><span style="color: #D73A49">==</span><span style="color: #24292E">t) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> dis;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[node];</span><span style="color: #D73A49">~</span><span style="color: #24292E">i;i</span><span style="color: #D73A49">=</span><span style="color: #24292E">Next[i]){</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (dis[edge[i]]</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">dis[node]</span><span style="color: #D73A49">+</span><span style="color: #24292E">weight[i]){</span></span>
+<span class="line"><span style="color: #24292E">                dis[edge[i]]</span><span style="color: #D73A49">=</span><span style="color: #24292E">dis[node]</span><span style="color: #D73A49">+</span><span style="color: #24292E">weight[i];</span></span>
+<span class="line"><span style="color: #24292E">                mh.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">({dis[edge[i]]</span><span style="color: #D73A49">+</span><span style="color: #24292E">idis[edge[i]],edge[i]});</span></span>
+<span class="line"><span style="color: #24292E">            }</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        vis[node]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> dis;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">u</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    edge[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v;</span></span>
+<span class="line"><span style="color: #24292E">    weight[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> w;</span></span>
+<span class="line"><span style="color: #24292E">    Next[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[u];</span></span>
+<span class="line"><span style="color: #24292E">    head[u]</span><span style="color: #D73A49">=</span><span style="color: #24292E">idx</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">    head </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; (n,</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    edge </span><span style="color: #D73A49">=</span><span style="color: #24292E"> weight </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; (m,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    idis </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; (n,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(m</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u, v, w;</span></span>
+<span class="line"><span style="color: #24292E">        cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
+<span class="line"><span style="color: #24292E">        u</span><span style="color: #D73A49">--</span><span style="color: #24292E">,v</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> dis </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">astar</span><span style="color: #24292E">(s</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">auto</span><span style="color: #24292E"> it:dis) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> it </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">' '</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">    // if (it==0x3f3f3f3f) cout &lt;&lt;2147483647&lt;&lt;' ';</span></span>
+<span class="line"><span style="color: #6A737D">    // else cout &lt;&lt; it &lt;&lt;' ';</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E4%B8%8ABFS%E4%B8%8EDFS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E4%B8%8ABFS%E4%B8%8EDFS/" class="post-title-link" itemprop="url">【图论】图上BFS/DFS</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-18 21:49:15" itemprop="dateCreated datePublished" datetime="2025-05-18T21:49:15+08:00">2025-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:58:00" itemprop="dateModified" datetime="2025-07-31T17:58:00+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="图上bfs">图上BFS</h1>
+<p>将BFS扩展到图，从顶点0开始访问，逐层访问其邻居顶点，持续到访问完毕</p>
+<p>最后获得序列：按照访问距离离起始顶点最近的所有顶点</p>
+<p>按照该序列，访问到每个顶点后，就找到了达到该顶点的最短路径（适用于权值相等）</p>
+<p><strong>对相同距离邻居顶点，访问顺序不重要</strong></p>
+<p>同样可以使用队列实现</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">100</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> vis[N];</span><span style="color: #6A737D"> // 访问标记数组</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">char</span><span style="color: #24292E"> VertexType ;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> EdgeType;</span></span>
+<span class="line"><span style="color: #24292E">queue</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> q;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mat_grph</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  VertexType vertex[N];</span></span>
+<span class="line"><span style="color: #24292E">  EdgeType arc[N][N];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> vertex_num;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> edge_num;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">create_graph</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mat_grph</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">G</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex_num </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">9</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;edge_num </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">15</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'A'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'B'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'C'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">3</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'D'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'E'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'F'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'G'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'H'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'I'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      G-&gt;arc[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">2</span><span style="color: #24292E">][</span><span style="color: #005CC5">3</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">2</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">5</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">6</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  // 无向图，把对称的也复制过去</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      G-&gt;arc[j][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> G-&gt;arc[i][j];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">bfs</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mat_grph</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">G</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  vis[i]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> G.vertex[i]</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">  q.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(i);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">q.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">()){</span></span>
+<span class="line"><span style="color: #24292E">    i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q.</span><span style="color: #6F42C1">front</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    q.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">(vis[j])</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">G.arc[i][j]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        vis[j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> G.vertex[j]</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">        q.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(j);</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  mat_grph G;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">create_graph</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">G);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(vis, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, sizeof vis);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">bfs</span><span style="color: #24292E">(G);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="图上dfs">图上DFS</h1>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E4%B8%8ABFS%E4%B8%8EDFS/image-20250420205037428.png" class="" title="DFS邻接矩阵">
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">100</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> vis[N];</span><span style="color: #6A737D"> // 访问标记数组</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">char</span><span style="color: #24292E"> VertexType ;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> EdgeType;</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mat_grph</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  VertexType vertex[N];</span></span>
+<span class="line"><span style="color: #24292E">  EdgeType arc[N][N];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> vertex_num;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> edge_num;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">create_graph</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mat_grph</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">G</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex_num </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">9</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;edge_num </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">15</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'A'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'B'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'C'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">3</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'D'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'E'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'F'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'G'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'H'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;vertex[</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'I'</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      G-&gt;arc[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">2</span><span style="color: #24292E">][</span><span style="color: #005CC5">3</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">2</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">4</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">3</span><span style="color: #24292E">][</span><span style="color: #005CC5">8</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">5</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">5</span><span style="color: #24292E">][</span><span style="color: #005CC5">6</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  G-&gt;arc[</span><span style="color: #005CC5">6</span><span style="color: #24292E">][</span><span style="color: #005CC5">7</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  // 无向图，把对称的也复制过去</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G-&gt;vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      G-&gt;arc[j][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> G-&gt;arc[i][j];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mat_grph</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">G</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  vis[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> G.vertex[i]</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">G.vertex_num;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 寻找邻接矩阵中和第i个顶点间有边的顶点</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> ((</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[j]) </span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E"> G.arc[i][j]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 如果没被访问过且存在边，则从其对应的顶点开始搜索与其有边的顶点</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(G, j);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  mat_grph G;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">create_graph</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">G);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(vis, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, sizeof vis);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(G, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1854,478 +2493,8 @@ a)有一组他管理的账户，该组账户是它的一个属性，而不会继
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/" class="post-title-link" itemprop="url">【图论】邻接表</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-13 22:13:48" itemprop="dateCreated datePublished" datetime="2025-04-13T22:13:48+08:00">2025-04-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:56:48" itemprop="dateModified" datetime="2025-07-31T17:56:48+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="邻接矩阵">邻接矩阵</h2>
-<p>给如下一个有向图：</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250413211606425.png" class="" title="例图">
-<p>该图有四个节点，五条边。右侧表示了有向图的起点，终点以及边权</p>
-<p>根据该图建立邻接矩阵：</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250413211803839.png" class="" title="邻接矩阵">
-<p>可以发现，邻接矩阵中许多位置并没有使用，故浪费了空间与时间</p>
-<h2 id="邻接表">邻接表</h2>
-<p>让起点与终点直接相连，而不考虑先后顺序</p>
-<p>将终点和边权作为一个节点，按头插法插入每个起点位置，就构建了一个邻接表</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250413212746653.png" class="" title="邻接表">
-<h3 id="链表实现">链表实现</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> x;</span><span style="color: #6A737D"> // 节点编号</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> w;</span><span style="color: #6A737D"> // 某个顶点到x的权值</span></span>
-<span class="line"><span style="color: #24292E">  node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> next;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x_</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w_</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x_;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;w </span><span style="color: #D73A49">=</span><span style="color: #24292E"> w_;</span></span>
-<span class="line"><span style="color: #24292E">    next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">node</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E"> head;</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">u</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[u];</span><span style="color: #6A737D"> // 现在的头</span></span>
-<span class="line"><span style="color: #24292E">  node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(v,w);</span><span style="color: #6A737D"> // 建立新的节点</span></span>
-<span class="line"><span style="color: #6A737D">  // 头插法</span></span>
-<span class="line"><span style="color: #24292E">  b-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a-&gt;next;</span></span>
-<span class="line"><span style="color: #24292E">  a-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
-<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m;</span></span>
-<span class="line"><span style="color: #24292E">  head.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    head[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(i,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u,v,w;</span></span>
-<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #6A737D">  // 遍历</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[i]-&gt;next;</span><span style="color: #6A737D"> // 从某个节点开始，指向其相邻节点并输出</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p){</span></span>
-<span class="line"><span style="color: #6A737D">      // 起点总是i，而i连接的所有节点均为其兄弟</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"(</span><span style="color: #005CC5">%d</span><span style="color: #032F62">, </span><span style="color: #005CC5">%d</span><span style="color: #032F62">, </span><span style="color: #005CC5">%d</span><span style="color: #032F62">)"</span><span style="color: #24292E">,i,p-&gt;x,p-&gt;w);</span></span>
-<span class="line"><span style="color: #24292E">      p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="数组实现">数组实现</h3>
-<p>建立四个数组</p>
-<ul>
-<li><code>edge[i]</code>：表示索引为i的边的终点，大小为m</li>
-<li><code>next[i]</code>：表示索引为i的边的下一条兄
-弟边的索引，大小为m</li>
-<li><code>head[i]</code>：表示i的第一条边的索引，大小为n</li>
-<li><code>weigh[i]</code>：表示索引为i的权重，大小为m</li>
-</ul>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250413215851485.png" class="" title="数组模拟空间">
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> head, edge, Next, weight;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> idx </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 表示边的索引</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">u</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  edge[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v;</span></span>
-<span class="line"><span style="color: #24292E">  weight[idx]</span><span style="color: #D73A49">=</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">  Next[idx] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[u];</span></span>
-<span class="line"><span style="color: #24292E">  head[u]</span><span style="color: #D73A49">=</span><span style="color: #24292E">idx</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
-<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m;</span></span>
-<span class="line"><span style="color: #24292E">  head.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  edge.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  Next.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  weight.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u,v,w;</span></span>
-<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #6A737D">  // 遍历</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[i]; </span><span style="color: #D73A49">~</span><span style="color: #24292E">j; j</span><span style="color: #D73A49">=</span><span style="color: #24292E">Next[j]){</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> v </span><span style="color: #D73A49">=</span><span style="color: #24292E"> edge[j];</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> w </span><span style="color: #D73A49">=</span><span style="color: #24292E"> weight[j];</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"(</span><span style="color: #005CC5">%d</span><span style="color: #032F62">, </span><span style="color: #005CC5">%d</span><span style="color: #032F62">, </span><span style="color: #005CC5">%d</span><span style="color: #032F62">)"</span><span style="color: #24292E">, u, v, w);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="链式前向星">链式前向星</h2>
-<h3 id="图的多种表示">图的多种表示</h3>
-<ol type="1">
-<li>输入数据模式</li>
-</ol>
-<figure class="shiki"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">4 5</span></span>
-<span class="line"><span style="color: #24292e">1 4 9</span></span>
-<span class="line"><span style="color: #24292e">4 3 8</span></span>
-<span class="line"><span style="color: #24292e">1 2 5</span></span>
-<span class="line"><span style="color: #24292e">2 4 6</span></span>
-<span class="line"><span style="color: #24292e">1 3 7</span></span></code></pre></div></div></figure>
-<ol start="2" type="1">
-<li>平面图</li>
-<li>邻接矩阵</li>
-<li>邻接表</li>
-</ol>
-<h3 id="数组实现-1">数组实现</h3>
-<p>用一个数组与一个结构体：</p>
-<ul>
-<li>head数组，大小为顶点个数，保存边的下标，初始化为-1，表示从i出发没有边</li>
-<li>edge结构体，大小为边个数，元素表示终点、距离与下一条边的位置</li>
-</ul>
-<p>如输入1 4 9，表示从1出发，终点为4，距离为9</p>
-<p>检查是否有从1出发的边，没有(-1)，next改为-1，此时第一条边从1出发，将<code>head[1]=1</code></p>
-<p>再输入4 3 8</p>
-<p>检查是否有从4出发的边，没有(-1)，next改为-1，此时第二条边从4出发，将<code>head[4]=2</code></p>
-<p>再输入1 2 5</p>
-<p>检查是否有从1出发的边，<code>head[1]=1</code>，next改为1，此时第三条边也从1出发，将<code>head[1]=3</code></p>
-<p>再输入2 4 6</p>
-<p>检查是否有从2出发的边，没有(-1)，next改为-1，此时第四条边从2出发，将<code>head[2]=4</code></p>
-<p>再输入1 3 7</p>
-<p>检查是否有从1出发的边，<code>head[1]=3</code>，next改为3，此时第五条边也从1出发，将<code>head[1]=5</code></p>
-<p>最终为<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250417213030565.png" class="" title="前向星后"></p>
-<p><strong>即实现了头插法</strong></p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
-<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m, s, u, v, w, cnt;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> head[</span><span style="color: #005CC5">100005</span><span style="color: #24292E">];</span></span>
-<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">edge</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> to, dis, nxt;</span></span>
-<span class="line"><span style="color: #24292E">}edge[</span><span style="color: #005CC5">200005</span><span style="color: #24292E">];</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">from</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">to</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  edge[</span><span style="color: #D73A49">++</span><span style="color: #24292E">cnt].to </span><span style="color: #D73A49">=</span><span style="color: #24292E"> to;</span></span>
-<span class="line"><span style="color: #24292E">  edge[cnt].dis </span><span style="color: #D73A49">=</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">  edge[cnt].nxt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[from];</span></span>
-<span class="line"><span style="color: #24292E">  head[from]</span><span style="color: #D73A49">=</span><span style="color: #24292E">cnt;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">fill</span><span style="color: #24292E">(head, head</span><span style="color: #D73A49">+</span><span style="color: #24292E">n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">Add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #6A737D">  // 遍历</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[i];</span><span style="color: #D73A49">~</span><span style="color: #24292E">k;k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> edge[k].nxt){</span></span>
-<span class="line"><span style="color: #6A737D">      /*具体处理*/</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">ios</span><span style="color: #24292E">::</span><span style="color: #6F42C1">sync_with_stdio</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cin.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cout.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> tomorin;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="十字链表">十字链表</h2>
-<p>十字链表分为两部分：</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250418204334524.png" class="" title="顶点节点">
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250418204348032.png" class="" title="弧节点">
-<p>顶点节点存储权值、入度(firstIn)与出度(firstOut)；弧节点存储弧尾顶点在顶点数组中的位置(tailVex)，弧头顶点在顶点数组中的位置(headVex)，指向弧头相同的下一条弧(hLink)，指向弧尾相同的下一条弧(tLink)与边权(Info)</p>
-<p>每个节点组成了两个链表：以当前节点为弧头的弧组成的链表、以当前节点为弧尾的弧组成的链表</p>
-<p>在寻找时<strong>自己找自己</strong>，即若为弧头组成链表，则依次寻找弧头相同的组成链表(firstIn-&gt;headVex)；若为弧尾组成链表，则依次寻找弧尾相同的组成链表(firstOut-&gt;tailVex)</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250418215525320.png" class="" title="十字链表">
-<h2 id="邻接多重表">邻接多重表</h2>
-<p>邻接多重表分为两部分：</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250418220625498.png" class="" title="邻接多重表">
-<p>顶点节点存储权值与指向的第一条跟该顶点有关系的边</p>
-<p>表节点：</p>
-<ul>
-<li>mark：标志域，标记某节点是否已经被操作过，例如遍历各节点时，为0表示还未遍历，为1表示遍历过</li>
-<li>ivex与jvex：表示节点表示的边两端的顶点在数组中的位置下标</li>
-<li>ilink与jlink：表示指向下一条与ivex，jvex相关的边</li>
-<li>info：边的权值</li>
-</ul>
-<p>邻接多重表也遵循<strong>自己找自己</strong>，但比起十字链表更加灵活（两节点位置可互换），思路与十字链表类似</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%82%BB%E6%8E%A5%E8%A1%A8/image-20250418221004833.png" class="" title="邻接多重表">
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Homework5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Homework5/" class="post-title-link" itemprop="url">【CS61A】CS61A——Homework 5</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-04 10:35:57" itemprop="dateCreated datePublished" datetime="2025-04-04T10:35:57+08:00">2025-04-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:50:39" itemprop="dateModified" datetime="2025-07-31T17:50:39+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="homework-5">Homework 5</h1>
-<h2 id="q1-infinite-hailstone">Q1: Infinite Hailstone</h2>
-<p>写一个生成器函数来生成从n开始的冰雹猜想序列，当到达序列尾后，生成器会一直声称1</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">hailstone</span><span style="color: #24292E">(n):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Q1: Yields the elements of the hailstone sequence starting at n.</span></span>
-<span class="line"><span style="color: #032F62">       At the end of the sequence, yield 1 infinitely.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">hail_gen = hailstone(10)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">[next(hail_gen) for _ in range(10)]</span></span>
-<span class="line"><span style="color: #032F62">    [10, 5, 16, 8, 4, 2, 1, 1, 1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">next(hail_gen)</span></span>
-<span class="line"><span style="color: #032F62">    1</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> n</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        n</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> n</span><span style="color: #D73A49">%</span><span style="color: #005CC5">2</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        n</span><span style="color: #D73A49">=</span><span style="color: #005CC5">int</span><span style="color: #24292E">(n</span><span style="color: #D73A49">/</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        n</span><span style="color: #D73A49">=</span><span style="color: #005CC5">3</span><span style="color: #D73A49">*</span><span style="color: #24292E">n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> hailstone(n)</span></span></code></pre></div></div></figure>
-<p>使用递归，结合yield from生成迭代器</p>
-<h2 id="q2-merge">Q2: Merge</h2>
-<p>写一个merge函数，传入两个无限生成器a,b按照给定起始位置与步长生成非重复上升序列，返回一个生成器包含两个生成器中的所有元素，且去重</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(a, b):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Q2:</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">def sequence(start, step):</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    while True:</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">        yield start</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">        start += step</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = sequence(2, 3) # 2, 5, 8, 11, 14, ...</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = sequence(3, 2) # 3, 5, 7, 9, 11, 13, 15, ...</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">result = merge(a, b) # 2, 3, 5, 7, 8, 9, 11, 13, 14, 15</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">[next(result) for _ in range(10)]</span></span>
-<span class="line"><span style="color: #032F62">    [2, 3, 5, 7, 8, 9, 11, 13, 14, 15]</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    gene_a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(a)</span></span>
-<span class="line"><span style="color: #24292E">    gene_b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(b)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> gene_a </span><span style="color: #D73A49">==</span><span style="color: #24292E"> gene_b:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> gene_a</span></span>
-<span class="line"><span style="color: #24292E">            gene_a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(a)</span></span>
-<span class="line"><span style="color: #24292E">            gene_b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(b)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> gene_a</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> gene_b:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> gene_b</span></span>
-<span class="line"><span style="color: #24292E">            gene_b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(b)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> gene_a</span></span>
-<span class="line"><span style="color: #24292E">            gene_a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(a)</span></span></code></pre></div></div></figure>
-<h2 id="q3-yield-paths">Q3: Yield Paths</h2>
-<p>定义一个生成器函数，传入一棵树与一个值v，返回生成器从树的根到含有v的节点的每一条路径</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">yield_paths</span><span style="color: #24292E">(t, value):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Q4: Yields all possible paths from the root of t to a node with the label</span></span>
-<span class="line"><span style="color: #032F62">    value as a list.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t1 = tree(1, [tree(2, [tree(3), tree(4, [tree(6)]), tree(5)]), tree(5)])</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_tree(t1)</span></span>
-<span class="line"><span style="color: #032F62">    1</span></span>
-<span class="line"><span style="color: #032F62">      2</span></span>
-<span class="line"><span style="color: #032F62">        3</span></span>
-<span class="line"><span style="color: #032F62">        4</span></span>
-<span class="line"><span style="color: #032F62">          6</span></span>
-<span class="line"><span style="color: #032F62">        5</span></span>
-<span class="line"><span style="color: #032F62">      5</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">next(yield_paths(t1, 6))</span></span>
-<span class="line"><span style="color: #032F62">    [1, 2, 4, 6]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">path_to_5 = yield_paths(t1, 5)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">sorted(list(path_to_5))</span></span>
-<span class="line"><span style="color: #032F62">    [[1, 2, 5], [1, 5]]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t2 = tree(0, [tree(2, [t1])])</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_tree(t2)</span></span>
-<span class="line"><span style="color: #032F62">    0</span></span>
-<span class="line"><span style="color: #032F62">      2</span></span>
-<span class="line"><span style="color: #032F62">        1</span></span>
-<span class="line"><span style="color: #032F62">          2</span></span>
-<span class="line"><span style="color: #032F62">            3</span></span>
-<span class="line"><span style="color: #032F62">            4</span></span>
-<span class="line"><span style="color: #032F62">              6</span></span>
-<span class="line"><span style="color: #032F62">            5</span></span>
-<span class="line"><span style="color: #032F62">          5</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">path_to_2 = yield_paths(t2, 2)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">sorted(list(path_to_2))</span></span>
-<span class="line"><span style="color: #032F62">    [[0, 2], [0, 2, 1, 2]]</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> label(t) </span><span style="color: #D73A49">==</span><span style="color: #24292E"> value:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> [value]</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> yield_paths(b, value):</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> [label(t)]</span><span style="color: #D73A49">+</span><span style="color: #24292E">p</span></span></code></pre></div></div></figure>
-<blockquote>
-<p>If our current label is equal to <code>value</code>, we’ve found a
-path from the root to a node containing <code>value</code> containing
-only our current label, so we should yield that. From there, we’ll see
-if there are any paths starting from one of our branches that ends at a
-node containing <code>value</code>. If we find these “partial paths” we
-can simply add our current label to the beginning of a path to obtain a
-path starting from the root.</p>
-<p>In order to do this, we’ll create a generator for each of the
-branches which yields these “partial paths”. By calling
-<code>yield_paths</code> on each of the branches, we’ll create exactly
-this generator! Then, since a generator is also an iterable, we can
-iterate over the paths in this generator and yield the result of
-concatenating it with our current label.</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/list/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/list/">1</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/list/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/10/">10</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/list/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/list/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/list/">1</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/list/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/11/">11</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/list/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

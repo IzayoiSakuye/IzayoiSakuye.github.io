@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-count">102</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,530 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec5-DLList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61B/Lec5-DLList/" class="post-title-link" itemprop="url">【CS61B】Lec5-DLList</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:11" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="dllist">DLList</h1>
+<h2 id="dllist-1">DLList</h2>
+<p>为了让remove等操作更加高效，我们在SLList的基础上进行改进，变为双向链表，这样有利于提升操作效率</p>
+<p>同时，对于头节点的操作，我们可以用两个头节点，但更好的方法是使用循环链表</p>
+<p>具体实现详见Project1</p>
+<h2 id="generic-lists">Generic Lists</h2>
+<p>我们设计的SLList目前只接受int类型，通过修改可以实现接受各种类型</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec5;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">GenericList</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">T</span><span style="color: #24292E">&gt; {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> T item;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> TNode next;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(T </span><span style="color: #E36209">i</span><span style="color: #24292E">, TNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> TNode sentinel;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">GenericList</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        sentinel </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(</span><span style="color: #005CC5">null</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(T </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        sentinel.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(x, sentinel.next);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> T </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> sentinel.next.item;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(T </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        TNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sentinel;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> size;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        GenericList&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> GenericList&lt;&gt;();</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">20</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>泛型的规则如下：</p>
+<ul>
+<li><p>.java文件中实现数据结构时，需要在文件开头设定泛型且只能设定一次</p></li>
+<li><p>.java文件中使用数据结构时，设定需要的数据类型</p>
+<p><code>类名&lt;引用类型&gt; 实例名 = new 类名&lt;&gt;();</code></p></li>
+<li><p>声明和实例化时，需要使用引用类型</p>
+<ul>
+<li><p>int：Integer</p></li>
+<li><h3 id="doubledouble">double：Double</h3></li>
+<li><p>char：Character</p></li>
+<li><p>boolean：Boolean</p></li>
+<li><p>long：Long</p></li>
+</ul></li>
+</ul>
+<h3 id="arrays">Arrays</h3>
+<p>数组是一种拥有指定长度内存的对象，组成如下：</p>
+<ul>
+<li><h3 id="固定整型长度">固定整型长度</h3></li>
+<li><p>N=length个内存空间</p>
+<ul>
+<li>所有内存空间有着相同数据类型</li>
+<li>索引从0到length-1</li>
+</ul></li>
+</ul>
+<h3 id="初始化方法">初始化方法</h3>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E">[</span><span style="color: #005CC5">3</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">y </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E">[]{</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">,</span><span style="color: #005CC5">5</span><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E">[] z </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">9</span><span style="color: #24292E">, </span><span style="color: #005CC5">10</span><span style="color: #24292E">, </span><span style="color: #005CC5">12</span><span style="color: #24292E">, </span><span style="color: #005CC5">13</span><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<h3 id="数组复制">数组复制</h3>
+<ul>
+<li>使用循环逐个复制</li>
+<li>使用System.arraycopy()，包括五个参数
+<ul>
+<li>源数组</li>
+<li>源数组起始位置</li>
+<li>目标数组</li>
+<li>目标数组起始位置</li>
+<li>复制元素个数</li>
+</ul></li>
+</ul>
+<h3 id="二维数组">二维数组</h3>
+<figure>
+<img src="Lec5-Java%20Basic%204/image-20250709203930693.png" alt="二维数组">
+<figcaption aria-hidden="true">二维数组</figcaption>
+</figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec4-SLList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61B/Lec4-SLList/" class="post-title-link" itemprop="url">【CS61B】Lec4-SLList</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:23" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="sllist">SLList</h1>
+<h2 id="sllist-1">SLList</h2>
+<p>我们将对前面创建的链表进行封装与优化</p>
+<p>对上节课的IntList的修改：</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">        next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>重构为IntNode</p>
+<p>接下来创建类SLList并进行封装</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">package lec4;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
+<span class="line"><span style="color: #24292E">public </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #6A737D">    //列表的第一项</span></span>
+<span class="line"><span style="color: #24292E">    public IntNode first;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    public </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x,null);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    public </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, first);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    public </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> first.item;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    public </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(String[] args){</span></span>
+<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>但接下来有一个问题：有些用户可能会不通过给定的方法，而是直接操纵内部属性，这样可能会导致一些致命性的错误，如<code>L.first = null</code>，这时我们需要加强抽象屏障</p>
+<p>我们需要修改一些实例的权限，防止可以直接被操纵，具体操作为<strong>将public改为private</strong></p>
+<p>private关键字使得其他类中的代码调用该类中的成员</p>
+<p>隐藏实现细节：</p>
+<ul>
+<li>让用户理解更少</li>
+<li>修改方法时是安全的（因为没有人可以调用）</li>
+</ul>
+<h2 id="嵌套类">嵌套类</h2>
+<p>Java中可以将类进行嵌套，如我们可以将IntNode类放入SLList类中</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> IntNode first;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, first);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> first.item;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>当一个类无法独立存在（明显从属于另一个类）时，设为嵌套类是合适的。</p>
+<p>对于第5行嵌套类是否设为静态：若嵌套类不使用外部类的任何内容，则可以设为static</p>
+<h2 id="增加功能">增加功能</h2>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
+<span class="line"><span style="color: #24292E">    IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(first);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(IntNode p){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p</span><span style="color: #D73A49">==</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #6F42C1">size</span><span style="color: #24292E">(p.next);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>其中，计算size时使用了递归，是通过在一个非递归类里调用了递归方法实现的：</p>
+<ul>
+<li>创建一个私有的递归方法，以那些裸递归对象作为参数</li>
+<li>在一个公共方法中直接调用该递归方法</li>
+</ul>
+<p>但这种方式很低效，我们需要优化为<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="4.618ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2041 1000"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z"></path></g><g data-mml-node="mo" transform="translate(763,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mn" transform="translate(1152,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(1652,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container></span>复杂度</p>
+<h2 id="优化递归">优化递归</h2>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> IntNode first;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, first);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> first.item;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> size;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">20</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>我们创建了一个size变量，存储数据来方便检索，在add的时候同时更新该值</p>
+<h2 id="创建空链表">创建空链表</h2>
+<p>修改为空链表后，addLast方法会出现问题，因为此时的first为null，无法访问first.next</p>
+<p>解决方法1：</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (first </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span></code></pre></div></div></figure>
+<p>这样需要一个特殊情况，使得代码更加复杂以及更难追踪</p>
+<p>解决方法2：</p>
+<p>在空链表初始化时加入头节点（sentinel）</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> IntNode sentinel;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        sentinel </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        sentinel.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        sentinel </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        sentinel.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, sentinel.next);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> sentinel.next.item;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sentinel;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> size;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">20</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>sentinal在这里的用处为占位，该节点永远不为空，且其值随意</p>
+<h2 id="不变式invariants">不变式(Invariants)</h2>
+<p>不变式就是代码运行中保证成立的条件</p>
+<p>存在头节点的SLList有以下不变式：</p>
+<ul>
+<li>头节点的引用总指向头节点</li>
+<li>第一个节点总存在<code>sentinal.next</code></li>
+<li><code>size</code>变量总是表示添加节点的数目</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2874,383 +3398,8 @@ Initialization)</p>
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/C++/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">【C++】高阶函数</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:30:05 / 修改时间：17:30:15" itemprop="dateCreated datePublished" datetime="2025-07-31T17:30:05+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="高阶函数">高阶函数</h1>
-<h2 id="函数的默认参数">函数的默认参数</h2>
-<p>C++中，形参是可以有缺省值的</p>
-<p>注：</p>
-<ul>
-<li>若某个位置已经有了缺省值，则从该位置之后往后都必须要有缺省值</li>
-<li>若函数声明有缺省值，则函数实现就不能有缺省值 （二义性）</li>
-</ul>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">20</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">c</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">30</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 形参有缺省值</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">b</span><span style="color: #D73A49">+</span><span style="color: #24292E">c;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span><span style="color: #6A737D"> // 有缺省值时可以不传参</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">, </span><span style="color: #005CC5">30</span><span style="color: #24292E">)</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span><span style="color: #6A737D"> // 若传参则会覆盖缺省值</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; </span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="函数的占位参数">函数的占位参数</h2>
-<p>C++中函数的形参列表中可以有占位参数，调用时必须填补该位置</p>
-<p>语法：<code>&lt;返回值类型&gt; &lt;函数名&gt;([数据类型]){}</code></p>
-<p>注：</p>
-<ul>
-<li>目前占位参数传入的参数无法使用</li>
-<li>占位参数可以有缺省值</li>
-</ul>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> a </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">" occupation"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">, </span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="函数重载">函数重载</h2>
-<p>作用：函数名可以相同，用于提高复用性</p>
-<p>满足条件：</p>
-<ul>
-<li>同一个作用域下</li>
-<li>函数名相同</li>
-<li>函数参数类型，个数，顺序不同</li>
-</ul>
-<p><strong>函数返回值类型不可以做为函数重载的条件</strong></p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(){</span><span style="color: #6A737D"> // 两函数参数不同，实现重载</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f(int "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 两函数参数类型不同，实现重载</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f(double "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 两函数参数顺序不同，实现重载</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f(double "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">", int "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 两函数参数顺序不同，实现重载</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f(int "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">", double "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #6A737D">  // 根据传入的参数执行对应函数</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">3.14</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">,</span><span style="color: #005CC5">3.14</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">3.14</span><span style="color: #24292E">,</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<figure class="shiki"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">invoke f</span></span>
-<span class="line"><span style="color: #24292e">invoke f(int 10)</span></span>
-<span class="line"><span style="color: #24292e">invoke f(double 3.14)</span></span>
-<span class="line"><span style="color: #24292e">invoke f(int 10, double 3.14)</span></span>
-<span class="line"><span style="color: #24292e">invoke f(double 3.14, int 10)</span></span></code></pre></div></div></figure>
-<h3 id="引用作为重载条件">引用作为重载条件</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 引用作为函数重载条件</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f2</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">a</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f(int &amp;"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f2</span><span style="color: #24292E">(</span><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">a</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // const int 与int 类型不同</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f(const int &amp;"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #6A737D">  // 根据传入的参数执行对应函数</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f2</span><span style="color: #24292E">(a);</span><span style="color: #6A737D"> // 调用了无const的</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">f2</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span><span style="color: #6A737D"> // 调用了有const的</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<ul>
-<li>11行相当于实现<code>int &amp;b = a</code>，是合法的</li>
-<li>但若只传值，则11行相当于<code>int &amp;a = 10</code>，
-是不合法的，此时12行相当于<code>const int &amp;a = 10</code>，是合法的</li>
-</ul>
-<h3 id="缺省值与函数重载">缺省值与函数重载</h3>
-<p>当存在缺省值，使得调用函数传入参数个数和被重载的函数的传入参数个数一样时，会出现二义性，故报错</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 函数重载与默认参数</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f3</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f3(int &amp;"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">')'</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f3</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"invoke f3(int &amp;"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">") with b = 10"</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #6A737D">  //f3(10); // 会出错，出现二义性</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%87%BD%E6%95%B0%E5%B0%81%E8%A3%85%E4%B8%8E%E7%BB%91%E5%AE%9A/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/C++/%E5%87%BD%E6%95%B0%E5%B0%81%E8%A3%85%E4%B8%8E%E7%BB%91%E5%AE%9A/" class="post-title-link" itemprop="url">【C++】函数封装与绑定</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:29:26 / 修改时间：17:29:57" itemprop="dateCreated datePublished" datetime="2025-07-31T17:29:26+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="函数封装与绑定">函数封装与绑定</h1>
-<h2 id="stdfunction">std::function</h2>
-<p>std::function是一个通用的多态函数封装器，用于将可调用对象进行封装</p>
-<p>语法<code>function&lt;R(Args...)&gt; fname = target;</code></p>
-<p>其中R为返回类型，括号内为参数类型</p>
-<p>进行类成员函数封装时，括号内第一个参数是类引用，第二个开始才是参数类型</p>
-<p>也可以进行类成员变量的引用</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;functional&gt;</span></span>
-<span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mul</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">*</span><span style="color: #24292E">b;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #6A737D">  // 将mul的地址保存到f1对象中</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::function</span><span style="color: #D73A49">&lt;double</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E">,</span><span style="color: #D73A49">double</span><span style="color: #24292E">)</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> f1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> mul;</span></span>
-<span class="line"><span style="color: #6A737D">  // 通过重载调用运算符来调用mul函数</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">double</span><span style="color: #24292E"> res </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f1</span><span style="color: #24292E">(</span><span style="color: #005CC5">1.1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2.3</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> res </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;functional&gt;</span></span>
-<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Linear</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">Linear</span><span style="color: #24292E">(</span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #E36209">k</span><span style="color: #24292E">, </span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">):</span><span style="color: #6F42C1">k_</span><span style="color: #24292E">(k),</span><span style="color: #6F42C1">b_</span><span style="color: #24292E">(b) {}</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">) {</span><span style="color: #D73A49">return</span><span style="color: #24292E"> k_</span><span style="color: #D73A49">*</span><span style="color: #24292E"> x</span><span style="color: #D73A49">+</span><span style="color: #24292E">b_; }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">float</span><span style="color: #24292E"> k_, b_;</span></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E"> :: function</span><span style="color: #D73A49">&lt;float</span><span style="color: #24292E">(Linear</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">, </span><span style="color: #D73A49">float</span><span style="color: #24292E">)</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> mf </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #6F42C1">Linear</span><span style="color: #24292E">::f;</span></span>
-<span class="line"><span style="color: #24292E">    Linear </span><span style="color: #6F42C1">l</span><span style="color: #24292E">(</span><span style="color: #005CC5">1.2</span><span style="color: #24292E">,</span><span style="color: #005CC5">2.3</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">float</span><span style="color: #24292E"> res </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mf</span><span style="color: #24292E">(l,</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E"> :: cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> res </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E"> :: endl;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E"> :: function</span><span style="color: #D73A49">&lt;float</span><span style="color: #24292E">(Linear</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">)</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #6F42C1">Linear</span><span style="color: #24292E"> :: k_;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E"> :: cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">k</span><span style="color: #24292E">(l) </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E"> :: endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>std::function实现了<strong>类型擦除</strong>：即通过单个通用接口类使用各种具体类型</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;functional&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;map&gt;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">b;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">substract</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #D73A49">operator</span><span style="color: #6F42C1">()</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">-</span><span style="color: #24292E">b;}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::map</span><span style="color: #D73A49">&lt;char</span><span style="color: #24292E">, </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::function</span><span style="color: #D73A49">&lt;double</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E">,</span><span style="color: #D73A49">double</span><span style="color: #24292E">)</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E">cal{</span></span>
-<span class="line"><span style="color: #24292E">    {</span><span style="color: #032F62">'+'</span><span style="color: #24292E">, add},</span></span>
-<span class="line"><span style="color: #24292E">    {</span><span style="color: #032F62">'-'</span><span style="color: #24292E">, </span><span style="color: #6F42C1">substract</span><span style="color: #24292E">()},</span></span>
-<span class="line"><span style="color: #24292E">    {</span><span style="color: #032F62">'*'</span><span style="color: #24292E">, [](</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">)-&gt;</span><span style="color: #D73A49">double{return</span><span style="color: #24292E"> </span><span style="color: #D73A49">a*b;}}</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">};</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">std::cout</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;cal['+'](12.0,13)&lt;&lt;std::endl;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">std::cout</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;cal['-'](13.0,6.2)&lt;&lt;std::endl;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">std::cout</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;cal['+'](2.3,3.2)&lt;&lt;std::endl;</span></span>
-<span class="line"><span style="color: #D73A49">}</span></span></code></pre></div></div></figure>
-<p>可以看到，通过std::function可以把完全不同的类型按同一个接口统一封装一个类型来使用</p>
-<h2 id="stdmem_fn">std::mem_fn</h2>
-<p>封装类成员可以直接使用<code>std::mem_fn</code>，返回一个可调用的包装器</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;functional&gt;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">foo</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">double</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cal</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">*</span><span style="color: #24292E">a</span><span style="color: #D73A49">+</span><span style="color: #24292E">w</span><span style="color: #D73A49">*</span><span style="color: #24292E">b;}</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">foo</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E"> </span><span style="color: #D73A49">operator</span><span style="color: #6F42C1">+=</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    w</span><span style="color: #D73A49">+=</span><span style="color: #24292E">a;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #005CC5">this</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"w="</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">w</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  foo f{</span><span style="color: #005CC5">1.0</span><span style="color: #24292E">};</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> memfn </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">mem_fn</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #6F42C1">foo</span><span style="color: #24292E">::cal);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">double</span><span style="color: #24292E"> res </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">memfn</span><span style="color: #24292E">(f, </span><span style="color: #005CC5">2.0</span><span style="color: #24292E">, </span><span style="color: #005CC5">3.0</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"res="</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">res</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> op </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">mem_fn</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #6F42C1">foo</span><span style="color: #24292E">::operator</span><span style="color: #D73A49">+=</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> f2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">op</span><span style="color: #24292E">(f,</span><span style="color: #005CC5">2.0</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  f2.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="stdbind">std::bind</h2>
-<p>用于生成一个函数对象，调用该包装器时相当于调用他所包装的函数或者对象f</p>
-<p>可以将给定的函数和参数进行绑定，调用时直接使用对应函数与参数</p>
-<p>其中，参数可以用<code>std::placeholders</code>占位符占位(<code>_1</code>,<code>_2</code>…)，在调用包装器时可以指定传入参数</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;functional&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">placeholders</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">sum</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">c</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"a="</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">a</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">", b="</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">b</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">", c="</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">c;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">b</span><span style="color: #D73A49">+</span><span style="color: #24292E">c;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> f </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">bind</span><span style="color: #24292E">(sum, </span><span style="color: #005CC5">1</span><span style="color: #24292E">, _1, </span><span style="color: #005CC5">3</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> res </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">", res="</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">res</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>注意，如果直接用变量作为bind绑定，绑定后修改变量不会影响结果，因为是用值传入的</p>
-<p>如果想用引用传入，使用<code>cref()</code>函数，用于返回一个变量的引用封装器s</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/list/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/list/">1</a><a class="page-number" href="/list/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/list/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/10/">10</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/list/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/list/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/list/">1</a><a class="page-number" href="/list/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/list/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/11/">11</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/list/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
