@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">102</span>
+          <span class="site-state-item-count">103</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,176 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%BC%82%E5%B8%B8%E4%B8%8E%E9%94%99%E8%AF%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/C++/%E5%BC%82%E5%B8%B8%E4%B8%8E%E9%94%99%E8%AF%AF/" class="post-title-link" itemprop="url">【C++】异常</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:30:23 / 修改时间：17:31:00" itemprop="dateCreated datePublished" datetime="2025-07-31T17:30:23+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="异常与错误">异常与错误</h1>
+<h2 id="传统错误处理">传统错误处理</h2>
+<p>C风格的传统错误处理通常通过在出现异常时返回一个异常值(如-1)，main函数捕获到了异常值后，进行对应的提示与操作</p>
+<p>如sqrt函数中，当输入值小于0时，返回-1，main函数捕获后输出错误信息，因为这里可以保证sqrt操作返回的都是非负数，所以可以设置-1值</p>
+<p>进步之处：错误信息的输出应由main决定，因为sqrt函数仅仅为一个计算函数，不应该涉及输入输出流</p>
+<p>另一种方法：为了不与值域冲突，可以返回一个pair&lt;int,
+bool&gt;，bool判断是否合法。但这样也会造成</p>
+<p><strong>注意：报错与退出逻辑不应该直接写在被调用函数中，合适的方法应该是返回值</strong></p>
+<h2 id="optional">Optional</h2>
+<p>返回Optional数据类型，该类型可以表示一个可能存在也可能不存在的值</p>
+<p>当发现异常值传入，我们可以返回一个空值<code>std::nullopt</code>，让main函数捕获</p>
+<p>判断时可以使用以下方法：</p>
+<ul>
+<li><code>.has_value()</code>判断返回的是否是异常值</li>
+<li>或直接用该类型变量判断是否是异常值（存在一个bool的显式转换）</li>
+<li><code>.value()</code>获取正常值</li>
+</ul>
+<p>缺点：当有多种错误类型区分的需求便无法处理</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;optional&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;vector&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">optional</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">findIndex</span><span style="color: #24292E">(</span><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::</span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt;</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E"> </span><span style="color: #E36209">data</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">value</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">size_t</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> data.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">(); </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (data[i] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> value) {</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> i;</span><span style="color: #6A737D"> // 返回找到的索引</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::nullopt;</span><span style="color: #6A737D"> // 未找到</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">2</span><span style="color: #24292E">, </span><span style="color: #005CC5">3</span><span style="color: #24292E">, </span><span style="color: #005CC5">4</span><span style="color: #24292E">, </span><span style="color: #005CC5">5</span><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> index </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findIndex</span><span style="color: #24292E">(data, </span><span style="color: #005CC5">3</span><span style="color: #24292E">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (index) {</span></span>
+<span class="line"><span style="color: #24292E">    	</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"Found at index: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">index </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">    } </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    	</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"Value not found"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">::endl;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="错误码">错误码</h2>
+<p>通过设置一个全局变量错误码，当出现对应错误时，设置对应错误码并返回-1，main函数捕获并根据错误码处理</p>
+<p>错误码的设置可以参考<code>errno.h</code>中的宏定义设置</p>
+<p>使用<code>strerror(errno)</code>来输出对应错误</p>
+<p>使用<code>setlocate(LC_ALL, "zh-CN.UTF-8")</code></p>
+<p>使用<code>perror</code> 在错误输出前加上一段描述加一个冒号</p>
+<h2 id="异常">异常</h2>
+<p>错误码的缺点：无法自动穿透调用栈，必须编写代码并每一层都检查并保存错误码，一直传递，有时候还需要转换；并且<strong>错误码无法携带更多完整信息</strong></p>
+<p>这时我们需要使用异常，包含三个部分：try，catch，throw</p>
+<ul>
+<li>try用于检查后面大括号中代码块所产生的异常</li>
+<li>catch用于捕获和处理上述异常</li>
+<li>throw用于在try中抛出异常</li>
+</ul>
+<p>其中，throw抛出的异常可以是标准库中定义的异常类，传入string类型的参数用于描述异常</p>
+<p>e.g.</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">divide</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (b</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">throw</span><span style="color: #24292E"> </span><span style="color: #6F42C1">runtime_error</span><span style="color: #24292E">(</span><span style="color: #032F62">"Divided by zero"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">/</span><span style="color: #24292E">b;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">try</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> c</span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">divide</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> c </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">catch</span><span style="color: #24292E">(runtime_error</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E"> e){</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">"exception: "</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">e.</span><span style="color: #6F42C1">what</span><span style="color: #24292E">()</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl; </span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="throw">throw</h3>
+<p>C++中可以将各种类型的变量、对象与指针作为异常抛出</p>
+<p>对应在catch代码中要设置为对应类型即可捕获到对应异常</p>
+<p>一般推荐使用自定义或标准库中的异常类，如可以创建错误类继承自<code>std::exception</code>类，并手动修改异常</p>
+<h3 id="catch">catch</h3>
+<p>catch代码块只能捕捉到括号中指定的类型，如果捕获的是类对象，则可以捕获到该类以及继承类中的对象</p>
+<p>一个try代码块可以跟多个catch代码块，原则：越专用的越靠前，越通用的越靠后</p>
+<p>对于未知异常，可以使用<code>catch(...)</code>捕获，不过不建议捕获自己代码无法处理的异常，而是留给能处理的代码或者让程序终止</p>
+<h3 id="资源管理">资源管理</h3>
+<p>当函数中内存释放的部分出现在了异常后，则会在抛出异常后结束函数，从而导致内存泄漏</p>
+<p>我们可以使用类进行封装，当类对象被自动释放时，会调用析构函数进行释放</p>
+<p>我们也可以使用智能指针来封装，当抛出异常后，封装的对象会被自动释放</p>
+<p>上述资源管理的方式称为RAII(Resource Acquisition Is
+Initialization)</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3552,167 +3722,6 @@ namespace可以引入某个命名空间中的所有名称，这样就可以直�
 <span class="line"><span style="color: #24292E">coroFunc resumed</span></span>
 <span class="line"><span style="color: #24292E">main finished</span></span></code></pre></div></div></figure>
 <p>根据返回结果，证明了函数调用的顺序是ready-&gt;suspend-&gt;resume</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%BC%95%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/C++/%E5%BC%95%E7%94%A8/" class="post-title-link" itemprop="url">【C++】引用</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:24:14 / 修改时间：17:24:56" itemprop="dateCreated datePublished" datetime="2025-07-31T17:24:14+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="引用">引用</h1>
-<h2 id="语法">语法</h2>
-<p>本质：引用在内部的实现是一个<strong>指针常量</strong>（指针指向不可修改，但指针指向的值可修改）</p>
-<p>作用：即给变量起别名，即两者操作同一块内存</p>
-<p>语法：<code>&lt;数据类型&gt; &amp;&lt;别名&gt; = &lt;原名&gt;</code></p>
-<p>注意：</p>
-<ul>
-<li>引用必须初始化</li>
-<li>引用在初始化后不可改变</li>
-</ul>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a;</span><span style="color: #6A737D"> // b 是 a 的引用</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"a: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> a </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl; </span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"b: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">20</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 修改 b 的值, a 的值也会改变</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"a: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> a </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"b: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="引用作为函数参数">引用作为函数参数</h2>
-<p>作用：函数传参时可以让形参修饰实参</p>
-<p>优点：简化指针修改实参</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Swap</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">b</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 使用形参修饰实参</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a;</span></span>
-<span class="line"><span style="color: #24292E">  a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b;</span></span>
-<span class="line"><span style="color: #24292E">  b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> temp;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">20</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">Swap</span><span style="color: #24292E">(a, b);</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"a: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> a </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"b: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="引用作为函数返回值">引用作为函数返回值</h2>
-<p>作用：</p>
-<ul>
-<li>引用可以作为函数的返回值存在</li>
-<li>函数的调用可以作为左值</li>
-</ul>
-<p><strong>不要返回局部变量引用</strong></p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #6A737D">// 函数返回引用</span></span>
-<span class="line"><span style="color: #6A737D">// 注意：返回局部变量的引用是危险的，因为局部变量在函数结束后会被销毁</span></span>
-<span class="line"><span style="color: #D73A49">int&amp;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">test</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span><span style="color: #6A737D"> //静态变量，存在全局区</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a;</span><span style="color: #6A737D"> // 返回局部变量的引用</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">ref </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">test</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"ref: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> ref </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span><span style="color: #6A737D"> // 输出 10</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">test</span><span style="color: #24292E">() </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">20</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 返回引用的函数的调用可以作为左值, 相当于直接对a赋值</span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"ref: "</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> ref </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span><span style="color: #6A737D"> // 输出 20</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>## 常量引用</p>
-<p>常量引用常用来修饰形参，防止误操作</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print</span><span style="color: #24292E">(</span><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">val</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #6A737D">  // 由于此处是引用，在函数内部对val进行修改，外部的b也会改变</span></span>
-<span class="line"><span style="color: #6A737D">  // 形参前加const后，val变成了一个常量引用，内部val就不允许修改了</span></span>
-<span class="line"><span style="color: #6A737D">  // val = 1000; </span></span>
-<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> val;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #6A737D">  // 常量引用，相当于编译器自动创建了一个临时空间，并将ref指向该空间</span></span>
-<span class="line"><span style="color: #6A737D">  // 此时不许修改</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int&amp;</span><span style="color: #24292E"> ref </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">; </span></span>
-<span class="line"><span style="color: #24292E">  </span></span>
-<span class="line"><span style="color: #6A737D">  // 实际应用</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">100</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">print</span><span style="color: #24292E">(b);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 
       
     </div>

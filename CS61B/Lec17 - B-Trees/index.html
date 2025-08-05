@@ -19,19 +19,19 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"izayoisakuye.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Lec17 - B-Trees BST Height BST在最好情况与最坏情况下的树高，以及对应时间复杂度差异很大  最好情况下（完全二叉树）为 最坏情况下（成链）为  其中这两种描述是最具体的 高度、深度与平均深度  节点深度指的是离根节点的距离 树的高度指的是最深的叶子节点的深度 平均深度指的是每个节点深度和的平均值  如果我们随机向BST中插入或删除节点，可以发">
+    <meta name="description" content="CS61B的第17讲，介绍了B树，2-3-4树等的构成原理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【CS61B】Lec17-B-Trees">
 <meta property="og:url" content="https://izayoisakuye.github.io/CS61B/Lec17%20-%20B-Trees/index.html">
 <meta property="og:site_name" content="红魔咖啡馆">
-<meta property="og:description" content="Lec17 - B-Trees BST Height BST在最好情况与最坏情况下的树高，以及对应时间复杂度差异很大  最好情况下（完全二叉树）为 最坏情况下（成链）为  其中这两种描述是最具体的 高度、深度与平均深度  节点深度指的是离根节点的距离 树的高度指的是最深的叶子节点的深度 平均深度指的是每个节点深度和的平均值  如果我们随机向BST中插入或删除节点，可以发">
+<meta property="og:description" content="CS61B的第17讲，介绍了B树，2-3-4树等的构成原理">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://izayoisakuye.github.io/CS61B/Lec17%20-%20B-Trees/image-20250731203714505.png">
 <meta property="og:image" content="https://izayoisakuye.github.io/CS61B/Lec17%20-%20B-Trees/image-20250731203719417.png">
 <meta property="og:image" content="https://izayoisakuye.github.io/CS61B/Lec17%20-%20B-Trees/image-20250731203957659.png">
 <meta property="og:image" content="https://izayoisakuye.github.io/CS61B/Lec17%20-%20B-Trees/image-20250731205409999.png">
 <meta property="article:published_time" content="2025-07-31T13:10:03.936Z">
-<meta property="article:modified_time" content="2025-07-31T13:10:24.745Z">
+<meta property="article:modified_time" content="2025-08-05T13:06:04.876Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="CS61B">
@@ -265,7 +265,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">102</span>
+          <span class="site-state-item-count">103</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -317,7 +317,7 @@ mjx-container[display="true"] + br {
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="【CS61B】Lec17-B-Trees | 红魔咖啡馆">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="CS61B的第17讲，介绍了B树，2-3-4树等的构成原理">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -331,9 +331,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2025-07-31 21:10:03 / 修改时间：21:10:24" itemprop="dateCreated datePublished" datetime="2025-07-31T21:10:03+08:00">2025-07-31</time>
+      <time title="创建时间：2025-07-31 21:10:03" itemprop="dateCreated datePublished" datetime="2025-07-31T21:10:03+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-05 21:06:04" itemprop="dateModified" datetime="2025-08-05T21:06:04+08:00">2025-08-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -348,6 +354,7 @@ mjx-container[display="true"] + br {
   
 </div>
 
+            <div class="post-description">CS61B的第17讲，介绍了B树，2-3-4树等的构成原理</div>
         </div>
       </header>
 
@@ -377,13 +384,13 @@ mjx-container[display="true"] + br {
 <p>但我们为了寻找元素，需要遍历同一个节点的多个值，花费时间与形成列表的长度有关</p>
 <p>我们可以设置一个长度限制，当一个节点中值的数量超过了限制，就把中间的值给他的父节点</p>
 <p>若出现节点值位于父节点两个值之间的节点，则让他们单独成一个节点</p>
-<style>.gfzhcwdrgnfm{zoom:50%;}</style>
-<img src="/CS61B/Lec17%20-%20B-Trees/image-20250731203714505.png" class="gfzhcwdrgnfm" alt="image-20250731203714505">
-<style>.izonfudarhvy{zoom:50%;}</style>
-<img src="/CS61B/Lec17%20-%20B-Trees/image-20250731203719417.png" class="izonfudarhvy" alt="image-20250731203719417">
+<style>.oxmrkbigbvpi{zoom:50%;}</style>
+<img src="/CS61B/Lec17%20-%20B-Trees/image-20250731203714505.png" class="oxmrkbigbvpi" alt="image-20250731203714505">
+<style>.xpvleykrdldj{zoom:50%;}</style>
+<img src="/CS61B/Lec17%20-%20B-Trees/image-20250731203719417.png" class="xpvleykrdldj" alt="image-20250731203719417">
 <p>若根中的值超过限制，我们取中间的值作为新的根节点，让树增加一层</p>
-<style>.srfupoydmfvj{zoom: 50%;}</style>
-<img src="/CS61B/Lec17%20-%20B-Trees/image-20250731203957659.png" class="srfupoydmfvj" alt="B-T">
+<style>.uxdltmrshucs{zoom: 50%;}</style>
+<img src="/CS61B/Lec17%20-%20B-Trees/image-20250731203957659.png" class="uxdltmrshucs" alt="B-T">
 <p>观察发现，这种树有着很好的平衡性</p>
 <ul>
 <li>若分离根节点，所有节点都会下移一层</li>
