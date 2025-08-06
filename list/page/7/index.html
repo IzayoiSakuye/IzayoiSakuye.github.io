@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">103</span>
+          <span class="site-state-item-count">106</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,542 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Composition/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Composition/" class="post-title-link" itemprop="url">【CS61A】CS61A——Composition</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:48:53" itemprop="dateModified" datetime="2025-07-31T17:48:53+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="composition">Composition</h1>
+<h2 id="linked-list">Linked List</h2>
+<p>用Python实现链表 -
+每个节点由<code>first</code>与<code>rest</code>组成，前者表示值，后者表示链接的剩余链表
+- 将每个节点当作一堆二元组看待 -
+最后一个节点指向空链表<code>Link.empty</code>，使用类属性表示 -
+构造方式：<code>Link(3, Link(4, Link(5, Link.empty)))</code> ###
+创建链表</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Link</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># 使用空元组实现空节点，类属性</span></span>
+<span class="line"><span style="color: #24292E">    empty </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ()</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, first, rest</span><span style="color: #D73A49">=</span><span style="color: #24292E">empty):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># 判断rest是否是空节点或是一个Link类</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty </span><span style="color: #D73A49">or</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(rest, Link)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> rest</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Link(</span><span style="color: #005CC5">3</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">4</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)))</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.first)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.rest.first)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.rest.rest.first)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.rest.rest.rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty)</span></span></code></pre></div></div></figure>
+<h3 id="操作列表">操作列表</h3>
+<p>实现如下行为：<code>range</code>, <code>map</code>,
+<code>filter</code> 我们使用递归实现</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Link</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># 使用空元组实现空节点，类属性</span></span>
+<span class="line"><span style="color: #24292E">    empty </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ()</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, first, rest</span><span style="color: #D73A49">=</span><span style="color: #24292E">empty):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># 判断rest是否是空节点或是一个Link类</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty </span><span style="color: #D73A49">or</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(rest, Link)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> rest</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">range_link</span><span style="color: #24292E">(start, end):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> start</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">end:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link.empty</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link(start, range_link(start</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, end))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">map_link</span><span style="color: #24292E">(f, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link(f(s.first), map_link(f, s.rest))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">filter_link</span><span style="color: #24292E">(f, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span>
+<span class="line"><span style="color: #24292E">    filter_rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">filter</span><span style="color: #24292E">(f, s.rest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> f(s.first):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link(s.first, filter_rest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> filter_rest</span></span></code></pre></div></div></figure>
+<h3 id="链表的改变">链表的改变</h3>
+<p>可以通过对属性赋值来改变链表的<code>first</code>和<code>rest</code>属性</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Link(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">2</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)))</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s.rest</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> t.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s</span><span style="color: #B31D28; font-style: italic">;</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s.first</span></span>
+<span class="line"><span style="color: #005CC5">5</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s.rest.rest.rest.rest.rest.first</span></span>
+<span class="line"><span style="color: #005CC5">2</span></span></code></pre></div></div></figure>
+<p>此赋值将s的后段与前段相接，创建了一个循环链表</p>
+<h3 id="插入节点">插入节点</h3>
+<p>向一个有序链表中添加节点，保证链表仍有序</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add</span><span style="color: #24292E">(s, v):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> s </span><span style="color: #D73A49">is</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> Link.empty</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> v:</span></span>
+<span class="line"><span style="color: #24292E">        s.first, s.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v, Link(s.first, s.rest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">and</span><span style="color: #24292E"> s.rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty:</span></span>
+<span class="line"><span style="color: #24292E">        s.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Link(v)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> v:</span></span>
+<span class="line"><span style="color: #24292E">        add(s.rest, v)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span></code></pre></div></div></figure>
+<h2 id="tree-class">Tree Class</h2>
+<p>使用类实现树 ### 创建树</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Tree</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, label, branches </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.label </span><span style="color: #D73A49">=</span><span style="color: #24292E"> label</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> branch </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(branch, Tree)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">list</span><span style="color: #24292E">(branches)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches:</span></span>
+<span class="line"><span style="color: #24292E">            branches_str </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">', '</span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">repr</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            branch_str </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">''</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Tree(</span><span style="color: #005CC5">{0}{1}</span><span style="color: #032F62">)'</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">repr</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.label), branch_str)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__str__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'</span><span style="color: #005CC5">\n</span><span style="color: #032F62">'</span><span style="color: #24292E">.join(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.indented())</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">indented</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        lines </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">for</span><span style="color: #24292E"> line </span><span style="color: #D73A49">in</span><span style="color: #24292E"> b.indented():</span></span>
+<span class="line"><span style="color: #24292E">                lines.append(</span><span style="color: #032F62">'    '</span><span style="color: #D73A49">+</span><span style="color: #24292E">line)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [</span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.label)] </span><span style="color: #D73A49">+</span><span style="color: #24292E"> lines</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_leaf</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches</span></span></code></pre></div></div></figure>
+<h3 id="实现一些操作">实现一些操作</h3>
+<p>如下代码实现了创建斐波那契树以及输出叶子节点</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fib_tree</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Tree(n)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fib_tree(n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        right </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fib_tree(n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        fib_n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> left.label </span><span style="color: #D73A49">+</span><span style="color: #24292E"> right.label</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Tree(fib_n, [left, right])</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">leaves</span><span style="color: #24292E">(t):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> t.is_leaf():</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [t.label]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        all_leaves </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t.branches:</span></span>
+<span class="line"><span style="color: #24292E">            all_leaves.extend(leaves(b))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> all_leaves</span></span></code></pre></div></div></figure>
+<h3 id="剪枝">剪枝</h3>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 通过每次重新构建branches列表，将等于n的值排除在列表外以实现</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">prune</span><span style="color: #24292E">(t, n):</span></span>
+<span class="line"><span style="color: #24292E">    t.branches </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [b </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t.branches </span><span style="color: #D73A49">if</span><span style="color: #24292E"> b.label</span><span style="color: #D73A49">!=</span><span style="color: #24292E">n]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t.branches:</span></span>
+<span class="line"><span style="color: #24292E">        prune(b, n)</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Representations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Representations/" class="post-title-link" itemprop="url">【CS61A】CS61A——Representations</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:52:23" itemprop="dateModified" datetime="2025-07-31T17:52:23+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="representations">Representations</h1>
+<h2 id="string-representations">String Representations</h2>
+<p>字符串用来表达语言与程序<br>
+Python中，有两种字符串表达 - <code>str</code>：对人类可读 -
+<code>repr</code>：对解释器刻可读 这两种一般相同，但也有不同之处<br>
+### repr String for an Object
+repr函数返回一个python表达式(字符串)，该表达式会评估为一个等同的对象<br>
+对一个对象的repr调用eval会给你一个与原始对象等价的对象<br>
+调用repr的结果与在python交互界面输出的结果相同</p>
+<h3 id="str-string-for-an-object">str String for an Object</h3>
+<p>str函数接受任何对象，返回一个字符串，字符串是原始对象的人类可以解释的表示<br>
+对表达式调用str的结果与调用print时输出的结果相同</p>
+<h2 id="f-strings">F-strings</h2>
+<h3 id="string-interpolation">String Interpolation</h3>
+<p>字符串插值包括对一些含有表达式的字符串字面量求值 -
+可以使用+进行字符串连接实现 <code>'pi starts with'+str(pi)+'...'</code>
+- 也可以使用f-string功能实现字符串插值
+<code>f'pi starts with {pi}'</code>
+花括号中的将会作为表达式看待并给出计算结果 f-string的计算结果包括str
+string和子表达式的值</p>
+<h2 id="polymorphic-functions">Polymorphic Functions</h2>
+<p>多态函数是一种适用于多种数据类型的函数<br>
+如str和repr函数都是多态函数，它们接受任何类型的对象<br>
+原理：repr调用了一个零参数方法<code>__repr__</code>以便在参数上获取他返回的repr字符串<br>
+str同样调用一个 零参数方法<code>__str__</code><br>
+对于repr函数：</p>
+<ul>
+<li>repr函数内部只调用了一个名为repr的类属性，而实例属性<code>__repr__</code>被忽略了</li>
+<li>实现如下：</li>
+</ul>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">repr</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">type</span><span style="color: #24292E">(x).</span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(x)</span></span></code></pre></div></div></figure>
+<p>对于str函数： - 实例属性<code>__str__</code>被忽略了 -
+若类上根本没有<code>__str__</code>属性，则调用str只会返回repr返回的内容</p>
+<h3 id="interface">Interface</h3>
+<p>对象传递信息的方式：通过互相查找属性或方法<br>
+属性的查找规则允许不同数据类型通过具有相同属性名称来响应相同信息</p>
+<p>共享信息：在许多不同类上引起相似行为的属性名称<br>
+接口：一组共享信息与一些规范（表示其含义）</p>
+<p>如实现__repr__与__str__的类实现了一个接口，一下是用类来展示该接口的代码</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Ratio</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, n, d):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Ratio(</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">, </span><span style="color: #005CC5">{1}</span><span style="color: #032F62">)'</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__str__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">/</span><span style="color: #005CC5">{1}</span><span style="color: #032F62">'</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span></code></pre></div></div></figure>
+<p>当我们令<code>half = Ratio(1,2)</code>，直接打印half，输出为可读版本，而直接在解释器展示half，就会输出python表达式</p>
+<h2 id="special-method-names">Special Method Names</h2>
+<p>python中，以两个下划线包围的名字表示它们具有某种内置行为 -
+<code>__init__</code>：构造对象时会自动调用的方法 -
+<code>__repr__</code>：将对象以python表达式的方式输出，在交互式python界面时用于显示值的方法
+- <code>__add__</code>：用于将一个对象加入另一个对象 -
+<code>__bool__</code>：用于将一个对象转换为布尔值 -
+<code>__float__</code>：用于将一个对象转换为实数
+同时，以下代码实现了将两个对象相加</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Ratio</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, n, d):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Ratio(</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">, </span><span style="color: #005CC5">{1}</span><span style="color: #032F62">)'</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__str__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">/</span><span style="color: #005CC5">{1}</span><span style="color: #032F62">'</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__add__</span><span style="color: #24292E">(self, other):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(other, </span><span style="color: #005CC5">int</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">            n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer</span><span style="color: #D73A49">+</span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span><span style="color: #D73A49">*</span><span style="color: #24292E">other</span></span>
+<span class="line"><span style="color: #24292E">            d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(other, Ratio):</span></span>
+<span class="line"><span style="color: #24292E">            n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer</span><span style="color: #D73A49">*</span><span style="color: #24292E">other.denom </span><span style="color: #D73A49">+</span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span><span style="color: #D73A49">*</span><span style="color: #24292E">other.numer</span></span>
+<span class="line"><span style="color: #24292E">            d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span><span style="color: #D73A49">*</span><span style="color: #24292E">other.denom</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(other, </span><span style="color: #005CC5">float</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">float</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #24292E">other</span></span>
+<span class="line"><span style="color: #24292E">        g </span><span style="color: #D73A49">=</span><span style="color: #24292E"> gcd(n,d)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Ratio(n</span><span style="color: #D73A49">//</span><span style="color: #24292E">g, d</span><span style="color: #D73A49">//</span><span style="color: #24292E">g)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">__radd__</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">__add__</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__float__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer</span><span style="color: #D73A49">/</span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(n, d):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> n</span><span style="color: #D73A49">!=</span><span style="color: #24292E">d:</span></span>
+<span class="line"><span style="color: #24292E">        n, d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(n, d), </span><span style="color: #005CC5">abs</span><span style="color: #24292E">(n</span><span style="color: #D73A49">-</span><span style="color: #24292E">d)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> n</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Inheritance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Inheritance/" class="post-title-link" itemprop="url">【CS61A】CS61A——Inheritance</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:50:45" itemprop="dateModified" datetime="2025-07-31T17:50:45+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="inheritance">Inheritance</h1>
+<p>继承是将多个类关联起来的一种方法
+当两个类相似时，可以使用继承，相似的类可能具有与通用类相同的所有属性，外加自带的特殊属性
+<strong>语法：</strong> <figure class="shiki"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">class &lt;name&gt;(&lt;base class&gt;):</span></span>
+<span class="line"><span style="color: #24292e">    &lt;suite&gt;</span></span></code></pre></div></div></figure>
+通过该语句创建的子类与其基类共享所有属性，子类可能会覆盖某些继承的属性，但未更改的保持不变
+当编写子类是，只需要指出其与基类不同之处即可 ## 例
+创建一个支票账户(CheckingAccount)类，作为账户(Account)类的子类</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 类的继承</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CheckingAccount</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Account</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A bank account that charges for withdrawals"""</span></span>
+<span class="line"><span style="color: #24292E">    withdraw_fee </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    interest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0.01</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Account.withdraw(</span><span style="color: #005CC5">self</span><span style="color: #24292E">, amount </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.withdraw_fee)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">ch </span><span style="color: #D73A49">=</span><span style="color: #24292E"> CheckingAccount(</span><span style="color: #032F62">'Tom'</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(ch.interest)</span></span>
+<span class="line"><span style="color: #24292E">ch.deposit(</span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">ch.withdraw(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(ch.balance)</span></span></code></pre></div></div></figure>
+<p>此处我们在Account类的基础上修改了interest属性与withdraw方法，而其余属性与方法可以继续使用</p>
+<h2 id="在类上寻找属性名称">在类上寻找属性名称</h2>
+<p><strong>基类属性不会复制到子类中</strong>，确保了未经修改的属性与基类保持一致，在类中寻找名称遵循如下规则
+- 如果名称为类中的属性，则返回属性值 - 若不在，在其基类中寻找该名称</p>
+<h2 id="面向对象设计">面向对象设计</h2>
+<p>在进行面向对象编程时，建议遵循如下原则 -
+不要重复复制粘贴已经存在的，而是利用已经存在的实现 -
+已被覆盖的属性仍需要通过类来访问</p>
+<p>如以上代码，在计算提款时最佳方式是查找实例本身上的withdraw_fee
+这样，如果当前实例有一个特定的withdraw_fee，我们就使用它，否则使用Account类中的</p>
+<h2 id="继承与组合">继承与组合</h2>
+<p>继承最适合<strong>is-a</strong>关系，如支票账户是(is
+a)账户的特定类型，故适合使用继承
+组合最适合<strong>has-a</strong>关系，如一个银行具有(has
+a)有一组他管理的账户，该组账户是它的一个属性，而不会继承</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Bank</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""a bank has accounts"""</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">     </span><span style="color: #005CC5">self</span><span style="color: #24292E">.accounts</span><span style="color: #D73A49">=</span><span style="color: #24292E">[]   </span><span style="color: #6A737D"># 账户列表</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">open_account</span><span style="color: #24292E">(self, holder, amount, kind </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account):</span></span>
+<span class="line"><span style="color: #24292E">        account </span><span style="color: #D73A49">=</span><span style="color: #24292E"> kind(holder)   </span><span style="color: #6A737D"># 创建某种类型的账户</span></span>
+<span class="line"><span style="color: #24292E">        account.deposit(amount)   </span><span style="color: #6A737D"># 存入amount的钱</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.accounts.append(account)   </span><span style="color: #6A737D"># 将创建的账户加入当前银行的账户列表</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> account</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">pay_interest</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># 计算列表中的利息</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> a </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.accounts:</span></span>
+<span class="line"><span style="color: #24292E">            a.deposit(a.balance</span><span style="color: #D73A49">*</span><span style="color: #24292E">a.interest)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">bank </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Bank()</span></span>
+<span class="line"><span style="color: #24292E">john </span><span style="color: #D73A49">=</span><span style="color: #24292E"> bank.open_account(</span><span style="color: #032F62">'john'</span><span style="color: #24292E">, </span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">jack </span><span style="color: #D73A49">=</span><span style="color: #24292E"> bank.open_account(</span><span style="color: #032F62">'jack'</span><span style="color: #24292E">, </span><span style="color: #005CC5">5</span><span style="color: #24292E">, CheckingAccount)</span></span>
+<span class="line"><span style="color: #24292E">bank.pay_interest()</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(jack.balance)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(john.balance)</span></span></code></pre></div></div></figure>
+<h2 id="多重继承">多重继承</h2>
+<p>一个子类可以有多个基类
+其中，这里直接调用父类<code>account_holder</code>时，使用<code>super()</code>实现了超类调用，防止破坏多重继承的调用逻辑</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 类的多重继承</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SavingsAccount</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Account</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    deposit_fee </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Account.deposit(</span><span style="color: #005CC5">self</span><span style="color: #24292E">, amount</span><span style="color: #D73A49">-</span><span style="color: #005CC5">self</span><span style="color: #24292E">.deposit_fee)</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">GoodAccount</span><span style="color: #24292E">(</span><span style="color: #6F42C1">CheckingAccount</span><span style="color: #24292E">, </span><span style="color: #6F42C1">SavingsAccount</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">super</span><span style="color: #24292E">().</span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(account_holder)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1896,714 +2432,6 @@ True</code></pre>
 <figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">tom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account(</span><span style="color: #032F62">'Tom'</span><span style="color: #24292E">)</span></span>
 <span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(tom.deposit(</span><span style="color: #005CC5">100</span><span style="color: #24292E">))  </span><span style="color: #6A737D"># 调用时只需要一个参数, 方法会自动绑定到self(这里是tom)</span></span></code></pre></div></div></figure>
 <pre><code>100</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Homework4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Homework4/" class="post-title-link" itemprop="url">【CS61A】CS61A——Homework 4</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-03-28 21:47:43" itemprop="dateCreated datePublished" datetime="2025-03-28T21:47:43+08:00">2025-03-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:50:32" itemprop="dateModified" datetime="2025-07-31T17:50:32+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="homework-4">Homework 4</h1>
-<h2 id="sequence">Sequence</h2>
-<h3 id="q1-deep-map">Q1: Deep Map</h3>
-<p>写一个函数<code>deep_map</code>，使得传入的列表s（s可能是嵌套列表）中的每一个元素替换为该元素传入函数f后的返回值</p>
-<p><strong>每一个元素包括嵌套列表中的每一个元素</strong></p>
-<blockquote>
-<p>提示：<code>type(a)==list</code>会返回True如果a是列表</p>
-</blockquote>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deep_map</span><span style="color: #24292E">(f, s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Replace all non-list elements x with f(x) in the nested list s.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">six = [1, 2, [3, [4], 5], 6]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">deep_map(lambda x: x * x, six)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">six</span></span>
-<span class="line"><span style="color: #032F62">    [1, 4, [9, [16], 25], 36]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># Check that you're not making new lists</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = [3, [1, [4, [1]]]]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s1 = s[1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s2 = s1[1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s3 = s2[1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">deep_map(lambda x: x + 1, s)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s</span></span>
-<span class="line"><span style="color: #032F62">    [4, [2, [5, [2]]]]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s1 is s[1]</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s2 is s1[1]</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s3 is s2[1]</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">len</span><span style="color: #24292E">(s)):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">type</span><span style="color: #24292E">(s[i])</span><span style="color: #D73A49">==</span><span style="color: #005CC5">list</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            deep_map(f,s[i])</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            s[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">f(s[i])</span></span></code></pre></div></div></figure>
-<p>遍历列表下标i，如果发现内部有嵌套列表，就递归进入遍历嵌套列表，若当前位置为一般元素，则调用函数并将结果替换</p>
-<h2 id="data-abstraction">Data Abstraction</h2>
-<h3 id="要用到的adt">要用到的ADT</h3>
-<p>Mobile：一种悬挂雕像</p>
-<ul>
-<li>一个mobile一定有一个左arm和一个右arm</li>
-<li>一个arm有一个正数大小的长度，且尾端一定挂着一个mobile或一个planet</li>
-<li>一个planet有一个正数大小的质量，且没有东西挂在上面</li>
-</ul>
-<h3 id="q2-mass">Q2: Mass</h3>
-<p>补充完成构造器planet与选择器mass</p>
-<p>使得每一格planet用一个二元列表表示：<code>['planet', mass]</code></p>
-<p>其中<code>total_mass</code>函数可以用来计算一个planet或一个mobile的质量</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">planet</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mass</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Construct a planet of some mass."""</span></span>
-<span class="line"><span style="color: #24292E">    assert mass </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [</span><span style="color: #032F62">'planet'</span><span style="color: #24292E">, </span><span style="color: #E36209">mass</span><span style="color: #24292E">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">def mass(</span><span style="color: #6F42C1">p</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    """Select the mass of a planet."""</span></span>
-<span class="line"><span style="color: #24292E">    assert is_planet(</span><span style="color: #6F42C1">p</span><span style="color: #24292E">), 'must call mass on a planet'</span></span>
-<span class="line"><span style="color: #24292E">    return p[1]</span></span></code></pre></div></div></figure>
-<p>按照提示构造即可</p>
-<h3 id="q3-balanced">Q3: Balanced</h3>
-<p>实现balanced函数，判断m是否是一个”balanced mobile”</p>
-<p>“balanced mobile”的定义如下：</p>
-<ul>
-<li>左arm的扭矩等于右arm的扭矩，其中扭矩为左arm的长度与挂在左arm上的质量之积</li>
-<li>挂在arm尾端的mobile自身为balanced
-mobile，planet自身也是balanced的</li>
-</ul>
-<blockquote>
-<p>提示：使用<code>total_mass</code>函数，选择器函数，不要逾越ADT的屏障</p>
-</blockquote>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">balanced</span><span style="color: #24292E">(m):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return whether m is balanced.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t, u, v = examples()</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(t)</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(v)</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p = mobile(arm(3, t), arm(2, u))</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(p)</span></span>
-<span class="line"><span style="color: #032F62">    False</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(mobile(arm(1, v), arm(1, p)))</span></span>
-<span class="line"><span style="color: #032F62">    False</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(mobile(arm(1, p), arm(1, v)))</span></span>
-<span class="line"><span style="color: #032F62">    False</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># checking for abstraction barrier violations by banning indexing</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, 'balanced', ['Index'])</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_planet(m):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        torque_left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> length(left(m))</span><span style="color: #D73A49">*</span><span style="color: #24292E">total_mass(end(left(m)))</span></span>
-<span class="line"><span style="color: #24292E">        torque_right </span><span style="color: #D73A49">=</span><span style="color: #24292E"> length(right(m))</span><span style="color: #D73A49">*</span><span style="color: #24292E">total_mass(end(right(m)))</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> torque_left </span><span style="color: #D73A49">==</span><span style="color: #24292E"> torque_right </span><span style="color: #D73A49">and</span><span style="color: #24292E"> balanced(end(left(m))) </span><span style="color: #D73A49">and</span><span style="color: #24292E"> balanced(end(right(m)))</span></span></code></pre></div></div></figure>
-<p>这个结构类似树，我们可以递归的求解这个问题</p>
-<ul>
-<li>Base
-case：若传入的是一个planet，则返回True，因为planet在这个结构中类似叶子节点，是整个mobile的终点</li>
-<li>递归：每次需要比较mobile的左右扭矩是否相等，同时递归比较左右arm下的左右扭矩是否相等，直到递归到planet直接返回True</li>
-</ul>
-<h2 id="trees">Trees</h2>
-<h3 id="q4-maximum-path-sum">Q4: Maximum Path Sum</h3>
-<p>写一个函数，返回树上从根节点到叶子节点的所有路径中节点权值总和最大值</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max_path_sum</span><span style="color: #24292E">(</span><span style="color: #6F42C1">t</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return the maximum root-to-leaf path sum of a tree.</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; t = tree(1, [tree(5, [tree(1), tree(3)]), tree(10)])</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; max_path_sum(t) # 1, 10</span></span>
-<span class="line"><span style="color: #032F62">    11</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; t2 = tree(5, [tree(4, [tree(1), tree(3)]), tree(2, [tree(10), tree(3)])])</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; max_path_sum(t2) # 5, 2, 10</span></span>
-<span class="line"><span style="color: #032F62">    17</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    max_n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_leaf</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">label</span><span style="color: #24292E">(t)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b in </span><span style="color: #6F42C1">branches</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">        max_n</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">max</span><span style="color: #24292E">(</span><span style="color: #6F42C1">max_path_sum</span><span style="color: #24292E">(b),max_n)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> max_n</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">label</span><span style="color: #24292E">(t)</span></span></code></pre></div></div></figure>
-<p>使用递归遍历</p>
-<p>先直接深入到叶子节点，发现叶子节点则返回节点权值，再往前返回，每上一个节点返回已经求和的值+当前节点权值，且每次遍历取当前不同路径的最大值</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Generators/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Generators/" class="post-title-link" itemprop="url">【CS61A】CS61A——Generators</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-03-27 09:28:07" itemprop="dateCreated datePublished" datetime="2025-03-27T09:28:07+08:00">2025-03-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:49:58" itemprop="dateModified" datetime="2025-07-31T17:49:58+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="generators">Generators</h1>
-<h2 id="generator-functions">Generator Functions</h2>
-<ul>
-<li>生成器函数是用来<strong>生成(yields)</strong>值而非返回值的函数</li>
-<li>生成器函数使用yield关键字返回生成的值</li>
-<li>生成器可以多次生成值，而普通函数只能返回一次值</li>
-<li>生成器是调用生成器函数时自动创建的迭代器</li>
-<li>调用生成器函数，它会返回一个生成器来迭代该函数生成的值</li>
-<li>当函数执行到yield时，生成的值将会作为下次迭代器的数值，而此时执行在yield处执行，但会记住当前环境，以便下次继续执行
-e.g.</li>
-</ul>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">evens</span><span style="color: #24292E">(start, end):</span></span>
-<span class="line"><span style="color: #24292E">    even </span><span style="color: #D73A49">=</span><span style="color: #24292E"> start </span><span style="color: #D73A49">+</span><span style="color: #24292E"> (start</span><span style="color: #D73A49">%</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> even</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">end:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> even</span></span>
-<span class="line"><span style="color: #24292E">        even</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">2</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">"__main__"</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> evens(</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(i)</span></span></code></pre></div></div></figure>
-<pre><code>2
-4
-6
-8</code></pre>
-<h2 id="generators-iterators">Generators &amp; Iterators</h2>
-<p>yield from语句 yield from语句允许从一个迭代器或可迭代变量中生成所有值
-两个例子：</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">countdown</span><span style="color: #24292E">(k):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> k</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> k</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> countdown(k</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">'''</span></span>
-<span class="line"><span style="color: #032F62">        等价于 </span></span>
-<span class="line"><span style="color: #032F62">        for i in countdown(k-1):</span></span>
-<span class="line"><span style="color: #032F62">            yield i</span></span>
-<span class="line"><span style="color: #032F62">        '''</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #032F62">'Blast off'</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">"__main__"</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> countdown(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(i)</span></span></code></pre></div></div></figure>
-<pre><code>3
-2
-1
-Blast of</code></pre>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">prefixes</span><span style="color: #24292E">(s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> prefixes(s[:</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">])</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> s</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">substrings</span><span style="color: #24292E">(s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> prefixes(s)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> substrings(s[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:])</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">"__main__"</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(prefixes(</span><span style="color: #032F62">"both"</span><span style="color: #24292E">)))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(substrings(</span><span style="color: #032F62">"top"</span><span style="color: #24292E">)))</span></span></code></pre></div></div></figure>
-<pre><code>['b', 'bo', 'bot', 'both']
-['t', 'to', 'top', 'o', 'op', 'p']</code></pre>
-<h2 id="example-partitions">Example: Partitions</h2>
-<p>详见递归时的数字分割例子 使用列表：</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">partitions</span><span style="color: #24292E">(n,m):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> m</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> []</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        exact_match </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #24292E">m:</span></span>
-<span class="line"><span style="color: #24292E">            exact_match </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">str</span><span style="color: #24292E">(m)]</span></span>
-<span class="line"><span style="color: #24292E">        with_m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [p</span><span style="color: #D73A49">+</span><span style="color: #032F62">'+'</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(m) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> partitions(n</span><span style="color: #D73A49">-</span><span style="color: #24292E">m,m)]</span></span>
-<span class="line"><span style="color: #24292E">        without_m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> partitions(n,m</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> exact_match</span><span style="color: #D73A49">+</span><span style="color: #24292E">with_m</span><span style="color: #D73A49">+</span><span style="color: #24292E">without_m</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">"__main__"</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> partitions(</span><span style="color: #005CC5">6</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(p)</span></span></code></pre></div></div></figure>
-<pre><code>2+4
-1+1+4
-3+3
-1+2+3
-1+1+1+3
-2+2+2
-1+1+2+2
-1+1+1+1+2
-1+1+1+1+1+1</code></pre>
-<p>使用生成器： 使代码更优雅，而且可以输出指定个数的可能结果</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">partitions</span><span style="color: #24292E">(n,m):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> m</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #24292E">m:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(m)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> partitions(n</span><span style="color: #D73A49">-</span><span style="color: #24292E">m,m):</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> p</span><span style="color: #D73A49">+</span><span style="color: #032F62">'+'</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(m)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> partitions(n,m</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">"__main__"</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> partitions(</span><span style="color: #005CC5">6</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(t))</span></span></code></pre></div></div></figure>
-<pre><code>2+4
-1+1+4
-3+3
-1+2+3
-1+1+1+3</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">【数据结构】队列</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-03-26 07:14:37" itemprop="dateCreated datePublished" datetime="2025-03-26T07:14:37+08:00">2025-03-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:55:29" itemprop="dateModified" datetime="2025-07-31T17:55:29+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="队列">队列</h1>
-<h2 id="特点">特点</h2>
-<ul>
-<li>只允许在表的一端插入，而在另一端删除</li>
-<li>允许插入的一端被称为队尾（rear），允许删除的一端被称为队头（front）</li>
-<li>队列遵循<strong>先进先出（FIFO）</strong>的原则</li>
-</ul>
-<h2 id="顺序表实现">顺序表实现</h2>
-<h3 id="建表">建表</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ElemType;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">  ElemType data[MAXSIZE];</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> front;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> rear;</span></span>
-<span class="line"><span style="color: #24292E">}</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
-<h3 id="初始化">初始化</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initQueue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;front </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;rear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="判空">判空</h3>
-<p>判断首尾相遇即为空（并非为0）</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 判空</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">isEmpty</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (Q-&gt;front </span><span style="color: #D73A49">==</span><span style="color: #24292E"> Q-&gt;rear){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"Empty"</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="出队">出队</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 出队</span></span>
-<span class="line"><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dequeue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">isEmpty</span><span style="color: #24292E">(Q)){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"Empty"</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  } </span></span>
-<span class="line"><span style="color: #24292E">  ElemType e </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Q-&gt;data[Q-&gt;front];</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;front</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> e;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="入队">入队</h3>
-<p>队列不满时才能入队，但有一种特殊情况：</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250321142019294.png" class="" title="入队-1">
-<p>此时队尾在最后，但队头在中间，意味着已经有数据出队，此时队列里仍有位置</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250321142256990.png" class="" title="入队-2">
-<p>这时我们需要将数据移到队头，使队尾向前以便插入元素</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 判断队列是否满</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">queueFull</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (Q-&gt;front </span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">){</span><span style="color: #6A737D"> //说明front在中间，前面还有位置</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> step </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Q-&gt;front;</span><span style="color: #6A737D"> // 取front的位置</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Q-&gt;front; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">Q-&gt;rear; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 遍历已经有元素的位置</span></span>
-<span class="line"><span style="color: #24292E">      Q-&gt;data[i</span><span style="color: #D73A49">-</span><span style="color: #24292E">step] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Q-&gt;data[i];</span><span style="color: #6A737D"> // 向前移动到头</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    Q-&gt;front </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 让front指向0</span></span>
-<span class="line"><span style="color: #24292E">    Q-&gt;rear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Q-&gt;rear </span><span style="color: #D73A49">-</span><span style="color: #24292E"> step;</span><span style="color: #6A737D"> // rear往前调整</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #6A737D">// 入队</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">enqueue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (Q-&gt;rear </span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">MAXSIZE){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #6F42C1">queueFull</span><span style="color: #24292E">(Q)){</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;data[Q-&gt;rear] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;rear</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>注意，该方法时间复杂度较大，对于大量数据可能效率会很低</p>
-<h3 id="获取队头元素">获取队头元素</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 获取队头元素</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getHead</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">isEmpty</span><span style="color: #24292E">(Q)){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"Empty"</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">*</span><span style="color: #24292E">e </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Q-&gt;data[Q-&gt;front];</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="动态分配内存">动态分配内存</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ElemType;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">  ElemType </span><span style="color: #D73A49">*</span><span style="color: #24292E">data;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> front;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> rear;</span></span>
-<span class="line"><span style="color: #24292E">}</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 初始化队列</span></span>
-<span class="line"><span style="color: #6F42C1">Queue</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initQueue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  Queue </span><span style="color: #D73A49">*</span><span style="color: #24292E">q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Queue</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Queue));</span></span>
-<span class="line"><span style="color: #24292E">  q-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (ElemType)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(ElemType)</span><span style="color: #D73A49">*</span><span style="color: #24292E">MAXSIZE);</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;front </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;rear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> q;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="循环队列">循环队列</h2>
-<p>循环队列可以避免整体移动位置的情况</p>
-<p>即让front指向队头的前一个元素，rear指向队尾元素</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325190247849.png" class="" title="循环队列">
-<h3 id="入队-1">入队</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 入队</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">enqueue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">Q</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> ((Q-&gt;rear</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">%</span><span style="color: #24292E">MAXSIZE </span><span style="color: #D73A49">==</span><span style="color: #24292E"> Q-&gt;front){</span><span style="color: #6A737D"> // 循环队列判满</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"Full"</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;data[Q-&gt;rear] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
-<span class="line"><span style="color: #24292E">  Q-&gt;rear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Q-&gt;rear</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">%</span><span style="color: #24292E">MAXSIZE;</span><span style="color: #6A737D"> // 循环在队尾加1</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>取余保证在0到MAXSIZE-1的范围内循环下标</p>
-<h3 id="填不满的循环队列">填不满的循环队列</h3>
-<p>有这么一种情况：</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325191758942.png" class="" title="循环队列的bug">
-<p>在上次入队后，rear+1，队尾到达0位置</p>
-<p>此时若再进行入队操作，首先判断<code>(Q-&gt;rear+1)%MAXSIZE</code>，结果为1，此时正好满足<code>rear==front</code>意为堆满</p>
-<p>但实际上还留有一个位置，用于判断堆满（与队空区分），若不留空则队满与队空的判断条件一样，无法判断</p>
-<h3 id="计算元素个数">计算元素个数</h3>
-<ol type="1">
-<li><strong>rear&gt;front</strong></li>
-</ol>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325193014057.png" class="" title="元素个数1">
-<p>此时元素个数=<code>rear-front</code></p>
-<ol start="2" type="1">
-<li><strong>rear&gt;front</strong></li>
-</ol>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325193235681.png" class="" title="元素个数2">
-<p>分两块计算：0到rear与front到maxsize</p>
-<p>即元素个数=<code>rear+1+MAXSIZE-front-1</code>=<code>rear-front+MAXSIZE</code></p>
-<p>综上，计算公式可以写作<code>(rear-front+MAXSIZE)%MAXSIZE</code></p>
-<h3 id="另两种循环队列">另两种循环队列</h3>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325194256752.png" class="" title="type1">
-<p>此时front指向当前队头元素，rear指向队尾元素的后一个元素</p>
-<p>队空：<code>front==rear</code></p>
-<p>队满：<code>front=(rear+1)%MAXSIZE</code>，也要空出一个位置</p>
-<p>元素个数：与上一种一样</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325195911661.png" class="" title="type2">
-<p>此时front指向队头元素，rear指向队尾元素</p>
-<p>队空：<code>front=(rear+1)%MAXSIZE</code></p>
-<p>入队情况有两种：</p>
-<p>第一种是<strong>先入队再判满</strong></p>
-<p>可以发现当<code>rear==front</code>时，队中有一个元素</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325200400276.png" class="" title="full">
-<p>为了留一个空位判断队空队满，所以当<code>front==(rear+2)%MAXSIZE</code>时有队满</p>
-<p>元素个数：</p>
-<ol type="1">
-<li><p>rear&gt;front</p>
-<p>此时元素个数=<code>rear-front+1</code></p></li>
-<li><p>rear&lt;front</p></li>
-</ol>
-<p>​ 分两块讨论，0到rear与front到maxsize</p>
-<p>​ 即元素个数=<code>rear+1+MAXSIZE-front</code></p>
-<p>综上，元素个数=<code>(rear-front+1+MAXSIZE)%MAXSIZE</code></p>
-<h2 id="链表实现">链表实现</h2>
-<h3 id="构建队列">构建队列</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ElemType;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">QueueNode</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  ElemType data;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">QueueNode</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">next;</span></span>
-<span class="line"><span style="color: #24292E">}</span><span style="color: #6F42C1">QueueNode</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Queue</span></span>
-<span class="line"><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">  QueueNode </span><span style="color: #D73A49">*</span><span style="color: #24292E">front;</span></span>
-<span class="line"><span style="color: #24292E">  QueueNode </span><span style="color: #D73A49">*</span><span style="color: #24292E">rear;</span></span>
-<span class="line"><span style="color: #24292E">}</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
-<p>这里多定义了一个结构体Queue，记录队头与队尾指针，而QueueNode为存储数据的链表</p>
-<h3 id="初始化-1">初始化</h3>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 初始化</span></span>
-<span class="line"><span style="color: #6F42C1">Queue</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initQueue</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">    Queue</span><span style="color: #D73A49">*</span><span style="color: #24292E"> q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Queue</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Queue));</span></span>
-<span class="line"><span style="color: #24292E">    QueueNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (QueueNode</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(QueueNode));</span><span style="color: #6A737D"> // 定义一个头节点</span></span>
-<span class="line"><span style="color: #24292E">    node-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 头节点的data为0</span></span>
-<span class="line"><span style="color: #24292E">    node-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 空队列</span></span>
-<span class="line"><span style="color: #24292E">    q-&gt;front </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node;</span><span style="color: #6A737D"> // 队头指向头节点</span></span>
-<span class="line"><span style="color: #24292E">    q-&gt;rear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node;</span><span style="color: #6A737D"> // 队尾指向头节点</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> q;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="入队-2">入队</h3>
-<p>使用尾插法，此时认为队头为首节点，队尾为尾节点</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325202418686.png" class="" title="链表实现-插入节点1">
-<p>创建新节点</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325202444945.png" class="" title="链表实现-插入节点2">
-<p>让头节点的next指向该节点</p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325202513666.png" class="" title="链表实现-插入节点3">
-<p>尾指针后移一位</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 入队</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">enqueue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">q</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  QueueNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (QueueNode</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(QueueNode));</span></span>
-<span class="line"><span style="color: #24292E">  node-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
-<span class="line"><span style="color: #24292E">  node-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  q-&gt;rear-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node;</span><span style="color: #6A737D"> // 原来队尾指针指向节点的next指向新节点</span></span>
-<span class="line"><span style="color: #24292E">  q-&gt;rear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node;</span><span style="color: #6A737D"> // 队尾指针移到新节点</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h3 id="出队-1">出队</h3>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325203533196.png" class="" title="链表实现-出队1">
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/image-20250325203602101.png" class="" title="链表实现-出队2">
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 出队</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dequeue</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Queue</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">q</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  QueueNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> node </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q-&gt;front-&gt;next;</span><span style="color: #6A737D"> // 要删除的节点是头节点的后一个节点（对头结点）</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">*</span><span style="color: #24292E">e </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node-&gt;data;</span><span style="color: #6A737D"> // 取出要删除的元素</span></span>
-<span class="line"><span style="color: #24292E">  q-&gt;front-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> node-&gt;next;</span><span style="color: #6A737D"> // 让头节点的下一个元素指向要删除节点的下一个元素</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (q-&gt;rear </span><span style="color: #D73A49">==</span><span style="color: #24292E"> node){</span><span style="color: #6A737D"> // 若只有一个节点（删除的是尾节点）</span></span>
-<span class="line"><span style="color: #24292E">    q-&gt;rear </span><span style="color: #D73A49">==</span><span style="color: #24292E"> q-&gt;front;</span><span style="color: #6A737D"> // 讲队列设为空</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">free</span><span style="color: #24292E">(node);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="单调队列">单调队列</h2>
-<p>假设有一个数组(如<code>[5,2,6,3,7,2,5,3]</code>)，使用滑动窗口，通过对l++,
-r++实现让数字进入进出窗口</p>
-<p>单调队列可以实现在滑动窗口每一时刻获得窗口中的
-最大最小值，以低成本</p>
-<p>单调队列通过双端队列实现，假设要求最大值，则双端队列从头到尾依次是从大到小，存储的是元素下标</p>
-<p><strong>右侧拓展：</strong></p>
-<p>队列为空时，第一个元素的下标进入(0-&gt;5)</p>
-<p>若下一个元素进入满足严格从大到小，则进入，否则将最尾端元素弹出，直到满足从大到小</p>
-<p><strong>左侧收缩：</strong></p>
-<p>滑动窗口滑动，则不在指定范围内的下标从队头弹出</p>
-<p>由此可以发现，每时最大值应为<strong>队头下标对应元素</strong></p>
-<p><strong>How？</strong></p>
-<p>单调队列维持了每次最值的可能性</p>
-<p>满足严格从大到小的顺序的队列保证了在前一个元素从队头弹出的情况下，下一个元素成为最大值</p>
-<p>由于窗口不回退，当更大的数进入时，前面比它小的数便没有机会成为某时刻的最大值了，故可以弹出</p>
-<p><strong>时间复杂度：</strong>最坏<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="5.495ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2429 1000"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z"></path></g><g data-mml-node="mo" transform="translate(763,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mi" transform="translate(1152,0)"><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z"></path></g><g data-mml-node="mo" transform="translate(2040,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container></span></p>
 
       
     </div>
