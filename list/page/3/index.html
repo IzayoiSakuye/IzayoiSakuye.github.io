@@ -213,7 +213,7 @@ mjx-container[display="true"] + br {
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">22</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
   </ul>
 </nav>
 
@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-count">107</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -263,7 +263,7 @@ mjx-container[display="true"] + br {
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -280,6 +280,177 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec10%20-%20Iterators,%20Object%20Methods/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61B/Lec10%20-%20Iterators,%20Object%20Methods/" class="post-title-link" itemprop="url">【CS61B】Lec10-Iterators, Object Methods</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:44:21" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="lec10---iterators-object-methods">Lec10 - Iterators, Object
+Methods</h1>
+<h2 id="iterators">Iterators</h2>
+<p>使用迭代器可以让自己的数据类型可以被迭代（支持for-each loop）</p>
+<ul>
+<li>需要让对应类实现<code>Iterable</code>接口</li>
+<li>具有<code>Iterator</code>方法来返回迭代器对象（实现一个嵌套类）</li>
+<li>迭代器需要具有<code>hasNext()</code>和<code>next()</code>方法</li>
+</ul>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #B31D28; font-style: italic">L</span><span style="color: #24292E">ec10;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> java.util.Iterator;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ArraySet</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">T</span><span style="color: #24292E">&gt; </span><span style="color: #D73A49">implements</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Iterable</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">T</span><span style="color: #24292E">&gt; {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">T</span><span style="color: #24292E">[] items;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ArraySet</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        items </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (</span><span style="color: #D73A49">T</span><span style="color: #24292E">[]) </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #D73A49">Object</span><span style="color: #24292E">[</span><span style="color: #005CC5">100</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ArraySetIterator</span><span style="color: #24292E"> </span><span style="color: #D73A49">implements</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Iterator</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">T</span><span style="color: #24292E">&gt;{</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> pos;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">ArraySetIterator</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">            pos </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        @</span><span style="color: #D73A49">Override</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">boolean</span><span style="color: #24292E"> </span><span style="color: #6F42C1">hasNext</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (pos</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">size){</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">            }</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        @</span><span style="color: #D73A49">Override</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> T </span><span style="color: #6F42C1">next</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">            T itemToReturn </span><span style="color: #D73A49">=</span><span style="color: #24292E"> items[pos];</span></span>
+<span class="line"><span style="color: #24292E">            pos</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> itemToReturn;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> Iterator&lt;</span><span style="color: #D73A49">T</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">iterator</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ArraySetIterator</span><span style="color: #24292E">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>（注：仅有迭代器部分，没有其他具体实现）</p>
+<h2 id="object-method">Object Method</h2>
+<p>Java中所有类都是Object的子类</p>
+<h3 id="tostring">toString()</h3>
+<p>给予一个object的字符串表示</p>
+<p>println方法也调用了toString()方法</p>
+<p>该方法类似于python中的repr方法，可以给类一个自定义的字符串输出形式</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #D73A49">Override</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> String </span><span style="color: #6F42C1">toString</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    StringBuilder stringToReturn </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">StringBuilder</span><span style="color: #24292E">(</span><span style="color: #032F62">"{"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(T x</span><span style="color: #D73A49">:</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        stringToReturn.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(x);</span></span>
+<span class="line"><span style="color: #24292E">        stringToReturn.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">", "</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    stringToReturn.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">"}"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> stringToReturn.</span><span style="color: #6F42C1">toString</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="this">this</h3>
+<p>this是当前对象的一个引用，可以使用this来访问自己的实例变量和方法</p>
+<p>但java中this是不必须的</p>
+<p>若方法中的局部变量和实例变量重名，此时必须要用this加以区分</p>
+<h3 id="equals">equals()</h3>
+<p>equals()方法通过判断两个对象的地址来判断是否相同</p>
+<p>当然，可以通过重写方法来改变其他判断相同的方法</p>
+<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #D73A49">Override</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">boolean</span><span style="color: #24292E"> </span><span style="color: #6F42C1">equals</span><span style="color: #24292E">(Object o){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (o </span><span style="color: #D73A49">instanceof</span><span style="color: #24292E"> ArraySet uSet){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #005CC5">this</span><span style="color: #24292E">.size </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> uSet.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">()){</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (T x</span><span style="color: #D73A49">:</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">uSet.</span><span style="color: #6F42C1">contains</span><span style="color: #24292E">(x)){</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">            }</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>其中，关键字<code>A instanceof B</code>的用处如下</p>
+<ul>
+<li>检查o是否指向类B，若不是返回false</li>
+<li>若是，返回true并将A作为B类并命名为B后面的名字</li>
+<li>o是null也可以运行</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1878,91 +2049,6 @@ Sort</h2>
 <p>因此这里返回的是最小值，而非最大值，应该将z与w对调</p>
 <p>第二个问题出在<code>arraySum</code>处，这里要求数组最大值之和</p>
 <p>但代码行<code>sum = sum + mysteryAdd(sum, x[i]);</code>明显多加了一个sum，因为<code>mysteryAdd</code>中已经执行了相加操作并返回和，应该删除一个</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lab2-Debugging/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/CS61B/Lab2-Debugging/" class="post-title-link" itemprop="url">【CS61B】Lab2-Debugging</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:43:06" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="lab2-debugging">Lab2-Debugging</h1>
-<p>我们需要学会在idea中使用交互式的debug工具</p>
-<p>在行号上点击以设置断点，当debug时，运行到断点处便会停止</p>
-<p>设置断点后，点击debug按钮开始进行debug</p>
-<p>此时在控制台处会有debugger窗口，在左侧可以看到当前的所有方法调用，在右侧可以看到程序当前点的实例变量值（它们也会在编辑器中以灰色文本显示）。对于类的实例，可以点击下拉菜单来展开它们并查看它们的字段。</p>
-<p>有一些按钮可以进行操作：</p>
-<img src="/CS61B/Lab2-Debugging/image-20250709210158266.png" class="" title="操作按钮">
 
       
     </div>
