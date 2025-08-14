@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,112 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E7%B1%BB%E5%9E%8B%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/C++/%E7%B1%BB%E5%9E%8B%E7%89%B9%E6%80%A7/" class="post-title-link" itemprop="url">【C++】类型特性</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:20:34 / 修改时间：17:21:26" itemprop="dateCreated datePublished" datetime="2025-07-31T17:20:34+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="类型特性">类型特性</h1>
+<p><code>&lt;type_traits&gt;</code>库用于判断某个类型是否具有某些特征、改变、比较类型间的特征</p>
+<p>常用于函数模板类</p>
+<p>结合<code>if constexpr(常量表达式)</code>可以实现条件编译(C++=17)</p>
+<p><code>if constexpr</code>是编译时的条件语句，当表达式条件为真时，该分支代码才会编译，否则舍弃</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">template</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">typename</span><span style="color: #24292E"> </span><span style="color: #6F42C1">T</span><span style="color: #24292E">&gt;</span></span>
+<span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">length</span><span style="color: #24292E">(</span><span style="color: #6F42C1">T</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E"> </span><span style="color: #E36209">t</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">constexpr</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::is_arithmetic_v</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (t</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #24292E">t;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">constexpr</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::is_base_of_v</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">IMeasurable, T</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> t.</span><span style="color: #6F42C1">length</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>结合<code>static_assert</code></p>
+<p><code>static_assert</code>用于判断编译阶段条件是否为真，若为假则会终止编译，并产生静态断言错误</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">template</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">typename</span><span style="color: #24292E"> </span><span style="color: #6F42C1">T</span><span style="color: #24292E">&gt;</span></span>
+<span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">length</span><span style="color: #24292E">(</span><span style="color: #6F42C1">T</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E"> </span><span style="color: #E36209">t</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">static_assert</span><span style="color: #24292E">(</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::is_arithmetic_v</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T</span><span style="color: #D73A49">&gt;||</span><span style="color: #6F42C1">Std</span><span style="color: #24292E">::is_base_of_v</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">IMeasurable, T&gt;, </span><span style="color: #032F62">"使用了不支持计算长度的类型"</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">constexpr</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::is_arithmetic_v</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (t</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #24292E">t;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">constexpr</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">std</span><span style="color: #24292E">::is_base_of_v</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">IMeasurable, T</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> t.</span><span style="color: #6F42C1">length</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1843,7 +1949,7 @@ mjx-container[display="true"] + br {
 <h2 id="a">A*</h2>
 <p>解决问题：给定原点与目标点，最少代价路径是什么</p>
 <p>特点：与dijkstra不同，A*算法考虑从原点到当前点的距离+当前点到目标点距离的估计距离，最后排大小</p>
-<style>.uwjpjtbzuxra{zoom:50%;}</style>
+<style>.gnmkcveanfxr{zoom:50%;}</style>
 
 <p>如该方格，起点为G，终点为U</p>
 <p>从G到U预估走4步，G到G走0步，故参与排序为0+4，放入小根堆，并将原点到当前点距离放入distance表中</p>
@@ -2288,278 +2394,6 @@ mjx-container[display="true"] + br {
 </blockquote>
 <p>即6个顶点的最多边数+1即为7个顶点最少边数</p>
 <p>用公式<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.781ex;" xmlns="http://www.w3.org/2000/svg" width="6.204ex" height="3.15ex" role="img" focusable="false" viewBox="0 -1047.1 2742.3 1392.1"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,516.8) scale(0.707)"><g data-mml-node="mi"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(600,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mi" transform="translate(989,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(1589,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mn" transform="translate(2367,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mo" transform="translate(2867,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g><g data-mml-node="mn" transform="translate(1194.4,-345) scale(0.707)"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path></g><rect width="2502.3" height="60" x="120" y="220"></rect></g></g></g></svg></mjx-container></span></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">【图论】拓扑排序</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-05-18 21:47:51" itemprop="dateCreated datePublished" datetime="2025-05-18T21:47:51+08:00">2025-05-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:57:36" itemprop="dateModified" datetime="2025-07-31T17:57:36+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="拓扑排序">拓扑排序</h1>
-<h2 id="节点的度">节点的度</h2>
-<ul>
-<li>度：与节点相连的边的条数</li>
-<li>入度：有向图中，指向当前节点的边的条数</li>
-<li>出度：有向图中，从当前节点发出的边的条数</li>
-</ul>
-<h2 id="aov网">AOV网</h2>
-<p>在一个表示工程的有向图中，用顶点表示活动，用弧表示活动之间的优先级，这样的有向图为顶点表示活动的网，称为AOV(Activity
-On Vertex Network)网</p>
-<h2 id="定义">定义</h2>
-<p>将一个有向无环图G的所有顶点排成一个线性序列，使得有向无环图G的边集中的任意一条边&lt;u,v&gt;，始终满足u出现在v的前面</p>
-<h2 id="构造">构造</h2>
-<ol type="1">
-<li>在有向无环图中找到一个没有前驱（入度为0）的节点入栈</li>
-<li>将栈顶节点出栈，然后从图中将此节点删除，并删除以该节点为尾的弧</li>
-<li>重复操作</li>
-<li>如果所有节点都已经输出，则结束，否则重复1</li>
-</ol>
-<h2 id="实现邻接矩阵">实现(邻接矩阵)</h2>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/image-20250416213937211.png" class="" title="例">
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
-<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
-<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1000</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> g[N][N], indgr[N], res[N];</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">topsort</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 寻找入度为0的点</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">indgr[j]){</span></span>
-<span class="line"><span style="color: #24292E">        res[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">j;</span><span style="color: #6A737D"> // 记录已经处理的点</span></span>
-<span class="line"><span style="color: #24292E">        indgr[j]</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 删除入读为0的点</span></span>
-<span class="line"><span style="color: #24292E">        k</span><span style="color: #D73A49">=</span><span style="color: #24292E">j;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">      }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (g[k][j]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        g[k][j]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 删除对应边 可省略，因为拓扑排序只看入度</span></span>
-<span class="line"><span style="color: #24292E">        indgr[j]</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 入读-1</span></span>
-<span class="line"><span style="color: #24292E">      }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #6A737D">  // 视频中第一个例题</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">~</span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> </span><span style="color: #005CC5">%d</span><span style="color: #032F62">"</span><span style="color: #24292E">, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">n, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">m)){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> x, y;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(indgr, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, sizeof indgr);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(g, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, sizeof g);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> </span><span style="color: #005CC5">%d</span><span style="color: #032F62">"</span><span style="color: #24292E">,</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">x,</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">y);</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">g[x][y]) {</span></span>
-<span class="line"><span style="color: #24292E">        g[x][y]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        indgr[y]</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">      }</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">topsort</span><span style="color: #24292E">(n);</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n) </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> "</span><span style="color: #24292E">, res[i]);</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d\n</span><span style="color: #032F62">"</span><span style="color: #24292E">, res[i]);</span></span>
-<span class="line"><span style="color: #24292E">      }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E"> </span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #6A737D">  //ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #6A737D">  //cin &gt;&gt; tomorin;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>注意：</p>
-<ul>
-<li>编号大的节点优先输出：寻找入度0的点时倒序遍历</li>
-<li>如何判断有环：不存在入度为0的点</li>
-</ul>
-<h2 id="实现邻接表">实现(邻接表)</h2>
-<p><strong>对于稀疏图，使用邻接矩阵会浪费大量空间</strong>，我们可以使用邻接表</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 邻接表节点结构</span></span>
-<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> x;</span><span style="color: #6A737D"> // 节点编号</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> w;</span><span style="color: #6A737D"> // 权值</span></span>
-<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> next;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x_</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w_</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x_;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;w </span><span style="color: #D73A49">=</span><span style="color: #24292E"> w_;</span></span>
-<span class="line"><span style="color: #24292E">        next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">node</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E"> head;</span><span style="color: #6A737D">      // 邻接表头节点数组</span></span>
-<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> in_degree;</span><span style="color: #6A737D">   // 记录每个节点的入度</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 添加有向边</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">u</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[u];</span></span>
-<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(v,w);</span></span>
-<span class="line"><span style="color: #24292E">    b-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a-&gt;next;</span></span>
-<span class="line"><span style="color: #24292E">    a-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b;</span></span>
-<span class="line"><span style="color: #24292E">    in_degree[v]</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span><span style="color: #6A737D">      // 目标节点入度加1</span></span>
-<span class="line"><span style="color: #24292E">}	</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 拓扑排序</span></span>
-<span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">topological_sort</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> result;</span><span style="color: #6A737D">          // 存储拓扑序列结果</span></span>
-<span class="line"><span style="color: #24292E">    queue</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> q;</span><span style="color: #6A737D">               // 存储入度为0的节点</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #6A737D">    // 将所有入度为0的节点入队</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(in_degree[i] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">            q.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(i);</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #6A737D">    // 不断取出入度为0的节点，更新其邻接点的入度</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">q.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">()) {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cur </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q.</span><span style="color: #6F42C1">front</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">        q.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">        result.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(cur);</span><span style="color: #6A737D">   // 将当前节点加入结果序列</span></span>
-<span class="line"><span style="color: #24292E">        </span></span>
-<span class="line"><span style="color: #6A737D">        // 遍历当前节点的所有邻接点</span></span>
-<span class="line"><span style="color: #24292E">        node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[cur]-&gt;next;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p) {</span></span>
-<span class="line"><span style="color: #24292E">            in_degree[p-&gt;x]</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D">   // 将邻接点的入度减1</span></span>
-<span class="line"><span style="color: #6A737D">            // 如果入度减为0，则入队</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E">(in_degree[p-&gt;x] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">                q.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(p-&gt;x);</span></span>
-<span class="line"><span style="color: #24292E">            }</span></span>
-<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
-<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m;</span><span style="color: #6A737D">              // 输入节点数和边数</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #6A737D">    // 初始化</span></span>
-<span class="line"><span style="color: #24292E">    head.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    in_degree.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        head[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(i,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #6A737D">    // 输入边的信息</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> m; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u, v, w;</span></span>
-<span class="line"><span style="color: #24292E">        cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #6A737D">    // 执行拓扑排序</span></span>
-<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> topo </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">topological_sort</span><span style="color: #24292E">(n);</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #6A737D">    // 判断是否存在环并输出结果</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(topo.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">() </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> n) {</span></span>
-<span class="line"><span style="color: #24292E">        cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"图中存在环，无法进行拓扑排序"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">    } </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x : topo) {</span></span>
-<span class="line"><span style="color: #24292E">            cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> x </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">" "</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h1 id="关键路径">关键路径</h1>
-<h2 id="aoe网">AOE网</h2>
-<p>在一个表示工程的带权有向图中，用顶点表示事件，用有向边表示活动，用边上的权值表示活动持续时间，这种有向图的边表示活动的网，称为AOE（Activity
-On Edge Network）网</p>
-<h2 id="etv与ltv">ETV与LTV</h2>
-<p>ETV：表示事件最早发生的时间(earliest time of vertex)</p>
-<p><strong>注意：考虑到多线程操作，事件最早发生时间应该是多个同步事件完成时间的最大值</strong></p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/image-20250423222115389.png" class="" title="etv">
-<p>LTV：表示事件最晚发生的时间(latest time of vertex)</p>
-<p><strong>注意：同理，事件最晚发生时间应该是减去多个同步事件完成时间后的最小值</strong></p>
-<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/image-20250423222735385.png" class="" title="ltv">
 
       
     </div>

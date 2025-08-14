@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,278 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">【图论】拓扑排序</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-18 21:47:51" itemprop="dateCreated datePublished" datetime="2025-05-18T21:47:51+08:00">2025-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:57:36" itemprop="dateModified" datetime="2025-07-31T17:57:36+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="拓扑排序">拓扑排序</h1>
+<h2 id="节点的度">节点的度</h2>
+<ul>
+<li>度：与节点相连的边的条数</li>
+<li>入度：有向图中，指向当前节点的边的条数</li>
+<li>出度：有向图中，从当前节点发出的边的条数</li>
+</ul>
+<h2 id="aov网">AOV网</h2>
+<p>在一个表示工程的有向图中，用顶点表示活动，用弧表示活动之间的优先级，这样的有向图为顶点表示活动的网，称为AOV(Activity
+On Vertex Network)网</p>
+<h2 id="定义">定义</h2>
+<p>将一个有向无环图G的所有顶点排成一个线性序列，使得有向无环图G的边集中的任意一条边&lt;u,v&gt;，始终满足u出现在v的前面</p>
+<h2 id="构造">构造</h2>
+<ol type="1">
+<li>在有向无环图中找到一个没有前驱（入度为0）的节点入栈</li>
+<li>将栈顶节点出栈，然后从图中将此节点删除，并删除以该节点为尾的弧</li>
+<li>重复操作</li>
+<li>如果所有节点都已经输出，则结束，否则重复1</li>
+</ol>
+<h2 id="实现邻接矩阵">实现(邻接矩阵)</h2>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/image-20250416213937211.png" class="" title="例">
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> '\n'</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1000</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> g[N][N], indgr[N], res[N];</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">topsort</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 寻找入度为0的点</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">indgr[j]){</span></span>
+<span class="line"><span style="color: #24292E">        res[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">j;</span><span style="color: #6A737D"> // 记录已经处理的点</span></span>
+<span class="line"><span style="color: #24292E">        indgr[j]</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 删除入读为0的点</span></span>
+<span class="line"><span style="color: #24292E">        k</span><span style="color: #D73A49">=</span><span style="color: #24292E">j;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (g[k][j]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        g[k][j]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 删除对应边 可省略，因为拓扑排序只看入度</span></span>
+<span class="line"><span style="color: #24292E">        indgr[j]</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 入读-1</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #6A737D">  // 视频中第一个例题</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">~</span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> </span><span style="color: #005CC5">%d</span><span style="color: #032F62">"</span><span style="color: #24292E">, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">n, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">m)){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> x, y;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(indgr, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, sizeof indgr);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(g, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, sizeof g);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> </span><span style="color: #005CC5">%d</span><span style="color: #032F62">"</span><span style="color: #24292E">,</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">x,</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">y);</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">g[x][y]) {</span></span>
+<span class="line"><span style="color: #24292E">        g[x][y]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        indgr[y]</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">topsort</span><span style="color: #24292E">(n);</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n) </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> "</span><span style="color: #24292E">, res[i]);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">%d\n</span><span style="color: #032F62">"</span><span style="color: #24292E">, res[i]);</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E"> </span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #6A737D">  //ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  //cin &gt;&gt; tomorin;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>编号大的节点优先输出：寻找入度0的点时倒序遍历</li>
+<li>如何判断有环：不存在入度为0的点</li>
+</ul>
+<h2 id="实现邻接表">实现(邻接表)</h2>
+<p><strong>对于稀疏图，使用邻接矩阵会浪费大量空间</strong>，我们可以使用邻接表</p>
+<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 邻接表节点结构</span></span>
+<span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> x;</span><span style="color: #6A737D"> // 节点编号</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> w;</span><span style="color: #6A737D"> // 权值</span></span>
+<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> next;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x_</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w_</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x_;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;w </span><span style="color: #D73A49">=</span><span style="color: #24292E"> w_;</span></span>
+<span class="line"><span style="color: #24292E">        next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">node</span><span style="color: #D73A49">*&gt;</span><span style="color: #24292E"> head;</span><span style="color: #6A737D">      // 邻接表头节点数组</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> in_degree;</span><span style="color: #6A737D">   // 记录每个节点的入度</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 添加有向边</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">u</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">v</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">w</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[u];</span></span>
+<span class="line"><span style="color: #24292E">    node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(v,w);</span></span>
+<span class="line"><span style="color: #24292E">    b-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">    a-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b;</span></span>
+<span class="line"><span style="color: #24292E">    in_degree[v]</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span><span style="color: #6A737D">      // 目标节点入度加1</span></span>
+<span class="line"><span style="color: #24292E">}	</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 拓扑排序</span></span>
+<span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">int</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">topological_sort</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> result;</span><span style="color: #6A737D">          // 存储拓扑序列结果</span></span>
+<span class="line"><span style="color: #24292E">    queue</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> q;</span><span style="color: #6A737D">               // 存储入度为0的节点</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #6A737D">    // 将所有入度为0的节点入队</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(in_degree[i] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">            q.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(i);</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #6A737D">    // 不断取出入度为0的节点，更新其邻接点的入度</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">q.</span><span style="color: #6F42C1">empty</span><span style="color: #24292E">()) {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cur </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q.</span><span style="color: #6F42C1">front</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        q.</span><span style="color: #6F42C1">pop</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        result.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(cur);</span><span style="color: #6A737D">   // 将当前节点加入结果序列</span></span>
+<span class="line"><span style="color: #24292E">        </span></span>
+<span class="line"><span style="color: #6A737D">        // 遍历当前节点的所有邻接点</span></span>
+<span class="line"><span style="color: #24292E">        node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head[cur]-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p) {</span></span>
+<span class="line"><span style="color: #24292E">            in_degree[p-&gt;x]</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D">   // 将邻接点的入度减1</span></span>
+<span class="line"><span style="color: #6A737D">            // 如果入度减为0，则入队</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E">(in_degree[p-&gt;x] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">                q.</span><span style="color: #6F42C1">push</span><span style="color: #24292E">(p-&gt;x);</span></span>
+<span class="line"><span style="color: #24292E">            }</span></span>
+<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m;</span><span style="color: #6A737D">              // 输入节点数和边数</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #6A737D">    // 初始化</span></span>
+<span class="line"><span style="color: #24292E">    head.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    in_degree.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        head[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">(i,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #6A737D">    // 输入边的信息</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> m; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> u, v, w;</span></span>
+<span class="line"><span style="color: #24292E">        cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> u </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> w;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">add_edge</span><span style="color: #24292E">(u,v,w);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #6A737D">    // 执行拓扑排序</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> topo </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">topological_sort</span><span style="color: #24292E">(n);</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #6A737D">    // 判断是否存在环并输出结果</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(topo.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">() </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> n) {</span></span>
+<span class="line"><span style="color: #24292E">        cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">"图中存在环，无法进行拓扑排序"</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">    } </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x : topo) {</span></span>
+<span class="line"><span style="color: #24292E">            cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> x </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">" "</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="关键路径">关键路径</h1>
+<h2 id="aoe网">AOE网</h2>
+<p>在一个表示工程的带权有向图中，用顶点表示事件，用有向边表示活动，用边上的权值表示活动持续时间，这种有向图的边表示活动的网，称为AOE（Activity
+On Edge Network）网</p>
+<h2 id="etv与ltv">ETV与LTV</h2>
+<p>ETV：表示事件最早发生的时间(earliest time of vertex)</p>
+<p><strong>注意：考虑到多线程操作，事件最早发生时间应该是多个同步事件完成时间的最大值</strong></p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/image-20250423222115389.png" class="" title="etv">
+<p>LTV：表示事件最晚发生的时间(latest time of vertex)</p>
+<p><strong>注意：同理，事件最晚发生时间应该是减去多个同步事件完成时间后的最小值</strong></p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/image-20250423222735385.png" class="" title="ltv">
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2182,404 +2454,6 @@ concatenating it with our current label.</p>
 <span class="line"><span style="color: #24292E">        start</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
 <span class="line"><span style="color: #24292E">        end</span><span style="color: #D73A49">-=</span><span style="color: #005CC5">1</span></span></code></pre></div></div></figure>
 <p>使用序列解包，交换两个元素可以通过<code>a,b=b,a</code>实现</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Lab6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Lab6/" class="post-title-link" itemprop="url">【CS61A】CS61A——Lab6</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-04 10:35:08" itemprop="dateCreated datePublished" datetime="2025-04-04T10:35:08+08:00">2025-04-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:51:36" itemprop="dateModified" datetime="2025-07-31T17:51:36+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="lab-6">Lab 6</h1>
-<h2 id="q1-bank-account">Q1: Bank Account</h2>
-<p>扩充Account类，添加属性<code>transaction</code>，即一个<code>transaction</code>列表实例，每一次调用都会创建一个该实例，记录每次调用<code>deposit</code>和<code>withdraw</code>前后的余额。另外，每个<code>transaction</code>有一个<code>id</code>属性，记录之前账户对<code>deposit</code>或<code>withdraw</code>的调用次数。<code>id</code>对于每个账户内是唯一的，而不是在所有<code>transaction</code>中的全局标识符</p>
-<p><code>transaction</code>有两个方法：</p>
-<ul>
-<li>changed：若在调用前后balance发生变化则返回True，否则返回False</li>
-<li>report：返回一个字符串用来描述该次transaction，以id开始，之后返回消息</li>
-</ul>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Transaction</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, id, before, after):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.id </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">id</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">=</span><span style="color: #24292E"> before</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after </span><span style="color: #D73A49">=</span><span style="color: #24292E"> after</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">changed</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Return whether the transaction resulted in a changed balance."""</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">False</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">report</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Return a string describing the transaction.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(3, 20, 10).report()</span></span>
-<span class="line"><span style="color: #032F62">        '3: decreased 20-&gt;10'</span></span>
-<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(4, 20, 50).report()</span></span>
-<span class="line"><span style="color: #032F62">        '4: increased 20-&gt;50'</span></span>
-<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(5, 50, 50).report()</span></span>
-<span class="line"><span style="color: #032F62">        '5: no change'</span></span>
-<span class="line"><span style="color: #032F62">        """</span></span>
-<span class="line"><span style="color: #24292E">        msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'no change'</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.changed():</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after:</span></span>
-<span class="line"><span style="color: #24292E">                msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'decreased '</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.before)</span><span style="color: #D73A49">+</span><span style="color: #032F62">'-&gt;'</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.after)</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
-<span class="line"><span style="color: #24292E">                msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'increased '</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.before) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">'-&gt;'</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.after)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">': '</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> msg</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Account</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A bank account that tracks its transaction history.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = Account('Eric')</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.deposit(100)    # Transaction 0 for a</span></span>
-<span class="line"><span style="color: #032F62">    100</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = Account('Erica')</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.withdraw(30)    # Transaction 1 for a</span></span>
-<span class="line"><span style="color: #032F62">    70</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.deposit(10)     # Transaction 2 for a</span></span>
-<span class="line"><span style="color: #032F62">    80</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.deposit(50)     # Transaction 0 for b</span></span>
-<span class="line"><span style="color: #032F62">    50</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(10)    # Transaction 1 for b</span></span>
-<span class="line"><span style="color: #032F62">    40</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.withdraw(100)   # Transaction 3 for a</span></span>
-<span class="line"><span style="color: #032F62">    'Insufficient funds'</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len(a.transactions)</span></span>
-<span class="line"><span style="color: #032F62">    4</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len([t for t in a.transactions if t.changed()])</span></span>
-<span class="line"><span style="color: #032F62">    3</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">for t in a.transactions:</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    print(t.report())</span></span>
-<span class="line"><span style="color: #032F62">    0: increased 0-&gt;100</span></span>
-<span class="line"><span style="color: #032F62">    1: decreased 100-&gt;70</span></span>
-<span class="line"><span style="color: #032F62">    2: increased 70-&gt;80</span></span>
-<span class="line"><span style="color: #032F62">    3: no change</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(100)   # Transaction 2 for b</span></span>
-<span class="line"><span style="color: #032F62">    'Insufficient funds'</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(30)    # Transaction 3 for b</span></span>
-<span class="line"><span style="color: #032F62">    10</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">for t in b.transactions:</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    print(t.report())</span></span>
-<span class="line"><span style="color: #032F62">    0: increased 0-&gt;50</span></span>
-<span class="line"><span style="color: #032F62">    1: decreased 50-&gt;40</span></span>
-<span class="line"><span style="color: #032F62">    2: no change</span></span>
-<span class="line"><span style="color: #032F62">    3: decreased 40-&gt;10</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># *** YOU NEED TO MAKE CHANGES IN SEVERAL PLACES IN THIS CLASS ***</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">id_gene</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Increase the account balance by amount, add the deposit</span></span>
-<span class="line"><span style="color: #032F62">        to the transaction history, and return the new balance.</span></span>
-<span class="line"><span style="color: #032F62">        """</span></span>
-<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">+</span><span style="color: #24292E"> amount</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()),pre, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(self, amount):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Decrease the account balance by amount, add the withdraw</span></span>
-<span class="line"><span style="color: #032F62">        to the transaction history, and return the new balance.</span></span>
-<span class="line"><span style="color: #032F62">        """</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()), </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Insufficient funds'</span></span>
-<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">-</span><span style="color: #24292E"> amount</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()), pre, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span></code></pre></div></div></figure>
-<h2 id="q2-email">Q2: Email</h2>
-<p>一个邮箱系统包括三个类：<code>Email</code>, <code>Server</code>,
-<code>Client</code></p>
-<p><code>Client</code>类可以<code>compose</code>邮件，该邮件会被<code>send</code>到<code>Server</code>类中</p>
-<p><code>Server</code>类会把该邮件运到对应<code>Client</code>的<code>inbox</code>中，为了实现这个，一个<code>Server</code>类拥有一个字典<code>clients</code>，将<code>Email</code>中的<code>recipient_name</code>与拥有该名称的<code>Client</code>对象绑定</p>
-<p>注意：client永远不会更改其使用的<code>server</code></p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Email</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""An email has the following instance attributes:</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">        msg (str): the contents of the message</span></span>
-<span class="line"><span style="color: #032F62">        sender (Client): the client that sent the email</span></span>
-<span class="line"><span style="color: #032F62">        recipient_name (str): the name of the recipient (another client)</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, msg, sender, recipient_name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> msg</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.sender </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sender</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.recipient_name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> recipient_name</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Server</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Each Server has one instance attribute called clients that is a</span></span>
-<span class="line"><span style="color: #032F62">    dictionary from client names to client objects.</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">send</span><span style="color: #24292E">(self, email):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Append the email to the inbox of the client it is addressed to."""</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients[email.recipient_name].inbox.append(email)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">register_client</span><span style="color: #24292E">(self, client):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Add a client to the dictionary of clients."""</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients[client.name] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> client</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Client</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A client has a server, a name (str), and an inbox (list).</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = Server()</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = Client(s, 'Alice')</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = Client(s, 'Bob')</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.compose('Hello, World!', 'Bob')</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[0].msg</span></span>
-<span class="line"><span style="color: #032F62">    'Hello, World!'</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.compose('CS 61A Rocks!', 'Bob')</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len(b.inbox)</span></span>
-<span class="line"><span style="color: #032F62">    2</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[1].msg</span></span>
-<span class="line"><span style="color: #032F62">    'CS 61A Rocks!'</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[1].sender.name</span></span>
-<span class="line"><span style="color: #032F62">    'Alice'</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, server, name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.inbox </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.server </span><span style="color: #D73A49">=</span><span style="color: #24292E"> server</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> name</span></span>
-<span class="line"><span style="color: #24292E">        server.register_client(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">compose</span><span style="color: #24292E">(self, message, recipient_name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Send an email with the given message to the recipient."""</span></span>
-<span class="line"><span style="color: #24292E">        email </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Email(message, </span><span style="color: #005CC5">self</span><span style="color: #24292E">, recipient_name)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.server.send(email)</span></span></code></pre></div></div></figure>
-<p>这里的inbox存储的是每一个email实例，故传参时应传入self</p>
-<h2 id="q3-make-change">Q3: Make Change</h2>
-<p>实现<code>make_change</code>函数，输入amount和coins字典</p>
-<p>coins字典的键是一个正整数，表示面额；值也是一个正整数，表示硬币数量，如<code>{1:4, 5:2}</code>表示四个便士和两个五分</p>
-<p>函数返回列表，其中元素是求和能达到amount数量的硬币列表，其中每种面额k最多使用<code>coins[k]</code>次</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_change</span><span style="color: #24292E">(amount, coins):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return a list of coins that sum to amount, preferring the smallest coins</span></span>
-<span class="line"><span style="color: #032F62">    available and placing the smallest coins first in the returned list.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    The coins argument is a dictionary with keys that are positive integer</span></span>
-<span class="line"><span style="color: #032F62">    denominations and values that are positive integer coin counts.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(2, {2: 1})</span></span>
-<span class="line"><span style="color: #032F62">    [2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(2, {1: 2, 2: 1})</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, {1: 2, 2: 1})</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, {2: 1}) == None</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">coins = {2: 2, 3: 2, 4: 3, 5: 1}</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(8, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 2, 4]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(25, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 3, 3, 4, 4, 4, 5]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">coins[8] = 1</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(25, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 2, 4, 4, 5, 8]</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> coins:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">None</span></span>
-<span class="line"><span style="color: #24292E">    smallest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(coins)</span></span>
-<span class="line"><span style="color: #24292E">    rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> remove_one(coins, smallest)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> smallest:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">None</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">==</span><span style="color: #24292E"> smallest:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [smallest]</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_change(amount</span><span style="color: #D73A49">-</span><span style="color: #24292E">smallest, rest)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> temp:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> make_change(amount, rest)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [smallest]</span><span style="color: #D73A49">+</span><span style="color: #24292E">temp</span></span></code></pre></div></div></figure>
-<p>首先尝试使用最小面额的coin，但若无法实现则尝试使用更大面额</p>
-<p>具体步骤：</p>
-<ul>
-<li><p>进入函数默认使用一个最小面额硬币</p></li>
-<li><p>若<code>amount==samllest</code>：最小面额硬币即可满足需求，返回包含该值的列表</p></li>
-<li><p>否则，递归调用<code>make_change(amount-smallest, rest)</code>，减去一次最小面额</p></li>
-<li><p>若返回一个列表，则将该最小面额放入列表，并继续递归调用，将其返回的列表接在后面</p></li>
-<li><p>若返回None，则表明使用最小面额无法实现，故递归调用<code>make_change(amount, rest)</code>，让函数把最小面额硬币去除后使用更大面额尝试</p></li>
-</ul>
-<h2 id="q4-change-machine">Q4: Change Machine</h2>
-<p>完成<code>ChangeMachine</code>类中的<code>change</code>方法，每个该类的实例包含了一些coins，一开始都是便士。<code>change</code>方法传入正整数coin，把他添加到<code>coins</code>中，并返回列表，其中的硬币面额之和要达到cin</p>
-<p>该类倾向于使用尽可能多的最小面额硬币</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ChangeMachine</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A change machine holds a certain number of coins, initially all pennies.</span></span>
-<span class="line"><span style="color: #032F62">    The change method adds a single coin of some denomination X and returns a</span></span>
-<span class="line"><span style="color: #032F62">    list of coins that sums to X. The machine prefers to return the smallest</span></span>
-<span class="line"><span style="color: #032F62">    coins available. The total value in the machine never changes, and it can</span></span>
-<span class="line"><span style="color: #032F62">    always make change for any coin (perhaps by returning the coin passed in).</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    The coins attribute is a dictionary with keys that are positive integer</span></span>
-<span class="line"><span style="color: #032F62">    denominations and values that are positive integer coin counts.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(2)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
-<span class="line"><span style="color: #032F62">    [2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(3)</span></span>
-<span class="line"><span style="color: #032F62">    [3]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(10) # 10 pennies</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 10}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(5) # takes a nickel &amp; returns 5 pennies</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 1, 1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 5, 5: 1} # 5 pennies &amp; a nickel remain</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(3)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2, 3: 1, 5: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2) # not enough 1's remaining; return a 2</span></span>
-<span class="line"><span style="color: #032F62">    [2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 3: 1, 5: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(8) # cannot use the 2 to make 8, so use 3 &amp; 5</span></span>
-<span class="line"><span style="color: #032F62">    [3, 5]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 8: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(1) # return the penny passed in (it's the smallest)</span></span>
-<span class="line"><span style="color: #032F62">    [1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(9) # return the 9 passed in (no change possible)</span></span>
-<span class="line"><span style="color: #032F62">    [9]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 8: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(10)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 8]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {10: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(9)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">[m.change(k) for k in [2, 2, 3]]</span></span>
-<span class="line"><span style="color: #032F62">    [[1, 1], [1, 1], [1, 1, 1]]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2, 2: 2, 3: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(5) # Prefers [1, 1, 3] to [1, 2, 2] (more pennies)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 3]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(7)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 5]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 7: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    """</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, pennies):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">1</span><span style="color: #24292E">: pennies}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">change</span><span style="color: #24292E">(self, coin):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Return change for coin, removing the result from self.coins."""</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins[coin] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins.get(coin, </span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_change(coin, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> c </span><span style="color: #D73A49">in</span><span style="color: #24292E"> result:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins </span><span style="color: #D73A49">=</span><span style="color: #24292E"> remove_one(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins, c)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result</span></span></code></pre></div></div></figure>
-<ul>
-<li>将加入的coin放入coins字典，注意，这里的键为面额对应数量，而值为面额，故我们用get方法获取传入coin的键，并在此基础上+1（我们可以在第二个参数设置默认值，当没有对应面额时，get会返回设定值而非None）</li>
-<li>之后调用<code>make_change</code>方法，获得最小面额能实现达到coin数的硬币列表</li>
-<li>使用<code>remove_one</code>将类中已经用过的硬币移除</li>
-<li>返回列表</li>
-</ul>
 
       
     </div>

@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,404 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Lab6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Lab6/" class="post-title-link" itemprop="url">【CS61A】CS61A——Lab6</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-04 10:35:08" itemprop="dateCreated datePublished" datetime="2025-04-04T10:35:08+08:00">2025-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 17:51:36" itemprop="dateModified" datetime="2025-07-31T17:51:36+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="lab-6">Lab 6</h1>
+<h2 id="q1-bank-account">Q1: Bank Account</h2>
+<p>扩充Account类，添加属性<code>transaction</code>，即一个<code>transaction</code>列表实例，每一次调用都会创建一个该实例，记录每次调用<code>deposit</code>和<code>withdraw</code>前后的余额。另外，每个<code>transaction</code>有一个<code>id</code>属性，记录之前账户对<code>deposit</code>或<code>withdraw</code>的调用次数。<code>id</code>对于每个账户内是唯一的，而不是在所有<code>transaction</code>中的全局标识符</p>
+<p><code>transaction</code>有两个方法：</p>
+<ul>
+<li>changed：若在调用前后balance发生变化则返回True，否则返回False</li>
+<li>report：返回一个字符串用来描述该次transaction，以id开始，之后返回消息</li>
+</ul>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Transaction</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, id, before, after):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.id </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">id</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">=</span><span style="color: #24292E"> before</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after </span><span style="color: #D73A49">=</span><span style="color: #24292E"> after</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">changed</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Return whether the transaction resulted in a changed balance."""</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">False</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">report</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Return a string describing the transaction.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(3, 20, 10).report()</span></span>
+<span class="line"><span style="color: #032F62">        '3: decreased 20-&gt;10'</span></span>
+<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(4, 20, 50).report()</span></span>
+<span class="line"><span style="color: #032F62">        '4: increased 20-&gt;50'</span></span>
+<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(5, 50, 50).report()</span></span>
+<span class="line"><span style="color: #032F62">        '5: no change'</span></span>
+<span class="line"><span style="color: #032F62">        """</span></span>
+<span class="line"><span style="color: #24292E">        msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'no change'</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.changed():</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after:</span></span>
+<span class="line"><span style="color: #24292E">                msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'decreased '</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.before)</span><span style="color: #D73A49">+</span><span style="color: #032F62">'-&gt;'</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.after)</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
+<span class="line"><span style="color: #24292E">                msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'increased '</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.before) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">'-&gt;'</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.after)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">': '</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> msg</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Account</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A bank account that tracks its transaction history.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = Account('Eric')</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.deposit(100)    # Transaction 0 for a</span></span>
+<span class="line"><span style="color: #032F62">    100</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = Account('Erica')</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.withdraw(30)    # Transaction 1 for a</span></span>
+<span class="line"><span style="color: #032F62">    70</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.deposit(10)     # Transaction 2 for a</span></span>
+<span class="line"><span style="color: #032F62">    80</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.deposit(50)     # Transaction 0 for b</span></span>
+<span class="line"><span style="color: #032F62">    50</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(10)    # Transaction 1 for b</span></span>
+<span class="line"><span style="color: #032F62">    40</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.withdraw(100)   # Transaction 3 for a</span></span>
+<span class="line"><span style="color: #032F62">    'Insufficient funds'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len(a.transactions)</span></span>
+<span class="line"><span style="color: #032F62">    4</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len([t for t in a.transactions if t.changed()])</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">for t in a.transactions:</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    print(t.report())</span></span>
+<span class="line"><span style="color: #032F62">    0: increased 0-&gt;100</span></span>
+<span class="line"><span style="color: #032F62">    1: decreased 100-&gt;70</span></span>
+<span class="line"><span style="color: #032F62">    2: increased 70-&gt;80</span></span>
+<span class="line"><span style="color: #032F62">    3: no change</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(100)   # Transaction 2 for b</span></span>
+<span class="line"><span style="color: #032F62">    'Insufficient funds'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(30)    # Transaction 3 for b</span></span>
+<span class="line"><span style="color: #032F62">    10</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">for t in b.transactions:</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    print(t.report())</span></span>
+<span class="line"><span style="color: #032F62">    0: increased 0-&gt;50</span></span>
+<span class="line"><span style="color: #032F62">    1: decreased 50-&gt;40</span></span>
+<span class="line"><span style="color: #032F62">    2: no change</span></span>
+<span class="line"><span style="color: #032F62">    3: decreased 40-&gt;10</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># *** YOU NEED TO MAKE CHANGES IN SEVERAL PLACES IN THIS CLASS ***</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">id_gene</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Increase the account balance by amount, add the deposit</span></span>
+<span class="line"><span style="color: #032F62">        to the transaction history, and return the new balance.</span></span>
+<span class="line"><span style="color: #032F62">        """</span></span>
+<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">+</span><span style="color: #24292E"> amount</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()),pre, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Decrease the account balance by amount, add the withdraw</span></span>
+<span class="line"><span style="color: #032F62">        to the transaction history, and return the new balance.</span></span>
+<span class="line"><span style="color: #032F62">        """</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()), </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Insufficient funds'</span></span>
+<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">-</span><span style="color: #24292E"> amount</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()), pre, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span></code></pre></div></div></figure>
+<h2 id="q2-email">Q2: Email</h2>
+<p>一个邮箱系统包括三个类：<code>Email</code>, <code>Server</code>,
+<code>Client</code></p>
+<p><code>Client</code>类可以<code>compose</code>邮件，该邮件会被<code>send</code>到<code>Server</code>类中</p>
+<p><code>Server</code>类会把该邮件运到对应<code>Client</code>的<code>inbox</code>中，为了实现这个，一个<code>Server</code>类拥有一个字典<code>clients</code>，将<code>Email</code>中的<code>recipient_name</code>与拥有该名称的<code>Client</code>对象绑定</p>
+<p>注意：client永远不会更改其使用的<code>server</code></p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Email</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""An email has the following instance attributes:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">        msg (str): the contents of the message</span></span>
+<span class="line"><span style="color: #032F62">        sender (Client): the client that sent the email</span></span>
+<span class="line"><span style="color: #032F62">        recipient_name (str): the name of the recipient (another client)</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, msg, sender, recipient_name):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> msg</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.sender </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sender</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.recipient_name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> recipient_name</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Server</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Each Server has one instance attribute called clients that is a</span></span>
+<span class="line"><span style="color: #032F62">    dictionary from client names to client objects.</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">send</span><span style="color: #24292E">(self, email):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Append the email to the inbox of the client it is addressed to."""</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients[email.recipient_name].inbox.append(email)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">register_client</span><span style="color: #24292E">(self, client):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Add a client to the dictionary of clients."""</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients[client.name] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> client</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Client</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A client has a server, a name (str), and an inbox (list).</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = Server()</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = Client(s, 'Alice')</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = Client(s, 'Bob')</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.compose('Hello, World!', 'Bob')</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[0].msg</span></span>
+<span class="line"><span style="color: #032F62">    'Hello, World!'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.compose('CS 61A Rocks!', 'Bob')</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len(b.inbox)</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[1].msg</span></span>
+<span class="line"><span style="color: #032F62">    'CS 61A Rocks!'</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[1].sender.name</span></span>
+<span class="line"><span style="color: #032F62">    'Alice'</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, server, name):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.inbox </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.server </span><span style="color: #D73A49">=</span><span style="color: #24292E"> server</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> name</span></span>
+<span class="line"><span style="color: #24292E">        server.register_client(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">compose</span><span style="color: #24292E">(self, message, recipient_name):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Send an email with the given message to the recipient."""</span></span>
+<span class="line"><span style="color: #24292E">        email </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Email(message, </span><span style="color: #005CC5">self</span><span style="color: #24292E">, recipient_name)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.server.send(email)</span></span></code></pre></div></div></figure>
+<p>这里的inbox存储的是每一个email实例，故传参时应传入self</p>
+<h2 id="q3-make-change">Q3: Make Change</h2>
+<p>实现<code>make_change</code>函数，输入amount和coins字典</p>
+<p>coins字典的键是一个正整数，表示面额；值也是一个正整数，表示硬币数量，如<code>{1:4, 5:2}</code>表示四个便士和两个五分</p>
+<p>函数返回列表，其中元素是求和能达到amount数量的硬币列表，其中每种面额k最多使用<code>coins[k]</code>次</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_change</span><span style="color: #24292E">(amount, coins):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""Return a list of coins that sum to amount, preferring the smallest coins</span></span>
+<span class="line"><span style="color: #032F62">    available and placing the smallest coins first in the returned list.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    The coins argument is a dictionary with keys that are positive integer</span></span>
+<span class="line"><span style="color: #032F62">    denominations and values that are positive integer coin counts.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(2, {2: 1})</span></span>
+<span class="line"><span style="color: #032F62">    [2]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(2, {1: 2, 2: 1})</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, {1: 2, 2: 1})</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1, 2]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, {2: 1}) == None</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">coins = {2: 2, 3: 2, 4: 3, 5: 1}</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, coins)</span></span>
+<span class="line"><span style="color: #032F62">    [2, 2]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(8, coins)</span></span>
+<span class="line"><span style="color: #032F62">    [2, 2, 4]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(25, coins)</span></span>
+<span class="line"><span style="color: #032F62">    [2, 3, 3, 4, 4, 4, 5]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">coins[8] = 1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(25, coins)</span></span>
+<span class="line"><span style="color: #032F62">    [2, 2, 4, 4, 5, 8]</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> coins:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">None</span></span>
+<span class="line"><span style="color: #24292E">    smallest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(coins)</span></span>
+<span class="line"><span style="color: #24292E">    rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> remove_one(coins, smallest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> smallest:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">None</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">==</span><span style="color: #24292E"> smallest:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [smallest]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_change(amount</span><span style="color: #D73A49">-</span><span style="color: #24292E">smallest, rest)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> temp:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> make_change(amount, rest)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [smallest]</span><span style="color: #D73A49">+</span><span style="color: #24292E">temp</span></span></code></pre></div></div></figure>
+<p>首先尝试使用最小面额的coin，但若无法实现则尝试使用更大面额</p>
+<p>具体步骤：</p>
+<ul>
+<li><p>进入函数默认使用一个最小面额硬币</p></li>
+<li><p>若<code>amount==samllest</code>：最小面额硬币即可满足需求，返回包含该值的列表</p></li>
+<li><p>否则，递归调用<code>make_change(amount-smallest, rest)</code>，减去一次最小面额</p></li>
+<li><p>若返回一个列表，则将该最小面额放入列表，并继续递归调用，将其返回的列表接在后面</p></li>
+<li><p>若返回None，则表明使用最小面额无法实现，故递归调用<code>make_change(amount, rest)</code>，让函数把最小面额硬币去除后使用更大面额尝试</p></li>
+</ul>
+<h2 id="q4-change-machine">Q4: Change Machine</h2>
+<p>完成<code>ChangeMachine</code>类中的<code>change</code>方法，每个该类的实例包含了一些coins，一开始都是便士。<code>change</code>方法传入正整数coin，把他添加到<code>coins</code>中，并返回列表，其中的硬币面额之和要达到cin</p>
+<p>该类倾向于使用尽可能多的最小面额硬币</p>
+<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ChangeMachine</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">"""A change machine holds a certain number of coins, initially all pennies.</span></span>
+<span class="line"><span style="color: #032F62">    The change method adds a single coin of some denomination X and returns a</span></span>
+<span class="line"><span style="color: #032F62">    list of coins that sums to X. The machine prefers to return the smallest</span></span>
+<span class="line"><span style="color: #032F62">    coins available. The total value in the machine never changes, and it can</span></span>
+<span class="line"><span style="color: #032F62">    always make change for any coin (perhaps by returning the coin passed in).</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    The coins attribute is a dictionary with keys that are positive integer</span></span>
+<span class="line"><span style="color: #032F62">    denominations and values that are positive integer coin counts.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(2)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
+<span class="line"><span style="color: #032F62">    [2]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(3)</span></span>
+<span class="line"><span style="color: #032F62">    [3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(10) # 10 pennies</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 10}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(5) # takes a nickel &amp; returns 5 pennies</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1, 1, 1, 1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 5, 5: 1} # 5 pennies &amp; a nickel remain</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(3)</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1, 1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2, 3: 1, 5: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2) # not enough 1's remaining; return a 2</span></span>
+<span class="line"><span style="color: #032F62">    [2]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 3: 1, 5: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(8) # cannot use the 2 to make 8, so use 3 &amp; 5</span></span>
+<span class="line"><span style="color: #032F62">    [3, 5]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 8: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(1) # return the penny passed in (it's the smallest)</span></span>
+<span class="line"><span style="color: #032F62">    [1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(9) # return the 9 passed in (no change possible)</span></span>
+<span class="line"><span style="color: #032F62">    [9]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 8: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(10)</span></span>
+<span class="line"><span style="color: #032F62">    [2, 8]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {10: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(9)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">[m.change(k) for k in [2, 2, 3]]</span></span>
+<span class="line"><span style="color: #032F62">    [[1, 1], [1, 1], [1, 1, 1]]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2, 2: 2, 3: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(5) # Prefers [1, 1, 3] to [1, 2, 2] (more pennies)</span></span>
+<span class="line"><span style="color: #032F62">    [1, 1, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(7)</span></span>
+<span class="line"><span style="color: #032F62">    [2, 5]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 7: 1}</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    """</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, pennies):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">1</span><span style="color: #24292E">: pennies}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">change</span><span style="color: #24292E">(self, coin):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">"""Return change for coin, removing the result from self.coins."""</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins[coin] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins.get(coin, </span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_change(coin, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> c </span><span style="color: #D73A49">in</span><span style="color: #24292E"> result:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins </span><span style="color: #D73A49">=</span><span style="color: #24292E"> remove_one(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins, c)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result</span></span></code></pre></div></div></figure>
+<ul>
+<li>将加入的coin放入coins字典，注意，这里的键为面额对应数量，而值为面额，故我们用get方法获取传入coin的键，并在此基础上+1（我们可以在第二个参数设置默认值，当没有对应面额时，get会返回设定值而非None）</li>
+<li>之后调用<code>make_change</code>方法，获得最小面额能实现达到coin数的硬币列表</li>
+<li>使用<code>remove_one</code>将类中已经用过的硬币移除</li>
+<li>返回列表</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2648,230 +3046,6 @@ HTTP文件上传中，请求头需要包含Content-Type，其值为multipart/for
 <span class="line"><span style="color: #6A737D"># 查看响应</span></span>
 <span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Response Status Code:"</span><span style="color: #24292E">, response.status_code)</span></span>
 <span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Response Text:"</span><span style="color: #24292E">, response.text)</span></span></code></pre></div></div></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/CS61A/CS61A%E2%80%94%E2%80%94Mutablity/" class="post-title-link" itemprop="url">【CS61A】CS61A——Mutablity</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-03-19 19:10:30" itemprop="dateCreated datePublished" datetime="2025-03-19T19:10:30+08:00">2025-03-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-31 17:51:45" itemprop="dateModified" datetime="2025-07-31T17:51:45+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="mutablity">Mutablity</h1>
-<h2 id="objects">Objects</h2>
-<ul>
-<li>对象用于表达信息，是一种包含了数据与行为的数据抽象</li>
-<li>有属性的东西都可以作为对象，python中一切皆对象</li>
-<li>Python中，优先级最高的对象被称为类（class）</li>
-<li>面向对象编程（OOP）：
-<ul>
-<li>对象是OOP的核心</li>
-<li>OOP使用一种暗喻来组织大型程序</li>
-<li>使用一种特殊语法可以提高程序的可读性与组织</li>
-</ul></li>
-<li>很多数据操作都是通过对象实现的</li>
-<li>对象可以做许多相关的事情，而函数只能做一件事</li>
-</ul>
-<h2 id="e.g.-string">e.g. String</h2>
-<p>字符串是一种表达文本的数据抽象 ### 字符串的表示
-目前常见的表示方法是用ASCII与Unicode字符集表示字符
-前者包含了控制字符、数字、字母与标点，后者则包含了不同语言中的更多字符</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">from</span><span style="color: #24292E"> unicodedata </span><span style="color: #D73A49">import</span><span style="color: #24292E"> name, lookup</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(name(</span><span style="color: #032F62">'A'</span><span style="color: #24292E">)) </span><span style="color: #6A737D"># 查询字符集中的字符名称</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(lookup(</span><span style="color: #032F62">'BABY'</span><span style="color: #24292E">)) </span><span style="color: #6A737D"># 根据字符名称输出对应字符</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(lookup(</span><span style="color: #032F62">'BABY'</span><span style="color: #24292E">).encode()) </span><span style="color: #6A737D"># 查看该字符的字节编码</span></span></code></pre></div></div></figure>
-<pre><code>LATIN CAPITAL LETTER A
-👶
-b'\xf0\x9f\x91\xb6'</code></pre>
-<h2 id="mutation-operations">Mutation Operations</h2>
-<h3 id="一些对象是可以改变的">一些对象是可以改变的</h3>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">suits </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #032F62">'coin'</span><span style="color: #24292E">, </span><span style="color: #032F62">'string'</span><span style="color: #24292E">, </span><span style="color: #032F62">'myriad'</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">original_suits </span><span style="color: #D73A49">=</span><span style="color: #24292E"> suits</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(suits.pop()) </span><span style="color: #6A737D"># 弹出一个元素（默认最后一个）</span></span>
-<span class="line"><span style="color: #24292E">suits.remove(</span><span style="color: #032F62">'string'</span><span style="color: #24292E">) </span><span style="color: #6A737D"># 移除指定元素</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(suits)</span></span>
-<span class="line"><span style="color: #24292E">suits.append(</span><span style="color: #032F62">'cup'</span><span style="color: #24292E">) </span><span style="color: #6A737D"># 在尾部增加一个元素</span></span>
-<span class="line"><span style="color: #24292E">suits.extend([</span><span style="color: #032F62">'sword'</span><span style="color: #24292E">, </span><span style="color: #032F62">'club'</span><span style="color: #24292E">]) </span><span style="color: #6A737D"># 添加序列中的多个元素来拓展列表</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(suits)</span></span>
-<span class="line"><span style="color: #24292E">suits[</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">'spade'</span></span>
-<span class="line"><span style="color: #24292E">suits[</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #032F62">'heart'</span><span style="color: #24292E">, </span><span style="color: #032F62">'diamond'</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(original_suits)</span></span></code></pre></div></div></figure>
-<pre><code>myriad
-['coin']
-['coin', 'cup', 'sword', 'club']
-['heart', 'diamond', 'spade', 'club']</code></pre>
-<p>根据以上代码发现，我们可以对一个对象（suits）进行若干操作来变化其值
-而我们在最初将suits与original_suits进行绑定，故变化也会在original_suits中体现
-综上，所有指向相同对象的names都会受到<strong>Mutation</strong>的影响，其中这里的mutation指对象发生的变化
-只有可变类型的对象才能更改，如列表与字典</p>
-<h3 id="函数调用时发生的mutation">函数调用时发生的Mutation</h3>
-<p>函数可以更改其作用域中任何可变对象的值</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mystery</span><span style="color: #24292E">(s):</span></span>
-<span class="line"><span style="color: #24292E">    s.pop()</span></span>
-<span class="line"><span style="color: #24292E">    s.pop()</span></span>
-<span class="line"><span style="color: #24292E">four </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">mystery(four)</span></span></code></pre></div></div></figure>
-<p>mystery函数实现了对列表对象值的更改，甚至mystery不需要传入参数，直接更改其所在作用域（全局作用域）中four列表的内容</p>
-<h3 id="表达式的mutation">表达式的Mutation</h3>
-<p>表达式的值会随着names绑定值或对象的改变而改变</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">x)</span></span>
-<span class="line"><span style="color: #24292E">x.append(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">x)</span></span></code></pre></div></div></figure>
-<pre><code>[1, 2, 1, 2]
-[1, 2, 3, 1, 2, 3]</code></pre>
-<h2 id="tuples">Tuples</h2>
-<ul>
-<li>元组是一种不可变的序列，使用圆括号包裹起来</li>
-<li>实际上，任何以逗号隔开的元素都会被解释成元组，非必须加圆括号</li>
-<li>使用<code>tuple()</code>创建元组或将其他序列转化为元组</li>
-<li>在单个元素后加一个逗号可以将单个元素转化成元组</li>
-<li>元组可以相加，也可以使用成员运算符in来判断元素是否存在</li>
-<li>由于元组不可变，可以将其作为字典的键使用</li>
-<li>若元组中包含了可变对象，则该对象可以被更改</li>
-</ul>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ([</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">s[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">4</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s)</span></span></code></pre></div></div></figure>
-<pre><code>([4, 2], 3)</code></pre>
-<h2 id="mutation">Mutation</h2>
-<h3 id="相同与改变">相同与改变</h3>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span>
-<span class="line"><span style="color: #24292E">a.append(</span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span></code></pre></div></div></figure>
-<pre><code>True
-True</code></pre>
-<p>在这个例子中，我们可以说a与b是<strong>相同的</strong>，因为b与a绑定到了同一个对象，当对其中一个发生变化，另一个也会同时改变</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span>
-<span class="line"><span style="color: #24292E">b.append(</span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b)</span></span></code></pre></div></div></figure>
-<p>在这个例子中，a与b是<strong>不同的</strong>，尽管它们曾有过相同的内容，但对b进行改变后，a会随之改变，因此这时二者便不同了</p>
-<h3 id="identity-operators">Identity Operators</h3>
-<p><strong>Identity</strong>： <code>&lt;exp0&gt; is &lt;exp1&gt;</code>
-当两个表达式指向相同对象时返回True <strong>Equality</strong>
-<code>&lt;exp0&gt; == &lt;exp1&gt;</code>
-当两个表达式拥有相同值时返回True</p>
-<p><strong>相同对象始终拥有相等的值，但反之不一定成立</strong></p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">10</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">c </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a </span><span style="color: #D73A49">is</span><span style="color: #24292E"> b)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(b </span><span style="color: #D73A49">is</span><span style="color: #24292E"> c)</span></span></code></pre></div></div></figure>
-<pre><code>False
-True</code></pre>
-<h3 id="可变对象在函数中的默认值">可变对象在函数中的默认值</h3>
-<p>函数中声明的默认值是函数值的一部分，而不是每次调用时才生成
-这导致了若该对象是可变的，而且在函数中间进行了修改，则该修改会在下次调用函数时保留
-如下面的代码，每次调用增加的值会保留在默认值中</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(s</span><span style="color: #D73A49">=</span><span style="color: #24292E">[]):</span></span>
-<span class="line"><span style="color: #24292E">    s.append(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(s)</span></span>
-<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(f())</span></span></code></pre></div></div></figure>
-<pre><code>1
-2
-3</code></pre>
-<h2 id="mutable-fuctions">Mutable Fuctions</h2>
-<p>在函数中使用可变对象可以在多次调用时保留上次操作的值</p>
-<figure class="shiki python"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_withdraw_list</span><span style="color: #24292E">(balance):</span></span>
-<span class="line"><span style="color: #24292E">    b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [balance]</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(amount):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">'Insufficient funds'</span></span>
-<span class="line"><span style="color: #24292E">        b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">-</span><span style="color: #24292E"> amount</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> b[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> withdraw</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">withdraw </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_withdraw_list(</span><span style="color: #005CC5">100</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(withdraw(</span><span style="color: #005CC5">25</span><span style="color: #24292E">))</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(withdraw(</span><span style="color: #005CC5">25</span><span style="color: #24292E">))</span></span>
-<span class="line"><span style="color: #24292E">withdraw(</span><span style="color: #005CC5">100</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
-<pre><code>75
-50
-'Insufficient funds'</code></pre>
-<p>该函数将存款存在作为可变对象的列表中
-函数中的withdraw函数始终指向列表b并修改其值，该列表总是这个列表，随着时间其中的内容被更改
-为了实现每次更改列表中的值，该函数使用了可变对象来创建了一个可变函数
-<img src="images/Lecture15——Mutability/function.png" alt="function"></p>
 
       
     </div>
