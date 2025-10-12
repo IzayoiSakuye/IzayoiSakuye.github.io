@@ -252,7 +252,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-count">118</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,6 +280,128 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lab3-Debugging2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="IzayoiSakuye">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 红魔咖啡馆">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/CS61B/Lab3-Debugging2/" class="post-title-link" itemprop="url">【CS61B】Lab3-Debugging2</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:50" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="lab3-debugging2">Lab3-Debugging2</h1>
+<p>给予项目Adventure来进行调试并修改代码</p>
+<h2 id="学会阅读堆栈追踪">学会阅读堆栈追踪</h2>
+<p>运行主方法后，会在某个位置抛出异常：</p>
+<img src="/CS61B/Lab3-Debugging2/image-20250711184407241.png" class="" title="error1">
+<p>一般作物类型会在报错第一行出现，如该处出现错误：<code>NullPointerException</code></p>
+<p>对于这一类的异常，java也会抛出解释，这里指的是<code>this.input</code>为<code>null</code>，因此我们不能调用方法</p>
+<p>下方表示程序引发错误时的方法调用序列：列表中的第一行是错误发生的位置，其下一行表示调用抛出错误方法的代码行，依此类推。</p>
+<p>可以点击蓝色文本追踪到对应文件和方法行处</p>
+<p><strong>注意：按照执行顺序，堆栈追踪第一行错误显示的应为发生错误时最后调用的方法，可以根据此来判断bug的位置等</strong></p>
+<h2 id="debug-beecountingstage">Debug <code>BeeCountingStage</code></h2>
+<p>根据错误信息发现，错误应该出现在<code>BeeCountingStage</code>中，我们跳入该类进行检查</p>
+<p>此处抛出空指针的原因是<code>this.input</code>还是空指针，未被初始化，因此我们需要对input初始化</p>
+<p>可以发现声明变量处代码为<code>private List&lt;String&gt; input;</code>，再看构造函数发现这两处均为对input初始化，故我们在构造函数中添加初始化代码<code>this.input = new ArrayList&lt;&gt;(0);</code>即可解决问题</p>
+<p>第二个问题还是出现在该类中，错误类型为<code>IndexOutOfBoundsError</code></p>
+<p>经检查，是<code>sumInput</code>函数中，for循环的终止条件多了等号，导致多访问了一位没有定义的位置</p>
+<h2 id="debug-speciesliststage">Debug <code>SpeciesListStage</code></h2>
+<p>错误类型为<code>/ by zero</code>，跟踪到函数<code>arraySimilarity</code></p>
+<p>发现在return处计算相似度时，若询问结束，还会传入一次空字符串，即listOne的size为0，导致除以0的错误发生</p>
+<p>所以若传入的是空字符串，我们需要特定的返回0</p>
+<h2 id="debug-palindromestage">Debug <code>PalindromeStage</code></h2>
+<p>错误类型：<code>Index 3 out of bounds for length 3</code></p>
+<p>我们进入类<code>PalindromeStage</code>，根据IDEA的warning提示，来到函数<code>digitsToIntList</code></p>
+<p>容易发现第一个bug出在for循环中，对计数器i的操作有误，此处为反向遍历，i应该自减</p>
+<p>第二个bug也在for循环中，对于s的下标，最后一位应该是<code>s.length()-1</code>，第一位应该是0，这样避免charAt方法出现异常</p>
+<h2 id="debug-machinestage">Debug <code>MachineStage</code></h2>
+<p>该机器的作用是将输入的两个等长数列的每位进行比较，选出每个下标中更大的那一位，并组成一个新数组并求和，但目前结果有误</p>
+<p>第一个问题出在<code>mysteryMax</code>处，这里对b-a获得了两个掩码</p>
+<ul>
+<li>当 <code>b - a &gt;= 0</code> 时，<code>w</code> 为 0，</li>
+<li>当 <code>b - a &lt; 0</code> 时，<code>w</code> 为 -1（即全 1）</li>
+</ul>
+<p>然后z为w的取反，获得的是相反结果，max的计算等价于</p>
+<ul>
+<li>若
+<code>b &gt;= a</code>：<code>w = 0</code>，<code>z = -1</code>，结果为
+<code>(b &amp; 0) | (a &amp; -1)</code>，返回 <code>a</code></li>
+<li>若
+<code>b &lt; a</code>：<code>w = -1</code>，<code>z = 0</code>，结果为
+<code>(b &amp; -1) | (a &amp; 0)</code>，返回 <code>b</code></li>
+</ul>
+<p>因此这里返回的是最小值，而非最大值，应该将z与w对调</p>
+<p>第二个问题出在<code>arraySum</code>处，这里要求数组最大值之和</p>
+<p>但代码行<code>sum = sum + mysteryAdd(sum, x[i]);</code>明显多加了一个sum，因为<code>mysteryAdd</code>中已经执行了相加操作并返回和，应该删除一个</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -4477,115 +4599,6 @@ int main(){
 <p>在成员函数声明和定义的后面加上关键字<code>const</code></p>
 <p>const成员函数不能修改其成员变量，不能调用非const成员函数，不能通过const类型的对象调用非const成员函数</p>
 <p><strong>即常量对象只可以调用常量方法</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="IzayoiSakuye">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/C++/%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/" class="post-title-link" itemprop="url">【C++】命名空间</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-07-31 17:28:12 / 修改时间：17:28:21" itemprop="dateCreated datePublished" datetime="2025-07-31T17:28:12+08:00">2025-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="命名空间">命名空间</h1>
-<h2 id="使用">使用</h2>
-<p>格式：</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">namespace</span><span style="color: #24292E"> 标识符{</span></span>
-<span class="line"><span style="color: #6A737D">    // 类，对象，变量，函数等</span></span>
-<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
-<p>使用：</p>
-<p>使用限定名：<code>标识符::名字</code></p>
-<p>同一个命名空间可以在一个或多个文件下重复使用</p>
-<h2 id="引入">引入</h2>
-<ul>
-<li>使用using
-namespace可以引入某个命名空间中的所有名称，这样就可以直接使用内部对应内容</li>
-<li>使用using声明可以引入某个限定标识符，这样就不需要使用限定名了</li>
-<li>引入声明区分全局与局部</li>
-<li>不限定命名空间的均默认处于全局命名空间global，引入时只需要使用<code>::名字</code></li>
-</ul>
-<h2 id="嵌套">嵌套</h2>
-<p>命名空间可以嵌套使用：</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Space1</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Space2</span><span style="color: #24292E">{</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>调用时需要明确指出引用哪个，否则会造成不明确，默认输出全局的</p>
-<figure class="shiki c++"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Space1</span><span style="color: #24292E">::a;</span></span>
-<span class="line"><span style="color: #24292E">cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> a </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
-<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Space1</span><span style="color: #24292E">::</span><span style="color: #6F42C1">Space2</span><span style="color: #24292E">::a;</span></span>
-<span class="line"><span style="color: #24292E">cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> a </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span></code></pre></div></div></figure>
 
       
     </div>
