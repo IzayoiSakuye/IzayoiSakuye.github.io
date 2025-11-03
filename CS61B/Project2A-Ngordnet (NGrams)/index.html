@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,13 +13,16 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"izayoisakuye.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":false,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
-
-    <meta name="description" content="CS61B的Project2A，复现了一个简单的Google Books Ngram Viewer">
+  <meta name="description" content="CS61B的Project2A，复现了一个简单的Google Books Ngram Viewer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【CS61B】Project2A-Ngordnet (NGrams)">
 <meta property="og:url" content="https://izayoisakuye.github.io/CS61B/Project2A-Ngordnet%20(NGrams)/index.html">
@@ -29,333 +32,240 @@
 <meta property="article:published_time" content="2025-09-23T14:03:36.103Z">
 <meta property="article:modified_time" content="2025-09-23T14:05:29.677Z">
 <meta property="article:author" content="IzayoiSakuye">
-<meta property="article:tag" content="Project">
 <meta property="article:tag" content="CS61B">
+<meta property="article:tag" content="Project">
 <meta name="twitter:card" content="summary">
-
 
 <link rel="canonical" href="https://izayoisakuye.github.io/CS61B/Project2A-Ngordnet%20(NGrams)/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://izayoisakuye.github.io/CS61B/Project2A-Ngordnet%20(NGrams)/","path":"CS61B/Project2A-Ngordnet (NGrams)/","title":"【CS61B】Project2A-Ngordnet (NGrams)"}</script>
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
 
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>【CS61B】Project2A-Ngordnet (NGrams) | 红魔咖啡馆</title>
+  <title>【CS61B】Project2A-Ngordnet (NGrams) | 红魔咖啡馆</title>
   
 
-
-
-
-
-
-
-
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
-<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
-
-  
-
-
-
-
-
-
-  
 
 
 
 
 
   <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
-<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
-  direction: ltr;
-}
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
 
-mjx-container[jax="SVG"] > svg {
-  overflow: visible;
-}
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-mjx-container[jax="SVG"][display="true"] {
-  display: block;
-  text-align: center;
-  margin: 1em 0;
-}
-
-mjx-container[jax="SVG"][justify="left"] {
-  text-align: left;
-}
-
-mjx-container[jax="SVG"][justify="right"] {
-  text-align: right;
-}
-
-g[data-mml-node="merror"] > g {
-  fill: red;
-  stroke: red;
-}
-
-g[data-mml-node="merror"] > rect[data-background] {
-  fill: yellow;
-  stroke: none;
-}
-
-g[data-mml-node="mtable"] > line[data-line] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > rect[data-frame] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > .mjx-dashed {
-  stroke-dasharray: 140;
-}
-
-g[data-mml-node="mtable"] > .mjx-dotted {
-  stroke-linecap: round;
-  stroke-dasharray: 0,140;
-}
-
-g[data-mml-node="mtable"] > svg {
-  overflow: visible;
-}
-
-[jax="SVG"] mjx-tool {
-  display: inline-block;
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
-[jax="SVG"] mjx-tool > mjx-tip {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-mjx-tool > mjx-tip {
-  display: inline-block;
-  padding: .2em;
-  border: 1px solid #888;
-  font-size: 70%;
-  background-color: #F8F8F8;
-  color: black;
-  box-shadow: 2px 2px 5px #AAAAAA;
-}
-
-g[data-mml-node="maction"][data-toggle] {
-  cursor: pointer;
-}
-
-mjx-status {
-  display: block;
-  position: fixed;
-  left: 1em;
-  bottom: 1em;
-  min-width: 25%;
-  padding: .2em .4em;
-  border: 1px solid #888;
-  font-size: 90%;
-  background-color: #F8F8F8;
-  color: black;
-}
-
-foreignObject[data-mjx-xml] {
-  font-family: initial;
-  line-height: normal;
-  overflow: visible;
-}
-
-.MathJax path {
-  stroke-width: 3;
-}
-
-mjx-container[display="true"] {
-  overflow: auto hidden;
-}
-
-mjx-container[display="true"] + br {
-  display: none;
-}
-</style></head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-
-  <main class="main">
-    <div class="column">
-      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">红魔咖啡馆</p>
-      <i class="logo-line"></i>
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
     </a>
       <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
   </div>
 
   <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
 
+
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">24</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a></li><li class="menu-item menu-item-passages"><a href="/list/" rel="section"><i class="fa-regular fa-file fa-fw"></i>文章</a></li>
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
-
-</header>
-        
-  
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#project2a-ngordnet-ngrams"><span class="nav-number">1.</span> <span class="nav-text">Project2A-Ngordnet (NGrams)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#timeseries"><span class="nav-number">1.1.</span> <span class="nav-text">TimeSeries</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E7%9F%A5%E8%AF%86%E5%A6%82%E4%BD%95%E5%AF%B9treemap%E8%BF%9B%E8%A1%8C%E9%81%8D%E5%8E%86"><span class="nav-number">1.1.1.</span> <span class="nav-text">额外知识：如何对TreeMap进行遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0"><span class="nav-number">1.1.2.</span> <span class="nav-text">拷贝构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#years"><span class="nav-number">1.1.3.</span> <span class="nav-text">years()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data"><span class="nav-number">1.1.4.</span> <span class="nav-text">data()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plus"><span class="nav-number">1.1.5.</span> <span class="nav-text">plus()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dividedby"><span class="nav-number">1.1.6.</span> <span class="nav-text">dividedby()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngrammap"><span class="nav-number">1.2.</span> <span class="nav-text">NGramMap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">输入文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8in%E7%B1%BB%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用In类读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.3.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#counthistory"><span class="nav-number">1.2.4.</span> <span class="nav-text">countHIstory()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weighthistory"><span class="nav-number">1.2.5.</span> <span class="nav-text">weightHistory()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summedweighthistory"><span class="nav-number">1.2.6.</span> <span class="nav-text">summedWeightHistory()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#historytexthandler"><span class="nav-number">1.3.</span> <span class="nav-text">HistoryTextHandler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handle"><span class="nav-number">1.3.2.</span> <span class="nav-text">handle()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#override-tostring"><span class="nav-number">1.3.3.</span> <span class="nav-text">@Override toString()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#historyhandler"><span class="nav-number">1.4.</span> <span class="nav-text">HistoryHandler</span></a></li></ol></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
-      src="/images/avatar.gif">
-  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
-  <div class="site-description" itemprop="description"></div>
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
 </div>
-<div class="site-state-wrap animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">118</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">7</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">24</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
 </div>
 
-        </div>
-      </div>
     </div>
+  </div>
+
+</div>
+    </header>
 
     
-  </aside>
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
-    </div>
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
 
-    <div class="main-inner post posts-expand">
+          <div class="content post posts-expand">
+            
 
-
+    
   
-
-
-<div class="post-block">
   
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Project2A-Ngordnet%20(NGrams)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="红魔咖啡馆">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="【CS61B】Project2A-Ngordnet (NGrams) | 红魔咖啡馆">
-      <meta itemprop="description" content="CS61B的Project2A，复现了一个简单的Google Books Ngram Viewer">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           【CS61B】Project2A-Ngordnet (NGrams)
         </h1>
 
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-      <time title="创建时间：2025-09-23 22:03:36 / 修改时间：22:05:29" itemprop="dateCreated datePublished" datetime="2025-09-23T22:03:36+08:00">2025-09-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
-        </span>
-    </span>
+              <time title="创建时间：2025-09-23 22:03:36 / 修改时间：22:05:29" itemprop="dateCreated datePublished" datetime="2025-09-23T22:03:36+08:00">2025-09-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+                </span>
+            </span>
 
-  
-</div>
-
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>17 分钟</span>
+            </span>
             <div class="post-description">CS61B的Project2A，复现了一个简单的Google Books Ngram Viewer</div>
+
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="project2a-ngordnet-ngrams">Project2A-Ngordnet (NGrams)</h1>
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="project2a-ngordnet-ngrams">Project2A-Ngordnet (NGrams)</h1>
 <p>这个项目要求实现一个类似于Google Books Ngram
 Viewer的查看器，这个系统提供了Google数据库的英文文本中所有被观察到的词汇和短语的历史频率，可以让用户可视化指定词汇与短语在历史上的流行程度</p>
 <p>在这个项目中只需要实现一个单词的处理</p>
 <h2 id="timeseries">TimeSeries</h2>
 <p><code>TimeSeries</code>是TreeMap的一个拓展，键总是int，值总是double，分别对应一个年份与那个年份对应的数值数据点，如下面的设置：</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">TimeSeries ts </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">TimeSeries ts </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">ts.</span><span style="color: #6F42C1">put</span><span style="color: #24292E">(</span><span style="color: #005CC5">1992</span><span style="color: #24292E">,</span><span style="color: #005CC5">3.6</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">ts.</span><span style="color: #6F42C1">put</span><span style="color: #24292E">(</span><span style="color: #005CC5">1993</span><span style="color: #24292E">,</span><span style="color: #005CC5">9.2</span><span style="color: #24292E">);</span></span></code></pre></div></div></figure>
 <p>注意：</p>
@@ -364,11 +274,12 @@ Viewer的查看器，这个系统提供了Google数据库的英文文本中所�
 <li>需要比较两个数据，若某年份或数值不可用，不能用零替代</li>
 <li>进行比较时，由于双精度数之间的比较在舍入时容易产生误差，故可以使用<code>assertThat(x).isWithin(1E-10).of(y)</code>来进行比较</li>
 </ul>
-<h3 id="额外知识如何对treemap进行遍历">额外知识：如何对TreeMap进行遍历</h3>
+<h3
+id="额外知识如何对treemap进行遍历">额外知识：如何对TreeMap进行遍历</h3>
 <h3 id="拷贝构造">拷贝构造</h3>
 <p>要求创建传入ts的拷贝，且数据只包括startYear到endYear之间的数据</p>
 <p>这里使用foreach遍历，对每个key进行判断，若在给定范围内，则加入拷贝TimeSeries</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">(TimeSeries ts, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">(TimeSeries ts, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">super</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    ts.</span><span style="color: #6F42C1">forEach</span><span style="color: #24292E">((key, val)</span><span style="color: #D73A49">-&gt;</span><span style="color: #24292E">{</span></span>
 <span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(key</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">startYear</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">key</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">endYear)</span><span style="color: #005CC5">this</span><span style="color: #24292E">.</span><span style="color: #6F42C1">put</span><span style="color: #24292E">(key, val);</span></span>
@@ -377,7 +288,7 @@ Viewer的查看器，这个系统提供了Google数据库的英文文本中所�
 <h3 id="years">years()</h3>
 <p>要求升序返回当前time series中所有的年份</p>
 <p>years为键，使用treemap的keySet方法生成对键的拷贝set，并放入列表并返回</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> List</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">Integer</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">years</span><span style="color: #24292E">() {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> List</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">Integer</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">years</span><span style="color: #24292E">() {</span></span>
 <span class="line"><span style="color: #24292E">    List&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; yearsList </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> ArrayList&lt;&gt;();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> it </span><span style="color: #D73A49">:</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">.</span><span style="color: #6F42C1">keySet</span><span style="color: #24292E">()) {</span></span>
 <span class="line"><span style="color: #24292E">        yearsList.</span><span style="color: #6F42C1">add</span><span style="color: #24292E">(it);</span></span>
@@ -388,7 +299,7 @@ Viewer的查看器，这个系统提供了Google数据库的英文文本中所�
 <h3 id="data">data()</h3>
 <p>要求返回当前time series中的所有数据，要与years()中的年份顺序一致</p>
 <p>生成yearslist，遍历并使用treemap的get方法获取每个键对应的data值并存入列表并返回</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> List</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">Double</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">data</span><span style="color: #24292E">() {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> List</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">Double</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">data</span><span style="color: #24292E">() {</span></span>
 <span class="line"><span style="color: #24292E">    List&lt;</span><span style="color: #D73A49">Double</span><span style="color: #24292E">&gt; dataList </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> ArrayList&lt;&gt;();</span></span>
 <span class="line"><span style="color: #24292E">    List&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; yearsList </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">years</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> it</span><span style="color: #D73A49">:</span><span style="color: #24292E"> yearsList){</span></span>
@@ -400,7 +311,7 @@ Viewer的查看器，这个系统提供了Google数据库的英文文本中所�
 <p>返回传入ts与当前ts对应年份的data之和，若一方存在年份而另一方不存在，则结果为存在一方的data值，若都不存在就忽略</p>
 <p>为了能将当前与ts的time series，我们新建一个hashset，将两个time
 series的keyset全放入新建的set，遍历，若一边不存在直接将另一边对应value，若都在则相加</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">plus</span><span style="color: #24292E">(TimeSeries ts) {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">plus</span><span style="color: #24292E">(TimeSeries ts) {</span></span>
 <span class="line"><span style="color: #24292E">        TimeSeries returnedTs </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">        Set&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; totSet </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> HashSet&lt;&gt;();</span></span>
 <span class="line"><span style="color: #24292E">        totSet.</span><span style="color: #6F42C1">addAll</span><span style="color: #24292E">(ts.</span><span style="color: #6F42C1">keySet</span><span style="color: #24292E">());</span></span>
@@ -422,11 +333,11 @@ series的keyset全放入新建的set，遍历，若一边不存在直接将另�
 <p>返回当前time
 series除以ts的对应的data，若ts存在当前表不存在的年份，抛出异常</p>
 <p>若ts存在而当前不存在则跳过</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">dividedBy</span><span style="color: #24292E">(TimeSeries ts) {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">dividedBy</span><span style="color: #24292E">(TimeSeries ts) {</span></span>
 <span class="line"><span style="color: #24292E">    TimeSeries result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> it</span><span style="color: #D73A49">:</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">.</span><span style="color: #6F42C1">keySet</span><span style="color: #24292E">()){</span></span>
 <span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">ts.</span><span style="color: #6F42C1">containsKey</span><span style="color: #24292E">(it)){</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">throw</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IllegalArgumentException</span><span style="color: #24292E">(it</span><span style="color: #D73A49">+</span><span style="color: #032F62">"is missing in this TimeSeries"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">throw</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IllegalArgumentException</span><span style="color: #24292E">(it</span><span style="color: #D73A49">+</span><span style="color: #032F62">&quot;is missing in this TimeSeries&quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">        }</span></span>
 <span class="line"><span style="color: #24292E">        result.</span><span style="color: #6F42C1">put</span><span style="color: #24292E">(it, </span><span style="color: #005CC5">this</span><span style="color: #24292E">.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(it)</span><span style="color: #D73A49">/</span><span style="color: #24292E">ts.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(it));</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
@@ -446,9 +357,10 @@ file，每一行都提供了每一年可用数据总语料库的信息，用逗�
 <p>第一个条目是年份，第二个条目是当年从所有语料中记录的总单词数，第三个条目是该年的文本总页数，第四个是该年的不同来源总数，程序需要<strong>忽略第三四列</strong></p>
 <h3 id="使用in类读取文件">使用In类读取文件</h3>
 <p>Java中可以使用In类读取文件</p>
-<p>可以在<a target="_blank" rel="noopener" href="https://introcs.cs.princeton.edu/java/stdlib/javadoc/In.html">这里</a>看到详细文档</p>
+<p>可以在<a
+target="_blank" rel="noopener" href="https://introcs.cs.princeton.edu/java/stdlib/javadoc/In.html">这里</a>看到详细文档</p>
 <p>这是一个读取文件的例子</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> main;</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> main;</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> edu.princeton.cs.algs4.In;</span></span>
 <span class="line"></span>
@@ -462,10 +374,10 @@ file，每一行都提供了每一年可用数据总语料库的信息，用逗�
 <span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">in.</span><span style="color: #6F42C1">isEmpty</span><span style="color: #24292E">()) {</span></span>
 <span class="line"><span style="color: #24292E">            i </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
 <span class="line"><span style="color: #24292E">            String nextLine </span><span style="color: #D73A49">=</span><span style="color: #24292E"> in.</span><span style="color: #6F42C1">readLine</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">            System.out.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"Line "</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> i </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">" is: "</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">            System.out.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Line &quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> i </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot; is: &quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">            System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(nextLine);</span></span>
-<span class="line"><span style="color: #24292E">            System.out.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">(</span><span style="color: #032F62">"After splitting on tab characters, the first word is: "</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">String</span><span style="color: #24292E">[] splitLine </span><span style="color: #D73A49">=</span><span style="color: #24292E"> nextLine.</span><span style="color: #6F42C1">split</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">\t</span><span style="color: #032F62">"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">            System.out.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;After splitting on tab characters, the first word is: &quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">String</span><span style="color: #24292E">[] splitLine </span><span style="color: #D73A49">=</span><span style="color: #24292E"> nextLine.</span><span style="color: #6F42C1">split</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">\t</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">            System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(splitLine[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]);</span></span>
 <span class="line"><span style="color: #24292E">        }</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
@@ -475,14 +387,14 @@ file，每一行都提供了每一年可用数据总语料库的信息，用逗�
 Series的映射（提示中写道尽量避免使用map嵌套，故我们使用自己的Time
 Series，这样也可以方便操作数据与提高性能）</p>
 <p>读取文件使用的类是课程给定的In类</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NGramMap</span><span style="color: #24292E">(String wordsFilename, String countsFilename) {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NGramMap</span><span style="color: #24292E">(String wordsFilename, String countsFilename) {</span></span>
 <span class="line"><span style="color: #24292E">    yearCount </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    wordsCount </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> HashMap&lt;&gt;();</span></span>
 <span class="line"><span style="color: #24292E">    In inWords </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">In</span><span style="color: #24292E">(wordsFilename);</span></span>
 <span class="line"><span style="color: #24292E">    In inCounts </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">In</span><span style="color: #24292E">(countsFilename);</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">inWords.</span><span style="color: #6F42C1">isEmpty</span><span style="color: #24292E">()){</span></span>
 <span class="line"><span style="color: #24292E">        String nextLine1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> inWords.</span><span style="color: #6F42C1">readLine</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">String</span><span style="color: #24292E">[] splitLine1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> nextLine1.</span><span style="color: #6F42C1">split</span><span style="color: #24292E">(</span><span style="color: #032F62">"</span><span style="color: #005CC5">\t</span><span style="color: #032F62">"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">String</span><span style="color: #24292E">[] splitLine1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> nextLine1.</span><span style="color: #6F42C1">split</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">\t</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">        TimeSeries temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> wordsCount.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(splitLine1[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]);</span></span>
 <span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">wordsCount.</span><span style="color: #6F42C1">containsKey</span><span style="color: #24292E">(splitLine1[</span><span style="color: #005CC5">0</span><span style="color: #24292E">])){</span></span>
 <span class="line"><span style="color: #24292E">            temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
@@ -493,7 +405,7 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">inCounts.</span><span style="color: #6F42C1">isEmpty</span><span style="color: #24292E">()){</span></span>
 <span class="line"><span style="color: #24292E">        String nextLine2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> inCounts.</span><span style="color: #6F42C1">readLine</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">String</span><span style="color: #24292E">[] splitLine2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> nextLine2.</span><span style="color: #6F42C1">split</span><span style="color: #24292E">(</span><span style="color: #032F62">","</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">String</span><span style="color: #24292E">[] splitLine2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> nextLine2.</span><span style="color: #6F42C1">split</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;,&quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">        yearCount.</span><span style="color: #6F42C1">put</span><span style="color: #24292E">(Integer.</span><span style="color: #6F42C1">parseInt</span><span style="color: #24292E">(splitLine2[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]), Double.</span><span style="color: #6F42C1">parseDouble</span><span style="color: #24292E">(splitLine2[</span><span style="color: #005CC5">1</span><span style="color: #24292E">]));</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"></span>
@@ -508,7 +420,7 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <h3 id="counthistory">countHIstory()</h3>
 <p>返回一个TimeSeries，记录了给定单词在STARTYEAR到ENDYEAR间的出现次数</p>
 <p>注意，这里返回的TimeSeries要求深拷贝以避免对原数据造成影响</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">countHistory</span><span style="color: #24292E">(String word, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">countHistory</span><span style="color: #24292E">(String word, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
 <span class="line"><span style="color: #24292E">   TimeSeries tempSeries </span><span style="color: #D73A49">=</span><span style="color: #24292E"> wordsCount.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(word);</span></span>
 <span class="line"><span style="color: #24292E">   </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (tempSeries </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">null</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">   TimeSeries returnedSeries </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
@@ -525,7 +437,7 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <p>这里转移数据时可以使用putAll方法，方便的把所有数据转移到新TimeSeries中</p>
 <h3 id="weighthistory">weightHistory()</h3>
 <p>返回一个TimeSeries，记录了给定单词在STARTYEAR与ENDYEAR间的单词出现频率（该单词在每年出现次数占该年所有单词出现次数的比例）</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">weightHistory</span><span style="color: #24292E">(String word, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">weightHistory</span><span style="color: #24292E">(String word, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
 <span class="line"><span style="color: #24292E">    TimeSeries years </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">countHistory</span><span style="color: #24292E">(word, startYear, endYear);</span></span>
 <span class="line"><span style="color: #24292E">    TimeSeries result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> year</span><span style="color: #D73A49">:</span><span style="color: #24292E">years.</span><span style="color: #6F42C1">keySet</span><span style="color: #24292E">()){</span></span>
@@ -542,7 +454,7 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <p>对应的重载版本取消了年份区间的要求，对应调用不同函数即可</p>
 <h3 id="summedweighthistory">summedWeightHistory()</h3>
 <p>返回一个TimeSeries，记录了在STARTYEAR与ENDYEAR间给定所有单词在每一年的出现频率之和，若不存在则忽略</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">summedWeightHistory</span><span style="color: #24292E">(Collection</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">String</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> words,</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> TimeSeries </span><span style="color: #6F42C1">summedWeightHistory</span><span style="color: #24292E">(Collection</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">String</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> words,</span></span>
 <span class="line"><span style="color: #24292E">                                      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> endYear) {</span></span>
 <span class="line"><span style="color: #24292E">    TimeSeries result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TimeSeries</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (String word</span><span style="color: #D73A49">:</span><span style="color: #24292E">words){</span></span>
@@ -561,17 +473,17 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <h2 id="historytexthandler">HistoryTextHandler</h2>
 <p>下面需要设计一个前端以便用户交互</p>
 <p>运行Main.java，可以发现服务器成功启动的提示，打开<code>ngordnet_2a.html</code>输入数据cat,dog，点击history(text)按钮，显示如下：</p>
-<figure class="shiki"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">You entered the following info into the browser:</span></span>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">You entered the following info into the browser:</span></span>
 <span class="line"><span style="color: #24292e">Words: [cat, dog]</span></span>
 <span class="line"><span style="color: #24292e">Start Year: 2000</span></span>
 <span class="line"><span style="color: #24292e">End Year: 2020</span></span></code></pre></div></div></figure>
 <p>这时调用了DummyHistoryTextHandler中的handle方法，最后的期望结果如下：</p>
-<figure class="shiki"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">cat: {2000=1.71568475416827E-5, 2001=1.6120939684412677E-5, 2002=1.61742010630623E-5, 2003=1.703155141714967E-5, 2004=1.7418408946715716E-5, 2005=1.8042211615010028E-5, 2006=1.8126126955841936E-5, 2007=1.9411504094739293E-5, 2008=1.9999492186117545E-5, 2009=2.1599428349729816E-5, 2010=2.1712564894218663E-5, 2011=2.4857238078766228E-5, 2012=2.4198586699546612E-5, 2013=2.3131865569578688E-5, 2014=2.5344693375481996E-5, 2015=2.5237182007765998E-5, 2016=2.3157514119191215E-5, 2017=2.482102172595473E-5, 2018=2.3556758130732888E-5, 2019=2.4581322086049953E-5}</span></span>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">cat: {2000=1.71568475416827E-5, 2001=1.6120939684412677E-5, 2002=1.61742010630623E-5, 2003=1.703155141714967E-5, 2004=1.7418408946715716E-5, 2005=1.8042211615010028E-5, 2006=1.8126126955841936E-5, 2007=1.9411504094739293E-5, 2008=1.9999492186117545E-5, 2009=2.1599428349729816E-5, 2010=2.1712564894218663E-5, 2011=2.4857238078766228E-5, 2012=2.4198586699546612E-5, 2013=2.3131865569578688E-5, 2014=2.5344693375481996E-5, 2015=2.5237182007765998E-5, 2016=2.3157514119191215E-5, 2017=2.482102172595473E-5, 2018=2.3556758130732888E-5, 2019=2.4581322086049953E-5}</span></span>
 <span class="line"><span style="color: #24292e">dog: {2000=3.127517699525712E-5, 2001=2.99511426723737E-5, 2002=3.0283458650225453E-5, 2003=3.1470761877596034E-5, 2004=3.2890514515432536E-5, 2005=3.753038415155302E-5, 2006=3.74430614362125E-5, 2007=3.987077208249744E-5, 2008=4.267197824115907E-5, 2009=4.81026086549733E-5, 2010=5.30567576173992E-5, 2011=6.048536820577008E-5, 2012=5.179787485962082E-5, 2013=5.0225599367200654E-5, 2014=5.5575537540090384E-5, 2015=5.44261096781696E-5, 2016=4.805214145459557E-5, 2017=5.4171157785607686E-5, 2018=5.206751570646653E-5, 2019=5.5807040409297486E-5}</span></span></code></pre></div></div></figure>
 <p>即显示了每一年对应的出现权重</p>
 <p>创建一个java文件<code>HistoryTextHandler</code>实现</p>
 <h3 id="构造函数-1">构造函数</h3>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">NGramMap map;</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">NGramMap map;</span></span>
 <span class="line"><span style="color: #24292E">Map&lt;</span><span style="color: #D73A49">String</span><span style="color: #24292E">, </span><span style="color: #D73A49">TimeSeries</span><span style="color: #24292E">&gt; wordsHistory;</span></span>
 <span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">HistoryTextHandler</span><span style="color: #24292E">(NGramMap map){</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">this</span><span style="color: #24292E">.map </span><span style="color: #D73A49">=</span><span style="color: #24292E"> map;</span></span>
@@ -580,7 +492,7 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <p>使用NGramMap存储存入的map，并用map存储得到的结果以便字符串输出</p>
 <h3 id="handle">handle()</h3>
 <p>handle负责收集输入的数据，在前端页面按下history(text)便会调用该方法，我们在这里计算并存储每个汉字对应的年份与权重</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #D73A49">Override</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #D73A49">Override</span></span>
 <span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> String </span><span style="color: #6F42C1">handle</span><span style="color: #24292E">(NgordnetQuery q) {</span></span>
 <span class="line"><span style="color: #24292E">    List&lt;</span><span style="color: #D73A49">String</span><span style="color: #24292E">&gt; words </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q.</span><span style="color: #6F42C1">words</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> startYear </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q.</span><span style="color: #6F42C1">startYear</span><span style="color: #24292E">();</span></span>
@@ -594,24 +506,25 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 <p>遍历words，取出每一个word通过map的方法计算指定年份间的权重，并存入wordsHistory</p>
 <p>以字符串形式返回数据，这里需要重写toString方法</p>
-<h3 id="override-tostring"><span class="citation" data-cites="Override">@Override</span> toString()</h3>
+<h3 id="override-tostring"><span class="citation"
+data-cites="Override">@Override</span> toString()</h3>
 <p>为了可以直接在handle中返回最终结果，需要重写toString方法</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #D73A49">Override</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #D73A49">Override</span></span>
 <span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> String </span><span style="color: #6F42C1">toString</span><span style="color: #24292E">(){</span></span>
 <span class="line"><span style="color: #24292E">    StringBuilder returnedString </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">StringBuilder</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(String word</span><span style="color: #D73A49">:</span><span style="color: #24292E">wordsHistory.</span><span style="color: #6F42C1">keySet</span><span style="color: #24292E">()){</span></span>
-<span class="line"><span style="color: #24292E">        returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(word).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">": {"</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(word).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;: {&quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">        TimeSeries wordWeight </span><span style="color: #D73A49">=</span><span style="color: #24292E"> wordsHistory.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(word);</span></span>
 <span class="line"><span style="color: #24292E">        Iterator&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; it </span><span style="color: #D73A49">=</span><span style="color: #24292E"> wordWeight.</span><span style="color: #6F42C1">keySet</span><span style="color: #24292E">().</span><span style="color: #6F42C1">iterator</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(it.</span><span style="color: #6F42C1">hasNext</span><span style="color: #24292E">()){</span></span>
 <span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">int</span><span style="color: #24292E"> year </span><span style="color: #D73A49">=</span><span style="color: #24292E"> it.</span><span style="color: #6F42C1">next</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">            returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(year).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">"="</span><span style="color: #24292E">).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(wordWeight.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(year));</span></span>
+<span class="line"><span style="color: #24292E">            returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(year).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;=&quot;</span><span style="color: #24292E">).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(wordWeight.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(year));</span></span>
 <span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (it.</span><span style="color: #6F42C1">hasNext</span><span style="color: #24292E">()){</span></span>
-<span class="line"><span style="color: #24292E">                returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">", "</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">                returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;, &quot;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">            }</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">"}"</span><span style="color: #24292E">).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">'</span><span style="color: #005CC5">\n</span><span style="color: #032F62">'</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        returnedString.</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;}&quot;</span><span style="color: #24292E">).</span><span style="color: #6F42C1">append</span><span style="color: #24292E">(</span><span style="color: #032F62">&#39;</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&#39;</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> returnedString.</span><span style="color: #6F42C1">toString</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
@@ -626,7 +539,7 @@ Series，这样也可以方便操作数据与提高性能）</p>
 <li><code>ngordnet.Plotter.displayChart</code>对base64解码并显示图像</li>
 </ul>
 <p>创建一个HistoryHandler文件实现图像显示</p>
-<figure class="shiki java"><div class="codeblock"><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">HistoryHandler</span><span style="color: #24292E"> </span><span style="color: #D73A49">extends</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NgordnetQueryHandler</span><span style="color: #24292E"> {</span></span>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">HistoryHandler</span><span style="color: #24292E"> </span><span style="color: #D73A49">extends</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NgordnetQueryHandler</span><span style="color: #24292E"> {</span></span>
 <span class="line"><span style="color: #24292E">    NGramMap map;</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">HistoryHandler</span><span style="color: #24292E">(NGramMap </span><span style="color: #E36209">map</span><span style="color: #24292E">){</span></span>
 <span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">this</span><span style="color: #24292E">.map </span><span style="color: #D73A49">=</span><span style="color: #24292E"> map;</span></span>
@@ -654,71 +567,237 @@ Series，这样也可以方便操作数据与提高性能）</p>
     
     
 
-    <footer class="post-footer">
+      <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Project/" rel="tag"># Project</a>
               <a href="/tags/CS61B/" rel="tag"># CS61B</a>
+              <a href="/tags/Project/" rel="tag"># Project</a>
           </div>
 
         
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%AF%94%E7%89%B9%E3%80%81%E5%AD%97%E8%8A%82%E4%B8%8E%E6%95%B4%E6%95%B0/" rel="prev" title="【计算机组成原理】比特、字节与整数">
-                  <i class="fa fa-angle-left"></i> 【计算机组成原理】比特、字节与整数
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/CS61B/Lec21%20Priority%20Queue%20&%20Heaps/" rel="next" title="【CS61B】Lec21 Priority Queue &amp; Heaps">
-                  【CS61B】Lec21 Priority Queue & Heaps <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%AF%94%E7%89%B9%E3%80%81%E5%AD%97%E8%8A%82%E4%B8%8E%E6%95%B4%E6%95%B0/" rel="prev" title="【计算机组成原理】比特、字节与整数">
+      <i class="fa fa-chevron-left"></i> 【计算机组成原理】比特、字节与整数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/CS61B/Lec21%20Priority%20Queue%20&%20Heaps/" rel="next" title="【CS61B】Lec21 Priority Queue & Heaps">
+      【CS61B】Lec21 Priority Queue & Heaps <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-</div>
+  
+  
+  
 
 
 
+          </div>
+          
 
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
 
-
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="copyright">
-    &copy; 
-    <span itemprop="copyrightYear">2025</span>
-    <span class="with-love">
-      <i class="fa fa-heart"></i>
-    </span>
-    <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#project2a-ngordnet-ngrams"><span class="nav-number">1.</span> <span class="nav-text">Project2A-Ngordnet (NGrams)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#timeseries"><span class="nav-number">1.1.</span> <span class="nav-text">TimeSeries</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E7%9F%A5%E8%AF%86%E5%A6%82%E4%BD%95%E5%AF%B9treemap%E8%BF%9B%E8%A1%8C%E9%81%8D%E5%8E%86"><span class="nav-number">1.1.1.</span> <span class="nav-text">额外知识：如何对TreeMap进行遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0"><span class="nav-number">1.1.2.</span> <span class="nav-text">拷贝构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#years"><span class="nav-number">1.1.3.</span> <span class="nav-text">years()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data"><span class="nav-number">1.1.4.</span> <span class="nav-text">data()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plus"><span class="nav-number">1.1.5.</span> <span class="nav-text">plus()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dividedby"><span class="nav-number">1.1.6.</span> <span class="nav-text">dividedby()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngrammap"><span class="nav-number">1.2.</span> <span class="nav-text">NGramMap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">输入文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8in%E7%B1%BB%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用In类读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.3.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#counthistory"><span class="nav-number">1.2.4.</span> <span class="nav-text">countHIstory()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weighthistory"><span class="nav-number">1.2.5.</span> <span class="nav-text">weightHistory()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summedweighthistory"><span class="nav-number">1.2.6.</span> <span class="nav-text">summedWeightHistory()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#historytexthandler"><span class="nav-number">1.3.</span> <span class="nav-text">HistoryTextHandler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handle"><span class="nav-number">1.3.2.</span> <span class="nav-text">handle()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#override-tostring"><span class="nav-number">1.3.3.</span> <span class="nav-text">@Override toString()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#historyhandler"><span class="nav-number">1.4.</span> <span class="nav-text">HistoryHandler</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
   </div>
+
+
+
+      </div>
 
     </div>
-  </footer>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">368k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:09</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
 
   
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-  <div class="sidebar-dimmer"></div>
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
 
 <!-- hexo injector body_end start -->
 <script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>

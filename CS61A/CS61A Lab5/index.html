@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="WWPD部分省略 Q2: Insert Items 实现一个函数，传入列表，一个值before，一个值after，在列表中每个等于before的之后插入after 1234567891011121314151617181920212223242526272829303132def insert_items(s, before, after):     &quot;&quot;&quot;In">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【CS61A】CS61A——Lab5">
+<meta property="og:url" content="https://izayoisakuye.github.io/CS61A/CS61A%20Lab5/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="WWPD部分省略 Q2: Insert Items 实现一个函数，传入列表，一个值before，一个值after，在列表中每个等于before的之后插入after 1234567891011121314151617181920212223242526272829303132def insert_items(s, before, after):     &quot;&quot;&quot;In">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-04T02:35:24.045Z">
+<meta property="article:modified_time" content="2025-07-31T09:51:29.186Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="CS61A">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【CS61A】CS61A——Lab5 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CS61A】CS61A——Lab5
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-04-04 10:35:24" itemprop="dateCreated datePublished" datetime="2025-04-04T10:35:24+08:00">2025-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:51:29" itemprop="dateModified" datetime="2025-07-31T17:51:29+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>WWPD部分省略</em></p>
+<h1 id="q2-insert-items">Q2: Insert Items</h1>
+<p>实现一个函数，传入列表，一个值<code>before</code>，一个值<code>after</code>，在列表中每个等于<code>before</code>的之后插入<code>after</code></p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insert_items</span><span style="color: #24292E">(s, before, after):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Insert after into s after each occurrence of before and then return s.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">test_s = [1, 5, 8, 5, 2, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">new_s = insert_items(test_s, 5, 7)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">new_s</span></span>
+<span class="line"><span style="color: #032F62">    [1, 5, 7, 8, 5, 7, 2, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">test_s</span></span>
+<span class="line"><span style="color: #032F62">    [1, 5, 7, 8, 5, 7, 2, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">new_s is test_s</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">double_s = [1, 2, 1, 2, 3, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">double_s = insert_items(double_s, 3, 4)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">double_s</span></span>
+<span class="line"><span style="color: #032F62">    [1, 2, 1, 2, 3, 4, 3, 4]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">large_s = [1, 4, 8]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">large_s2 = insert_items(large_s, 4, 4)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">large_s2</span></span>
+<span class="line"><span style="color: #032F62">    [1, 4, 4, 8]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">large_s3 = insert_items(large_s2, 4, 6)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">large_s3</span></span>
+<span class="line"><span style="color: #032F62">    [1, 4, 6, 4, 6, 8]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">large_s3 is large_s</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    idx </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> idx</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">len</span><span style="color: #24292E">(s):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s[idx]</span><span style="color: #D73A49">==</span><span style="color: #24292E">before:</span></span>
+<span class="line"><span style="color: #24292E">            s.insert(idx</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">,after)</span></span>
+<span class="line"><span style="color: #24292E">            idx</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        idx</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span></code></pre></div></div></figure>
+<p>注意：</p>
+<ul>
+<li>在<code>before==after</code>时，可能会一直在相同元素后添加相同元素，导致死循环</li>
+<li>需要在每次相等时手动让idx向后移动一位</li>
+<li>且需要判断长度防止死循环</li>
+</ul>
+<h1 id="q3-group-by">Q3: Group By</h1>
+<p>实现函数，传入列表s与函数fn，返回一个字典</p>
+<p>字典的值为s的元素，键为fn(e)，且对相同fn(e)的的元素在同一个列表中</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">group_by</span><span style="color: #24292E">(s, fn):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return a dictionary of lists that together contain the elements of s.</span></span>
+<span class="line"><span style="color: #032F62">    The key for each list is the value that fn returns when called on any of the</span></span>
+<span class="line"><span style="color: #032F62">    values of that list.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">group_by([12, 23, 14, 45], lambda p: p // 10)</span></span>
+<span class="line"><span style="color: #032F62">    {1: [12, 14], 2: [23], 4: [45]}</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">group_by(range(-3, 4), lambda x: x * x)</span></span>
+<span class="line"><span style="color: #032F62">    {9: [-3, 3], 4: [-2, 2], 1: [-1, 1], 0: [0]}</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    grouped </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {}</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> val </span><span style="color: #D73A49">in</span><span style="color: #24292E"> s:</span></span>
+<span class="line"><span style="color: #24292E">        key </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fn(val)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> key </span><span style="color: #D73A49">in</span><span style="color: #24292E"> grouped:</span></span>
+<span class="line"><span style="color: #24292E">            grouped[key].append(val)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            grouped[key] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [val]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> grouped</span></span></code></pre></div></div></figure>
+<p>遍历s，计算key值，若存在则直接添加到key对应val的列表中，若无则创建列表并填入该值</p>
+<h1 id="q5-count-occurrences">Q5: Count Occurrences</h1>
+<p>实现一个函数，传入一个迭代器t，整数n和值x，返回前n个t中和x相等的的数值的个数</p>
+<blockquote>
+<p>注意：在t上调用next n次，确保至少在t中有n个元素</p>
+</blockquote>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">count_occurrences</span><span style="color: #24292E">(t, n, x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the number of times that x is equal to one of the</span></span>
+<span class="line"><span style="color: #032F62">    first n elements of iterator t.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_occurrences(s, 10, 9)</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_occurrences(t, 3, 10)</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">u = iter([3, 2, 2, 2, 1, 2, 1, 4, 4, 5, 5, 5])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_occurrences(u, 1, 3)  # Only iterate over 3</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_occurrences(u, 3, 2)  # Only iterate over 2, 2, 2</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">list(u)                     # Ensure that the iterator has advanced the right amount</span></span>
+<span class="line"><span style="color: #032F62">    [1, 2, 1, 4, 4, 5, 5, 5]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">v = iter([4, 1, 6, 6, 7, 7, 6, 6, 2, 2, 2, 5])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_occurrences(v, 6, 6)</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    times </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> cnt</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(t)</span><span style="color: #D73A49">==</span><span style="color: #24292E"> x:</span></span>
+<span class="line"><span style="color: #24292E">            times</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        cnt</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> times</span></span></code></pre></div></div></figure>
+<p>注意提前跳出循环一次，防止迭代器到尾后返回traceback</p>
+<h1 id="q6-repeated">Q6: Repeated</h1>
+<p>实现函数，传入迭代器t与一个大于1的整数k，返回t中第一个连续出现k次的元素</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">repeated</span><span style="color: #24292E">(t, k):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the first value in iterator t that appears k times in a row,</span></span>
+<span class="line"><span style="color: #032F62">    calling next on t as few times as possible.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">repeated(s, 2)</span></span>
+<span class="line"><span style="color: #032F62">    9</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t = iter([10, 9, 10, 9, 9, 10, 8, 8, 8, 7])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">repeated(t, 3)</span></span>
+<span class="line"><span style="color: #032F62">    8</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">u = iter([3, 2, 2, 2, 1, 2, 1, 4, 4, 5, 5, 5])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">repeated(u, 3)</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">repeated(u, 3)</span></span>
+<span class="line"><span style="color: #032F62">    5</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">v = iter([4, 1, 6, 6, 7, 7, 8, 8, 2, 2, 2, 5])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">repeated(v, 3)</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> k </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        cur </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">next</span><span style="color: #24292E">(t)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> cur </span><span style="color: #D73A49">==</span><span style="color: #24292E"> pre:</span></span>
+<span class="line"><span style="color: #24292E">            cnt</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            cnt</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> cur</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> cnt </span><span style="color: #D73A49">==</span><span style="color: #24292E"> k:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> cur</span></span></code></pre></div></div></figure>
+<p>一开始想用两个迭代器，但是不会复制</p>
+<p>每次调用迭代器的next值，并保存前一个值，每次比较</p>
+<p>若前后相同，则计数重复+1，否则还原为1（自身重复一次）</p>
+<h1 id="q7-sprout-leaves">Q7: Sprout Leaves</h1>
+<p>传入一颗树，与新的叶子节点，使该树延伸出对应叶子节点，通过print_tree输出</p>
+<p>如<code>t = tree(1, [tree(2), tree(3, [tree(4)])])</code></p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">  1</span></span>
+<span class="line"><span style="color: #24292e"> / \</span></span>
+<span class="line"><span style="color: #24292e">2   3</span></span>
+<span class="line"><span style="color: #24292e">    |</span></span>
+<span class="line"><span style="color: #24292e">    4</span></span></code></pre></div></div></figure>
+<p>调用<code>sprout_leaves(t, [5, 6])</code>后打印出树如下</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">     1</span></span>
+<span class="line"><span style="color: #24292e">   /   \</span></span>
+<span class="line"><span style="color: #24292e">  2     3</span></span>
+<span class="line"><span style="color: #24292e"> / \    |</span></span>
+<span class="line"><span style="color: #24292e">5   6   4</span></span>
+<span class="line"><span style="color: #24292e">       / \</span></span>
+<span class="line"><span style="color: #24292e">      5   6</span></span></code></pre></div></div></figure>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">sprout_leaves</span><span style="color: #24292E">(t, leaves):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Sprout new leaves containing the labels in leaves at each leaf of</span></span>
+<span class="line"><span style="color: #032F62">    the original tree t and return the resulting tree.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t1 = tree(1, [tree(2), tree(3)])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_tree(t1)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">      2</span></span>
+<span class="line"><span style="color: #032F62">      3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">new1 = sprout_leaves(t1, [4, 5])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_tree(new1)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">      2</span></span>
+<span class="line"><span style="color: #032F62">        4</span></span>
+<span class="line"><span style="color: #032F62">        5</span></span>
+<span class="line"><span style="color: #032F62">      3</span></span>
+<span class="line"><span style="color: #032F62">        4</span></span>
+<span class="line"><span style="color: #032F62">        5</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t2 = tree(1, [tree(2, [tree(3)])])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_tree(t2)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">      2</span></span>
+<span class="line"><span style="color: #032F62">        3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">new2 = sprout_leaves(t2, [6, 1, 2])</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">print_tree(new2)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">      2</span></span>
+<span class="line"><span style="color: #032F62">        3</span></span>
+<span class="line"><span style="color: #032F62">          6</span></span>
+<span class="line"><span style="color: #032F62">          1</span></span>
+<span class="line"><span style="color: #032F62">          2</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_leaf(t):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree(label(t), [tree(leaf) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> leaf </span><span style="color: #D73A49">in</span><span style="color: #24292E"> leaves])</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree(label(t), [sprout_leaves(s, leaves) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> s </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t)])</span></span></code></pre></div></div></figure>
+<h1 id="q8-partial-reverse">Q8: Partial Reverse</h1>
+<p>实现函数，传入列表s与起始元素start，将start到列表末尾的元素反转</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">partial_reverse</span><span style="color: #24292E">(s, start):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Reverse part of a list in-place, starting with start up to the end of</span></span>
+<span class="line"><span style="color: #032F62">    the list.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = [1, 2, 3, 4, 5, 6, 7]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">partial_reverse(a, 2)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a</span></span>
+<span class="line"><span style="color: #032F62">    [1, 2, 7, 6, 5, 4, 3]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">partial_reverse(a, 5)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a</span></span>
+<span class="line"><span style="color: #032F62">    [1, 2, 7, 6, 5, 3, 4]</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    end </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(s)</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> start </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> end:</span></span>
+<span class="line"><span style="color: #24292E">        s[start], s[end] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s[end], s[start]</span></span>
+<span class="line"><span style="color: #24292E">        start</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        end</span><span style="color: #D73A49">-=</span><span style="color: #005CC5">1</span></span></code></pre></div></div></figure>
+<p>使用序列解包，交换两个元素可以通过<code>a,b=b,a</code>实现</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/CS61A/" rel="tag"># CS61A</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/CS61A/CS61A%20Lab6/" rel="prev" title="【CS61A】CS61A——Lab6">
+      <i class="fa fa-chevron-left"></i> 【CS61A】CS61A——Lab6
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/CS61A/CS61A%20Homework5/" rel="next" title="【CS61A】CS61A——Homework 5">
+      【CS61A】CS61A——Homework 5 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#q2-insert-items"><span class="nav-number">1.</span> <span class="nav-text">Q2: Insert Items</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#q3-group-by"><span class="nav-number">2.</span> <span class="nav-text">Q3: Group By</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#q5-count-occurrences"><span class="nav-number">3.</span> <span class="nav-text">Q5: Count Occurrences</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#q6-repeated"><span class="nav-number">4.</span> <span class="nav-text">Q6: Repeated</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#q7-sprout-leaves"><span class="nav-number">5.</span> <span class="nav-text">Q7: Sprout Leaves</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#q8-partial-reverse"><span class="nav-number">6.</span> <span class="nav-text">Q8: Partial Reverse</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">368k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">11:09</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
