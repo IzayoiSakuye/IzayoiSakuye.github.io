@@ -183,6 +183,217 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Homework4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Homework4/" class="post-title-link" itemprop="url">【CS61A】CS61A——Homework 4</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-28 21:47:43" itemprop="dateCreated datePublished" datetime="2025-03-28T21:47:43+08:00">2025-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:50:32" itemprop="dateModified" datetime="2025-07-31T17:50:32+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="homework-4">Homework 4</h1>
+<h2 id="sequence">Sequence</h2>
+<h3 id="q1-deep-map">Q1: Deep Map</h3>
+<p>写一个函数<code>deep_map</code>，使得传入的列表s（s可能是嵌套列表）中的每一个元素替换为该元素传入函数f后的返回值</p>
+<p><strong>每一个元素包括嵌套列表中的每一个元素</strong></p>
+<blockquote>
+<p>提示：<code>type(a)==list</code>会返回True如果a是列表</p>
+</blockquote>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deep_map</span><span style="color: #24292E">(f, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Replace all non-list elements x with f(x) in the nested list s.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">six = [1, 2, [3, [4], 5], 6]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">deep_map(lambda x: x * x, six)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">six</span></span>
+<span class="line"><span style="color: #032F62">    [1, 4, [9, [16], 25], 36]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># Check that you&#39;re not making new lists</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = [3, [1, [4, [1]]]]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s1 = s[1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s2 = s1[1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s3 = s2[1]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">deep_map(lambda x: x + 1, s)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s</span></span>
+<span class="line"><span style="color: #032F62">    [4, [2, [5, [2]]]]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s1 is s[1]</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s2 is s1[1]</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s3 is s2[1]</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">len</span><span style="color: #24292E">(s)):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">type</span><span style="color: #24292E">(s[i])</span><span style="color: #D73A49">==</span><span style="color: #005CC5">list</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            deep_map(f,s[i])</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            s[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">f(s[i])</span></span></code></pre></div></div></figure>
+<p>遍历列表下标i，如果发现内部有嵌套列表，就递归进入遍历嵌套列表，若当前位置为一般元素，则调用函数并将结果替换</p>
+<h2 id="data-abstraction">Data Abstraction</h2>
+<h3 id="要用到的adt">要用到的ADT</h3>
+<p>Mobile：一种悬挂雕像</p>
+<ul>
+<li>一个mobile一定有一个左arm和一个右arm</li>
+<li>一个arm有一个正数大小的长度，且尾端一定挂着一个mobile或一个planet</li>
+<li>一个planet有一个正数大小的质量，且没有东西挂在上面</li>
+</ul>
+<h3 id="q2-mass">Q2: Mass</h3>
+<p>补充完成构造器planet与选择器mass</p>
+<p>使得每一格planet用一个二元列表表示：<code>['planet', mass]</code></p>
+<p>其中<code>total_mass</code>函数可以用来计算一个planet或一个mobile的质量</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">planet</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mass</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Construct a planet of some mass.&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    assert mass </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [</span><span style="color: #032F62">&#39;planet&#39;</span><span style="color: #24292E">, </span><span style="color: #E36209">mass</span><span style="color: #24292E">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">def mass(</span><span style="color: #6F42C1">p</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    &quot;&quot;&quot;Select the mass of a planet.&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    assert is_planet(</span><span style="color: #6F42C1">p</span><span style="color: #24292E">), &#39;must call mass on a planet&#39;</span></span>
+<span class="line"><span style="color: #24292E">    return p[1]</span></span></code></pre></div></div></figure>
+<p>按照提示构造即可</p>
+<h3 id="q3-balanced">Q3: Balanced</h3>
+<p>实现balanced函数，判断m是否是一个”balanced mobile”</p>
+<p>“balanced mobile”的定义如下：</p>
+<ul>
+<li>左arm的扭矩等于右arm的扭矩，其中扭矩为左arm的长度与挂在左arm上的质量之积</li>
+<li>挂在arm尾端的mobile自身为balanced
+mobile，planet自身也是balanced的</li>
+</ul>
+<blockquote>
+<p>提示：使用<code>total_mass</code>函数，选择器函数，不要逾越ADT的屏障</p>
+</blockquote>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">balanced</span><span style="color: #24292E">(m):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return whether m is balanced.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t, u, v = examples()</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(t)</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(v)</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p = mobile(arm(3, t), arm(2, u))</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(p)</span></span>
+<span class="line"><span style="color: #032F62">    False</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(mobile(arm(1, v), arm(1, p)))</span></span>
+<span class="line"><span style="color: #032F62">    False</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(mobile(arm(1, p), arm(1, v)))</span></span>
+<span class="line"><span style="color: #032F62">    False</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># checking for abstraction barrier violations by banning indexing</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, &#39;balanced&#39;, [&#39;Index&#39;])</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_planet(m):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        torque_left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> length(left(m))</span><span style="color: #D73A49">*</span><span style="color: #24292E">total_mass(end(left(m)))</span></span>
+<span class="line"><span style="color: #24292E">        torque_right </span><span style="color: #D73A49">=</span><span style="color: #24292E"> length(right(m))</span><span style="color: #D73A49">*</span><span style="color: #24292E">total_mass(end(right(m)))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> torque_left </span><span style="color: #D73A49">==</span><span style="color: #24292E"> torque_right </span><span style="color: #D73A49">and</span><span style="color: #24292E"> balanced(end(left(m))) </span><span style="color: #D73A49">and</span><span style="color: #24292E"> balanced(end(right(m)))</span></span></code></pre></div></div></figure>
+<p>这个结构类似树，我们可以递归的求解这个问题</p>
+<ul>
+<li>Base
+case：若传入的是一个planet，则返回True，因为planet在这个结构中类似叶子节点，是整个mobile的终点</li>
+<li>递归：每次需要比较mobile的左右扭矩是否相等，同时递归比较左右arm下的左右扭矩是否相等，直到递归到planet直接返回True</li>
+</ul>
+<h2 id="trees">Trees</h2>
+<h3 id="q4-maximum-path-sum">Q4: Maximum Path Sum</h3>
+<p>写一个函数，返回树上从根节点到叶子节点的所有路径中节点权值总和最大值</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max_path_sum</span><span style="color: #24292E">(</span><span style="color: #6F42C1">t</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the maximum root-to-leaf path sum of a tree.</span></span>
+<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; t = tree(1, [tree(5, [tree(1), tree(3)]), tree(10)])</span></span>
+<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; max_path_sum(t) # 1, 10</span></span>
+<span class="line"><span style="color: #032F62">    11</span></span>
+<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; t2 = tree(5, [tree(4, [tree(1), tree(3)]), tree(2, [tree(10), tree(3)])])</span></span>
+<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; max_path_sum(t2) # 5, 2, 10</span></span>
+<span class="line"><span style="color: #032F62">    17</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    max_n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_leaf</span><span style="color: #24292E">(t):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">label</span><span style="color: #24292E">(t)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b in </span><span style="color: #6F42C1">branches</span><span style="color: #24292E">(t):</span></span>
+<span class="line"><span style="color: #24292E">        max_n</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">max</span><span style="color: #24292E">(</span><span style="color: #6F42C1">max_path_sum</span><span style="color: #24292E">(b),max_n)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> max_n</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">label</span><span style="color: #24292E">(t)</span></span></code></pre></div></div></figure>
+<p>使用递归遍历</p>
+<p>先直接深入到叶子节点，发现叶子节点则返回节点权值，再往前返回，每上一个节点返回已经求和的值+当前节点权值，且每次遍历取当前不同路径的最大值</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Generators/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2701,209 +2912,6 @@ class="math inline">\(\frac{amount}{price}+1\)</span>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Data%20Abstraction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61A/CS61A%20Data%20Abstraction/" class="post-title-link" itemprop="url">【CS61A】CS61A——Data Abstraction</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-03 20:52:03" itemprop="dateCreated datePublished" datetime="2025-03-03T20:52:03+08:00">2025-03-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:49:07" itemprop="dateModified" datetime="2025-07-31T17:49:07+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="data-abstraction">Data Abstraction</h1>
-<h2 id="data-abstraction-1">Data Abstraction</h2>
-<p>大多数值都是复合值，由多种对象组成</p>
-<p>抽象数据类型可以让我们将符合对象作为一个单元操作，允许我们隔离使用数据的程序的两个部分：</p>
-<ul>
-<li>数据的表示</li>
-<li>数据的操作</li>
-</ul>
-<p>即在数据的表示与操作之间建立一个抽象屏障</p>
-<h2 id="examplerational-numbers">Example——Rational Numbers</h2>
-<h3 id="表示">表示</h3>
-<p>任何有理数可以表示为一个最简分数</p>
-<p>这为小数提供了更精确的表示方法</p>
-<p>故我们需要分开分子分母，作为一个复合数据类型：</p>
-<ul>
-<li><code>rational(n,d)</code>返回一个有理数x</li>
-<li><code>numer(x)</code>返回有理数x的分子</li>
-<li><code>denom(x)</code>返回有理数的分母</li>
-</ul>
-<p>第一个函数称为构造函数（constructor），它用于构造一个新值作为抽象数据类型的实例（instance）</p>
-<p>第二、三个函数称为选择器（selectors），它们返回得到的有理数的整数部分</p>
-<p>这三个函数作为有理数的抽象数据类型使用，用它们进行数字操作</p>
-<h3 id="算术">算术</h3>
-<p>根据小学二年级知识，我们根据分数来执行有理数加乘，公式如下</p>
-<figure>
-<img src="Lecture13——Data%20Abstraction/image-20250303192132061.png"
-alt="有理数算术" />
-<figcaption aria-hidden="true">有理数算术</figcaption>
-</figure>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mul_rational</span><span style="color: #24292E">(x,y):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> rational(numer(x)</span><span style="color: #D73A49">*</span><span style="color: #24292E">numer(y),denom(x)</span><span style="color: #D73A49">*</span><span style="color: #24292E">denom(y))</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add_rational</span><span style="color: #24292E">(x,y):</span></span>
-<span class="line"><span style="color: #24292E">    nx, dx </span><span style="color: #D73A49">=</span><span style="color: #24292E"> numer(x), denom(y)</span></span>
-<span class="line"><span style="color: #24292E">    ny, dy </span><span style="color: #D73A49">=</span><span style="color: #24292E"> numer(y), denom(y)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> rational(nx</span><span style="color: #D73A49">*</span><span style="color: #24292E">dy</span><span style="color: #D73A49">+</span><span style="color: #24292E">ny</span><span style="color: #D73A49">*</span><span style="color: #24292E">dx, dx</span><span style="color: #D73A49">*</span><span style="color: #24292E">dy)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">equal_rational</span><span style="color: #24292E">(x,y):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> numer(x)</span><span style="color: #D73A49">*</span><span style="color: #24292E">denom(y)</span><span style="color: #D73A49">==</span><span style="color: #24292E">numer(y)</span><span style="color: #D73A49">*</span><span style="color: #24292E">denom(x)</span></span></code></pre></div></div></figure>
-<h2 id="abstraction-barriers">Abstraction Barriers</h2>
-<p>拿上方的有理数函数作为例子</p>
-<figure>
-<img src="Lecture13——Data%20Abstraction/image-20250303193211301.png"
-alt="抽象屏障" />
-<figcaption aria-hidden="true">抽象屏障</figcaption>
-</figure>
-<p>抽象屏障表示使用由有理数计算时使用的函数只能是对应相关的，而不能越界表示</p>
-<ul>
-<li>用有理数计算时只需要使用计算相关函数</li>
-<li>用来表示有理数和进行操作时只需要使用对应构造函数与选择器</li>
-<li>用来构建构造函数与选择器时需要用到列表与元素选择</li>
-</ul>
-<p>一种跨越了抽象屏障的反例：</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">add_rational([</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],[</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">])</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">divide_rational</span><span style="color: #24292E">(x,y):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [x[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span><span style="color: #D73A49">*</span><span style="color: #24292E">y[</span><span style="color: #005CC5">1</span><span style="color: #24292E">], x[</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">*</span><span style="color: #24292E">y[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]]</span></span></code></pre></div></div></figure>
-<h2 id="pair">Pair</h2>
-<h3 id="创建与访问">创建与访问</h3>
-<p>通常使用列表表示一个pair</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> pair </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> pair</span></span>
-<span class="line"><span style="color: #24292E">[</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span></span></code></pre></div></div></figure>
-<p>通过序列解包或列表下标获得pair中的两个值</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> x,y</span><span style="color: #D73A49">=</span><span style="color: #24292E">pair</span></span>
-<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> x</span></span>
-<span class="line"><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> y</span></span>
-<span class="line"><span style="color: #005CC5">2</span></span>
-<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> pair[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #005CC5">1</span></span></code></pre></div></div></figure>
-<p>还可以用getitem函数获得值，在operator库中</p>
-<p>用法：<code>getitem(&lt;list&gt;, &lt;index&gt;)</code></p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> getitem(pair, </span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> getitem(pair, </span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #005CC5">2</span></span></code></pre></div></div></figure>
-<h3 id="用pair表示有理数">用pair表示有理数</h3>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">rational</span><span style="color: #24292E">(n,d):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Construct a rational number that represents N/D&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [n, d]</span></span></code></pre></div></div></figure>
-<p>返回一个列表，记录分子分母用来表示有理数</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">numer</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the numerator of rational number x&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">denom</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the denominator of rational number x&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x[</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span></span></code></pre></div></div></figure>
-<p>通过访问列表中的元素返回分子分母</p>
-<h2 id="应用">应用</h2>
-<h3 id="分数通分">分数通分</h3>
-<p>有理数的分子分母应互质，故我们可以用gcd获取它们的最大公因数来同时除以分子分母以确保获得互质的分子分母</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">from</span><span style="color: #24292E"> fractions </span><span style="color: #D73A49">import</span><span style="color: #24292E"> gcd</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">rational</span><span style="color: #24292E">(n,d):</span></span>
-<span class="line"><span style="color: #24292E">    g </span><span style="color: #D73A49">=</span><span style="color: #24292E"> gcd(n,d)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [n</span><span style="color: #D73A49">//</span><span style="color: #24292E">g, d</span><span style="color: #D73A49">//</span><span style="color: #24292E">g]</span></span></code></pre></div></div></figure>
-<h2 id="data-representation">Data Representation</h2>
-<p>数据抽象的基本思想：通过它的行为来识别该抽象数据类型</p>
-<p>改变有理数的表现形式</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">rational</span><span style="color: #24292E">(n,d):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">select</span><span style="color: #24292E">(name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> name </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;n&#39;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> n</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> name </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;d&#39;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> d</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> select</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">numer</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the numerator of rational number x&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x(</span><span style="color: #032F62">&#39;n&#39;</span><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">denom</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the denominator of rational number x&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x(</span><span style="color: #032F62">&#39;d&#39;</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
-<p>这里使x成为一个函数，这样就可以不需要内置的列表数据类型了</p>
-<p>此时rational是一个高阶函数，返回一个表示有理数的函数</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2974,7 +2982,7 @@ alt="抽象屏障" />
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -3027,12 +3035,12 @@ alt="抽象屏障" />
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">368k</span>
+    <span title="站点总字数">372k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:09</span>
+    <span title="站点阅读时长">11:17</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
@@ -3111,6 +3119,59 @@ alt="抽象屏障" />
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

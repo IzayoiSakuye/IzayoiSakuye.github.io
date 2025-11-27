@@ -183,6 +183,219 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Composition/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Composition/" class="post-title-link" itemprop="url">【CS61A】CS61A——Composition</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:48:53" itemprop="dateModified" datetime="2025-07-31T17:48:53+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="composition">Composition</h1>
+<h2 id="linked-list">Linked List</h2>
+<p>用Python实现链表 -
+每个节点由<code>first</code>与<code>rest</code>组成，前者表示值，后者表示链接的剩余链表
+- 将每个节点当作一堆二元组看待 -
+最后一个节点指向空链表<code>Link.empty</code>，使用类属性表示 -
+构造方式：<code>Link(3, Link(4, Link(5, Link.empty)))</code> ###
+创建链表</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Link</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># 使用空元组实现空节点，类属性</span></span>
+<span class="line"><span style="color: #24292E">    empty </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ()</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, first, rest</span><span style="color: #D73A49">=</span><span style="color: #24292E">empty):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># 判断rest是否是空节点或是一个Link类</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty </span><span style="color: #D73A49">or</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(rest, Link)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> rest</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Link(</span><span style="color: #005CC5">3</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">4</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)))</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.first)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.rest.first)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.rest.rest.first)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(s.rest.rest.rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty)</span></span></code></pre></div></div></figure>
+<h3 id="操作列表">操作列表</h3>
+<p>实现如下行为：<code>range</code>, <code>map</code>,
+<code>filter</code> 我们使用递归实现</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Link</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># 使用空元组实现空节点，类属性</span></span>
+<span class="line"><span style="color: #24292E">    empty </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ()</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, first, rest</span><span style="color: #D73A49">=</span><span style="color: #24292E">empty):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># 判断rest是否是空节点或是一个Link类</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty </span><span style="color: #D73A49">or</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(rest, Link)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> rest</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">range_link</span><span style="color: #24292E">(start, end):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> start</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">end:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link.empty</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link(start, range_link(start</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, end))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">map_link</span><span style="color: #24292E">(f, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link(f(s.first), map_link(f, s.rest))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">filter_link</span><span style="color: #24292E">(f, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span>
+<span class="line"><span style="color: #24292E">    filter_rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">filter</span><span style="color: #24292E">(f, s.rest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> f(s.first):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Link(s.first, filter_rest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> filter_rest</span></span></code></pre></div></div></figure>
+<h3 id="链表的改变">链表的改变</h3>
+<p>可以通过对属性赋值来改变链表的<code>first</code>和<code>rest</code>属性</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Link(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">2</span><span style="color: #24292E">, Link(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)))</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s.rest</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> t.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s</span><span style="color: #B31D28; font-style: italic">;</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s.first</span></span>
+<span class="line"><span style="color: #005CC5">5</span></span>
+<span class="line"><span style="color: #D73A49">&gt;&gt;&gt;</span><span style="color: #24292E"> s.rest.rest.rest.rest.rest.first</span></span>
+<span class="line"><span style="color: #005CC5">2</span></span></code></pre></div></div></figure>
+<p>此赋值将s的后段与前段相接，创建了一个循环链表</p>
+<h3 id="插入节点">插入节点</h3>
+<p>向一个有序链表中添加节点，保证链表仍有序</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add</span><span style="color: #24292E">(s, v):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> s </span><span style="color: #D73A49">is</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> Link.empty</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> v:</span></span>
+<span class="line"><span style="color: #24292E">        s.first, s.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v, Link(s.first, s.rest)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> v </span><span style="color: #D73A49">and</span><span style="color: #24292E"> s.rest </span><span style="color: #D73A49">is</span><span style="color: #24292E"> Link.empty:</span></span>
+<span class="line"><span style="color: #24292E">        s.rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Link(v)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> s.first </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> v:</span></span>
+<span class="line"><span style="color: #24292E">        add(s.rest, v)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> s</span></span></code></pre></div></div></figure>
+<h2 id="tree-class">Tree Class</h2>
+<p>使用类实现树 ### 创建树</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Tree</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, label, branches </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.label </span><span style="color: #D73A49">=</span><span style="color: #24292E"> label</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> branch </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(branch, Tree)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">list</span><span style="color: #24292E">(branches)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches:</span></span>
+<span class="line"><span style="color: #24292E">            branches_str </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;, &#39;</span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">repr</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            branch_str </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;&#39;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;Tree(</span><span style="color: #005CC5">{0}{1}</span><span style="color: #032F62">)&#39;</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">repr</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.label), branch_str)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__str__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&#39;</span><span style="color: #24292E">.join(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.indented())</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">indented</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        lines </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">for</span><span style="color: #24292E"> line </span><span style="color: #D73A49">in</span><span style="color: #24292E"> b.indented():</span></span>
+<span class="line"><span style="color: #24292E">                lines.append(</span><span style="color: #032F62">&#39;    &#39;</span><span style="color: #D73A49">+</span><span style="color: #24292E">line)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [</span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.label)] </span><span style="color: #D73A49">+</span><span style="color: #24292E"> lines</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_leaf</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.branches</span></span></code></pre></div></div></figure>
+<h3 id="实现一些操作">实现一些操作</h3>
+<p>如下代码实现了创建斐波那契树以及输出叶子节点</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fib_tree</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Tree(n)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fib_tree(n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        right </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fib_tree(n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        fib_n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> left.label </span><span style="color: #D73A49">+</span><span style="color: #24292E"> right.label</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Tree(fib_n, [left, right])</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">leaves</span><span style="color: #24292E">(t):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> t.is_leaf():</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [t.label]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        all_leaves </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t.branches:</span></span>
+<span class="line"><span style="color: #24292E">            all_leaves.extend(leaves(b))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> all_leaves</span></span></code></pre></div></div></figure>
+<h3 id="剪枝">剪枝</h3>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 通过每次重新构建branches列表，将等于n的值排除在列表外以实现</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">prune</span><span style="color: #24292E">(t, n):</span></span>
+<span class="line"><span style="color: #24292E">    t.branches </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [b </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t.branches </span><span style="color: #D73A49">if</span><span style="color: #24292E"> b.label</span><span style="color: #D73A49">!=</span><span style="color: #24292E">n]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t.branches:</span></span>
+<span class="line"><span style="color: #24292E">        prune(b, n)</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Representations/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2165,217 +2378,6 @@ True</code></pre>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Homework4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61A/CS61A%20Homework4/" class="post-title-link" itemprop="url">【CS61A】CS61A——Homework 4</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-28 21:47:43" itemprop="dateCreated datePublished" datetime="2025-03-28T21:47:43+08:00">2025-03-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:50:32" itemprop="dateModified" datetime="2025-07-31T17:50:32+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="homework-4">Homework 4</h1>
-<h2 id="sequence">Sequence</h2>
-<h3 id="q1-deep-map">Q1: Deep Map</h3>
-<p>写一个函数<code>deep_map</code>，使得传入的列表s（s可能是嵌套列表）中的每一个元素替换为该元素传入函数f后的返回值</p>
-<p><strong>每一个元素包括嵌套列表中的每一个元素</strong></p>
-<blockquote>
-<p>提示：<code>type(a)==list</code>会返回True如果a是列表</p>
-</blockquote>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deep_map</span><span style="color: #24292E">(f, s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Replace all non-list elements x with f(x) in the nested list s.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">six = [1, 2, [3, [4], 5], 6]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">deep_map(lambda x: x * x, six)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">six</span></span>
-<span class="line"><span style="color: #032F62">    [1, 4, [9, [16], 25], 36]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># Check that you&#39;re not making new lists</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = [3, [1, [4, [1]]]]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s1 = s[1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s2 = s1[1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s3 = s2[1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">deep_map(lambda x: x + 1, s)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s</span></span>
-<span class="line"><span style="color: #032F62">    [4, [2, [5, [2]]]]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s1 is s[1]</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s2 is s1[1]</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s3 is s2[1]</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">len</span><span style="color: #24292E">(s)):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">type</span><span style="color: #24292E">(s[i])</span><span style="color: #D73A49">==</span><span style="color: #005CC5">list</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            deep_map(f,s[i])</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            s[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">f(s[i])</span></span></code></pre></div></div></figure>
-<p>遍历列表下标i，如果发现内部有嵌套列表，就递归进入遍历嵌套列表，若当前位置为一般元素，则调用函数并将结果替换</p>
-<h2 id="data-abstraction">Data Abstraction</h2>
-<h3 id="要用到的adt">要用到的ADT</h3>
-<p>Mobile：一种悬挂雕像</p>
-<ul>
-<li>一个mobile一定有一个左arm和一个右arm</li>
-<li>一个arm有一个正数大小的长度，且尾端一定挂着一个mobile或一个planet</li>
-<li>一个planet有一个正数大小的质量，且没有东西挂在上面</li>
-</ul>
-<h3 id="q2-mass">Q2: Mass</h3>
-<p>补充完成构造器planet与选择器mass</p>
-<p>使得每一格planet用一个二元列表表示：<code>['planet', mass]</code></p>
-<p>其中<code>total_mass</code>函数可以用来计算一个planet或一个mobile的质量</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">planet</span><span style="color: #24292E">(</span><span style="color: #6F42C1">mass</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Construct a planet of some mass.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    assert mass </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [</span><span style="color: #032F62">&#39;planet&#39;</span><span style="color: #24292E">, </span><span style="color: #E36209">mass</span><span style="color: #24292E">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">def mass(</span><span style="color: #6F42C1">p</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    &quot;&quot;&quot;Select the mass of a planet.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    assert is_planet(</span><span style="color: #6F42C1">p</span><span style="color: #24292E">), &#39;must call mass on a planet&#39;</span></span>
-<span class="line"><span style="color: #24292E">    return p[1]</span></span></code></pre></div></div></figure>
-<p>按照提示构造即可</p>
-<h3 id="q3-balanced">Q3: Balanced</h3>
-<p>实现balanced函数，判断m是否是一个”balanced mobile”</p>
-<p>“balanced mobile”的定义如下：</p>
-<ul>
-<li>左arm的扭矩等于右arm的扭矩，其中扭矩为左arm的长度与挂在左arm上的质量之积</li>
-<li>挂在arm尾端的mobile自身为balanced
-mobile，planet自身也是balanced的</li>
-</ul>
-<blockquote>
-<p>提示：使用<code>total_mass</code>函数，选择器函数，不要逾越ADT的屏障</p>
-</blockquote>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">balanced</span><span style="color: #24292E">(m):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return whether m is balanced.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">t, u, v = examples()</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(t)</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(v)</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">p = mobile(arm(3, t), arm(2, u))</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(p)</span></span>
-<span class="line"><span style="color: #032F62">    False</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(mobile(arm(1, v), arm(1, p)))</span></span>
-<span class="line"><span style="color: #032F62">    False</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">balanced(mobile(arm(1, p), arm(1, v)))</span></span>
-<span class="line"><span style="color: #032F62">    False</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">from construct_check import check</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62"># checking for abstraction barrier violations by banning indexing</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">check(HW_SOURCE_FILE, &#39;balanced&#39;, [&#39;Index&#39;])</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_planet(m):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        torque_left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> length(left(m))</span><span style="color: #D73A49">*</span><span style="color: #24292E">total_mass(end(left(m)))</span></span>
-<span class="line"><span style="color: #24292E">        torque_right </span><span style="color: #D73A49">=</span><span style="color: #24292E"> length(right(m))</span><span style="color: #D73A49">*</span><span style="color: #24292E">total_mass(end(right(m)))</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> torque_left </span><span style="color: #D73A49">==</span><span style="color: #24292E"> torque_right </span><span style="color: #D73A49">and</span><span style="color: #24292E"> balanced(end(left(m))) </span><span style="color: #D73A49">and</span><span style="color: #24292E"> balanced(end(right(m)))</span></span></code></pre></div></div></figure>
-<p>这个结构类似树，我们可以递归的求解这个问题</p>
-<ul>
-<li>Base
-case：若传入的是一个planet，则返回True，因为planet在这个结构中类似叶子节点，是整个mobile的终点</li>
-<li>递归：每次需要比较mobile的左右扭矩是否相等，同时递归比较左右arm下的左右扭矩是否相等，直到递归到planet直接返回True</li>
-</ul>
-<h2 id="trees">Trees</h2>
-<h3 id="q4-maximum-path-sum">Q4: Maximum Path Sum</h3>
-<p>写一个函数，返回树上从根节点到叶子节点的所有路径中节点权值总和最大值</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max_path_sum</span><span style="color: #24292E">(</span><span style="color: #6F42C1">t</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the maximum root-to-leaf path sum of a tree.</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; t = tree(1, [tree(5, [tree(1), tree(3)]), tree(10)])</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; max_path_sum(t) # 1, 10</span></span>
-<span class="line"><span style="color: #032F62">    11</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; t2 = tree(5, [tree(4, [tree(1), tree(3)]), tree(2, [tree(10), tree(3)])])</span></span>
-<span class="line"><span style="color: #032F62">    &gt;&gt;&gt; max_path_sum(t2) # 5, 2, 10</span></span>
-<span class="line"><span style="color: #032F62">    17</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    max_n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_leaf</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">label</span><span style="color: #24292E">(t)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b in </span><span style="color: #6F42C1">branches</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">        max_n</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">max</span><span style="color: #24292E">(</span><span style="color: #6F42C1">max_path_sum</span><span style="color: #24292E">(b),max_n)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> max_n</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">label</span><span style="color: #24292E">(t)</span></span></code></pre></div></div></figure>
-<p>使用递归遍历</p>
-<p>先直接深入到叶子节点，发现叶子节点则返回节点权值，再往前返回，每上一个节点返回已经求和的值+当前节点权值，且每次遍历取当前不同路径的最大值</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2446,7 +2448,7 @@ case：若传入的是一个planet，则返回True，因为planet在这个结构
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2499,12 +2501,12 @@ case：若传入的是一个planet，则返回True，因为planet在这个结构
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">368k</span>
+    <span title="站点总字数">372k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:09</span>
+    <span title="站点阅读时长">11:17</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
@@ -2583,6 +2585,59 @@ case：若传入的是一个planet，则返回True，因为planet在这个结构
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 

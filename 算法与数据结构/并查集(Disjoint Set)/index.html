@@ -22,16 +22,16 @@
     var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="并查集(Disjoint Set) 概念 不相交集合：若有n个元素，其中的每个元素如果只属于某个集合，则可以把他们划为不想交集合 问题描述：将编号分别为1-n的n个对象划分为不相交集合，在每个集合中，选择其中某个元素代表所在集合 解决的问题：  合并两个集合 查找某个元素属于哪个集合    定义一个数组set，set[i]代表i所在的集合 我们用每个集合编号最小的元素标记所">
+  <meta name="description" content="介绍了并查集这种数据结构的用法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【数据结构】并查集">
 <meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/index.html">
 <meta property="og:site_name" content="红魔咖啡馆">
-<meta property="og:description" content="并查集(Disjoint Set) 概念 不相交集合：若有n个元素，其中的每个元素如果只属于某个集合，则可以把他们划为不想交集合 问题描述：将编号分别为1-n的n个对象划分为不相交集合，在每个集合中，选择其中某个元素代表所在集合 解决的问题：  合并两个集合 查找某个元素属于哪个集合    定义一个数组set，set[i]代表i所在的集合 我们用每个集合编号最小的元素标记所">
+<meta property="og:description" content="介绍了并查集这种数据结构的用法">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="e:\CS\Templates\%E5%B9%B6%E6%9F%A5%E9%9B%86\%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint Set).assets\image-20241213095455535.png">
 <meta property="article:published_time" content="2024-12-13T03:05:21.031Z">
-<meta property="article:modified_time" content="2025-08-30T10:07:25.180Z">
+<meta property="article:modified_time" content="2025-11-25T12:34:07.302Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="数据结构">
 <meta name="twitter:card" content="summary">
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-30 18:07:25" itemprop="dateModified" datetime="2025-08-30T18:07:25+08:00">2025-08-30</time>
+                <time title="修改时间：2025-11-25 20:34:07" itemprop="dateModified" datetime="2025-11-25T20:34:07+08:00">2025-11-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,15 +246,16 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.1k</span>
+              <span>4.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
+              <span>8 分钟</span>
             </span>
+            <div class="post-description">介绍了并查集这种数据结构的用法</div>
 
         </div>
       </header>
@@ -265,7 +266,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="并查集disjoint-set">并查集(Disjoint Set)</h1>
+        <h1 id="并查集">并查集</h1>
 <h2 id="概念">概念</h2>
 <p>不相交集合：若有n个元素，其中的每个元素如果只属于某个集合，则可以把他们划为不想交集合</p>
 <p>问题描述：将编号分别为1-n的n个对象划分为不相交集合，在每个集合中，选择其中某个元素代表所在集合</p>
@@ -400,55 +401,69 @@ class="math inline">\(1\le M \le 2\times 10^5\)</span>，<span
 class="math inline">\(1 \le X_i, Y_i \le N\)</span>，<span
 class="math inline">\(Z_i \in \{ 1, 2 \}\)</span>。</p>
 </blockquote>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
-<span class="line"><span style="color: #D73A49">#include</span><span style="color: #032F62">&lt;cstring&gt;</span></span>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
 <span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
 <span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">6</span><span style="color: #D73A49">+</span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n,m;</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> disj[N];</span><span style="color: #6A737D"> // 并查集</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> cnt[N];</span><span style="color: #6A737D"> // 记录最大集合个数</span></span>
-<span class="line"><span style="color: #6A737D">// 查找操作，使用路径压缩</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E">(disj[x]</span><span style="color: #D73A49">!=</span><span style="color: #24292E">x) disj[x]</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(disj[x]);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> disj[x];</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #6A737D">// 合并操作，寻找两者最小根节点并将大的修改成小的</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ra </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(a);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> rb </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(b);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E">(ra</span><span style="color: #D73A49">!=</span><span style="color: #24292E">rb){</span></span>
-<span class="line"><span style="color: #24292E">    disj[ra] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> rb;</span></span>
-<span class="line"><span style="color: #24292E">    cnt[rb]</span><span style="color: #D73A49">+=</span><span style="color: #24292E">cnt[ra];</span></span>
+<span class="line"><span style="color: #D73A49">template</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">typename</span><span style="color: #24292E"> </span><span style="color: #6F42C1">T</span><span style="color: #24292E">&gt;</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">DSU</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #D73A49">public:</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">DSU</span><span style="color: #24292E">(</span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">this</span><span style="color: #24292E">-&gt;n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">    disj.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    cnt.</span><span style="color: #6F42C1">resize</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">iota</span><span style="color: #24292E">(disj.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, disj.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">(), (T)</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">fill</span><span style="color: #24292E">(cnt.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, cnt.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">(), (T)</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
 <span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #6A737D">// 找集合个数（并查集找根）</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fcnt</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">bool</span><span style="color: #24292E"> vis[N]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{};</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(i)]){</span></span>
-<span class="line"><span style="color: #24292E">      vis[</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(i)]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">      ans</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  // 查找操作，使用路径压缩</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(</span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(disj[x]</span><span style="color: #D73A49">!=</span><span style="color: #24292E">x) disj[x]</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(disj[x]);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> disj[x];</span></span>
+<span class="line"><span style="color: #24292E">  } </span></span>
+<span class="line"><span style="color: #6A737D">  // 合并操作，寻找两者最小根节点并将大的修改成小的</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(</span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    T ra </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(a);</span></span>
+<span class="line"><span style="color: #24292E">    T rb </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(b);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(cnt[rb]</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">cnt[ra]) </span><span style="color: #6F42C1">swap</span><span style="color: #24292E">(ra,rb);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(ra</span><span style="color: #D73A49">!=</span><span style="color: #24292E">rb){</span></span>
+<span class="line"><span style="color: #24292E">      disj[ra] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> rb;</span></span>
+<span class="line"><span style="color: #24292E">      cnt[rb]</span><span style="color: #D73A49">+=</span><span style="color: #24292E">cnt[ra];</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ans;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #6A737D">  // 找集合个数（并查集找根）</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fcnt</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    vector</span><span style="color: #D73A49">&lt;bool&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">vis</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">false</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    T ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(i)]){</span></span>
+<span class="line"><span style="color: #24292E">        vis[</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(i)]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        ans</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ans;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #D73A49">private:</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> disj;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> cnt;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;bool&gt;</span><span style="color: #24292E"> vis;</span></span>
+<span class="line"><span style="color: #24292E">  T n;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n, m;</span></span>
 <span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
 <span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E">m;</span></span>
-<span class="line"><span style="color: #6A737D">  // 初始化每一位的根节点是他自己</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(cnt, </span><span style="color: #005CC5">1</span><span style="color: #24292E">, sizeof cnt);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) disj[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">  DSU</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dsu</span><span style="color: #24292E">(n);</span></span>
 <span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(m</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> z, x, y;</span></span>
 <span class="line"><span style="color: #24292E">    cin</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E">z</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E">x</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E">y;</span></span>
 <span class="line"><span style="color: #6A737D">    // 进行合并</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (z</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(x,y);</span></span>
+<span class="line"><span style="color: #24292E">      dsu.</span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(x,y);</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
 <span class="line"><span style="color: #6A737D">      // 如果两者的根节点相同，则属于同一集合</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(x)</span><span style="color: #D73A49">==</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(y)) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;Y&quot;</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(dsu.</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(x)</span><span style="color: #D73A49">==</span><span style="color: #24292E">dsu.</span><span style="color: #6F42C1">find</span><span style="color: #24292E">(y)) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;Y&quot;</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
 <span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E"> cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;N&quot;</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"><span style="color: #24292E">  }</span></span>
@@ -458,8 +473,6 @@ class="math inline">\(Z_i \in \{ 1, 2 \}\)</span>。</p>
 <h2 id="种类并查集">种类并查集</h2>
 <p>一般的并查集维护的是具有连通性的一组关系，而对于一个具有多种关系（相斥或相互独立），我们需要使用种类并查集，亦称拓展域并查集</p>
 <p>种类并查集是一种数据结构，用于解决具有多个相互关系集合的问题。它是传统并查集的扩展，能够处理集合间的不同关系，如相互排斥或相互独立的关系。</p>
-<p>更具体一些，种类并查集维护的是一种循环对称的关系：</p>
-<p>如果是<strong>三个及以上的集合，只要每个集合都是等价的，且集合间的每个关系都是等价的</strong>，就能用种类并查集来维护</p>
 <p>例：</p>
 <ul>
 <li>敌人的敌人是朋友(<a
@@ -603,7 +616,7 @@ target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1525">洛
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86disjoint-set"><span class="nav-number">1.</span> <span class="nav-text">并查集(Disjoint Set)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B01"><span class="nav-number">1.2.</span> <span class="nav-text">实现1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E7%8E%87"><span class="nav-number">1.2.1.</span> <span class="nav-text">效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B02"><span class="nav-number">1.3.</span> <span class="nav-text">实现2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E4%B8%AA%E9%9B%86%E5%90%88%E7%94%A8%E4%B8%80%E9%A2%97%E6%9C%89%E6%A0%B9%E6%A0%91%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">每个集合用一颗有根树表示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E7%8E%87-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B"><span class="nav-number">1.3.2.</span> <span class="nav-text">改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.4.</span> <span class="nav-text">路径压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.1.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.5.</span> <span class="nav-text">模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.5.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.5.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B-1"><span class="nav-number">1.5.4.</span> <span class="nav-text">样例 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%85%A5-1"><span class="nav-number">1.5.5.</span> <span class="nav-text">样例输入 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%87%BA-1"><span class="nav-number">1.5.6.</span> <span class="nav-text">样例输出 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA"><span class="nav-number">1.5.7.</span> <span class="nav-text">提示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%8D%E7%B1%BB%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">1.6.</span> <span class="nav-text">种类并查集</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">并查集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B01"><span class="nav-number">1.2.</span> <span class="nav-text">实现1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E7%8E%87"><span class="nav-number">1.2.1.</span> <span class="nav-text">效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B02"><span class="nav-number">1.3.</span> <span class="nav-text">实现2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E4%B8%AA%E9%9B%86%E5%90%88%E7%94%A8%E4%B8%80%E9%A2%97%E6%9C%89%E6%A0%B9%E6%A0%91%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">每个集合用一颗有根树表示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E7%8E%87-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B"><span class="nav-number">1.3.2.</span> <span class="nav-text">改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.4.</span> <span class="nav-text">路径压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.1.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.5.</span> <span class="nav-text">模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.5.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.5.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B-1"><span class="nav-number">1.5.4.</span> <span class="nav-text">样例 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%85%A5-1"><span class="nav-number">1.5.5.</span> <span class="nav-text">样例输入 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%E8%BE%93%E5%87%BA-1"><span class="nav-number">1.5.6.</span> <span class="nav-text">样例输出 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA"><span class="nav-number">1.5.7.</span> <span class="nav-text">提示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%8D%E7%B1%BB%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">1.6.</span> <span class="nav-text">种类并查集</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -618,7 +631,7 @@ target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1525">洛
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">125</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -671,12 +684,12 @@ target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1525">洛
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">368k</span>
+    <span title="站点总字数">372k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">11:09</span>
+    <span title="站点阅读时长">11:17</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
@@ -755,6 +768,59 @@ target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1525">洛
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
