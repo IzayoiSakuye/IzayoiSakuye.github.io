@@ -29,8 +29,8 @@
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="MEX Visualizer - Demo        &#x2F;* 极简样式，替代 Tailwind *&#x2F;     body { font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial; background:#f5f7fb; padding:20px; }     .card">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-12-03T13:00:55.217Z">
-<meta property="article:modified_time" content="2025-12-03T13:00:55.217Z">
+<meta property="article:published_time" content="2025-12-04T05:24:50.044Z">
+<meta property="article:modified_time" content="2025-12-04T05:24:50.044Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta name="twitter:card" content="summary">
 
@@ -251,7 +251,7 @@
     const [msg, setMsg] = useState("");
 
     function parseInput(){
-      const parts = input.trim().split(/\\s+|,/).filter(x=>x!=="").map(x=>Number(x));
+      const parts = input.trim().split(/[\s,]+/).filter(x=>x!=="").map(x=>Number(x));
       if(parts.some(isNaN)){ setMsg("输入包含非数字"); return; }
       setArr(parts); setSelected(new Set()); setHistory([]); setMsg("已加载");
     }
@@ -312,7 +312,7 @@
       <h2>K 小果的数组 操作可视化</h2>
       <div style={{display:'flex',gap:12}}>
         <div style={{flex:1}} className="panel">
-          <div>数组输入</div>
+          <div>数组输入（以空格分隔）</div>
           <textarea value={input} onChange={e=>setInput(e.target.value)} rows={3} style={{width:'100%'}}/>
           <div style={{marginTop:8}}>
             <button className="btn btn-blue" onClick={parseInput}>加载数组</button>
