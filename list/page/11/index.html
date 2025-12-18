@@ -183,6 +183,346 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Attributes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Attributes/" class="post-title-link" itemprop="url">【CS61A】CS61A——Attributes</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-30 17:21:41" itemprop="dateCreated datePublished" datetime="2025-03-30T17:21:41+08:00">2025-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:48:16" itemprop="dateModified" datetime="2025-07-31T17:48:16+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="attributes">Attributes</h1>
+<h2 id="class-attributes">Class Attributes</h2>
+<p>语法： <figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">name</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">suite</span><span style="color: #D73A49">&gt;</span></span></code></pre></div></div></figure>
+class声明将会创建一个新类并将其绑定到<code>&lt;name&gt;</code>上，作为当前环境的第一个作用域
+类语句内部，赋值语句和def语句创建类属性，此时它们作为类属性放入类中，而非在作用域中
+当class声明执行时，内部语句才会执行</p>
+<p>类属性在类的所有实例之间共享
+这样我们不必在每个创建的实例中存储此值，而只需要在类中存储一次</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Account</span><span style="color: #24292E">:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    interest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0.02</span><span style="color: #24292E"> </span><span style="color: #6A737D"># 类属性</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">+</span><span style="color: #24292E"> amount</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance  </span></span>
+<span class="line"><span style="color: #24292E">tom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account(</span><span style="color: #032F62">&#39;Tom&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">jim </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account(</span><span style="color: #032F62">&#39;Jim&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(tom.interest)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(jim.interest)</span></span></code></pre></div></div></figure>
+<pre><code>0.02
+0.02</code></pre>
+<h2 id="attribute-lookup">Attribute Lookup</h2>
+<h3 id="by-name">By Name</h3>
+<p>表达式提供对象，名称提供要查找的属性名称
+但通过name查找将会查找多个位置，这取决于点表达式： -
+首先执行点左侧表达式，生成该对象 -
+<code>&lt;name&gt;</code>与该对象的实例属性匹配，如果存在该名称的属性，则返回值
+- 如果没有找到，则在该对象的类中查找（类属性） -
+返回的值是整个表达式的值，除非是一个函数，函数将会返回一个绑定的方法，对象填充为self</p>
+<h3 id="by-function">By Function</h3>
+<p>使用<code>getatter</code>函数，可以用属性名的字符串来查找对应属性
+使用<code>hasatter</code>函数，可以判断是否具有该属性
+<code>getatter</code>函数与点表达式查询方式相同
+在对象中查询属性可能会返回实例属性或类属性之一</p>
+<h2 id="attribute-assignment">Attribute Assignment</h2>
+<p>左侧有点表达式的赋值语句会影响点表达式对应对象的属性 -
+如果对象是一个实例，则赋值将设置一个实例属性 -
+如果对象是一个类，则赋值将设置一个类属性</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">tom.interest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0.08</span></span>
+<span class="line"><span style="color: #24292E">Account.interest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0.04</span></span></code></pre></div></div></figure>
+<p>第一个语句将会在tom实例中寻找interest属性，没有找到，则在其中添加该属性
+第二个语句将会在Account类中寻找interest属性，找到后将值修改为对应值</p>
+<h2 id="method-calls">Method Calls</h2>
+<p>方法可使用点表达式调用 其中表达式可以是任何有效的python表达式
+表达式的值是通过该表达式值对象中查找<code>&lt;name&gt;</code>而计算的属性值</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">tom.deposit(</span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<h2 id="bound-methods">Bound Methods</h2>
+<h3 id="terminlology">Terminlology</h3>
+<ul>
+<li>所有对象都有属性，均为name-value二元组</li>
+<li>类是对象的一种， 故类也有属性</li>
+<li>实例属性：一个实例的属性</li>
+<li>类属性：类本身的属性，但仍可以从实例访问</li>
+<li>python中函数也是对象</li>
+<li>绑定方法也是对象，即第一个参数为self的函数，该参数已经绑定到了一个实例</li>
+<li>点表达式执行那些类属性是函数的绑定方法</li>
+</ul>
+<h2 id="methods-and-functions">Methods and Functions</h2>
+<p>python区分方法与函数 - 函数是从一开始就定义的 -
+绑定方法在方法被调用时将一个函数和其对象绑定起来，
+即<strong>Object+Function = Bound Method</strong></p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">type</span><span style="color: #24292E">(Account.deposit))</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">type</span><span style="color: #24292E">(tom.deposit))</span></span></code></pre></div></div></figure>
+<pre><code>&lt;class &#39;function&#39;&gt;
+&lt;class &#39;method&#39;&gt;</code></pre>
+<p>此时我们有两种方法调用 1.
+作为函数调用，此时需要传递self和amount两个参数 2.
+作为绑定方法调用，此时只需要传递amount参数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">Account.deposit(tom, </span><span style="color: #005CC5">1001</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">tom.deposit(</span><span style="color: #005CC5">1007</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<pre><code>2008</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Objects/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Objects/" class="post-title-link" itemprop="url">【CS61A】CS61A——Objects</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-30 17:21:41" itemprop="dateCreated datePublished" datetime="2025-03-30T17:21:41+08:00">2025-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:51:51" itemprop="dateModified" datetime="2025-07-31T17:51:51+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="objects">Objects</h1>
+<h2 id="oopobject-oriented-programming">OOP(Object-Oriented
+Programming)</h2>
+<h3 id="类class">类(class)</h3>
+<p>定义了某种类型的多个对象该如何表现 ### 对象(object)
+类的一个实例，决定该类的类型 ### 方法(method)
+在对象上调用的函数，使用点(.)调用 注意
+方法不同于函数在于方法特定于对应对象 ### 蕴含理念
+将复杂的大型程序组织成小的模块化组件 - 使用数据抽象 -
+捆绑多个信息与相关行为 使用分散状态的计算 - 每个对象有自己的本地状态 -
+每个对象也知道如何管理自己的本地状态 -
+使用<strong>方法</strong>与对象交互 -
+几个对象可能属于一个共同<strong>类</strong>的实例 -
+不同的类可以相互关联</p>
+<h2 id="例lists">例：Lists</h2>
+<p>内置的list函数其实是一个类
+在可迭代对象上调用list可以创建一个list类的新实例
+list类定义了有关list的各种用法： - 方法：append, extend, insert ,etc. -
+加法与乘法运算 - 元素查找与赋值</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">list</span><span style="color: #24292E">(</span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">))</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">type</span><span style="color: #24292E">(s))</span></span></code></pre></div></div></figure>
+<pre><code>&lt;class &#39;list&#39;&gt;
+&lt;class &#39;list&#39;&gt;</code></pre>
+<h2 id="class-statement">Class Statement</h2>
+<p>一个类描述了其实例的行为
+例如，我们定义一个银行账户类，实现的功能如下：</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Account</span><span style="color: #24292E">:   </span><span style="color: #6A737D"># 一个类以class开头，并给他命名</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&#39;&#39;&#39;</span></span>
+<span class="line"><span style="color: #032F62">        定义创建类的新实例时会发生什么，即给予对象属性</span></span>
+<span class="line"><span style="color: #032F62">        一般使用方法名__init__来构造一个类的实例，调用时自动执行, 该方法有时也被称为构造方法</span></span>
+<span class="line"><span style="color: #032F62">        将新实例称为self，并给它分配属性，其中，account_holder是调用时传入的内容</span></span>
+<span class="line"><span style="color: #032F62">        &#39;&#39;&#39;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&#39;&#39;&#39;</span></span>
+<span class="line"><span style="color: #032F62">        deposit方法调用两个参数</span></span>
+<span class="line"><span style="color: #032F62">        self： self是该方法被调用时的类的实例</span></span>
+<span class="line"><span style="color: #032F62">        amount：添加的余额</span></span>
+<span class="line"><span style="color: #032F62">        &#39;&#39;&#39;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">+</span><span style="color: #24292E"> amount</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance   </span><span style="color: #6A737D"># 出现输出时的情况，若没有return则返回None</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance:   </span><span style="color: #6A737D"># 引用balance时要加.,因为其是对象的一个属性</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;Insufficient funds&#39;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">-</span><span style="color: #24292E"> amount</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span></code></pre></div></div></figure>
+<h2 id="creating-instances">Creating Instances</h2>
+<h3 id="object-construction">Object Construction</h3>
+<p>当一个类被调用时: - 创建一个该类的新的实例 -
+<code>__init__</code>方法被调用，其中以新对象作为其中的第一个元素,
+一般命名为self, 并带有在调用表达式中的任何额外参数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account(</span><span style="color: #032F62">&#39;Alan&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a.holder)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a.balance)</span></span></code></pre></div></div></figure>
+<pre><code>Alan
+0</code></pre>
+<h3 id="instance-attributes">Instance Attributes</h3>
+<p>对象的属性可以通过点号表达式(.)来访问与更改 若属性之前不存在,
+也可以为其赋值, 可以在任何时候增加新的属性</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">12</span><span style="color: #24292E">   </span><span style="color: #6A737D"># 已存在的属性可以被更改</span></span>
+<span class="line"><span style="color: #24292E">b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account(</span><span style="color: #032F62">&#39;Ada&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">b.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">20</span></span>
+<span class="line"><span style="color: #24292E">a.backup </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b   </span><span style="color: #6A737D"># 新属性可以在任何时候添加</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a.backup.balance)</span></span></code></pre></div></div></figure>
+<pre><code>20</code></pre>
+<h3 id="object-identity">Object Identity</h3>
+<p>每个用户定义类的对象都有一个唯一的标识
+标识运算符<code>is</code>与<code>is not</code>可以判断两个表达式是否是相同的对象
+使用赋值将一个对象绑定到一个新名称时不会创建一个新对象</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a </span><span style="color: #D73A49">is</span><span style="color: #24292E"> a)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a </span><span style="color: #D73A49">is</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> b)</span></span>
+<span class="line"><span style="color: #24292E">c </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(a </span><span style="color: #D73A49">is</span><span style="color: #24292E"> c)</span></span></code></pre></div></div></figure>
+<pre><code>True
+True
+True</code></pre>
+<h2 id="methods">Methods</h2>
+<h3 id="invoking-methods">Invoking Methods</h3>
+<p>调用方法意味着用点表达式定义类中定义的一个方法
+所有调用方法都通过self变量访问对象,所以他们可以访问与操作对象的属性
+如deposit方法中定义了两个参数, 但点表达式会自动为方法提供第一个参数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">tom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account(</span><span style="color: #032F62">&#39;Tom&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(tom.deposit(</span><span style="color: #005CC5">100</span><span style="color: #24292E">))  </span><span style="color: #6A737D"># 调用时只需要一个参数, 方法会自动绑定到self(这里是tom)</span></span></code></pre></div></div></figure>
+<pre><code>100</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Homework4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1631,416 +1971,6 @@ alt="function" /></p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Trees/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61A/CS61A%20Trees/" class="post-title-link" itemprop="url">【CS61A】CS61A——Trees</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-09 13:38:32" itemprop="dateCreated datePublished" datetime="2025-03-09T13:38:32+08:00">2025-03-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:53:03" itemprop="dateModified" datetime="2025-07-31T17:53:03+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="trees">Trees</h1>
-<h2 id="描述树形结构的术语">描述树形结构的术语</h2>
-<p><strong>递归描述</strong> - 一课树有一个根节点和一系列分支节点 -
-每个分支也是一棵树，也有根节点与分支节点 -
-没有分支节点的树被称为叶子节点</p>
-<p><strong>亲戚描述</strong></p>
-<ul>
-<li>树的每个位置被称为节点</li>
-<li>每个节点可以表示任何值</li>
-<li>一个节点可以称为另一个节点的父节点/子节点 <img
-src="Lecture14——Trees/trees.png" alt="trees" /></li>
-</ul>
-<h2 id="实现树形结构的抽象">实现树形结构的抽象</h2>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">tree</span><span style="color: #24292E">(label, branches</span><span style="color: #D73A49">=</span><span style="color: #24292E">[]):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> branch </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> is_tree(branch), </span><span style="color: #032F62">&quot;branches must be trees&quot;</span><span style="color: #24292E"> </span><span style="color: #6A737D"># 确保构造的是一棵树</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [label] </span><span style="color: #D73A49">+</span><span style="color: #005CC5">list</span><span style="color: #24292E">(branches) </span><span style="color: #6A737D"># 将同一层的分支节点放在一个列表中</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">label</span><span style="color: #24292E">(tree):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">branches</span><span style="color: #24292E">(tree):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:]</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_tree</span><span style="color: #24292E">(tree):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;判断是不是一棵树&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">type</span><span style="color: #24292E">(tree) </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">list</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">(tree) </span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">1</span><span style="color: #24292E">: </span><span style="color: #6A737D"># 确保树的分支是树，以及存在一个值</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">False</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> branch </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(tree): </span><span style="color: #6A737D"># 确保树的分支的分支都是树</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> is_tree(branch):</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">False</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">is_leaf</span><span style="color: #24292E">(tree): </span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;判断树本身是不是叶子节点&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> branches(tree)</span></span>
-<span class="line"></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tree(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">7</span><span style="color: #24292E">)]), tree(</span><span style="color: #005CC5">6</span><span style="color: #24292E">)])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(t)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(label(t))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(branches(t))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(label(branches(t)[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]))</span></span></code></pre></div></div></figure>
-<pre><code>[1, [5, [7]], [6]]
-1
-[[5, [7]], [6]]
-5</code></pre>
-<h2 id="tree-processing">Tree Processing</h2>
-<h3 id="处理叶子节点">处理叶子节点</h3>
-<p>使用递归，将会在每个分支节点进行递归调用，最后合并</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">count_leaves</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Count the leaves of tree T&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_leaf(t):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">sum</span><span style="color: #24292E">([count_leaves(b) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t)])</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tree(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">7</span><span style="color: #24292E">)]), tree(</span><span style="color: #005CC5">6</span><span style="color: #24292E">)])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(count_leaves(t))</span></span></code></pre></div></div></figure>
-<pre><code>2</code></pre>
-<h3 id="返回叶子节点的值">返回叶子节点的值</h3>
-<p>实现leaves函数，返回树的叶子节点的值的列表</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">leaves</span><span style="color: #24292E">(tree):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;return a list containing the leaf labels of tree&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_leaf(tree):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [label(tree)]</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">sum</span><span style="color: #24292E">([leaves(b) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(tree)], [])</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tree(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">7</span><span style="color: #24292E">)]), tree(</span><span style="color: #005CC5">6</span><span style="color: #24292E">)])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(leaves(t))</span></span></code></pre></div></div></figure>
-<pre><code>[7, 6]</code></pre>
-<h3 id="根据树创建树">根据树创建树</h3>
-<p>使用递归根据另一棵树创建一颗新树 如让叶子节点值+1的树
-或让所有节点都+1的树</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">increment_leaves</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;return a tree like t but with leaf labels incremented&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_leaf(t):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree(label(t)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        bs </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [increment_leaves(b) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t)]</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree(label(t), bs)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">increment</span><span style="color: #24292E">(t):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;return a tree like t but with all labels incremented&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> tree(label(t)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [increment(b) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t)])</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tree(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">7</span><span style="color: #24292E">)]), tree(</span><span style="color: #005CC5">6</span><span style="color: #24292E">)])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(leaves(t))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(increment_leaves(t))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(increment(t))</span></span></code></pre></div></div></figure>
-<pre><code>[7, 6]
-[1, [5, [8]], [7]]
-[2, [6, [8]], [7]]</code></pre>
-<h2 id="例print_tree">例：print_tree</h2>
-<p>按节点在树中的深度缩进打印一颗树</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print_tree</span><span style="color: #24292E">(t, indent </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">&#39; &#39;</span><span style="color: #D73A49">*</span><span style="color: #24292E">indent </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(label(t)))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t):</span></span>
-<span class="line"><span style="color: #24292E">        print_tree(b, indent</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tree(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">7</span><span style="color: #24292E">)]), tree(</span><span style="color: #005CC5">6</span><span style="color: #24292E">)])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(print_tree(t))</span></span></code></pre></div></div></figure>
-<pre><code>1
- 5
-  7
- 6
-None</code></pre>
-<h2 id="例-求从根节点沿路径到叶子节点求和并打印">例：
-求从根节点沿路径到叶子节点求和并打印</h2>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print_sums</span><span style="color: #24292E">(t, so_far):</span></span>
-<span class="line"><span style="color: #24292E">    so_far </span><span style="color: #D73A49">=</span><span style="color: #24292E"> so_far </span><span style="color: #D73A49">+</span><span style="color: #24292E">label(t)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> is_leaf(t):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(so_far)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> branches(t):</span></span>
-<span class="line"><span style="color: #24292E">            print_sums(b,so_far)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tree(</span><span style="color: #005CC5">1</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, [tree(</span><span style="color: #005CC5">7</span><span style="color: #24292E">)]), tree(</span><span style="color: #005CC5">6</span><span style="color: #24292E">)])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(print_sums(t, </span><span style="color: #005CC5">0</span><span style="color: #24292E">))</span></span></code></pre></div></div></figure>
-<pre><code>13
-7
-None</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61A/CS61A%20Lab4/" class="post-title-link" itemprop="url">【CS61A】CS61A——Lab4</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-06 17:57:15" itemprop="dateCreated datePublished" datetime="2025-03-06T17:57:15+08:00">2025-03-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:51:23" itemprop="dateModified" datetime="2025-07-31T17:51:23+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><em>Dictionaries 部分跳过</em></p>
-<h1 id="divide">Divide</h1>
-<p>传入一组商数与一组除数，返回字典，键为每个商数，值为表示每个商数能整除的除数的列表</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">divide</span><span style="color: #24292E">(quotients, divisors):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return a dictonary in which each quotient q is a key for the list of</span></span>
-<span class="line"><span style="color: #032F62">    divisors that it divides evenly.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">divide([3, 4, 5], [8, 9, 10, 11, 12])</span></span>
-<span class="line"><span style="color: #032F62">    {3: [9, 12], 4: [8, 12], 5: [10]}</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">divide(range(1, 5), range(20, 25))</span></span>
-<span class="line"><span style="color: #032F62">    {1: [20, 21, 22, 23, 24], 2: [20, 22, 24], 3: [21, 24], 4: [20, 24]}</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> {i: [x </span><span style="color: #D73A49">for</span><span style="color: #24292E"> x </span><span style="color: #D73A49">in</span><span style="color: #24292E"> divisors </span><span style="color: #D73A49">if</span><span style="color: #24292E"> x</span><span style="color: #D73A49">%</span><span style="color: #24292E">i</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> quotients}</span></span></code></pre></div></div></figure>
-<p>注意用表达式建立列表与字典的方法</p>
-<h1 id="buying-fruit">Buying Fruit</h1>
-<p>实现buy函数，通过给定的水果与价格，用恰好为传入的total_amount的价格购买指定的水果（每种指定水果至少买一次）
-用display函数输出所有结果</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">buy</span><span style="color: #24292E">(required_fruits, prices, total_amount):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Print ways to buy some of each fruit so that the sum of prices is amount.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">prices = {&#39;oranges&#39;: 4, &#39;apples&#39;: 3, &#39;bananas&#39;: 2, &#39;kiwis&#39;: 9}</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">buy([&#39;apples&#39;, &#39;oranges&#39;, &#39;bananas&#39;], prices, 12)</span></span>
-<span class="line"><span style="color: #032F62">    [2 apples][1 orange][1 banana]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">buy([&#39;apples&#39;, &#39;oranges&#39;, &#39;bananas&#39;], prices, 16)</span></span>
-<span class="line"><span style="color: #032F62">    [2 apples][1 orange][3 bananas]</span></span>
-<span class="line"><span style="color: #032F62">    [2 apples][2 oranges][1 banana]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">buy([&#39;apples&#39;, &#39;kiwis&#39;], prices, 36)</span></span>
-<span class="line"><span style="color: #032F62">    [3 apples][3 kiwis]</span></span>
-<span class="line"><span style="color: #032F62">    [6 apples][2 kiwis]</span></span>
-<span class="line"><span style="color: #032F62">    [9 apples][1 kiwi]</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add</span><span style="color: #24292E">(fruits, amount, cart):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> fruits </span><span style="color: #D73A49">==</span><span style="color: #24292E"> [] </span><span style="color: #D73A49">and</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">print</span><span style="color: #24292E">(cart)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> fruits </span><span style="color: #D73A49">and</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">            fruit </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fruits[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">            price </span><span style="color: #D73A49">=</span><span style="color: #24292E"> prices[fruit]</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">for</span><span style="color: #24292E"> k </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,amount</span><span style="color: #D73A49">//</span><span style="color: #24292E">price</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">                add(fruits[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:], amount</span><span style="color: #D73A49">-</span><span style="color: #24292E">k</span><span style="color: #D73A49">*</span><span style="color: #24292E">price, cart</span><span style="color: #D73A49">+</span><span style="color: #24292E">display(fruit,k))</span></span>
-<span class="line"><span style="color: #24292E">    add(required_fruits, total_amount, </span><span style="color: #032F62">&#39;&#39;</span><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">display</span><span style="color: #24292E">(fruit, count):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Display a count of a fruit in square brackets.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">display(&#39;apples&#39;, 3)</span></span>
-<span class="line"><span style="color: #032F62">    &#39;[3 apples]&#39;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">display(&#39;apples&#39;, 1)</span></span>
-<span class="line"><span style="color: #032F62">    &#39;[1 apple]&#39;</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">assert</span><span style="color: #24292E"> count </span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> fruit[</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;s&#39;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> count </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        fruit </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fruit[:</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]  </span><span style="color: #6A737D"># get rid of the plural s</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;[&#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(count) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39; &#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> fruit </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;]&#39;</span></span></code></pre></div></div></figure>
-<p>返回条件是fruits为空或钱被花光，且递归时每次都取fruits的首个元素
-可以推断递归时对fruits数组进行了切片，每次往后切一个元素
-for循环遍历选择每个水果的个数，从至少选一个到最多能选的个数<span
-class="math inline">\(\frac{amount}{price}+1\)</span>
-递归时传入总价格减去已经使用的价格数的不同情况，并使用display函数进行字符串拼接来显示</p>
-<h1 id="cities-adt">Cities ADT</h1>
-<p>以下问题基于建立的该ADT
-一个城市由以下参数描述：<strong>名称、经度、维度</strong>
-包括一个构造函数 -
-<code>make_city(name, lat, lon)</code>：建立一个城市对象，存储其名称、经度、维度
-以下选择器 - <code>get_name(city)</code>：获取城市名称 -
-<code>get_lat(city)</code>：获取城市经度 -
-<code>get_lon(city)</code>：获取城市维度
-该抽象数据类型已经在文件中实现，你不需要知道是怎么实现的</p>
-<h1 id="distance">Distance</h1>
-<p>计算并返回两城市的距离</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">from</span><span style="color: #24292E"> math </span><span style="color: #D73A49">import</span><span style="color: #24292E"> sqrt</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">distance</span><span style="color: #24292E">(city_a, city_b):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">city_a = make_city(&#39;city_a&#39;, 0, 1)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">city_b = make_city(&#39;city_b&#39;, 0, 2)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">distance(city_a, city_b)</span></span>
-<span class="line"><span style="color: #032F62">    1.0</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">city_c = make_city(&#39;city_c&#39;, 6.5, 12)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">city_d = make_city(&#39;city_d&#39;, 2.5, 15)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">distance(city_c, city_d)</span></span>
-<span class="line"><span style="color: #032F62">    5.0</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> sqrt(</span><span style="color: #005CC5">abs</span><span style="color: #24292E">(get_lat(city_a)</span><span style="color: #D73A49">-</span><span style="color: #24292E">get_lat(city_b))</span><span style="color: #D73A49">**</span><span style="color: #005CC5">2</span><span style="color: #D73A49">+</span><span style="color: #005CC5">abs</span><span style="color: #24292E">(get_lon(city_a)</span><span style="color: #D73A49">-</span><span style="color: #24292E">get_lon(city_b))</span><span style="color: #D73A49">**</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
-<h1 id="closer-city">Closer City</h1>
-<p>比较两个城市离给定经纬度的远近，返回更近的那个城市</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">closer_city</span><span style="color: #24292E">(lat, lon, city_a, city_b):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #032F62">    Returns the name of either city_a or city_b, whichever is closest to</span></span>
-<span class="line"><span style="color: #032F62">    coordinate (lat, lon). If the two cities are the same distance away</span></span>
-<span class="line"><span style="color: #032F62">    from the coordinate, consider city_b to be the closer city.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">berkeley = make_city(&#39;Berkeley&#39;, 37.87, 112.26)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">stanford = make_city(&#39;Stanford&#39;, 34.05, 118.25)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">closer_city(38.33, 121.44, berkeley, stanford)</span></span>
-<span class="line"><span style="color: #032F62">    &#39;Stanford&#39;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">bucharest = make_city(&#39;Bucharest&#39;, 44.43, 26.10)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">vienna = make_city(&#39;Vienna&#39;, 48.20, 16.37)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">closer_city(41.29, 174.78, bucharest, vienna)</span></span>
-<span class="line"><span style="color: #032F62">    &#39;Bucharest&#39;</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    fake_city </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_city(</span><span style="color: #032F62">&#39;fake&#39;</span><span style="color: #24292E">, lat, lon)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> distance(fake_city,city_a)</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">distance(fake_city,city_b):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> get_name(city_a)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> get_name(city_b)</span></span></code></pre></div></div></figure>
-<p>可以将指定的经纬度看作第三个城市并构造这么一个对象
-通过上面已经写完的distance函数计算两城市与第三个城市的距离并比较，输出更近的
-若相同输出city_b</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2111,7 +2041,7 @@ class="math inline">\(\frac{amount}{price}+1\)</span>
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2165,12 +2095,12 @@ class="math inline">\(\frac{amount}{price}+1\)</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">448k</span>
+    <span title="站点总字数">458k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">13:35</span>
+    <span title="站点阅读时长">13:53</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>

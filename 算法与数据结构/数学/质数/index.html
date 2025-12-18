@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了质数的相关性质，判断，质因数以及筛">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数学】质数">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E8%B4%A8%E6%95%B0/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了质数的相关性质，判断，质因数以及筛">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-18T06:45:34.978Z">
+<meta property="article:modified_time" content="2025-12-18T06:46:14.945Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="数学">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E8%B4%A8%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数学】质数 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E8%B4%A8%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数学】质数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-12-18 14:45:34 / 修改时间：14:46:14" itemprop="dateCreated datePublished" datetime="2025-12-18T14:45:34+08:00">2025-12-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">数学</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+            <div class="post-description">介绍了质数的相关性质，判断，质因数以及筛</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="质数">质数</h1>
+<h2 id="定义">定义</h2>
+<p>设整数<span class="math inline">\(p\ne0,\pm1\)</span>。如果
+p除了平凡约数外没有其他约数，那么称p 为
+<strong>素数</strong>（<strong>不可约数</strong>)。</p>
+<p>若整数 <span class="math inline">\(a\ne0,\pm1\)</span>。且
+a不是素数，则称a为 <strong>合数</strong>。</p>
+<p>若整数的因数是素数，则该素数称为该整数的素因数</p>
+<h2 id="性质">性质</h2>
+<ul>
+<li><p>大于 1 的整数 a是合数，等价于存在整数
+(d,e)（(1&lt;d,e&lt;a)）使得<br />
+<span class="math display">\[
+a \;=\; d \times e.
+\]</span></p></li>
+<li><p>若素数 p有大于 1 的约数 (d)，则 <span class="math inline">\(d
+\;=\; p.\)</span>（即素数只有 1 和它自身为约数）</p></li>
+<li><p>任意大于 1 的整数 a都可以表示为素数的乘积：<br />
+<span class="math display">\[
+a \;=\; p_1 p_2 \cdots p_k.
+\]</span></p></li>
+<li><p>对于合数 a，一定存在素数 <span class="math inline">\(p \le
+\sqrt{a}\)</span>使得 <span class="math inline">\(p \mid
+a.\)</span></p></li>
+<li><p>素数有无穷多个。</p></li>
+<li><p>所有大于 3 的素数都可以表示为<br />
+<span class="math display">\[
+6n \pm 1,\quad n\in\mathbb{Z}.
+\]</span></p></li>
+</ul>
+<h2 id="判断质数">判断质数</h2>
+<h3 id="较小数据范围">较小数据范围</h3>
+<p>从第一个质数2开始验证，一个个验证待测数n是否能被每个数整除，若任何一个可以整除n，则不是质数</p>
+<p>注意，<strong>只需要验证到<span
+class="math inline">\(\sqrt{n}\)</span></strong>即可</p>
+<p>因为若一个数x已经验证无法整除n，则对应的<span
+class="math inline">\(\frac{n}{x}\)</span>之后的数无需验证，因为此时这之后的因子与x相乘的结果一定大于n，一直到<span
+class="math inline">\(\sqrt{n}\)</span>，<span
+class="math inline">\(\frac{n}{\sqrt{n}}=\sqrt{n}\)</span>，故该后面的都不需要验证</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> </span><span style="color: #6F42C1">isPrime</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">&lt;=</span><span style="color: #005CC5">1</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">; i</span><span style="color: #D73A49">*</span><span style="color: #24292E">i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">%</span><span style="color: #24292E">i</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="较大数据范围">较大数据范围</h3>
+<p>对于较大的数字，可以使用Miller-Rabin测试</p>
+<p>过程：</p>
+<ul>
+<li>每次选择1~n-1上的随机数字，或者指定一个比n小的质数进行测试</li>
+<li>经s次（一般20次以内）得到，s越出错概率越低，速度越慢</li>
+</ul>
+<p>对于Java用户，其BigInteger类型内自带了一个判断质数的方法<code>isProbablePrime(s)</code>，使用的测试方法就包含了Miller-Rabin测试，对于大于1e9的数据也不会出现溢出</p>
+<p>对于CPP用户，需要使用__int128</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> &#39;\n&#39;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> __int128 ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">ll n;</span></span>
+<span class="line"><span style="color: #D73A49">template</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">typename</span><span style="color: #24292E"> </span><span style="color: #6F42C1">T</span><span style="color: #24292E">&gt; </span><span style="color: #D73A49">inline</span><span style="color: #24292E"> </span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #6F42C1">read</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">    T x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, f </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; </span><span style="color: #D73A49">char</span><span style="color: #24292E"> ch </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(; </span><span style="color: #D73A49">!</span><span style="color: #6F42C1">isdigit</span><span style="color: #24292E">(ch); ch </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getchar</span><span style="color: #24292E">()) </span><span style="color: #D73A49">if</span><span style="color: #24292E">(ch </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;-&#39;</span><span style="color: #24292E">) f </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(; </span><span style="color: #6F42C1">isdigit</span><span style="color: #24292E">(ch); ch </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getchar</span><span style="color: #24292E">()) x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (x </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> (x </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> (ch </span><span style="color: #D73A49">-</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;0&#39;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x </span><span style="color: #D73A49">*</span><span style="color: #24292E"> f;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">template</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">typename</span><span style="color: #24292E"> </span><span style="color: #6F42C1">T</span><span style="color: #24292E">&gt; </span><span style="color: #D73A49">inline</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">write</span><span style="color: #24292E">(</span><span style="color: #6F42C1">T</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(x </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #6F42C1">putchar</span><span style="color: #24292E">(</span><span style="color: #032F62">&#39;-&#39;</span><span style="color: #24292E">), x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #24292E">x;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(x </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">9</span><span style="color: #24292E">) </span><span style="color: #6F42C1">write</span><span style="color: #24292E">(x </span><span style="color: #D73A49">/</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">putchar</span><span style="color: #24292E">(x </span><span style="color: #D73A49">%</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;0&#39;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">qpow</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">mod</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  ll re </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(n){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">&amp;</span><span style="color: #005CC5">1</span><span style="color: #24292E">) re </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (re</span><span style="color: #D73A49">*</span><span style="color: #24292E">a)</span><span style="color: #D73A49">%</span><span style="color: #24292E">mod;</span></span>
+<span class="line"><span style="color: #24292E">    a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (a</span><span style="color: #D73A49">*</span><span style="color: #24292E">a)</span><span style="color: #D73A49">%</span><span style="color: #24292E">mod;</span></span>
+<span class="line"><span style="color: #24292E">    n</span><span style="color: #D73A49">&gt;&gt;=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> re</span><span style="color: #D73A49">%</span><span style="color: #24292E">mod;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E">{</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">5</span><span style="color: #24292E">,</span><span style="color: #005CC5">7</span><span style="color: #24292E">,</span><span style="color: #005CC5">11</span><span style="color: #24292E">,</span><span style="color: #005CC5">13</span><span style="color: #24292E">,</span><span style="color: #005CC5">17</span><span style="color: #24292E">,</span><span style="color: #005CC5">19</span><span style="color: #24292E">,</span><span style="color: #005CC5">23</span><span style="color: #24292E">,</span><span style="color: #005CC5">29</span><span style="color: #24292E">,</span><span style="color: #005CC5">31</span><span style="color: #24292E">,</span><span style="color: #005CC5">37</span><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> </span><span style="color: #6F42C1">miller_rabin</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">3</span><span style="color: #D73A49">||</span><span style="color: #24292E">n</span><span style="color: #D73A49">%</span><span style="color: #005CC5">2</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  ll u </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">, t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(u</span><span style="color: #D73A49">%</span><span style="color: #005CC5">2</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) u</span><span style="color: #D73A49">/=</span><span style="color: #005CC5">2</span><span style="color: #24292E">, t</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">auto</span><span style="color: #24292E"> a:p){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">==</span><span style="color: #24292E">a) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">%</span><span style="color: #24292E">a</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    ll v </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">qpow</span><span style="color: #24292E">(a, u, n);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (v</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">) </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    ll s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(; s</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">t;s</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(v</span><span style="color: #D73A49">==</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      v </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (v</span><span style="color: #D73A49">*</span><span style="color: #24292E">v)</span><span style="color: #D73A49">%</span><span style="color: #24292E">n;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(s</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">t) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">read</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">ll</span><span style="color: #24292E">&gt;();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #6F42C1">miller_rabin</span><span style="color: #24292E">(n)) </span><span style="color: #6F42C1">puts</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Yes&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #6F42C1">puts</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;No&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">ios</span><span style="color: #24292E">::</span><span style="color: #6F42C1">sync_with_stdio</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cin.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cout.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  ll tomorin</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">read</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">ll</span><span style="color: #24292E">&gt;();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="质因数分解">质因数分解</h2>
+<p>对于数n，因数是成对分布的，故可以枚举每一个数i到<span
+class="math inline">\(\sqrt{n}\)</span>，若是合数说明i是他的一个质因子，让<span
+class="math inline">\(\frac{n}{i}\)</span>，直到无法再除，证明将当前质因子对应的因数除尽，再试下一个i</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">; i</span><span style="color: #D73A49">*</span><span style="color: #24292E">i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">%</span><span style="color: #24292E">i</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> i </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">while</span><span style="color: #24292E">(n</span><span style="color: #D73A49">%</span><span style="color: #24292E">i</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) n</span><span style="color: #D73A49">/=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(n</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">1</span><span style="color: #24292E">) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>注意，若已经有一个素数表，时间复杂度将会从<span
+class="math inline">\(O(\sqrt{N})\)</span>下降为<span
+class="math inline">\(O(\frac{\sqrt{N}}{\ln N})\)</span></p>
+<h2 id="质数筛">质数筛</h2>
+<h3 id="埃氏筛">埃氏筛</h3>
+<p>用一个vis数组标记是质数还是合数，默认都是质数</p>
+<p>从第一个质数2开始，计算<span
+class="math inline">\(2\times2\)</span>，<span
+class="math inline">\(2\times3\cdots\)</span>，这些数肯定是合数，将这些数对应的vis标记为合数，再遍历操作下一个质数</p>
+<p>注意：<strong>每次标记只需要从质数<span class="math inline">\(i\times
+i\)</span>开始往后每次加<span
+class="math inline">\(i\)</span>即可</strong>，因为前面的肯定被小于该数的质数标记过了</p>
+<p>另外，由于偶数除了2都是合数，我们可以选择跳过偶数来让内存和操作需求都减半</p>
+<p>另另外，由于bitset的连续读写效率，我们可以将bool数组改为bitset来将布尔值压到一个bit中，可以显著减少内存消耗，这种方法称为<strong>位级压缩</strong></p>
+<p>时间复杂度：<span class="math inline">\(O(n\log(\log n))\)</span></p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">bool</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">prime</span><span style="color: #24292E">(</span><span style="color: #6F42C1">N</span><span style="color: #24292E">, </span><span style="color: #6F42C1">true</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ehrlich</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;i</span><span style="color: #D73A49">*</span><span style="color: #24292E">i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(prime[i]){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i</span><span style="color: #D73A49">*</span><span style="color: #24292E">i;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">+=</span><span style="color: #24292E">i){</span></span>
+<span class="line"><span style="color: #24292E">        prime[j]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>若只是计数，埃氏筛还可以改进：我们可以预估质数数量，若发现更多合数就减掉</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 注意此时true表示合数</span></span>
+<span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">bool</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">prime</span><span style="color: #24292E">(</span><span style="color: #6F42C1">N</span><span style="color: #24292E">, </span><span style="color: #6F42C1">false</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ehrlich</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">/</span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 默认偶数都是合数</span></span>
+<span class="line"><span style="color: #6A737D">    // 只需要判断奇数</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">;i</span><span style="color: #D73A49">*</span><span style="color: #24292E">i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">2</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">prime[i]){</span></span>
+<span class="line"><span style="color: #6A737D">        // 只需要判断奇数</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i</span><span style="color: #D73A49">*</span><span style="color: #24292E">i;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">2</span><span style="color: #D73A49">*</span><span style="color: #24292E">i){</span></span>
+<span class="line"><span style="color: #24292E">          </span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">prime[j]){</span></span>
+<span class="line"><span style="color: #24292E">              prime[j]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">              cnt</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">          }</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="欧拉筛">欧拉筛</h3>
+<p>埃氏筛也有重复筛的情况，因此会慢一些</p>
+<p>而欧拉筛保证了每个合数只被自己的最小质因子筛掉</p>
+<p>时间复杂度<span class="math inline">\(O(n)\)</span></p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">bool</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">prime</span><span style="color: #24292E">(</span><span style="color: #6F42C1">N</span><span style="color: #24292E">, </span><span style="color: #6F42C1">true</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">eular</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tprime[n</span><span style="color: #D73A49">/</span><span style="color: #005CC5">2</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(prime[i]){</span></span>
+<span class="line"><span style="color: #24292E">      tprime[cnt</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">cnt;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(i</span><span style="color: #D73A49">*</span><span style="color: #24292E">tprime[j]</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">n)</span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      prime[i</span><span style="color: #D73A49">*</span><span style="color: #24292E">tprime[j]]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(i</span><span style="color: #D73A49">%</span><span style="color: #24292E">tprime[j]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="分段筛法">分段筛法</h3>
+<p>普通的线性筛在数据范围很大的时候会超时或耗尽内存，此时我们需要使用<strong>分段筛</strong></p>
+<p>思想：用普通筛筛出<span
+class="math inline">\(\sqrt{n}\)</span>内的所有质数，然后将所需区间[l,
+r]分成一段或多段，并对段进行标记，用筛出的质数标记段中合数，并统计没被标记的质数即可</p>
+<p><strong>步骤：</strong>设右区间为r</p>
+<ol type="1">
+<li>计算<span
+class="math inline">\(\sqrt{r}\)</span>，用筛筛出这之内的数</li>
+<li>定义布尔数组标记合数（初始都设为false，表示为可能质数），长度为<span
+class="math inline">\(r-l+1\)</span></li>
+<li>对每个质数
+<ul>
+<li>若<code>1ll*p*p&gt;r</code>则可以提前break，因为超出区间右端</li>
+<li>计算[l,
+r]中第一个需要标记的位置<code>start = max(1LL*p*p, ((l + p - 1) / p) * 1LL * p)</code>，即从区间第一个p的倍数开始，p小的时候也可以避免把p本身标掉</li>
+<li>从start开始以p步长标记<code>start-l</code>位置为合数，数组标记为true</li>
+</ul></li>
+<li>对于<code>l==1</code>时，需要特殊处理数组0下标为合数，因为1不是质数</li>
+<li>最后统计数组中false的位置就是质数</li>
+</ol>
+<p><strong>注意：</strong></p>
+<ol type="1">
+<li>要开longlong，避免乘法溢出</li>
+<li>若r和r-l都很大，可以考虑分为多个块，对每个块都进行流程</li>
+</ol>
+<p><strong>code例：</strong></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1835">洛谷P1835</a>
+素数密度</p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">bool</span><span style="color: #24292E">&gt; </span><span style="color: #6F42C1">prime</span><span style="color: #24292E">(</span><span style="color: #6F42C1">N</span><span style="color: #24292E">, </span><span style="color: #6F42C1">true</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">ll tprime[N];</span></span>
+<span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> vis[N]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{};</span></span>
+<span class="line"><span style="color: #24292E">ll cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">// 观察到数据规模2^31，如果单纯用线性筛会导致爆内存</span></span>
+<span class="line"><span style="color: #6A737D">// 这时需要分段筛法</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">eular</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(ll i </span><span style="color: #D73A49">=</span><span style="color: #005CC5">2</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(prime[i]){</span></span>
+<span class="line"><span style="color: #24292E">      tprime[</span><span style="color: #D73A49">++</span><span style="color: #24292E">cnt] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(ll j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i</span><span style="color: #D73A49">+</span><span style="color: #24292E">i;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">cnt;j</span><span style="color: #D73A49">+=</span><span style="color: #24292E">i){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(i</span><span style="color: #D73A49">*</span><span style="color: #24292E">tprime[j]</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">n) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      prime[i</span><span style="color: #D73A49">*</span><span style="color: #24292E">tprime[j]]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(i</span><span style="color: #D73A49">%</span><span style="color: #24292E">tprime[j]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  ll l, r;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> l </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> r;</span></span>
+<span class="line"><span style="color: #6A737D">  // 首先晒出√2^31内的质数，然后用这些质数作为因子来在l-r范围内筛出合数并标记（i*p为合数）</span></span>
+<span class="line"><span style="color: #6A737D">  // 遍历l-r，没有标记的就是质数</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">eular</span><span style="color: #24292E">(</span><span style="color: #005CC5">50000</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">) vis[</span><span style="color: #005CC5">0</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 特判l=1</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">cnt;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    ll p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tprime[i];</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(ll j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(</span><span style="color: #005CC5">2</span><span style="color: #D73A49">ll</span><span style="color: #24292E">, (l</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">/</span><span style="color: #24292E">p</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">*</span><span style="color: #24292E">p;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r;j</span><span style="color: #D73A49">+=</span><span style="color: #24292E">p){</span><span style="color: #6A737D"> // 计算在区间 [l,r] 中，应该从哪个数开始把质数 p 的倍数标记为合数（分段筛的起点）</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E">(j</span><span style="color: #D73A49">-</span><span style="color: #24292E">l</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">0</span><span style="color: #24292E">) vis[j</span><span style="color: #D73A49">-</span><span style="color: #24292E">l]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 将l-r移动至0-(r-l)范围内，防止过大的下标爆数组</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  ll ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(ll i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r</span><span style="color: #D73A49">-</span><span style="color: #24292E">l;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[i]) ans</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  cout</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">ans;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="筛法求约数个数">筛法求约数个数</h2>
+<p>用<span class="math inline">\(d\)</span>表示<span
+class="math inline">\(i\)</span>的约数个数，<span
+class="math inline">\(num_i\)</span>表示<span
+class="math inline">\(i\)</span>的最小质因子出现次数</p>
+<h3 id="约数个数定理">约数个数定理</h3>
+<p><strong>定理</strong><br />
+若 <span class="math inline">\(n = \displaystyle\prod_{i=1}^{m}
+p_i^{c_i}\)</span>，则 <span class="math inline">\(d(n)
+\;=\;\prod_{i=1}^{m}(c_i + 1)\,.\)</span></p>
+<p><strong>证明</strong><br />
+对每个质因子 <span class="math inline">\(p_i^{c_i}\)</span>，它的约数有
+<span class="math inline">\(p_i^0,\;p_i^1,\;\dots,\;p_i^{c_i}\)</span>共
+<span class="math inline">\(c_i+1\)</span> 个。由乘法原理可知， <span
+class="math inline">\(n=\prod_{i=1}^{m}p_i^{c_i}\)</span>的约数总数就是
+<span class="math inline">\(\prod_{i=1}^{m}(c_i+1)\,.\)</span></p>
+<h3 id="实现">实现</h3>
+<p>由于<span
+class="math inline">\(d_i\)</span>是积性函数，所以我们可以使用线性筛</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> pri;</span><span style="color: #6A737D">         // 存储筛出的素数列表</span></span>
+<span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> not_prime[N];</span><span style="color: #6A737D">       // 标记合数</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> d[N];</span><span style="color: #6A737D">                // d[i] 表示 i 的约数个数</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> num[N];</span><span style="color: #6A737D">              // num[i] 表示 i 分解后，最低位质因子 p 在 i 中的幂次</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">pre</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">  d[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D">              // 1 的约数个数为 1</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">not_prime[i]) {</span></span>
+<span class="line"><span style="color: #6A737D">      // i 是素数</span></span>
+<span class="line"><span style="color: #24292E">      pri.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(i);</span></span>
+<span class="line"><span style="color: #24292E">      d[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span><span style="color: #6A737D">          // 素数 i 的约数只有 1 和 i 自身，共 2 个</span></span>
+<span class="line"><span style="color: #24292E">      num[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D">        // i = p^1, 此处最低质因子 p 的幂次为 1</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // 用已知的素数列表，对 i 进行线性筛</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> p : pri) {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> n) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      not_prime[i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span><span style="color: #6A737D">   // 标记 i*p 为合数</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">%</span><span style="color: #24292E"> p </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #6A737D">        // 情况一：p 是 i 的最低质因子，i = … * p^k</span></span>
+<span class="line"><span style="color: #6A737D">        // 那么 i*p = … * p^(k+1)，尾质因子 p 的幂次加 1</span></span>
+<span class="line"><span style="color: #24292E">        num[i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> num[i] </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">        // 如果 i 的约数个数为 d[i]，且 i 中 p 的幂次为 num[i]，</span></span>
+<span class="line"><span style="color: #6A737D">        // 那么 i*p 中 p 的幂次就是 num[i]+1</span></span>
+<span class="line"><span style="color: #6A737D">        // 根据约数个数公式：若 n = p1^a1 * p2^a2 *…，d(n)=∏(ai+1)</span></span>
+<span class="line"><span style="color: #6A737D">        // 我们可以在已知 d[i] 的基础上做局部更新：</span></span>
+<span class="line"><span style="color: #6A737D">        //   d[i*p] = d[i] / (num[i] + 0) * (num[i] + 1)</span></span>
+<span class="line"><span style="color: #24292E">        d[i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d[i] </span><span style="color: #D73A49">/</span><span style="color: #24292E"> num[i] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> (num[i] </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span><span style="color: #6A737D">  // 线性筛保证每个合数只被最小质因子对应的 p 处理一次</span></span>
+<span class="line"><span style="color: #24292E">      } </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #6A737D">        // 情况二：p 不是 i 的最低质因子，在 i*p 中 p^1 首次出现</span></span>
+<span class="line"><span style="color: #24292E">        num[i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">        // 新加了一个质因子 p，故约数个数 d[i*p] = d[i] * 2</span></span>
+<span class="line"><span style="color: #24292E">        d[i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d[i] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="筛法求约数和">筛法求约数和</h2>
+<p><span class="math inline">\(f_i\)</span> 表示 <span
+class="math inline">\(i\)</span> 的约数和，<span
+class="math inline">\(g_i\)</span> 表示 <span
+class="math inline">\(i\)</span> 的最小质因子的 <span
+class="math inline">\(p^0 + p^1 + p^2 + \cdots + p^k \,.\)</span></p>
+<p>用线性筛在 <span class="math inline">\(O(n)\)</span> 时间内计算出
+<span class="math inline">\(1\sim n\)</span> 每个正整数的约数和 <span
+class="math inline">\(f[i]\)</span>，其中<br />
+- <span class="math inline">\(f[i]=\sum_{d\mid i}d\)</span>；<br />
+- <span class="math inline">\(g[i]\)</span> 表示将 <span
+class="math inline">\(i\)</span> 分解为最小质因子 <span
+class="math inline">\(p\)</span> 的幂乘以其它部分后，单独对这段 <span
+class="math inline">\(p^k\)</span> 求和： <span class="math display">\[
+g[i]=1 + p + p^2 + \cdots + p^k\,,
+\]</span> 其中 <span class="math inline">\(p^k\parallel i\)</span>，且
+<span class="math inline">\(p\)</span> 是 <span
+class="math inline">\(i\)</span> 的最小质因子。</p>
+<p>借助下面这个分块性质：<br />
+<span class="math display">\[
+\text{若 }i=p^k\times x\text{ 且 }\gcd(p,x)=1,\quad
+f(i)=\bigl(1+p+\cdots+p^k\bigr)\times f(x)=g[i]\times f(x)\,,
+\]</span> 我们可以在线性筛中同时维护 <span
+class="math inline">\(g[i]\)</span> 与 <span
+class="math inline">\(f[i]\)</span>。</p>
+<hr />
+<figure class="shiki cpp"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> pri;</span><span style="color: #6A737D">        // 存储已筛出的素数列表</span></span>
+<span class="line"><span style="color: #D73A49">bool</span><span style="color: #24292E"> not_prime[N];</span><span style="color: #6A737D">      // 合数标记</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> g[N], f[N];</span><span style="color: #6A737D">         // g[i]：i 中最小质因子 p 的 1+p+...+p^k 和</span></span>
+<span class="line"><span style="color: #6A737D">                        // f[i]：i 的约数和</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">pre</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #6A737D">  // 初始化：1 的约数和为 1，g[1]=1</span></span>
+<span class="line"><span style="color: #24292E">  g[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">not_prime[i]) {</span></span>
+<span class="line"><span style="color: #6A737D">      // i 是素数 p</span></span>
+<span class="line"><span style="color: #24292E">      pri.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(i);</span></span>
+<span class="line"><span style="color: #6A737D">      // 对于素数 p：</span></span>
+<span class="line"><span style="color: #6A737D">      //   g[p] = 1 + p</span></span>
+<span class="line"><span style="color: #6A737D">      //   f[p] = 1 + p</span></span>
+<span class="line"><span style="color: #24292E">      g[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      f[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // 用已筛出的素数列表对 i 进行线性筛</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> p : pri) {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> n) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ip </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">      not_prime[ip] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 标记合数</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">%</span><span style="color: #24292E"> p </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #6A737D">        // 情况一：p 是 i 的最小质因子，即 i = p^k * x</span></span>
+<span class="line"><span style="color: #6A737D">        // 那么 ip = p^(k+1) * x，x 与 p 互素</span></span>
+<span class="line"><span style="color: #6A737D">        // g[i] = 1 + p + ... + p^k</span></span>
+<span class="line"><span style="color: #6A737D">        // 则 g[ip] = 1 + p + ... + p^k + p^(k+1) = g[i]*p + 1</span></span>
+<span class="line"><span style="color: #24292E">        g[ip] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[i] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">        // f[ip] = f(x) * g[ip]，而 f[i] = f(x)*g[i]</span></span>
+<span class="line"><span style="color: #6A737D">        // 故 f[ip] = f[i] / g[i] * g[ip]</span></span>
+<span class="line"><span style="color: #24292E">        f[ip] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f[i] </span><span style="color: #D73A49">/</span><span style="color: #24292E"> g[i] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> g[ip];</span></span>
+<span class="line"><span style="color: #6A737D">        // 线性筛关键：找到 i 的最小质因子后立即 break</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      } </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #6A737D">        // 情况二：p 不是 i 的最小质因子，i 与 p 互素</span></span>
+<span class="line"><span style="color: #6A737D">        // ip 增加了一个新的质因子 p^1</span></span>
+<span class="line"><span style="color: #6A737D">        // g[ip] = 1 + p</span></span>
+<span class="line"><span style="color: #6A737D">        // f[ip] = f[i] * f[p] = f[i] * (1+p)</span></span>
+<span class="line"><span style="color: #24292E">        g[ip] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">        f[ip] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f[i] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> f[p];</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%8E%92%E5%88%97/" rel="prev" title="【数学】排列">
+      <i class="fa fa-chevron-left"></i> 【数学】排列
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%A8%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">质数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-number">1.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E8%B4%A8%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">判断质数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%83%E5%B0%8F%E6%95%B0%E6%8D%AE%E8%8C%83%E5%9B%B4"><span class="nav-number">1.3.1.</span> <span class="nav-text">较小数据范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%83%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%8C%83%E5%9B%B4"><span class="nav-number">1.3.2.</span> <span class="nav-text">较大数据范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A8%E5%9B%A0%E6%95%B0%E5%88%86%E8%A7%A3"><span class="nav-number">1.4.</span> <span class="nav-text">质因数分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A8%E6%95%B0%E7%AD%9B"><span class="nav-number">1.5.</span> <span class="nav-text">质数筛</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%83%E6%B0%8F%E7%AD%9B"><span class="nav-number">1.5.1.</span> <span class="nav-text">埃氏筛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E7%AD%9B"><span class="nav-number">1.5.2.</span> <span class="nav-text">欧拉筛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E7%AD%9B%E6%B3%95"><span class="nav-number">1.5.3.</span> <span class="nav-text">分段筛法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%9B%E6%B3%95%E6%B1%82%E7%BA%A6%E6%95%B0%E4%B8%AA%E6%95%B0"><span class="nav-number">1.6.</span> <span class="nav-text">筛法求约数个数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A6%E6%95%B0%E4%B8%AA%E6%95%B0%E5%AE%9A%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">约数个数定理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.6.2.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%9B%E6%B3%95%E6%B1%82%E7%BA%A6%E6%95%B0%E5%92%8C"><span class="nav-number">1.7.</span> <span class="nav-text">筛法求约数和</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">458k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:53</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
