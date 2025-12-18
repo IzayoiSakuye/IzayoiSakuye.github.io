@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="对LCS与LIS的学习，线性dp的起步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【动态规划】子序列问题">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="对LCS与LIS的学习，线性dp的起步">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98/image-20250805191822734.png">
+<meta property="article:published_time" content="2025-08-07T09:46:54.090Z">
+<meta property="article:modified_time" content="2025-12-17T16:07:54.155Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="DP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98/image-20250805191822734.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【动态规划】子序列问题 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【动态规划】子序列问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-08-07 17:46:54" itemprop="dateCreated datePublished" datetime="2025-08-07T17:46:54+08:00">2025-08-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-18 00:07:54" itemprop="dateModified" datetime="2025-12-18T00:07:54+08:00">2025-12-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" itemprop="url" rel="index"><span itemprop="name">动态规划</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+            <div class="post-description">对LCS与LIS的学习，线性dp的起步</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="子序列问题">子序列问题</h1>
+<h2 id="最长公共子序列lcs">最长公共子序列(LCS)</h2>
+<p>公共子序列即两个字符串中共有的子序列，现在需要寻找两个字符串的最长公共子序列</p>
+<h3 id="思路">思路</h3>
+<p>本质上是选与不选的问题，我们考虑最后一对字母，两两组合有四种情况</p>
+<p>更一般化：</p>
+<ul>
+<li>当前操作：考虑<code>s[i]</code>与<code>t[j]</code>选或不选</li>
+<li>子问题：s的前i个字母和t的前j个字母的LCS长度</li>
+<li>下一个子问题
+<ul>
+<li>s的前i-1个字母和t的前j-1个字母的LCS长度（都选或都不选）</li>
+<li>s的前i-1个字母和t的前j个字母的LCS长度（选s[i]不选t[j]）</li>
+<li>s的前i个字母和t的前j-1个字母的LCS长度（选t[j]不选s[i]）</li>
+</ul></li>
+</ul>
+<h3 id="转移方程">转移方程</h3>
+<p><code>dfs(i,j) = max(dfs(i-1, j-i), dfs(i-1, j), dfs(i,j-1)+(s[i]==t[j]))</code></p>
+<p>但可以考虑两个问题：</p>
+<ul>
+<li><code>s[i]==t[j]</code>时，需要<code>dfs(i-1, j-i), dfs(i-1, j)</code>吗？</li>
+</ul>
+<p>​ 不需要，可以从子序列方向推出矛盾</p>
+<ul>
+<li><p><code>s[i]!=t[j]</code>时，需要<code>dfs(i-1, j-1)</code>吗？</p>
+<p>不需要，<code>dfs(i-1, j-1)</code>的结果已经在<code>dfs(i-1, j-i), dfs(i-1, j)</code>里面了</p></li>
+</ul>
+<p>故方程可以简化为 <span class="math display">\[
+f[i][j] = \begin{cases}  f[i-1][j-1]+1
+&amp;&amp;s[i]=t[j]\\  max(f[i-1][j], f[i][j-1]) &amp;&amp;s[i]\neq t[j]
+\end{cases}
+\]</span></p>
+<h3 id="code">code</h3>
+<p>朴素LCS：空间和时间都为<span
+class="math inline">\(O(n^2)\)</span></p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> dp[N][N]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{};</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">s</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">t</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> t[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #24292E">t[j]){</span></span>
+<span class="line"><span style="color: #24292E">        dp[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dp[i</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">][j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">        dp[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(dp[i</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">][j],dp[i][j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]);</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> dp[n][n];</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>一维数组优化：对于计算当前行与上一行，需要考虑左、上与左上三种状态</p>
+<p>此时左上的状态会被之前的计算给覆盖掉，故需要开一个临时变量存储</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> dp[N]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{};</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">s</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">t</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> t[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dp[</span><span style="color: #005CC5">0</span><span style="color: #24292E">];</span><span style="color: #6A737D"> // 初始化为0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dp[j</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">];</span><span style="color: #6A737D"> // 记录下一个的左上状态</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #24292E">t[j]){</span></span>
+<span class="line"><span style="color: #24292E">        dp[j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">        dp[j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(dp[j],dp[j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]);</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">      pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> temp;</span><span style="color: #6A737D"> // 将上一个状态还原</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> dp[n];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>转化为LIS：</p>
+<p>对于t序列的每个元素，映射为在s序列中的位置组成数组p</p>
+<p>这时我们在t中选出一个子序列，且要保持相对顺序，若对应的p的子序列也是上升的，证明他们在s中也是按照相同先后顺序出现的</p>
+<p>这说明选择的这些元素在s和t中都保持着相同的相对顺序，也就是公共子序列</p>
+<p>故我们可以将求LCS的问题转换成求t在s的相对位置上的LIS的问题</p>
+<p>例：</p>
+<p>s = [ 5, 2, 8, 1, 6 ]，t = [ 2, 6, 1, 8 ]</p>
+<p>则t在s的位置序列p = [2, 5, 4, 3]</p>
+<p>LIS可以为[2, 4], 对应p[1],
+p[3]，即在s上的2，4位置元素与t上的1，3位置元素都为[2,1]，是一个公共子序列</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">s</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">t</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> dp;</span></span>
+<span class="line"><span style="color: #24292E">  map</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> cnt;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s[i];</span></span>
+<span class="line"><span style="color: #24292E">    cnt[s[i]] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span><span style="color: #6A737D"> // 存储s数组中各数的位置</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> t[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">lower_bound</span><span style="color: #24292E">(dp.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">(),dp.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">(),cnt[t[i]]);</span><span style="color: #6A737D"> // 寻找t数组中值对应在s数组中的位置</span></span>
+<span class="line"><span style="color: #6A737D">    // 求对应位置序列的LIS</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (j</span><span style="color: #D73A49">==</span><span style="color: #24292E">dp.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">()){ </span></span>
+<span class="line"><span style="color: #24292E">      dp.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(cnt[t[i]]);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">*</span><span style="color: #24292E">j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> cnt[t[i]];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> dp.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="最长上升子序列lis">最长上升子序列(LIS)</h2>
+<h3 id="dp">DP</h3>
+<p>考虑子序列问题，用子集型回溯的思路考虑：</p>
+<ul>
+<li>选或不选：取最后一个数字作为序列尾，需要知道上一个数的下标</li>
+<li>枚举选哪个：取最后一个数字，向前枚举，比较当前选的数和下一个要选的数</li>
+</ul>
+<p>则我们有思路：枚举num[i]作为LIS末尾元素，然后枚举num[j]为LIS倒数第二个元素，</p>
+<p>其中<code>j&lt;i</code>且<code>nums[j]&lt;nums[i]</code></p>
+<ul>
+<li>子问题：以nums[i]结尾的LIS长度</li>
+<li>当前操作：枚举nums[j]</li>
+<li>下一个子问题：以nums[j]结尾的LIS长度</li>
+</ul>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> &#39;\n&#39;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span><span style="color: #D73A49">e</span><span style="color: #005CC5">3</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #6A737D">  // 让dp[i]是以i结尾的数组成的上升子序列的长度</span></span>
+<span class="line"><span style="color: #6A737D">  // 考虑枚举选哪个，即比较当前选的数字和该数字之前的数字，选择更小的作为倒数第二个数</span></span>
+<span class="line"><span style="color: #6A737D">  /*</span></span>
+<span class="line"><span style="color: #6A737D">  则我们的子问题：num[i]结尾的LIS长度</span></span>
+<span class="line"><span style="color: #6A737D">  操作：枚举num[j]</span></span>
+<span class="line"><span style="color: #6A737D">  下一个子问题：以num[j]结尾的LIS长度</span></span>
+<span class="line"><span style="color: #6A737D">  将子问题求最大值+1即为LIS</span></span>
+<span class="line"><span style="color: #6A737D">  */</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  ll a[N]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{};</span></span>
+<span class="line"><span style="color: #24292E">  ll dp[N]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{};</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> a[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    dp[i]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">i;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (a[j]</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">a[i]) dp[i]</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">max</span><span style="color: #24292E">(dp[i],dp[j]</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  ll maxn </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    maxn </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(maxn,dp[i]);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> maxn;</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">ios</span><span style="color: #24292E">::</span><span style="color: #6F42C1">sync_with_stdio</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cin.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cout.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  //cin &gt;&gt; tomorin;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="与lcs">与LCS</h3>
+<p>nums的LIS等价于nums与排序去重后的nums的LCS</p>
+<h3 id="贪心二分">贪心+二分</h3>
+<p>通过<strong>交换状态与状态值</strong>来进行优化</p>
+<p>设g[i]为长度为i+1的IS的末尾元素最小值</p>
+<style>.bxpuluyxtebp{zoom:67%;}</style>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98/image-20250805191822734.png" class="bxpuluyxtebp" alt="LIS-2">
+<p>有以下结论：</p>
+<ul>
+<li>g是严格递增的</li>
+<li>一次只能更新一个位置</li>
+<li>更新的位置是第一个&gt;=nums[i]的数的下标，若nums[i]比g的最后一个还大，那就加到末尾，这里可以用二分查找</li>
+</ul>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> &#39;\n&#39;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #6A737D">  /*</span></span>
+<span class="line"><span style="color: #6A737D">  进一步优化，交换状态与状态值</span></span>
+<span class="line"><span style="color: #6A737D">  让g[i]表示长度为i+1的上升子序列的末尾元素的最小值</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">  其中g是严格递增的</span></span>
+<span class="line"><span style="color: #6A737D">  且一次只能更新一次，更新的位置是第一个&gt;=num[i]的数的下标</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">  故我们可以使用二分来查找第一个&gt;=num[i]的数的下标j,若不存在则直接添加到g末尾，否则修改g[j]为num[i]</span></span>
+<span class="line"><span style="color: #6A737D">  */</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">arr</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> g;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">auto</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">lower_bound</span><span style="color: #24292E">(g.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">(), g.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">(),arr[i]);</span><span style="color: #6A737D"> // 若不是严格递增，相等也可以，这里改成upperbound即可</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (j</span><span style="color: #D73A49">==</span><span style="color: #24292E">g.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">()) g.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(arr[i]);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">*</span><span style="color: #24292E">j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> g.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">ios</span><span style="color: #24292E">::</span><span style="color: #6F42C1">sync_with_stdio</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cin.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cout.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  //cin &gt;&gt; tomorin;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DP/" rel="tag"># DP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/C++/variant/" rel="prev" title="【C++】std::variant">
+      <i class="fa fa-chevron-left"></i> 【C++】std::variant
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/CS61B/Lec19-20%20-%20Hashing/" rel="next" title="【CS61B】Lec19-20 Hashing">
+      【CS61B】Lec19-20 Hashing <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%90%E5%BA%8F%E5%88%97%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">子序列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97lcs"><span class="nav-number">1.1.</span> <span class="nav-text">最长公共子序列(LCS)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E7%A7%BB%E6%96%B9%E7%A8%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">转移方程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#code"><span class="nav-number">1.1.3.</span> <span class="nav-text">code</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E9%95%BF%E4%B8%8A%E5%8D%87%E5%AD%90%E5%BA%8F%E5%88%97lis"><span class="nav-number">1.2.</span> <span class="nav-text">最长上升子序列(LIS)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dp"><span class="nav-number">1.2.1.</span> <span class="nav-text">DP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8Elcs"><span class="nav-number">1.2.2.</span> <span class="nav-text">与LCS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E4%BA%8C%E5%88%86"><span class="nav-number">1.2.3.</span> <span class="nav-text">贪心+二分</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">448k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:35</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

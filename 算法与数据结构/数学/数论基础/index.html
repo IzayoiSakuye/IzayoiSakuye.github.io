@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了数论的基础知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数学】数论基础">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了数论的基础知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-11-03T07:30:26.814Z">
+<meta property="article:modified_time" content="2025-12-17T14:17:22.512Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="数论">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数学】数论基础 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数学】数论基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-11-03 15:30:26" itemprop="dateCreated datePublished" datetime="2025-11-03T15:30:26+08:00">2025-11-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-17 22:17:22" itemprop="dateModified" datetime="2025-12-17T22:17:22+08:00">2025-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">数学</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+            <div class="post-description">介绍了数论的基础知识</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="整除">整除</h1>
+<h2 id="定义与性质">定义与性质</h2>
+<p>设<span class="math inline">\(a,b\in \Z,a\neq0\)</span>，若<span
+class="math inline">\(\exists q\in \Z\)</span>，使得<span
+class="math inline">\(b=aq\)</span>，那么说b可被a整除，记作<span
+class="math inline">\(a|b\)</span></p>
+<ul>
+<li><span class="math inline">\(a\mid b \iff -a\mid b \iff a\mid -b \iff
+|a|\mid |b|\)</span><br />
+</li>
+<li><span class="math inline">\(a\mid b \wedge b\mid c \implies a\mid
+c\)</span><br />
+</li>
+<li><span class="math inline">\(a\mid b \wedge a\mid c \iff \forall
+x,y\in\mathbb{Z},\;a\mid(xb+yc)\)</span><br />
+</li>
+<li><span class="math inline">\(a\mid b \wedge b\mid a \implies b=\pm
+a\)</span><br />
+</li>
+<li>设 <span class="math inline">\(m\neq0\)</span>，那么<br />
+<span class="math display">\[
+a\mid b \iff ma\mid mb
+\]</span></li>
+<li>设 <span class="math inline">\(b\neq0\)</span>，那么<br />
+<span class="math display">\[
+a\mid b \implies |a|\le|b|
+\]</span></li>
+<li>设 <span class="math inline">\(a\neq0,\;b=qa+c\)</span>，那么<br />
+<span class="math display">\[
+a\mid b \iff a\mid c
+\]</span></li>
+</ul>
+<h2 id="约数">约数</h2>
+<p>定义：若<span class="math inline">\(a|b\)</span>，则<span
+class="math inline">\(b\)</span>是<span
+class="math inline">\(a\)</span>的倍数，<span
+class="math inline">\(a\)</span>是<span
+class="math inline">\(b\)</span>的约数</p>
+<p>性质：</p>
+<ul>
+<li><p>0是所有非0正数的倍数，对于整数<span class="math inline">\(b \neq
+a\)</span>，b的约数只有有限个</p></li>
+<li><p>平凡约数：对于整数<span class="math inline">\(b\neq
+0\)</span>，±1、±b是b的平凡约数</p>
+<p>当<span
+class="math inline">\(b=±1\)</span>时，只有两个平凡约数</p></li>
+<li><p>真约数：b的其他约数</p>
+<ul>
+<li><span class="math inline">\(b\neq
+0\)</span>，当d遍历b的全体约数时，<span
+class="math inline">\(\frac{b}{d}\)</span>也遍历b的全体约数</li>
+<li><span
+class="math inline">\(b&gt;0\)</span>，则当d遍历b时全体正约数时，<span
+class="math inline">\(\frac{b}{d}\)</span>也遍历b的全体约数</li>
+</ul></li>
+</ul>
+<p>没有特殊说明，约数总是指向正约数</p>
+<h2 id="余数">余数</h2>
+<h3 id="余数-1">余数</h3>
+<p>设<span class="math inline">\(a,b\)</span>为两个给定的整数，<span
+class="math inline">\(a\neq0\)</span>. 设<span
+class="math inline">\(d\)</span>是一个给定的整数，则一定存在唯一一对整数<span
+class="math inline">\(q\)</span>与<span
+class="math inline">\(r\)</span>，满足<span
+class="math inline">\(b=qa+r\)</span>，<span
+class="math inline">\(q=\lfloor\frac{b}{a} \rfloor ,d\leq
+r&lt;|a|+d\)</span></p>
+<p>其中这里的d表示不同取值区间的余数，无论整数d取何值，r统称余数，<span
+class="math inline">\(a|b\)</span>等价于<span
+class="math inline">\(a|r\)</span></p>
+<h3 id="带余数除法">带余数除法</h3>
+<p>一般情况下，<span class="math inline">\(d=0\)</span>，此时<span
+class="math inline">\(b=qa+r\)</span>，<span class="math inline">\(0\leq
+r&lt;|a|\)</span>称为带余数除法，余数r称为最小非负余数，如果没有特别说明，余数总是指最小非负余数</p>
+<p>r可以写成<span class="math inline">\(r=b\bmod{a}\)</span></p>
+<h3 id="余数的性质">余数的性质</h3>
+<ul>
+<li>任一整数被正整数a除后，余数一定是且仅是0到(a-1)这a个数中的一个</li>
+<li>相邻的a个整数被正整数a除后，恰好取到上述a个余数，特别的，一定有且仅有一个数被a整除</li>
+</ul>
+<h1 id="最大公约数与最小公倍数">最大公约数与最小公倍数</h1>
+<h2 id="最大公约数">最大公约数</h2>
+<h3 id="定义">定义</h3>
+<p>一组整数的公约数，是指同时是这组数中每一个数的约数的数。<span
+class="math inline">\(\pm 1\)</span>
+是任意一组整数的公约数。一组整数的最大公约数，是指所有公约数里面最大的一个。写作<code>gcd(a,b)</code></p>
+<h3 id="性质">性质</h3>
+<ul>
+<li><p><span class="math inline">\(\displaystyle
+\gcd(a_1,\dots,a_n)=\gcd\bigl(|a_1|,\dots,|a_n|\bigr)\)</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+\gcd(a,b)=\gcd(b,a)\)</span></p></li>
+<li><p>若 <span class="math inline">\(a\neq0\)</span>，则 <span
+class="math display">\[\gcd(a,0)=\gcd(a,a)=|a|.\]</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+\gcd(bq+r,\;b)=\gcd(r,\;b)\)</span></p></li>
+<li><p><span class="math inline">\(\displaystyle \gcd(a_1,\dots,a_n)
+=\gcd\bigl(\gcd(a_1,a_2),a_3,\dots,a_n\bigr).\)</span><br />
+进而对任意 <span class="math inline">\(1&lt;k&lt;n\)</span>，都有<br />
+<span class="math display">\[
+  \gcd(a_1,\dots,a_n)
+  =\gcd\!\bigl(\gcd(a_1,\dots,a_k)\,,\,\gcd(a_{k+1},\dots,a_n)\bigr).
+\]</span></p></li>
+<li><p>对不全为 0 的整数 <span
+class="math inline">\(a_1,\dots,a_n\)</span> 和非零整数 <span
+class="math inline">\(m\)</span>，<br />
+<span class="math display">\[
+  \gcd(m a_1,\dots,m a_n)
+  =|m|\;\gcd(a_1,\dots,a_n).
+\]</span></p></li>
+<li><p>对不全为 0 的整数 <span
+class="math inline">\(a_1,\dots,a_n\)</span>，若 <span
+class="math inline">\(\gcd(a_1,\dots,a_n)=d\)</span>，则<br />
+<span class="math display">\[
+\gcd\bigl(a_1/d,\dots,a_n/d\bigr)=1.
+\]</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+\gcd\bigl(a^n,b^n\bigr)=\bigl(\gcd(a,b)\bigr)^n.\)</span></p></li>
+<li><p>若 <span class="math inline">\(b\mid ac\)</span> 且 <span
+class="math inline">\(\gcd(a,b)=1\)</span>，则 <span
+class="math inline">\(b\mid c.\)</span></p></li>
+<li><p>若 <span class="math inline">\(b\mid c,\;a\mid c\)</span> 且
+<span class="math inline">\(\gcd(a,b)=1\)</span>，则 <span
+class="math inline">\(ab\mid c.\)</span></p></li>
+<li><p>若 <span class="math inline">\(\gcd(a,b)=1\)</span>，则 <span
+class="math inline">\(\gcd(a,bc)=\gcd(a,c).\)</span></p></li>
+<li><p>若 <span class="math inline">\(\gcd(a_i,b_j)=1,\;\forall\,1\le
+i\le n,\;1\le j\le m\)</span>，则<br />
+<span class="math display">\[
+\gcd\Bigl(\prod_{i=1}^n a_i\,,\,\prod_{j=1}^m b_j\Bigr)=1.
+\]</span> 特别地，若 <span
+class="math inline">\(\gcd(a,b)=1\)</span>，则<br />
+<span class="math display">\[
+\gcd(a^n,b^m)=1.
+\]</span></p></li>
+<li><p>对整数 <span class="math inline">\(a_1,\dots,a_n\)</span>，若存在
+<span class="math inline">\(v\in\mathbb{Z}\)</span> 使<br />
+<span class="math display">\[
+  \prod_{i=1}^n a_i = v^m,
+\]</span> 且对任意 <span class="math inline">\(i\neq j\)</span> 有 <span
+class="math inline">\(\gcd(a_i,a_j)=1\)</span>，则<br />
+<span class="math display">\[
+\forall\,1\le i\le n,\quad \sqrt[m]{a_i}\in\mathbb{Z}_0.
+\]</span></p></li>
+</ul>
+<h3 id="求法">求法</h3>
+<p>欧几里得算法：对于正整数<span
+class="math inline">\(a,b\)</span>，有<span
+class="math inline">\(\gcd(a,b)=\gcd(b, a\bmod{b})\)</span></p>
+<p>代码实现如下：</p>
+<p>递归版</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> b</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #D73A49">?</span><span style="color: #24292E">a</span><span style="color: #D73A49">:</span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(b,a</span><span style="color: #D73A49">%</span><span style="color: #24292E">b);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>位运算版</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">while</span><span style="color: #24292E">(b</span><span style="color: #D73A49">^=</span><span style="color: #24292E">a</span><span style="color: #D73A49">^=</span><span style="color: #24292E">b</span><span style="color: #D73A49">^=</span><span style="color: #24292E">a</span><span style="color: #D73A49">%=</span><span style="color: #24292E">b);</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>多个数求gcd，答案一定是每个数的约数，那么也一定是每相邻两个数的约数。我们采用归纳法，可以证明，每次取出两个数求出答案后再放回去，不会对所需要的答案造成影响。</p>
+<h3 id="扩展欧几里得算法">扩展欧几里得算法</h3>
+<p>exgcd是用来求形如<span
+class="math inline">\(ax+by=\gcd(a,b)\)</span>的一组可行解的算法</p>
+<p>证明略，一组可行解形如<span
+class="math inline">\(x_1=y_2,y_1=x_2-\lfloor\frac{a}{b} \rfloor
+y_2\)</span></p>
+<p><span class="math inline">\(b=0\)</span>时，显然有<span
+class="math inline">\(\gcd(a,0)=a\)</span>，则一组解为<span
+class="math inline">\(x=1, y=0\)</span></p>
+<p>代码：</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">exgcd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">x</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">y</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E">(b</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">		x</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">; y</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a;</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	ll d</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">exgcd</span><span style="color: #24292E">(b,a</span><span style="color: #D73A49">%</span><span style="color: #24292E">b,x,y);</span></span>
+<span class="line"><span style="color: #24292E">	ll t</span><span style="color: #D73A49">=</span><span style="color: #24292E">x;</span></span>
+<span class="line"><span style="color: #24292E">	x</span><span style="color: #D73A49">=</span><span style="color: #24292E">y;</span></span>
+<span class="line"><span style="color: #24292E">	y</span><span style="color: #D73A49">=</span><span style="color: #24292E">t</span><span style="color: #D73A49">-</span><span style="color: #24292E">(a</span><span style="color: #D73A49">/</span><span style="color: #24292E">b)</span><span style="color: #D73A49">*</span><span style="color: #24292E">y;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> d;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="互素">互素</h3>
+<p>若<span class="math inline">\(\gcd(a_1,b_1)=1\)</span>，称<span
+class="math inline">\(a_1,a_2\)</span>互素，若<span
+class="math inline">\(\gcd(a_1,\cdots,a_n)=1\)</span>称<span
+class="math inline">\(a_1,\cdots,a_n\)</span>互素</p>
+<p>多个整数互素，不一定两两互素</p>
+<h3 id="快速gcd">快速GCD</h3>
+<h4 id="预处理">预处理</h4>
+<p><span class="math inline">\(O(n)\)</span>预处理，<span
+class="math inline">\(O(1)\)</span>查询两个小于<span
+class="math inline">\(n\)</span>的数的快速gcd</p>
+<p>预处理：</p>
+<ul>
+<li>预处理所有<span class="math inline">\((i,j)\)</span>，其中<span
+class="math inline">\(i,j\leq\sqrt{n}\)</span>的gcd，可以以<span
+class="math inline">\(O(n)\)</span>推出</li>
+<li>预处理<span class="math inline">\(n\)</span>以内质数</li>
+</ul>
+<p>查询：</p>
+<p>设<span class="math inline">\(x=abc\)</span>，则<span
+class="math inline">\((x,y)=(a,y)\times\left(b,\dfrac{y}{(a,y)}\right)\times\left(c,\dfrac{y}{(ab,y)}\right)\)</span></p>
+<p>若<span class="math inline">\(a\in P\)</span>，只需要判断<span
+class="math inline">\(a\)</span>是否整除<span
+class="math inline">\(y\)</span>，否则<span
+class="math inline">\((a,y)=(y\bmod a, a)\)</span>，因为<span
+class="math inline">\(a\leq \sqrt{n}\)</span>，可查表</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> T </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1000</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> M </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1000000</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> g[T][T], fac[M][</span><span style="color: #005CC5">3</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">bitset</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">M</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> vis;</span></span>
+<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> pri;</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">prework</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  vis[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> vis[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  fac[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> M; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[i]) {</span></span>
+<span class="line"><span style="color: #24292E">      fac[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      fac[i][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">      pri.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(i);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j : pri) {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mul </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">      vis[mul] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      fac[mul][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">      fac[mul][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">      fac[mul][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">2</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">sort</span><span style="color: #24292E">(fac[mul], fac[mul] </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">%</span><span style="color: #24292E"> j </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> T; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i)</span></span>
+<span class="line"><span style="color: #24292E">    g[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> T; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; j </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> i; </span><span style="color: #D73A49">++</span><span style="color: #24292E">j)</span></span>
+<span class="line"><span style="color: #24292E">      g[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[j][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[j][i </span><span style="color: #D73A49">%</span><span style="color: #24292E"> j];</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> _ </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[a][i] </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> T </span><span style="color: #D73A49">?</span><span style="color: #24292E"> (b </span><span style="color: #D73A49">%</span><span style="color: #24292E"> fac[a][i] </span><span style="color: #D73A49">?</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">:</span><span style="color: #24292E"> fac[a][i])</span></span>
+<span class="line"><span style="color: #24292E">                          </span><span style="color: #D73A49">:</span><span style="color: #24292E"> g[fac[a][i]][b </span><span style="color: #D73A49">%</span><span style="color: #24292E"> fac[a][i]];</span></span>
+<span class="line"><span style="color: #24292E">    b </span><span style="color: #D73A49">/=</span><span style="color: #24292E"> _;</span></span>
+<span class="line"><span style="color: #24292E">    ans </span><span style="color: #D73A49">*=</span><span style="color: #24292E"> _;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ans;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="更相减损术">更相减损术</h4>
+<p><span class="math inline">\(O(\log{n})\)</span></p>
+<ul>
+<li>若<span class="math inline">\(a=b\)</span>, <span
+class="math inline">\((a,b)=a=b\)</span></li>
+<li>若<span class="math inline">\(2|a,2|b\)</span>, <span
+class="math inline">\((a,b)=\left(\dfrac{a}{2},\dfrac{b}{2}\right)\)</span></li>
+<li>若<span class="math inline">\(2\mid a,2\nmid b\)</span>, <span
+class="math inline">\((a,b)=\left(\dfrac{a}{2},b\right)\)</span></li>
+<li>若均不满足，设<span class="math inline">\(a&gt;b\)</span>, 则<span
+class="math inline">\((a,b)=(a-b,b)\)</span></li>
+</ul>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">__builtin_ctz</span><span style="color: #24292E">(a);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">__builtin_ctz</span><span style="color: #24292E">(b);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">min</span><span style="color: #24292E">(i, j);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> d;</span></span>
+<span class="line"><span style="color: #24292E">  b </span><span style="color: #D73A49">&gt;&gt;=</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (a) {</span></span>
+<span class="line"><span style="color: #24292E">    a </span><span style="color: #D73A49">&gt;&gt;=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">    d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b </span><span style="color: #D73A49">-</span><span style="color: #24292E"> a;</span></span>
+<span class="line"><span style="color: #24292E">    i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">__builtin_ctz</span><span style="color: #24292E">(d);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (a </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> b) b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (d </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #24292E">d;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> k;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="最小公倍数">最小公倍数</h2>
+<h3 id="定义-1">定义</h3>
+<p>一组整数的公倍数，是指同时是这组数中每一个数的倍数的数。0是任意一组整数的公倍数。</p>
+<p>一组整数的最小公倍数，是指所有正的公倍数里面，最小的一个数。记作<code>lcm(a,b)</code></p>
+<h3 id="性质-1">性质</h3>
+<ul>
+<li><p><span class="math inline">\(\displaystyle
+lcm(a_1,\dots,a_n)=lcm(|a_1|,\dots,|a_n|)\)</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+lcm(a,b)=lcm(b,a)\)</span></p></li>
+<li><p>若 <span class="math inline">\(a\neq0\)</span>，则 <span
+class="math inline">\(lcm(a,1)=lcm(a,a)=|a|.\)</span></p></li>
+<li><p>若 <span class="math inline">\(a\mid b\)</span>，则 <span
+class="math inline">\(lcm(a,b)=|b|.\)</span></p></li>
+<li><p><span class="math inline">\(\displaystyle lcm(a_1,\dots,a_n)
+  =lcm\bigl(lcm(a_1,a_2),a_3,\dots,a_n\bigr).\)</span><br />
+进而对任意 <span
+class="math inline">\(1&lt;k&lt;n-1\)</span>，都有<br />
+<span class="math display">\[
+lcm(a_1,\dots,a_n)
+  =lcm\Bigl(lcm(a_1,\dots,a_k),\;lcm(a_{k+1},\dots,a_n)\Bigr).
+\]</span></p></li>
+<li><p>若 <span class="math inline">\(a_i\mid m,\ \forall\,1\le i\le
+n\)</span>，则<br />
+<span class="math display">\[
+lcm(a_1,\dots,a_n)\mid m.
+\]</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+lcm(ma_1,\dots,ma_n)=|m|\;lcm(a_1,\dots,a_n)\,.\)</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+lcm(a,b,c)\,lcm(ab,bc,ca)
+  =lcm(a,b)\,lcm(b,c)\,lcm(c,a)\,.\)</span></p></li>
+<li><p><span class="math inline">\(\displaystyle
+lcm(a^n,b^n)=\bigl(lcm(a,b)\bigr)^n\,.\)</span></p></li>
+</ul>
+<h3 id="求法-1">求法</h3>
+<p>两个数：<span class="math inline">\(\gcd(a,b)\times lcm(a,b)=a\times
+b\)</span></p>
+<p>代码</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">lcm</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">/</span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(a,b)</span><span style="color: #D73A49">*</span><span style="color: #24292E">b;</span><span style="color: #6A737D"> // 防止 a*b 爆 ll，所以先 /gcd 再 *b</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>多个数：我们其实没有必要求一个共同的最大公约数再去处理，最直接的方法就是，当我们算出两个数的
+gcd，或许在求多个数的
+gcd时候，我们将它放入序列对后面的数继续求解，那么，我们转换一下，直接将最小公倍数放入序列即可。</p>
+<h1 id="素数与合数">素数与合数</h1>
+<p>见<a href=".\质数\质数.md">质数</a></p>
+<h1 id="算术基本定理">算术基本定理</h1>
+<h2 id="内容">内容</h2>
+<p>算术基本引理：设p是素数，<span
+class="math inline">\(p|a_1a_2\)</span>，那么<span
+class="math inline">\(p|a_1\)</span>与<span
+class="math inline">\(p|a_2\)</span>至少有一个成立</p>
+<p>唯一分解定理：设正整数a，则必有表示<span
+class="math inline">\(a=p_1p_2\cdots p_s\)</span>，其中<span
+class="math inline">\(p_j(1\leq j\leq
+s)\)</span>是素数，且不计次序的意义下，该表示唯一</p>
+<h2 id="素数的另一种定义">素数的另一种定义</h2>
+<p>对整数<span
+class="math inline">\(p\ne0,\pm1\)</span>，若对任意满足<span
+class="math inline">\(p|a_1a_2\)</span>的整数<span
+class="math inline">\(a_1,a_2\)</span>均有<span
+class="math inline">\(p|a_1\)</span>或<span
+class="math inline">\(p|a_2\)</span>成立，则称p是素数</p>
+<h1 id="同余">同余</h1>
+<h2 id="定义-2">定义</h2>
+<p>设<span class="math inline">\(m\ne0\)</span>。若<span
+class="math inline">\(m\mid(a-b)\)</span>，称m为模数，<img
+src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><strong>当
+$xm=y m $时，我们说 <em>x</em> 和 <em>y</em> 关于 <em>m</em>
+同余，表示为 <span class="math inline">\(x≡y(\bmod
+m)\)</span></strong>，这种表示称为模m的同余式</p>
+<h2 id="性质-2">性质</h2>
+<ul>
+<li><p><strong>定理 1</strong> 当 <span class="math display">\[a \equiv
+b \pmod m\]</span> 且 <span class="math display">\[d \mid m\]</span>
+时，有 <span class="math display">\[a \equiv b \pmod
+d.\]</span></p></li>
+<li><p><strong>定理 2</strong> 当 <span class="math display">\[a \equiv
+b \pmod m\quad\text{且}\quad c \equiv d \pmod m\]</span> 时，有</p>
+<figure class="shiki math"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></div><div class="code"><pre><code>  a + c \equiv b + d \pmod m,\\
+  a - c \equiv b - d \pmod m,\\
+  a \times c \equiv b \times d \pmod m.
+
+- **定理 3**  当  $$ac \equiv bd \pmod m\quad\text{且}\quad \gcd(c,m)=1$$  时，有  $$a \equiv b \pmod m.$$
+  
+- **定理 4**  当  $$a \equiv b \pmod m$$  时，对于任意的 $c\neq0$，有  $$ac \equiv bc \pmod m.$$
+  
+- **定理 5**  当  $$a \equiv b \pmod m$$  时，对于任意的 $k>0$，有  $$a^k \equiv b^k \pmod m.$$
+  
+- **定理 6**  当  $$a \equiv b \pmod m$$  时，对于任意的整数 $t$，有  $$a = b + t\,m.$$
+
+## 同余原理
+
+当需要返回数据很大，超过了longlong的范围，一般需要返回一个数字对另一个数字取模的结果
+
+
+
+对于四则运算，位数（bits）固定，我们认为时间复杂度为$O(1)$，但保留中间结果的情况下，位数可能会改变，导致复杂度增加
+
+**定理：对于k位（非32、64位）整数，加减的复杂度为$O(k)$，乘除的复杂度变为$O(k^2)$**
+
+此时需要同余原理
+
+同余的数学化表示：
+
+### 加法同余
+
+对于$(a+b)\bmod{k}=c$，为了避免$a+b$得到更大的位数以出现问题，我们可以分别对$a$和$b$取模再相加取模，即$(a\bmod{k}+b\bmod{k})\bmod{k}=c'$，这样可以把$a$和$b$限制在32或64位，结果$c=c'$
+
+
+
+### 乘法同余
+
+对于$(a\times b)\bmod{k}=c$，分别对$a$和$b$取模再相乘取模，即$(a\bmod{k}\times b\bmod{k})\bmod{k}=c'$，这样可以把$a$和$b$限制在32或64位，结果$c=c'$
+
+**注意：要保证相乘时中间结果不能溢出**
+
+
+
+### 减法同余
+
+关于取模，若一个数取模后的结果是负数，**则需要加一个模数后取模**，以获得他的正数表示
+
+例如一个数%7的结果是-2，等同于这个数+7后%7的结果5，因为两者加2后分别是0和7，都可以被7整除
+
+对于$(a-b)\bmod{k}=c$，我们需要在分别模m的基础上加一个m，即$((a\bmod{k}-b\bmod{k})+m)\bmod{k}=c'$，为了避免获得负数中间结果
+
+# C/C++的整数除法与取模
+
+## 规定
+
+C/C++规定在整数除法中：
+
+- 除数为0时，行为未定义
+- 否则$\frac{a}{b}\times b+a\% b=a$
+
+即取模运算的符号取决于除法如何取整，而这是实现定义的
+
+从C++11起，规定**商向零取整**，取模的符号**与被除数相同**</code></pre></div></div></figure>
+<p>5 % 3 == 2; 5 % -3 == 2; -5 % 3 == -2; -5 % -3 == -2;
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e">## 快速乘</span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e">要求模数在long long范围内的乘法取模，避免整数溢出，可以使用快速乘，能够实现$O(1)$且不需要`int128`</span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e">我们可以发现：$a\times b\bmod{m}=a\times b-\lfloor\frac{ab}{m}\rfloor\times m$</span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e">使用ull的自然溢出，可得：$a\times b\bmod{m}=a\times b-\lfloor\frac{ab}{m}\rfloor\times m=(a\times b-\lfloor\frac{ab}{m}\rfloor\times m)\bmod{2^{64}}$</span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e">对于$\lfloor\frac{ab}{m}\rfloor$，若结果r在$[0,m)$时，直接返回r，否则返回$r+m$</span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e"></span></span>
+<span class="line"><span style="color: #24292e">```c++</span></span>
+<span class="line"><span style="color: #24292e">long long binmul(long long a, long long b, long long m) {</span></span>
+<span class="line"><span style="color: #24292e">  unsigned long long c =</span></span>
+<span class="line"><span style="color: #24292e">      (unsigned long long)a * b -</span></span>
+<span class="line"><span style="color: #24292e">      (unsigned long long)((long double)a / m * b + 0.5L) * m;</span></span>
+<span class="line"><span style="color: #24292e">  if (c &lt; m) return c;</span></span>
+<span class="line"><span style="color: #24292e">  return c + m;</span></span>
+<span class="line"><span style="color: #24292e">}</span></span></code></pre></div></div></figure></p></li>
+</ul>
+<h1 id="数论函数">数论函数</h1>
+<p>数论函数指定义域为正整数的函数，可以视为一个数列</p>
+<h2 id="积性函数">积性函数</h2>
+<h3 id="定义-3">定义</h3>
+<ul>
+<li>数论中，若函数<span class="math inline">\(f(n)\)</span>满足<span
+class="math inline">\(f(1)=1\)</span>，且<span
+class="math inline">\(f(xy)=f(x)f(y)\)</span>对任意互质的<span
+class="math inline">\(x,y\in \N^*\)</span>都成立，则<span
+class="math inline">\(f(n)\)</span>为积性函数</li>
+<li>数论中，若函数<span class="math inline">\(f(n)\)</span>满足<span
+class="math inline">\(f(1)=1\)</span>，且<span
+class="math inline">\(f(xy)=f(x)f(y)\)</span>对任意的<span
+class="math inline">\(x,y\in \N^*\)</span>都成立，则<span
+class="math inline">\(f(n)\)</span>为完全积性函数</li>
+</ul>
+<h3 id="性质-3">性质</h3>
+<p>若 <span class="math inline">\(f(x)\)</span> 和 <span
+class="math inline">\(g(x)\)</span>
+均为积性函数，则以下函数也为积性函数：</p>
+<ul>
+<li><span class="math inline">\(h(x)=f(x^p)\)</span><br />
+</li>
+<li><span class="math inline">\(h(x)=f^p(x)\)</span><br />
+</li>
+<li><span class="math inline">\(h(x)=f(x)\,g(x)\)</span><br />
+</li>
+<li><span class="math display">\[h(x)=\sum_{d\mid
+x}f(d)\,g\Bigl(\frac{x}{d}\Bigr)\]</span></li>
+</ul>
+<hr />
+<p>对正整数 <span
+class="math inline">\(x\)</span>，设其唯一质因数分解为<br />
+<span class="math display">\[
+x=\prod_i p_i^{k_i}\,,
+\]</span> 其中 <span class="math inline">\(p_i\)</span> 为质数，<span
+class="math inline">\(k_i\)</span> 为正整数。</p>
+<ul>
+<li><p>若 <span class="math inline">\(F(x)\)</span> 为积性函数，则<br />
+<span class="math display">\[
+F(x)=\prod_i F\bigl(p_i^{k_i}\bigr)\,.
+\]</span></p></li>
+<li><p>若 <span class="math inline">\(F(x)\)</span>
+为完全积性函数，则<br />
+$$ F(x)=_i F(p_i^{k_i}) =_i^{k_i},.</p>
+<p>$$</p></li>
+</ul>
+<h2 id="加性函数">加性函数</h2>
+<h3 id="定义-4">定义</h3>
+<ul>
+<li>数论中，若函数<span class="math inline">\(f(n)\)</span>满足<span
+class="math inline">\(f(1)=1\)</span>，且<span
+class="math inline">\(f(xy)=f(x)+f(y)\)</span>对任意互质的<span
+class="math inline">\(x,y\in \N^*\)</span>都成立，则<span
+class="math inline">\(f(n)\)</span>为积性函数</li>
+<li>数论中，若函数<span class="math inline">\(f(n)\)</span>满足<span
+class="math inline">\(f(1)=1\)</span>，且<span
+class="math inline">\(f(xy)=f(x)+f(y)\)</span>对任意的<span
+class="math inline">\(x,y\in \N^*\)</span>都成立，则<span
+class="math inline">\(f(n)\)</span>为完全积性函数</li>
+</ul>
+<h3 id="性质-4">性质</h3>
+<p>对正整数 <span
+class="math inline">\(x\)</span>，设其唯一质因数分解为<br />
+<span class="math display">\[
+x = \prod_i p_i^{k_i},
+\]</span> 其中 <span class="math inline">\(p_i\)</span> 为质数，<span
+class="math inline">\(k_i\)</span> 为正整数。</p>
+<ul>
+<li><p>若 <span class="math inline">\(F(x)\)</span>
+为<strong>加性函数</strong>，则有<br />
+<span class="math display">\[
+F(x) = \sum_i F\bigl(p_i^{k_i}\bigr)\,.
+\]</span></p></li>
+<li><p>若 <span class="math inline">\(F(x)\)</span>
+为<strong>完全加性函数</strong>，则有<br />
+<span class="math display">\[
+F(x)
+= \sum_i F\bigl(p_i^{k_i}\bigr)
+= \sum_i F(p_i)\,\cdot k_i\,.
+\]</span></p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+              <a href="/tags/%E6%95%B0%E8%AE%BA/" rel="tag"># 数论</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E8%A3%B4%E8%9C%80%E5%AE%9A%E7%90%86/" rel="prev" title="【数学】裴蜀定理">
+      <i class="fa fa-chevron-left"></i> 【数学】裴蜀定理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E5%A4%9A%E6%A8%A1%E6%A3%80%E9%AA%8C/" rel="next" title="【数学】多模检验">
+      【数学】多模检验 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E9%99%A4"><span class="nav-number">1.</span> <span class="nav-text">整除</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%80%A7%E8%B4%A8"><span class="nav-number">1.1.</span> <span class="nav-text">定义与性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A6%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">约数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%99%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">余数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%99%E6%95%B0-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">余数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A6%E4%BD%99%E6%95%B0%E9%99%A4%E6%B3%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">带余数除法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%99%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">余数的性质</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0%E4%B8%8E%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">最大公约数与最小公倍数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">最大公约数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-number">2.1.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E6%B3%95"><span class="nav-number">2.1.3.</span> <span class="nav-text">求法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.4.</span> <span class="nav-text">扩展欧几里得算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E7%B4%A0"><span class="nav-number">2.1.5.</span> <span class="nav-text">互素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9Fgcd"><span class="nav-number">2.1.6.</span> <span class="nav-text">快速GCD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">2.1.6.1.</span> <span class="nav-text">预处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF"><span class="nav-number">2.1.6.2.</span> <span class="nav-text">更相减损术</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">最小公倍数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E6%B3%95-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">求法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E4%B8%8E%E5%90%88%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">素数与合数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">算术基本定理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">4.1.</span> <span class="nav-text">内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E7%9A%84%E5%8F%A6%E4%B8%80%E7%A7%8D%E5%AE%9A%E4%B9%89"><span class="nav-number">4.2.</span> <span class="nav-text">素数的另一种定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8C%E4%BD%99"><span class="nav-number">5.</span> <span class="nav-text">同余</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="nav-number">5.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-2"><span class="nav-number">5.2.</span> <span class="nav-text">性质</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E8%AE%BA%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">数论函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%AF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.</span> <span class="nav-text">积性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="nav-number">6.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-3"><span class="nav-number">6.1.2.</span> <span class="nav-text">性质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-number">6.2.</span> <span class="nav-text">加性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="nav-number">6.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-4"><span class="nav-number">6.2.2.</span> <span class="nav-text">性质</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">448k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:35</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

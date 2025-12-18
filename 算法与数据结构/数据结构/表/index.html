@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了线性表，主要是多种链表的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据结构】表">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了线性表，主要是多种链表的实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311194320005.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311202107588.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311202236733.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314151034553.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314151114407.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314153115490.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314153247549.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314223445905.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314223541977.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250315104451003.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250315104516739.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250315104539072.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316220646941.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223202666.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223533852.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223601056.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223722812.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317125757701.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317125834523.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317125920694.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317132908468.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317133012982.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318190327505.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318190446545.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318210055879.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318211103963.png">
+<meta property="article:published_time" content="2025-03-21T14:21:27.493Z">
+<meta property="article:modified_time" content="2025-12-17T13:59:48.231Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311194320005.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数据结构】表 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数据结构】表
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-21 22:21:27" itemprop="dateCreated datePublished" datetime="2025-03-21T22:21:27+08:00">2025-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-17 21:59:48" itemprop="dateModified" datetime="2025-12-17T21:59:48+08:00">2025-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>14 分钟</span>
+            </span>
+            <div class="post-description">介绍了线性表，主要是多种链表的实现</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="表">表</h1>
+<h2 id="线性表">线性表</h2>
+<p>n个数据类型相同的元素构成的有限序列</p>
+<ul>
+<li>空表：大小为0的表</li>
+<li>首节点：存在唯一一个被称为第一个的元素</li>
+<li>尾节点：存在唯一一个被称为最后一个的元素</li>
+<li>前驱：<span class="math inline">\(A_{i-1}\)</span>前驱<span
+class="math inline">\(A_i\)</span></li>
+<li>后继：<span class="math inline">\(A_{i+1}\)</span>后继<span
+class="math inline">\(A_i\)</span></li>
+</ul>
+<p><strong>对于除了首尾节点的元素<span
+class="math inline">\(A_i\)</span>，它只会有一个前驱、一个后继</strong></p>
+<h2 id="顺序表实现">顺序表实现</h2>
+<p>顺序表：一组连续内存单元存储线性表的各个元素</p>
+<p>对于静态表，<strong>main函数调用时，应传入列表的地址(&amp;)</strong></p>
+<h3 id="建表">建表</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">MAXSIZE</span><span style="color: #24292E"> 100</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ElemType;</span><span style="color: #6A737D"> // 方便存储不同类型数据的情况下修改数据类型</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 建表</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SeqList</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  ElemType data[MAXSIZE];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> length;</span><span style="color: #6A737D"> // 顺序表数据个数</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<h3 id="初始化">初始化</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 初始化</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initList</span><span style="color: #24292E">(</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">L</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;length </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="尾插元素">尾插元素</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 尾插元素</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">appendElem</span><span style="color: #24292E">(</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (L-&gt;length</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">MAXSIZE){</span><span style="color: #6A737D"> // 判满</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;已满</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;data[L-&gt;length] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span><span style="color: #6A737D"> // 在末尾添加元素</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;length</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 将顺序表长度加一</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="插入元素">插入元素</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 插入元素</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertElem</span><span style="color: #24292E">(</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">pos</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (L-&gt;length</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">MAXSIZE){</span><span style="color: #6A737D"> // 判满</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;已满</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (pos</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">||</span><span style="color: #24292E"> pos</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> L-&gt;length){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;位置错误</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;length</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 倒序让插入元素后面的元素后移一位</span></span>
+<span class="line"><span style="color: #24292E">    L-&gt;data[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;data[i];</span><span style="color: #6A737D"> // 向后移动元素</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;data[pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span><span style="color: #6A737D"> // 插入元素</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;length</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 将顺序表长度加一</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>最坏时间复杂度<span class="math inline">\(O(n)\)</span></p>
+<p>需要将插入位置后的元素都后移一位</p>
+<h3 id="遍历列表">遍历列表</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 遍历元素</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">listElem</span><span style="color: #24292E">(</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">L</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> L-&gt;length; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d</span><span style="color: #032F62"> &quot;</span><span style="color: #24292E">, L-&gt;data[i]);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="删除元素">删除元素</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 删除元素并返回删除的元素</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">delElem</span><span style="color: #24292E">(</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">pos</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">*</span><span style="color: #24292E">e </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;data[pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">];</span><span style="color: #6A737D"> // 取出删除元素</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (pos </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> L-&gt;length){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pos; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">L-&gt;length; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      L-&gt;data[i</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;data[i];</span><span style="color: #6A737D"> // 从pos开始向后，将后面一位覆盖到前一位实现删除</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;length</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 表长度减一，这样最后一个元素不用覆盖也可以</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>该删除可以返回删除掉的元素，用e变量存储</p>
+<h3 id="查找元素">查找元素</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 查找元素</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findElem</span><span style="color: #24292E">(</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">L-&gt;length; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (e</span><span style="color: #D73A49">==</span><span style="color: #24292E">L-&gt;data[i]){</span><span style="color: #6A737D"> // 找到元素</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 返回位置</span></span>
+<span class="line"><span style="color: #24292E">    } </span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 找不到返回-1</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="使用动态顺序表实现">使用动态顺序表实现</h3>
+<p>通过malloc函数在堆中动态分配内存建表</p>
+<p>不同的地方只是在建表与初始化上</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 建表 </span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">  ElemType </span><span style="color: #D73A49">*</span><span style="color: #24292E">data;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> length;</span></span>
+<span class="line"><span style="color: #24292E">}</span><span style="color: #6F42C1">SeqList</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 初始化 分配内存</span></span>
+<span class="line"><span style="color: #6F42C1">SeqList</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initList</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  SeqList </span><span style="color: #D73A49">*</span><span style="color: #24292E">L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (SeqList</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(SeqList));</span></span>
+<span class="line"><span style="color: #24292E">  L -&gt; data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (ElemType</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(ElemType)</span><span style="color: #D73A49">*</span><span style="color: #24292E">MAXSIZE);</span></span>
+<span class="line"><span style="color: #24292E">  L -&gt; length </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>此时在main函数建表时只需要调用initList函数初始化并将返回的结构体指针存入一个对应变量即可</p>
+<p>由于此时获得的直接是地址，故对应操作时便不需要取地址了</p>
+<h2 id="链表实现">链表实现</h2>
+<p>链表存储的特点是用一组任意的存储单元存储数据（<strong>可连续可不连续</strong>）</p>
+<p>对每一个存储单元，除了要存储当前数据，还需要存储一个指示其直接后继的信息（地址），这两部分信息组成了一个<strong>节点</strong>，n个节点链接成了一个链表，即为线性表</p>
+<p>节点包括两个域：</p>
+<ul>
+<li>数据域：存储数据元素信息</li>
+<li>指针域：存储直接后继存储位置</li>
+</ul>
+<h3 id="单链表">单链表</h3>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311194320005.png" class="" title="单链表">
+<p>next中存储了下一个节点的地址，其中尾节点中的next指向NULL，表示到达链表尾部</p>
+<h4 id="初始化-1">初始化</h4>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 单链表初始化-建立头节点</span></span>
+<span class="line"><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initList</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  Node </span><span style="color: #D73A49">*</span><span style="color: #24292E">head </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span><span style="color: #6A737D"> // 分配一个节点大小的空间</span></span>
+<span class="line"><span style="color: #24292E">  head-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 数据设为0</span></span>
+<span class="line"><span style="color: #24292E">  head-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 下一个地址设为NULL</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> test </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initList</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>建立一个头节点，作为线性表的开始，其数据为0，地址默认为NULL</p>
+<p>创建链表时，只需要调用initList函数并将返回的结构体指针赋给对应变量即可</p>
+<h4 id="头插元素">头插元素</h4>
+<p>头插元素实现了在头节点后插入数据</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311202107588.png" class="" title="单链表头插法-1">
+<p>先让新节点的next指向原头节点指向的下一个节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250311202236733.png" class="" title="单链表头插法-2">
+<p>再让头节点指向的节点更改为新的节点</p>
+<p><strong>顺序很重要</strong></p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertHead</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node </span><span style="color: #D73A49">*</span><span style="color: #24292E">p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span><span style="color: #6A737D"> // 分配存储数据的节点的空间</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span><span style="color: #6A737D"> // 将插入元素赋值给该节点</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;next;</span><span style="color: #6A737D"> // 将该节点的next指向原头节点指向的节点</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span><span style="color: #6A737D"> // 将原头节点的next指向该新节点</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="尾插元素-1">尾插元素</h4>
+<p>头插元素实现了在尾节点后插入数据，我们需要先寻找尾节点</p>
+<p>找到某节点的next==NULL时便找到了尾节点</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 获得尾节点地址</span></span>
+<span class="line"><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_tail</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node </span><span style="color: #D73A49">*</span><span style="color: #24292E">p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p-&gt;next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 当节点不为空时</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span><span style="color: #6A737D"> // 顺着寻找下一个节点</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314151034553.png" class="" title="单链表尾插法-1">
+<p>先让先前的尾节点指向新节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314151114407.png" class="" title="单链表尾插法-2">
+<p>再让新节点指向NULL</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 尾插法插入元素</span></span>
+<span class="line"><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertTail</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">tail</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
+<span class="line"><span style="color: #24292E">  tail-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>注意，尾插法每次返回尾节点，这样下次插入时就可以接着上一次的插入了，不需要再get</p>
+<h4 id="指定位置插入元素">指定位置插入元素</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314153115490.png" class="" title="单链表指定插入-1">
+<p>首先要找到待插入位置的前一个元素，然后让新节点指向该元素的下一个元素</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314153247549.png" class="" title="单链表指定插入-2">
+<p>然后让前一个节点指向新节点的位置</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 指定位置插入元素</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertNode</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">pos</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #6A737D">  // 让指针指向需要插入位置的前驱节点</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p</span><span style="color: #D73A49">==</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span><span style="color: #6A737D"> // 要插入的新节点</span></span>
+<span class="line"><span style="color: #24292E">  q-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span><span style="color: #6A737D"> // 输入数据</span></span>
+<span class="line"><span style="color: #24292E">  q-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span><span style="color: #6A737D"> // 新节点下一个位置赋值为前驱节点指向的后一个节点</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q;</span><span style="color: #6A737D"> // 前驱节点指向插入的新节点</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="删除节点">删除节点</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314223445905.png" class="" title="单链表删除-1">
+<p>找到删除节点的前驱节点p</p>
+<p>用指针q指向要删除的节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250314223541977.png" class="" title="单链表删除-2">
+<p>通过改变p的后继节点实现删除</p>
+<p>并释放删除节点的空间</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 删除节点</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">delNode</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">pos</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #6A737D">  // 让指针指向需要删除位置的前驱节点</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p-&gt;next </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;位置错误</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span><span style="color: #6A737D"> // q指向要删除的节点</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q-&gt;next;</span><span style="color: #6A737D"> // 要删除节点的前驱节点指向其后继节点</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">free</span><span style="color: #24292E">(q);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="获取链表长度">获取链表长度</h4>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 获取链表长度</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">listLength</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">    cnt</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> cnt;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="释放链表">释放链表</h4>
+<p>把头结点后的节点都释放掉</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250315104451003.png" class="" title="单链表释放-1">
+<p>让指针p指向头节点后的第一个节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250315104516739.png" class="" title="单链表释放-2">
+<p>若p不为NULL，让q指向p的后继节点，并释放p指向的节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250315104539072.png" class="" title="单链表释放-3">
+<p>让p, q指向同一个节点，循环以上操作</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 释放链表</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">freeList</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;next;</span><span style="color: #6A737D"> // p指针指向头节点后的第一个节点</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> q;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 判断p指向是否是空节点</span></span>
+<span class="line"><span style="color: #24292E">    q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span><span style="color: #6A737D"> // q指向p的后继</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">free</span><span style="color: #24292E">(p);</span><span style="color: #6A737D"> // 释放p</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q;</span><span style="color: #6A737D"> // p指向其后继（q指向的节点）</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span><span style="color: #6A737D"> //释放后原链表头节点指向NULL</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="注意">注意</h4>
+<ul>
+<li>时间复杂度：读取数据–顺序表&gt;链表 修改数据–链表&gt;顺序表</li>
+<li>不要忘记初始化指针变量，防止其变为野指针</li>
+<li>何时使用malloc？
+<ul>
+<li>声明指向一个结构的指针不会创建该结构，而是给出足够空间容纳结构可能会使用的地址</li>
+<li>使用malloc可以使系统创建一个新的结构并返回指向该结构的指针</li>
+<li>故若想使用指针变量沿着一个表行进，就没必要创建新的结构，不宜使用malloc</li>
+</ul></li>
+<li>free的结果：指针指向的地址没变，但该位置处的数据已经无定义了（野指针）</li>
+<li>若未对链表进行过删除操作，则调用malloc的次数应该等于表的大小，含表头再+1</li>
+</ul>
+<h3 id="单项循环链表">单项循环链表</h3>
+<p>特点：表中最后一个节点的指针域指向<strong>头节点</strong>，形成一个环</p>
+<p>终止条件：<code>p!=L</code>或<code>p-&gt;next!=L</code></p>
+<h4 id="判断是否有环">判断是否有环</h4>
+<p>快慢指针</p>
+<p>让快指针一次走两步，慢指针一次走一步</p>
+<p>当遇不到NULL时，若有环，则两者会一直追赶，根据概率一定会有一个时候相遇</p>
+<p>若能相遇则说明有环，否则若碰到NULL证明没有环</p>
+<p>注意特判只有一个元素或没有元素时，不然当前节点的指针域会赋值给空指针而报RE</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Solution</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #D73A49">public:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">bool</span><span style="color: #24292E"> </span><span style="color: #6F42C1">hasCycle</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ListNode</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">head</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">        ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> fast </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">        ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> slow </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (fast</span><span style="color: #D73A49">==</span><span style="color: #005CC5">nullptr</span><span style="color: #D73A49">||</span><span style="color: #24292E">fast-&gt;next</span><span style="color: #D73A49">==</span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(fast</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">nullptr</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">fast-&gt;next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">            fast </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fast-&gt;next-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">            slow </span><span style="color: #D73A49">=</span><span style="color: #24292E"> slow-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (fast</span><span style="color: #D73A49">==</span><span style="color: #24292E">slow) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<h4 id="找到环的入口">找到环的入口</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316220646941.png" class="" title="循环单链表">
+<p>设起点到入口距离为<span
+class="math inline">\(x\)</span>，入口到相遇距离为<span
+class="math inline">\(y\)</span>，相遇再到入口距离为<span
+class="math inline">\(z\)</span>，则快慢指针走的路程如下：</p>
+<p><span class="math inline">\(fast = x+y+n(x+y)\)</span></p>
+<p><span class="math inline">\(slow = x+y\)</span></p>
+<p>其中n为圈数，由于快指针的速度为慢指针的两倍，故慢指针一定会在一圈内与快指针相遇</p>
+<p>有<span class="math inline">\(2(x+y)=x+y+n(y+z)\)</span></p>
+<p>化简得$ = n(y+z)-y<span
+class="math inline">\(，由于快指针先入环，且速度快于慢指针，故快指针至少转一圈才能与慢指针相遇，即\)</span>n$至少为1</p>
+<p>多拿出一圈来将y约掉，则<span
+class="math inline">\(x=(n-1)(y+z)+z\)</span></p>
+<p>当<span
+class="math inline">\(n=1\)</span>时，即快指针转一圈与慢指针相遇的情况下，<span
+class="math inline">\(x=z\)</span>，即两者会在环的入口处相遇</p>
+<p>当<span class="math inline">\(n&gt;1\)</span>时，由于<span
+class="math inline">\(y+z\)</span>是一整圈的路程，即走完若干圈后快指针还会再走<span
+class="math inline">\(z\)</span>距离，最后与慢指针在环的入口处相遇</p>
+<p>故我们可以在相遇位置设置一个指针，在起始位置设置一个指针，两者相遇处即为入口</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ListNode</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> val;</span></span>
+<span class="line"><span style="color: #24292E">    ListNode </span><span style="color: #D73A49">*</span><span style="color: #24292E">next;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">ListNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">) : </span><span style="color: #6F42C1">val</span><span style="color: #24292E">(x), </span><span style="color: #6F42C1">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">) {}</span></span>
+<span class="line"><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Solution</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">detectCycle</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ListNode</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">head</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cnt[</span><span style="color: #005CC5">10005</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">            ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> fast </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">            ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> slow </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (fast</span><span style="color: #D73A49">==</span><span style="color: #005CC5">nullptr</span><span style="color: #D73A49">||</span><span style="color: #24292E">fast-&gt;next</span><span style="color: #D73A49">==</span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">while</span><span style="color: #24292E">(fast</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">nullptr</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">fast-&gt;next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">                fast </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fast-&gt;next-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">                slow </span><span style="color: #D73A49">=</span><span style="color: #24292E"> slow-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (fast</span><span style="color: #D73A49">==</span><span style="color: #24292E">slow){</span></span>
+<span class="line"><span style="color: #24292E">                    ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> index1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fast;</span></span>
+<span class="line"><span style="color: #24292E">                    ListNode</span><span style="color: #D73A49">*</span><span style="color: #24292E"> index2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">                    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(index1</span><span style="color: #D73A49">!=</span><span style="color: #24292E">index2){</span></span>
+<span class="line"><span style="color: #24292E">                        index1 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> index1-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">                        index2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> index2-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">                    }</span></span>
+<span class="line"><span style="color: #24292E">                    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> index1;</span></span>
+<span class="line"><span style="color: #24292E">                }</span></span>
+<span class="line"><span style="color: #24292E">            }</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nullptr</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    };</span></span></code></pre></div></div></figure>
+<h3 id="双向链表">双向链表</h3>
+<p>特点：双向链表的节点中有两个指针域：一个指向<strong>直接后继</strong>，另一个指向<strong>直接前驱</strong></p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223202666.png" class="" title="双向链表">
+<h4 id="建表-1">建表</h4>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ElemType;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  ElemType data;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">prev, </span><span style="color: #D73A49">*</span><span style="color: #24292E">next;</span></span>
+<span class="line"><span style="color: #24292E">}</span><span style="color: #6F42C1">Node</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<h4 id="初始化-2">初始化</h4>
+<p>与单链表相同</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 初始化建立头节点</span></span>
+<span class="line"><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">initList</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  Node </span><span style="color: #D73A49">*</span><span style="color: #24292E">head </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span><span style="color: #6A737D"> // 分配一个节点大小的空间</span></span>
+<span class="line"><span style="color: #24292E">  head-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 数据设为0</span></span>
+<span class="line"><span style="color: #24292E">  head-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 下一个地址设为NULL</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> head;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="头插法">头插法</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223533852.png" class="" title="双向链表头插法-1">
+<p>让新节点的prev指向头节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223601056.png" class="" title="双向链表头插法-2">
+<p>让新节点的next指向头节点的next</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250316223722812.png" class="" title="双向链表头插法-3">
+<p>让头节点的next节点的prev指向新节点，让头节点的next指向新节点</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 头插法</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertHead</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;prev </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span><span style="color: #6A737D"> // 新节点的prev指向头节点</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L-&gt;next;</span><span style="color: #6A737D"> // 新节点的next指向头节点后的第一个节点</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (L-&gt;next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 保证并非只有一个头节点</span></span>
+<span class="line"><span style="color: #24292E">    L-&gt;next-&gt;prev </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span><span style="color: #6A737D"> // 新节点的next节点的prev指向新节点</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  L-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span><span style="color: #6A737D"> // 头节点的next节点指向新节点</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="尾插法">尾插法</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317125757701.png" class="" title="双向链表尾插法-1">
+<p>让新节点的prev指向尾节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317125834523.png" class="" title="双向链表尾插法-2">
+<p>让尾节点的next指向新节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317125920694.png" class="" title="双向链表尾插法-3">
+<p>将NULL值赋给新节点的next</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 获得尾节点地址</span></span>
+<span class="line"><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get_tail</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node </span><span style="color: #D73A49">*</span><span style="color: #24292E">p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p-&gt;next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 当节点不为空时</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span><span style="color: #6A737D"> // 顺着寻找下一个节点</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 尾插法</span></span>
+<span class="line"><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertTail</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">tail</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;prev </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tail;</span></span>
+<span class="line"><span style="color: #24292E">  tail-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NULL</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="指定位置插入">指定位置插入</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317132908468.png" class="" title="双向链表指定位置插入-1">
+<p>寻找前置节点，让新节点prev指向前置节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250317133012982.png" class="" title="双向链表指定位置插入-2">
+<p>让新节点的next指向后置节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318190327505.png" class="" title="双向链表指定位置插入-3">
+<p>让前置节点的next的prev指向新节点</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318190446545.png" class="" title="双向链表指定位置插入-4">
+<p>前置节点的next指向新节点</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 指定位置插入数据</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insertNode</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">pos</span><span style="color: #24292E">, </span><span style="color: #6F42C1">ElemType</span><span style="color: #24292E"> </span><span style="color: #E36209">e</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p</span><span style="color: #D73A49">==</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (Node</span><span style="color: #D73A49">*</span><span style="color: #24292E">)</span><span style="color: #6F42C1">malloc</span><span style="color: #24292E">(</span><span style="color: #D73A49">sizeof</span><span style="color: #24292E">(Node));</span></span>
+<span class="line"><span style="color: #24292E">  q-&gt;data </span><span style="color: #D73A49">=</span><span style="color: #24292E"> e;</span></span>
+<span class="line"><span style="color: #24292E">  q-&gt;prev </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span></span>
+<span class="line"><span style="color: #24292E">  q-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next-&gt;prev </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q;</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h4 id="删除元素-1">删除元素</h4>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318210055879.png" class="" title="双向链表删除-1">
+<p>找到要删除节点的前驱节点，用指针记录要删除的节点</p>
+<p>改变p的后继节点以及删除节点的后继节点的前驱来删除节点</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 删除元素</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">delNode</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #E36209">L</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">pos</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  Node </span><span style="color: #D73A49">*</span><span style="color: #24292E">p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> L;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pos</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 找到前驱节点</span></span>
+<span class="line"><span style="color: #24292E">    p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p</span><span style="color: #D73A49">==</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p-&gt;next</span><span style="color: #D73A49">==</span><span style="color: #005CC5">NULL</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 判断删除位置是否超出了表长度</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;要删除的位置错误&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  Node</span><span style="color: #D73A49">*</span><span style="color: #24292E"> q </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p-&gt;next;</span><span style="color: #6A737D"> // q指向要删除的节点</span></span>
+<span class="line"><span style="color: #24292E">  p-&gt;next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> q-&gt;next;</span><span style="color: #6A737D"> // p的next指向q的后继节点</span></span>
+<span class="line"><span style="color: #24292E">  q-&gt;next-&gt;prev </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p;</span><span style="color: #6A737D"> // q的后继节点的prev指向p</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">free</span><span style="color: #24292E">(q);</span><span style="color: #6A737D"> // 删除q</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="顺序表与链表">顺序表与链表</h2>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E8%A1%A8/image-20250318211103963.png" class="" title="顺序表与链表">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/Web%E5%BA%94%E7%94%A8%E7%9A%84%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6/" rel="prev" title="【计算机网络】Web应用的请求与响应机制">
+      <i class="fa fa-chevron-left"></i> 【计算机网络】Web应用的请求与响应机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%88/" rel="next" title="【数据结构】栈">
+      【数据结构】栈 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">线性表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">顺序表实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E8%A1%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%BE%E6%8F%92%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.3.</span> <span class="nav-text">尾插元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.4.</span> <span class="nav-text">插入元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E5%88%97%E8%A1%A8"><span class="nav-number">1.2.5.</span> <span class="nav-text">遍历列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.6.</span> <span class="nav-text">删除元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0"><span class="nav-number">1.2.7.</span> <span class="nav-text">查找元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8A%A8%E6%80%81%E9%A1%BA%E5%BA%8F%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.8.</span> <span class="nav-text">使用动态顺序表实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.3.</span> <span class="nav-text">链表实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E9%93%BE%E8%A1%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">单链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-1"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%B4%E6%8F%92%E5%85%83%E7%B4%A0"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">头插元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%BE%E6%8F%92%E5%85%83%E7%B4%A0-1"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">尾插元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E4%BD%8D%E7%BD%AE%E6%8F%92%E5%85%A5%E5%85%83%E7%B4%A0"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">指定位置插入元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">删除节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E9%93%BE%E8%A1%A8%E9%95%BF%E5%BA%A6"><span class="nav-number">1.3.1.6.</span> <span class="nav-text">获取链表长度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E9%93%BE%E8%A1%A8"><span class="nav-number">1.3.1.7.</span> <span class="nav-text">释放链表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">1.3.1.8.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E9%A1%B9%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8"><span class="nav-number">1.3.2.</span> <span class="nav-text">单项循环链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%9C%89%E7%8E%AF"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">判断是否有环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%BE%E5%88%B0%E7%8E%AF%E7%9A%84%E5%85%A5%E5%8F%A3"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">找到环的入口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">双向链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E8%A1%A8-1"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">建表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-2"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%B4%E6%8F%92%E6%B3%95"><span class="nav-number">1.3.3.3.</span> <span class="nav-text">头插法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%BE%E6%8F%92%E6%B3%95"><span class="nav-number">1.3.3.4.</span> <span class="nav-text">尾插法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E4%BD%8D%E7%BD%AE%E6%8F%92%E5%85%A5"><span class="nav-number">1.3.3.5.</span> <span class="nav-text">指定位置插入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0-1"><span class="nav-number">1.3.3.6.</span> <span class="nav-text">删除元素</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E8%A1%A8%E4%B8%8E%E9%93%BE%E8%A1%A8"><span class="nav-number">1.4.</span> <span class="nav-text">顺序表与链表</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">448k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:35</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="CMake的基础用法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【C++】CMake">
+<meta property="og:url" content="https://izayoisakuye.github.io/C++/CMake/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="CMake的基础用法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250807135236097.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250808113847896.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250808114503007.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250808114632225.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250818110958516.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250818114138895.png">
+<meta property="article:published_time" content="2025-12-17T16:42:36.506Z">
+<meta property="article:modified_time" content="2025-12-17T16:43:01.411Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/C++/CMake/image-20250807135236097.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/C++/CMake/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【C++】CMake | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/CMake/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【C++】CMake
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-12-18 00:42:36 / 修改时间：00:43:01" itemprop="dateCreated datePublished" datetime="2025-12-18T00:42:36+08:00">2025-12-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>20 分钟</span>
+            </span>
+            <div class="post-description">CMake的基础用法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="cmake">CMake</h1>
+<h2 id="使用cmake构建文件">使用CMake构建文件</h2>
+<h3 id="编写cmakelists">编写CMakeLists</h3>
+<p>在项目文件夹中创建文件<code>CMakeLists.txt</code>，CMake会根据该文件生成相应的构建指令</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 指定所需CMake的最小版本号，只需要提供主次版本号</span></span>
+<span class="line"><span style="color: #6A737D"># 该命令必须放在其余命令之前</span></span>
+<span class="line"><span style="color: #D73A49">cmake_minimum_required</span><span style="color: #24292E">(</span><span style="color: #6F42C1">VERSION</span><span style="color: #24292E"> 4.0) </span></span>
+<span class="line"><span style="color: #6A737D"># 指定项目信息，包括版本号、编程语言等</span></span>
+<span class="line"><span style="color: #6A737D"># 若语言不指定则默认为CXX</span></span>
+<span class="line"><span style="color: #D73A49">project</span><span style="color: #24292E">(</span><span style="color: #D73A49">Test</span><span style="color: #24292E"> </span><span style="color: #6F42C1">VERSION</span><span style="color: #24292E"> 0.1.0 </span><span style="color: #6F42C1">LANGUAGE</span><span style="color: #24292E"> CXX)</span></span>
+<span class="line"><span style="color: #6A737D"># 添加生成的可执行文件，可以指定文件名、需要使用的源文件</span></span>
+<span class="line"><span style="color: #D73A49">add_executable</span><span style="color: #24292E">(</span><span style="color: #D73A49">test</span><span style="color: #24292E"> main.cpp)</span></span></code></pre></div></div></figure>
+<p>以上三条语句为最基本的CMake指令，接下来就可以生成构建文件</p>
+<h3 id="生成构建文件">生成构建文件</h3>
+<p>创建一个文件夹build，并在命令行中cd到当前路径</p>
+<p>使用<code>cmake ..</code>来生成构建文件，<code>..</code>提示CMakeLists文件在上级目录中</p>
+<p>若未指定构建生成系统，则会使用默认构建生成系统</p>
+<p>使用<code>cmake -G</code>列出所有支持的构建系统（称为<strong>生成器Generator</strong>），其中带星号的是默认生成器</p>
+<p>返回上级文件，使用命令</p>
+<p><code>cmake -B build_mingw -G "MinGW Makefiles"</code></p>
+<ul>
+<li><code>-B</code>指定生成的构建文件存放目录</li>
+<li><code>-G</code>指定生成器</li>
+</ul>
+<p>这样就在文件夹中生成了MinGW的构建文</p>
+<h3 id="生成可执行文件">生成可执行文件</h3>
+<p>使用其中的<code>mingw32-make</code>命令直接生成可执行文件(.exe)</p>
+<p>或直接使用cmake生成可执行文件</p>
+<p><code>cmake --build .</code></p>
+<p>会在当前文件夹下生成可执行文件</p>
+<p>若想直接调用VS的编译器生成可执行文件，我们可以首先生成对应的build文件，再返回上级</p>
+<p>使用<code>cmake --build ./build</code>生成可执行文件</p>
+<p>对于VS这种有多个配置的项目，使用参数<code>--config</code>指定配置</p>
+<p><code>cmake --build ./build --config Release --target helloworld</code></p>
+<h2 id="目标属性">目标属性</h2>
+<p><code>add_executable</code>可以用于添加可执行程序目标，其中第一个参数为目标名称，可以在后面的代码中继续使用</p>
+<p>一个目标具有很多属性，构建程序将根据这些属性来生成可执行程序，可执行程序的名称也基于目标名称命名，Linux下名称相同，Windows下会加上.exe拓展名</p>
+<p>后面的参数跟着的是一个或多个源文件，头文件也可以加入，不会影响编译，但可以影响IDE的显示</p>
+<p>当源文件过多时，我们可以使用<code>target_sources</code>添加多个源文件</p>
+<p>本质上是设置了该目标的SOURCES属性，即传给编译器的源文件信息</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">target_source(demo</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">PRIVATE</span></span>
+<span class="line"><span style="color: #24292E">		main.cpp</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">test</span><span style="color: #24292E">.cpp</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">test</span><span style="color: #24292E">.h</span></span>
+<span class="line"><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>以下属性均为目标的属性，可以调用对应的target的函数设置</p>
+<style>.rbrtkjbdpudu{zoom:67%;}</style>
+<img src="/C++/CMake/image-20250807135236097.png" class="rbrtkjbdpudu" alt="目标属性">
+<h2 id="添加库">添加库</h2>
+<ul>
+<li><p>使用<code>add_library</code>用于定义一个库类型的目标，根据设置的属性来创建静态或动态库</p></li>
+<li><p>Linux下，静态库的名称为<code>lib(目标名称).a</code>，MSVC是<code>目标名称.lib</code></p></li>
+<li><p>使用<code>target_link_libraries</code>设置程序所需链接库，对应gcc中的<code>-l</code>参数，实质为设置目标的LINK_LIBRARIES属性（PRIVATE参数）或INTERFACE_LINK_LIBRARIES属性（INTERFACE参数）</p></li>
+<li><p>使用<code>--verbose</code>可以打印出构建细节</p></li>
+</ul>
+<h2 id="变量">变量</h2>
+<h3 id="定义">定义</h3>
+<p>设置普通变量：<code>set(变量名 变量值... [父级作用域])</code></p>
+<p>注意：</p>
+<ul>
+<li><p>建议使用字母、数字、_与-</p></li>
+<li><p>变量名区分大小写</p></li>
+<li><p><code>CMAKE_</code>开头的变量是CMake中的预定义变量，不要自己定义</p></li>
+<li><p>CMake中所有变量的类型都为<strong>字符串</strong></p></li>
+<li><p>定义便量时，若变量有多个值，变量相当于列表，各项间以分号分割，定义时可以带分号也可以不带，若要正常使用分号需要转义符</p></li>
+<li><p>若值包含空格，可以用双引号包起来</p></li>
+</ul>
+<p>还可以定义多行变量</p>
+<p>定义字符串：使用<code>[[字符串]]</code>来定义字符串，其中的内容不会被替换，两个方括号直接可以有若干个等号，但左右两侧数量需要一致</p>
+<h3 id="未定义">未定义</h3>
+<p>使用<code>set(变量名)</code>或<code>unset(变量名)</code>将一个变量取消定义</p>
+<p>当使用一个未定义变量时，返回一个空串，但与<code>set(myVar "")</code>的空串仍有区别</p>
+<h3 id="使用">使用</h3>
+<p>引用变量：<code>$&#123;变量名&#125;</code></p>
+<p>打印：<code>message()</code></p>
+<p>还可以用一个变量定义另一个变量，也可以嵌套引用</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(myVar </span><span style="color: #032F62">&quot;hello world&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;myVar = ${myVar}&quot;</span><span style="color: #24292E">) </span><span style="color: #6A737D"># myVar = hello world</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(myVar pet)</span></span>
+<span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(</span><span style="color: #D73A49">${myVar}</span><span style="color: #24292E"> cat)</span></span>
+<span class="line"><span style="color: #D73A49">message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;${myVar} = ${${myVar}}&quot;</span><span style="color: #24292E">) </span><span style="color: #6A737D"># myVar = &quot;pet&quot;</span></span></code></pre></div></div></figure>
+<h3 id="环境变量">环境变量</h3>
+<p>设置：<code>set(ENV&#123;varName&#125; value)</code></p>
+<p>这种方法只会临时添加环境变量，而不会改变系统环境变量</p>
+<h3 id="缓存变量">缓存变量</h3>
+<p>缓存变量存放在CMakeCache.txt中，这意味着每次需要重新编译一遍CMakefile才可以获得变量更新</p>
+<p>定义：</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(</span></span>
+<span class="line"><span style="color: #24292E">	varName</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">value</span><span style="color: #24292E">...</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">CACHE</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">type</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;说明变量用途&quot;</span></span>
+<span class="line"><span style="color: #24292E">	[FORCE]</span></span>
+<span class="line"><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<ul>
+<li><p>type用于图形界面的处理，不用类型有不同显示方式</p>
+<p>如BOOL以勾选框形式表示</p>
+<ul>
+<li>真值表示为on，但true、yes、Y、1也可以表示真值</li>
+<li>假值表示为off，但false、no、N、0也可以表示假值</li>
+</ul></li>
+<li><p>[FORCE]表示强制更新缓存，若关闭则只有当缓存中没有这个变量时才会写入，若已经有则不会更新，使用了会更新</p></li>
+</ul>
+<p>对于BOOL类型的缓存变量，可以使用option</p>
+<p><code>option(optVar helpString [初始值])</code>，初始默认为off</p>
+<p>若同时定义了同名普通与缓存变量，优先使用普通变量，但要<strong>尽量避免重名</strong></p>
+<h3 id="命令行参数">命令行参数</h3>
+<ul>
+<li><code>-D</code>设置缓存变量
+<code>cmake -D "MY_VAR:STRING=hello world"</code></li>
+<li><code>-U</code>删除缓存变量
+<code>cmake -U "MY*"</code>，星号为通配符，以MY开头的都会被删除</li>
+</ul>
+<h3 id="作用域">作用域</h3>
+<ul>
+<li>全局：缓存变量</li>
+<li>局部：函数、子目录</li>
+</ul>
+<p>局部作用域：使用<code>block()</code>与<code>endblock()</code>设置</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(myVar cat)</span></span>
+<span class="line"><span style="color: #24292E">block()</span></span>
+<span class="line"><span style="color: #D73A49">	set</span><span style="color: #24292E">(myVar dog)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;myVar=${myVar}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">endblock()</span></span>
+<span class="line"><span style="color: #D73A49">message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;myVar=${myVar}&quot;</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">myVar=dog</span></span>
+<span class="line"><span style="color: #24292e">myVar=cat</span></span></code></pre></div></div></figure>
+<p>若在set中使用了PARENT_SCOPE，则设置的是外层同名变量</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(myVar cat)</span></span>
+<span class="line"><span style="color: #24292E">block()</span></span>
+<span class="line"><span style="color: #D73A49">	set</span><span style="color: #24292E">(myVar dog PARENT_SCOPE)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;[block]myVar=${myVar}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">endblock()</span></span>
+<span class="line"><span style="color: #D73A49">message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;[outer]myVar=${myVar}&quot;</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">[block]myVar=cat</span></span>
+<span class="line"><span style="color: #24292e">[outer]myVar=dog</span></span></code></pre></div></div></figure>
+<p>也可以在block中使用PROPAGATE关键字，后面跟着的变量都是上级作用域变量中的引用</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(myVar cat)</span></span>
+<span class="line"><span style="color: #24292E">block(SCOPE_FOR </span><span style="color: #6F42C1">VARIABLES</span><span style="color: #24292E"> PROPAGATE myVar)</span></span>
+<span class="line"><span style="color: #D73A49">	set</span><span style="color: #24292E">(myVar dog)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;[block]myVar=${myVar}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">endblock()</span></span>
+<span class="line"><span style="color: #D73A49">message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;[outer]myVar=${myVar}&quot;</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<h3 id="常用cmake内置变量">常用CMake内置变量</h3>
+<ul>
+<li><p><code>PROJECT_NAME</code> ：项目名称</p></li>
+<li><p><code>PROJECT_BINARY_DIR</code>
+：项目的二进制文件目录，即编译后的可执行文件和库文件的输出目录</p></li>
+<li><p><code>PROJECT_SOURCE_DIR</code>
+：项目的源文件目录，即包含CMakeLists.txt文件的目录</p></li>
+<li><p><code>CMAKE_BINARY_DIR</code>
+：当前CMake运行的二进制文件目录，通常和PROJECT_BINARY_DIR是同一个目录</p></li>
+<li><p><code>CMAKE_SOURCE_DIR</code>
+：当前CMake运行的源文件目录，通常和PROJECT_SOURCE_DIR是同一个目录</p></li>
+<li><p><code>CMAKE_C_STANDARD</code> ：指定C语言的标准版本</p></li>
+<li><p><code>CMAKE_CXX_STANDARD</code> ：指定C++语言的标准版本</p></li>
+<li><p><code>CMAKE_CXX_FLAGS</code>
+：指定编译C++代码时使用的编译选项</p></li>
+<li><p><code>CMAKE_C_FLAGS</code>
+：指定编译C代码时使用的编译选项</p></li>
+<li><p><code>CMAKE_EXE_LINKER_FLAGS</code>
+：指定链接可执行文件时使用的链接选项</p></li>
+<li><p><code>CMAKE_SYSTEM_NAME</code>
+：指定当前操作系统名称（如Windows、Linux等）</p></li>
+<li><p><code>CMAKE_SYSTEM_PROCESSOR</code>
+：指定当前处理器的类型（如x86、x86_64等）</p></li>
+<li><p><code>CMAKE_CXX_COMPILER_ID</code>
+：指定了当前使用的C++编译器，同理可得C的编译器对应的名字。</p></li>
+</ul>
+<h2 id="流程控制命令">流程控制命令</h2>
+<h3 id="条件判断">条件判断</h3>
+<p>语法：</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E">(expr)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D"># expr为真时执行命令</span></span>
+<span class="line"><span style="color: #D73A49">elseif</span><span style="color: #24292E">(expr2)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D"># 否则若expr2为真时执行命令</span></span>
+<span class="line"><span style="color: #D73A49">else</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D"># 否则执行此处命令</span></span>
+<span class="line"><span style="color: #D73A49">endif</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>真值：1、ON、YES、TRUE、Y、非0数值（均不区分大小写）</p>
+<p>假值：0、OFF、NO、FLASE、N、IGNORE、NOTFOUND、*-NOTFOUND、“”</p>
+<p>若表达式是字符串，则当字符串中内容是真值对应内容才为真，不建议直接使用字符串作为表达式</p>
+<p>若表达式是变量，则当变量值不为假值是判断为真，注意单纯变量与${Var}的区别</p>
+<p>可以使用逻辑运算符AND、OR或NOT</p>
+<p>比较运算符：</p>
+<style>.fvsswbxisslu{zoom: 50%;}</style>
+<img src="/C++/CMake/image-20250808113847896.png" class="fvsswbxisslu" alt="比较运算符">
+<p>文件操作：</p>
+<style>.sexparijixlu{zoom:50%;}</style>
+<img src="/C++/CMake/image-20250808114503007.png" class="sexparijixlu" alt="文件操作">
+<p>存在性测试：</p>
+<img src="/C++/CMake/image-20250808114632225.png" class="" title="存在性测试">
+<p>预定义变量：有些变量是内置预定义的</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #005CC5">MSVC</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;build with MSVC&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">else</span><span style="color: #24292E"> if (MINGW)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;build with MINGW&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">else</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;build with other compiler&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endif</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>Option变量：可以使用option设置缓存变量实现条件编译</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">option</span><span style="color: #24292E">(BUILD_MYLIB </span><span style="color: #032F62">&quot;构建MyLib目标&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E">(BUILD_MYLIB)</span></span>
+<span class="line"><span style="color: #D73A49">	add_library</span><span style="color: #24292E">(MyLib mylib.cpp)</span></span>
+<span class="line"><span style="color: #D73A49">else</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;忽略构建MyLib目标&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endif</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>若在命令行使用<code>-D</code>设置为on</p>
+<p><code>cmake . -DBUILD_MYLIB=in</code>则会编译生成MYLIB库</p>
+<p>实例：常用的条件判断代码，放在文件开头，用于防止在CMakeLists文件所在的源路径中进行构建</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">STREQUAL</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;${CMAKE_BINARY_DIR}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(FATAL_ERROR </span><span style="color: #032F62">&quot;错误：禁止源码内编译 请为构建文件创建一个单独的目录&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endif</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<ul>
+<li>CMAKE_SOURCE_DIR表示源树顶层路径</li>
+<li>CMAKE_BINARY_DIR表示生成树顶层路径</li>
+</ul>
+<h3 id="foreach">foreach</h3>
+<p>语法：</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">foreach</span><span style="color: #24292E">(&lt;loop_var&gt; &lt;items&gt;)</span></span>
+<span class="line"><span style="color: #24292E">	&lt;commands&gt;</span></span>
+<span class="line"><span style="color: #D73A49">endforeach</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>可以使用IN LISTS与IN ITEMS关键字遍历列表，使用IN
+ZIP_LISTS合并遍历两个列表</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">foreach</span><span style="color: #24292E">(v IN ITEMS 1 2 3 4 5)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;v=${v}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endforeach</span><span style="color: #24292E">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(list1 2 4 6 8)</span></span>
+<span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(list2 1 3 5 7)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">foreach</span><span style="color: #24292E">(v IN LISTS list1)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;v=${v}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endforeach</span><span style="color: #24292E">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">foreach</span><span style="color: #24292E">(v IN ZIP_LISTS list1 list2)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;v=(${v_0},${v_1})&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endforeach</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>也可以使用RANGE指定开始结束与步长（默认为1）</p>
+<p><code>foreach(v RANGE $&#123;start&#125; $&#123;end&#125; $&#123;step&#125;)</code></p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(start 1)</span></span>
+<span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(end 8)</span></span>
+<span class="line"><span style="color: #D73A49">set</span><span style="color: #24292E">(step 2)</span></span>
+<span class="line"><span style="color: #D73A49">foreach</span><span style="color: #24292E">(v RANGE </span><span style="color: #D73A49">${start}</span><span style="color: #24292E"> </span><span style="color: #D73A49">${end}</span><span style="color: #24292E"> </span><span style="color: #D73A49">${step}</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;v=${v}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endforeach</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<h3 id="while">while</h3>
+<p>语法：</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">while</span><span style="color: #24292E">(&lt;condition&gt;)</span></span>
+<span class="line"><span style="color: #24292E">	&lt;commands&gt;</span></span>
+<span class="line"><span style="color: #D73A49">endwhile</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>使用<code>continue()</code>跳过本次循环，使用<code>break()</code>退出循环</p>
+<h2 id="函数与宏">函数与宏</h2>
+<h3 id="定义函数">定义函数</h3>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">function</span><span style="color: #24292E">(</span><span style="color: #D73A49">name</span><span style="color: #24292E"> args...)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">endfunction</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<ul>
+<li>第一个参数为函数名</li>
+<li>接下来为函数的实际参数</li>
+</ul>
+<h3 id="传参方式">传参方式</h3>
+<ul>
+<li><p>命名参数：</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">function</span><span style="color: #24292E">(f a, b)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;a:${a},b:${b}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endfunction</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>函数中可以直接引用这两个参数</p></li>
+<li><p>未命名参数：</p></li>
+</ul>
+<p>​ 若传参过多，则多出来的参数称为未命名参数</p>
+<p>​ 这时使用内置的参数变量可以访问：</p>
+<p>​ 参数数量：ARGC</p>
+<p>​
+参数列表：ARGV，使用ARGVn表示第n个参数（n大于ARGC时为未定义行为）</p>
+<p>​ 未命名参数列表：ARGN</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">function</span><span style="color: #24292E">(f a, b)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;a:${a},b:${b}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;argc:${ARGC}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;argv:${ARGV}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;argv0:${ARGV0}, argv1:${ARGV1}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">	message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;argn:${ARGN}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endfunction</span><span style="color: #24292E">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">f(1,2,3,4,5)</span></span></code></pre></div></div></figure>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">a:1,b:2</span></span>
+<span class="line"><span style="color: #24292e">argc:5</span></span>
+<span class="line"><span style="color: #24292e">argv:1;2;3;4;5</span></span>
+<span class="line"><span style="color: #24292e">argv0:1,argv1:2</span></span>
+<span class="line"><span style="color: #24292e">argn:3;4;5</span></span></code></pre></div></div></figure>
+<ul>
+<li><p>关键字参数：</p>
+<p>关键字参数有三种类型：</p>
+<ul>
+<li>选项关键字：后面没有值，如果传入该关键字则对应参数值为true</li>
+<li>单个值关键字：后面只能跟一个值</li>
+<li>多值关键字：后面可以跟多个值</li>
+</ul></li>
+</ul>
+<p>​ 关键字和值在参数列表中都是一样的实参，故我们需要进行区分</p>
+<p>​
+我们需要使用内置函数<code>cmake_parse_arguments</code>来转换为可用的局部变量，即将关键字作为变量名，关键字后的值作为参数</p>
+<p>格式1：</p>
+<p><code>cmake_parse_arguments(&lt;prefix&gt; &lt;options&gt; &lt;one_value_keywords&gt; &lt;multi_value_keyworlds&gt; &lt;args&gt;...)</code></p>
+<ul>
+<li>prefix用来生成关键字对应变量，名字为<code>prefix_关键字</code></li>
+<li>options即选项表达式</li>
+<li>one_value_keywords/multi_value_keyworlds分别对应单个值关键字多值关键字</li>
+<li>args即为要解析的参数列表，通常使用ARGN</li>
+</ul>
+<p><figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">function</span><span style="color: #24292E">(my_functionz targetName)</span></span>
+<span class="line"><span style="color: #D73A49">    set</span><span style="color: #24292E">(options USE_MYLIB)</span></span>
+<span class="line"><span style="color: #D73A49">    set</span><span style="color: #24292E">(oneValueArgs MYLIB_PATH)</span></span>
+<span class="line"><span style="color: #D73A49">    set</span><span style="color: #24292E">(multiValueArgs </span><span style="color: #6F42C1">SOURCES</span><span style="color: #24292E"> INCLUDES)</span></span>
+<span class="line"><span style="color: #24292E">    cmake_parse_arguments(arg_myfunction2 </span><span style="color: #032F62">&quot;${options}&quot;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;${oneValueArgs}&quot;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;${multiValueArgs}&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">${ARGN}</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">    message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    USE_MYLIB:${arg_myfunction2_USE_MYLIB}</span></span>
+<span class="line"><span style="color: #032F62">    MYLIB_PATH:${arg_myfunction2_MYLIB_PATH}</span></span>
+<span class="line"><span style="color: #032F62">    SOURCES: ${arg_myfunction2_SOURCES}</span></span>
+<span class="line"><span style="color: #032F62">    INCLUDES:${arg_myfunction2_INCLUDES}</span></span>
+<span class="line"><span style="color: #032F62">    targetName: ${targetName}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">endfunction</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure></p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">USE MYLIB: FALSE</span></span>
+<span class="line"><span style="color: #24292e">MYLIB PATH:/usr/local/lib</span></span>
+<span class="line"><span style="color: #24292e">SOURCES: main. cpp</span></span>
+<span class="line"><span style="color: #24292e">INCLUDES:/include;/include2</span></span>
+<span class="line"><span style="color: #24292e">targetName:hello</span></span></code></pre></div></div></figure>
+<p>还有两个关键字：</p>
+<ul>
+<li><code>&lt;prefix&gt;_unparsed_arguments</code>：获得未解析的多余变量</li>
+<li><code>&lt;prefix&gt;_keywords_missing_values</code>：获得没有提供值的表达式</li>
+</ul>
+<p>格式2：</p>
+<p><code>cmake_parse_arguments(PARSE_ARGV &lt;N&gt; &lt;prefix&gt; &lt;options&gt; &lt;one_value_keywords&gt; &lt;multi_value_keyworlds&gt;)</code></p>
+<p>这种格式解析的是ARGV变量，N表示从第几个变量开始解析</p>
+<h3 id="函数返回值">函数返回值</h3>
+<p>通常使用传参的方式获得返回值</p>
+<p>方法有两种：</p>
+<ul>
+<li>使用set，在结尾添加PARENT_SCOPE来修改外层变量修改返回值</li>
+<li>使用<code>return(PROPAGATE, 传参变量名)</code>也可以修改外层变量</li>
+</ul>
+<h3 id="宏">宏</h3>
+<p>定义：</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">macro</span><span style="color: #24292E">(myMacro arg...)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D"># command</span></span>
+<span class="line"><span style="color: #D73A49">endmacro</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>区别：函数有自己的栈，宏相当于直接插入代码，参数会被换为字符串</p>
+<h2 id="常用命令与生成器表达式">常用命令与生成器表达式</h2>
+<h3 id="list">list</h3>
+<p>语法：<code>list(操作关键字 &lt;listvar&gt; &lt;其他参数&gt;)</code></p>
+<p>例：获得列表长度<code>list(LENGTH listVar, listLENGTH)</code></p>
+<p>​ 连接元素<code>list(JOIN listVar "-" outtstr)</code></p>
+<h3 id="string">string</h3>
+<p>语法：<code>list(操作关键字 &lt;list&gt; &lt;其他参数&gt;)</code></p>
+<p>支持修改、替换、查找、子串、正则表达式匹配等字符串</p>
+<p>例：查找字符串：<code>string(FIND interesting int fIndex REVERSE)</code></p>
+<p>​ 结果存放fIndex中</p>
+<h3 id="math">math</h3>
+<p>cmake中，一个普通的数学表达式被当作一个普通的字符串</p>
+<p>语法：<code>math(EXPR &lt;variable&gt; "&lt;expr&gt;" [OUTPUT_FORMAT &lt;format&gt;])</code></p>
+<p>math函数会给expr这个表达式求值，并将结果赋值给variable</p>
+<h3 id="file">file</h3>
+<p>cmake中可以使用file进行文件操作</p>
+<img src="/C++/CMake/image-20250818110958516.png" class="" title="FILE">
+<p>例：获得源目录中cpp文件列表并添加到目标中（不建议使用）</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">file</span><span style="color: #24292E">(GLOB varFilelist LIST_DIRECTORIES </span><span style="color: #D73A49">false</span><span style="color: #24292E"> CONFIGURE_DEPENDS RELATIVE </span><span style="color: #D73A49">${CMAKE_SOURCE_DIR}</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;*.cpp&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">message</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;varFilelist: ${varFilelist}&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">add_executable</span><span style="color: #24292E">(MyApp </span><span style="color: #D73A49">${varFilelist}</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<h3 id="生成器表达式">生成器表达式</h3>
+<p>格式：<code>$&lt;...&gt;</code>，里面是一些与逻辑有关的表达式</p>
+<p>生成器表达式是在构建时才会生成的值</p>
+<p>若想要把他们的值输出，可以使用file命令：</p>
+<p><code>file(GENERATE OUTPUT generatorExam.txt CONTENT "platform=$&lt;PLATFORM_ID&gt;" TARGET myApp)</code></p>
+<p>或者是自己提供一个目标</p>
+<p><code>add_custom_target(MyTarget ALL COMMAND $&#123;CMAKE_COMMAND&#125; -E echo "platform = $&lt;PLATFORM_ID&gt;")</code></p>
+<p>常见的生成器表达式：</p>
+<ul>
+<li><code>$&lt;PLATFORM_ID&gt;</code>：生成的平台</li>
+<li><code>$&lt;CXX_COMPILER_ID&gt;</code>：使用的的编译器</li>
+<li><code>$&lt;CXX_COMPILER_VERSION&gt;</code>：编译器的版本号</li>
+<li><code>$&lt;condition: trueValue&gt;</code>：若condition为1获得trueValue，为0则得到空串</li>
+<li><code>$&lt;IF: condition, trueValue, falseValue&gt;</code>：若condition为1获得前面的值，为0获得后面的值</li>
+<li><code>$&lt;BOOL:value&gt;</code>：将变量转换为0或1</li>
+<li>逻辑运算：传入的值都需要是0或1
+<ul>
+<li><code>$&lt;AND:...&gt;</code></li>
+<li><code>$&lt;OR:...&gt;</code></li>
+<li><code>$&lt;NOT:value&gt;</code></li>
+</ul></li>
+</ul>
+<p>例：根据编译器不同来配置不同的编译选项</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">target_compile_options</span><span style="color: #24292E">(MyApp </span><span style="color: #6F42C1">PRIVATE</span></span>
+<span class="line"><span style="color: #24292E">    $&lt;$&lt;</span><span style="color: #D73A49">AND</span><span style="color: #24292E">:$&lt;CXX_COMPILER_ID:GNU&gt;,$&lt;CONFIG:Debug&gt;&gt;:-Og&gt;</span></span>
+<span class="line"><span style="color: #24292E">    $&lt;$&lt;</span><span style="color: #D73A49">AND</span><span style="color: #24292E">:$&lt;CXX_COMPILER_ID:GNU&gt;,$&lt;CONFIG:Release&gt;&gt;:-O2&gt;</span></span>
+<span class="line"><span style="color: #24292E">    $&lt;$&lt;</span><span style="color: #D73A49">AND</span><span style="color: #24292E">:$&lt;CXX_COMPILER_ID:</span><span style="color: #005CC5">MSVC</span><span style="color: #24292E">&gt;,$&lt;CONFIG:Debug&gt;&gt;:/Od&gt;</span></span>
+<span class="line"><span style="color: #24292E">    $&lt;$&lt;</span><span style="color: #D73A49">AND</span><span style="color: #24292E">:$&lt;CXX_COMPILER_ID:</span><span style="color: #005CC5">MSVC</span><span style="color: #24292E">&gt;,$&lt;CONFIG:Release&gt;&gt;:/O2&gt;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<h2 id="权限管理">权限管理</h2>
+<p>在对项目、库等进行target链接时，可以附带权限控制，权限修饰符包含以下三种</p>
+<img src="/C++/CMake/image-20250818114138895.png" class="" title="作用域">
+<p>链接时，可以想象成继承</p>
+<p>如若链接一个子文件夹中的CMakelists，则设置的权限也会影响到内部</p>
+<p>PRIVATE下，只是隐藏了路径对应的符号，但链接是已经链接的，故可以手写一份声明来使用对应的内容</p>
+<h2 id="常用命令">常用命令</h2>
+<h3 id="project">project</h3>
+<p>定义项目名称、版本号和语言</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">project</span><span style="color: #24292E">(项目名称)</span></span></code></pre></div></div></figure>
+<h3 id="cmake_minimum_required">cmake_minimum_required</h3>
+<p>指定cmake的最小版本</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">cmake_minimum_required</span><span style="color: #24292E">(version 版本号)</span></span></code></pre></div></div></figure>
+<h3 id="add_executable">add_executable</h3>
+<p>添加可执行文件，第一个参数为target，可以成为target命令的接收对象</p>
+<h3 id="add_library">add_library</h3>
+<p>添加库文件，可以添加静态库或动态库，第一个参数为target，可以成为target命令的接收对象</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">add_library</span><span style="color: #24292E">(test_lib a.cc b.cc) </span><span style="color: #6A737D">#默认生成静态库</span></span>
+<span class="line"><span style="color: #D73A49">add_library</span><span style="color: #24292E">(test_lib SHARED a.cc b.cc) </span><span style="color: #6A737D">#默认生成静态库</span></span></code></pre></div></div></figure>
+<h3 id="add_definitions">add_definitions</h3>
+<p>添加宏定义，只要项目中用该命令定义了宏，则所有源代码都会被定义这个宏</p>
+<h3 id="add_subdirectory">add_subdirectory</h3>
+<p>添加子项目目录，若有该条语句，就会先去执行子项目的cmake代码</p>
+<p>注意：</p>
+<p>这样会导致该语句后需要执行后立马生效的语句无效，如include_directories和link_directories如果执行在这条语句后面，则他们添加的目录在子项目中无法生效</p>
+<p>而target相关的语句是根据target是否被链接使用来生效的，故作用范围与执行顺序无关</p>
+<h3 id="target_link_libraries">target_link_libraries</h3>
+<p>将可执行文件或库文件链接到库文件或可执行文件，第二个参数可以进行权限控制</p>
+<h3 id="include_directories">include_directories</h3>
+<p>用于指定头文件搜索路径，无法进行权限控制，一旦被执行，后续所有代码都可以搜索到</p>
+<p>对应的<strong>link_directories</strong>是对于库而言的</p>
+<h3 id="target_include_directories">target_include_directories</h3>
+<p>用于指定头文件搜索路径，并将搜索路径关联到一个target中，可以设置导出权限</p>
+<p>对应的<strong>target_link_directories</strong>是对于库而言的</p>
+<h3 id="aux_source_directory">aux_source_directory</h3>
+<p>扫描第一个参数的目录并将所有源文件放到第二个参数定义的变量名中，第一个参数只能是文件夹</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">aux_source_directory</span><span style="color: #24292E">(</span><span style="color: #D73A49">${PROJECT_SOURCE_DIR}</span><span style="color: #24292E"> SRC)</span></span></code></pre></div></div></figure>
+<h3 id="file-1">file</h3>
+<p>掌握有关文件系统的几乎所有功能</p>
+<p>常用于获取文件到变量中</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">file</span><span style="color: #24292E">(GLOB SRC </span><span style="color: #032F62">&quot;${PROJECT_SOURCE_DIR}/*.cpp&quot;</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>GLOB会产生一个所有匹配后面表达式的文件组成的列表保存到第二个参数的变量中</p>
+<p>若改为<code>GLOB_RECURSE</code>则上述命令会递归的搜寻其子目录所有符合条件的文件，而不仅仅是一层</p>
+<h3 id="execute_process">execute_process</h3>
+<p>用于执行外部命令</p>
+<figure class="shiki cmake"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">execute_process</span><span style="color: #24292E">(</span><span style="color: #D73A49">COMMAND</span><span style="color: #24292E"> git clone https://github.com/&lt;username&gt;/&lt;repository&gt;.git</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #6F42C1">WORKING_DIRECTORY</span><span style="color: #24292E"> </span><span style="color: #D73A49">${CMAKE_BINARY_DIR}</span><span style="color: #24292E">/deps/&lt;repository&gt;)</span></span></code></pre></div></div></figure>
+<p>如该代码执行了git
+clone命令，工作目录为<code>$&#123;CMAKE_BINARY_DIR&#125;/deps</code></p>
+<h3 id="find_package">find_package</h3>
+<p>查找外界的package，其实是查找对应的<code>&lt;package&gt;Config.cmake</code>
+和 <code>Find&lt;package&gt;.cmake</code>
+文件，这些文件里有外界包对应的变量信息以及库和头文件的各种路径信息。</p>
+<ul>
+<li><p><code>CMAKE_PREFIX_PATH</code> 是一个路径列表，CMake
+会在这些路径中搜索包的 <code>Config.cmake</code> 文件。</p></li>
+<li><p><code>&lt;Package&gt;_DIR</code> 变量是指向包的
+<code>Config.cmake</code> 文件的路径。如果你手动设置了这个变量，那么
+<code>find_package</code> 命令就可以找到包。</p></li>
+</ul>
+<h3 id="include">include</h3>
+<p>加载文件或模块</p>
+<p>如加载FetchContent模块，该模块可以从代码仓库拉去代码</p>
+<h2 id="包管理">包管理</h2>
+<h3 id="fetchcontent">FetchContent</h3>
+<p>直接在cmake中执行指令进行包的拉取，然后通过将下载的包和本地链接就可以使用</p>
+<h3 id="vcpkg">vcpkg</h3>
+<p>以添加OpenCV库为例：</p>
+<p>在对应目录终端下输入</p>
+<figure class="shiki cmd"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">vcpkg</span><span style="color: #D73A49"> new --</span><span style="color: #005CC5">application</span></span></code></pre></div></div></figure>
+<p>此时在根目录下生成两个json文件：</p>
+<ul>
+<li>vcpkg：存放项目所需依赖清单</li>
+<li>vcpkg-configuration：默认配置文件</li>
+</ul>
+<p>接下来使用命令添加依赖项：</p>
+<figure class="shiki cmd"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">vcpkg </span><span style="color: #005CC5">add</span><span style="color: #24292E"> port opencv</span></span></code></pre></div></div></figure>
+<p>其中<strong>port</strong>提供一个包的基本信息与生成方法</p>
+<p>接下来需要将cmake变量CMAKE_TOOLCHAIN_FILE设置为vcpkg提供的工具链文件，即vcpkg的完整路径</p>
+<p>可以创建一个<code>CMakePresets.json</code>文件，在其中设置</p>
+<p>设置完毕后进行build，vcpkg就会自动从github上下载相关的库文件</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="prev" title="【算法】双指针">
+      <i class="fa fa-chevron-left"></i> 【算法】双指针
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E5%89%8D%E7%AB%AF/HTML/" rel="next" title="【前端】HTML">
+      【前端】HTML <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cmake"><span class="nav-number">1.</span> <span class="nav-text">CMake</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8cmake%E6%9E%84%E5%BB%BA%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">使用CMake构建文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99cmakelists"><span class="nav-number">1.1.1.</span> <span class="nav-text">编写CMakeLists</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%9E%84%E5%BB%BA%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">生成构建文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.3.</span> <span class="nav-text">生成可执行文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">目标属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text">添加库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AA%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">未定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.4.3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.4.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.5.</span> <span class="nav-text">缓存变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="nav-number">1.4.6.</span> <span class="nav-text">命令行参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.4.7.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8cmake%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.8.</span> <span class="nav-text">常用CMake内置变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%91%BD%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">流程控制命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="nav-number">1.5.1.</span> <span class="nav-text">条件判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#foreach"><span class="nav-number">1.5.2.</span> <span class="nav-text">foreach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#while"><span class="nav-number">1.5.3.</span> <span class="nav-text">while</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%B8%8E%E5%AE%8F"><span class="nav-number">1.6.</span> <span class="nav-text">函数与宏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="nav-number">1.6.1.</span> <span class="nav-text">定义函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E5%8F%82%E6%96%B9%E5%BC%8F"><span class="nav-number">1.6.2.</span> <span class="nav-text">传参方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">1.6.3.</span> <span class="nav-text">函数返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8F"><span class="nav-number">1.6.4.</span> <span class="nav-text">宏</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%B8%8E%E7%94%9F%E6%88%90%E5%99%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">常用命令与生成器表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#list"><span class="nav-number">1.7.1.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">1.7.2.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#math"><span class="nav-number">1.7.3.</span> <span class="nav-text">math</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#file"><span class="nav-number">1.7.4.</span> <span class="nav-text">file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%99%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.7.5.</span> <span class="nav-text">生成器表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="nav-number">1.8.</span> <span class="nav-text">权限管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.9.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#project"><span class="nav-number">1.9.1.</span> <span class="nav-text">project</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cmake_minimum_required"><span class="nav-number">1.9.2.</span> <span class="nav-text">cmake_minimum_required</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add_executable"><span class="nav-number">1.9.3.</span> <span class="nav-text">add_executable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add_library"><span class="nav-number">1.9.4.</span> <span class="nav-text">add_library</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add_definitions"><span class="nav-number">1.9.5.</span> <span class="nav-text">add_definitions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#add_subdirectory"><span class="nav-number">1.9.6.</span> <span class="nav-text">add_subdirectory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#target_link_libraries"><span class="nav-number">1.9.7.</span> <span class="nav-text">target_link_libraries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include_directories"><span class="nav-number">1.9.8.</span> <span class="nav-text">include_directories</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#target_include_directories"><span class="nav-number">1.9.9.</span> <span class="nav-text">target_include_directories</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aux_source_directory"><span class="nav-number">1.9.10.</span> <span class="nav-text">aux_source_directory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#file-1"><span class="nav-number">1.9.11.</span> <span class="nav-text">file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#execute_process"><span class="nav-number">1.9.12.</span> <span class="nav-text">execute_process</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find_package"><span class="nav-number">1.9.13.</span> <span class="nav-text">find_package</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include"><span class="nav-number">1.9.14.</span> <span class="nav-text">include</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E7%AE%A1%E7%90%86"><span class="nav-number">1.10.</span> <span class="nav-text">包管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fetchcontent"><span class="nav-number">1.10.1.</span> <span class="nav-text">FetchContent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vcpkg"><span class="nav-number">1.10.2.</span> <span class="nav-text">vcpkg</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">448k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:35</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了分治的原理与应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【算法】分治">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%88%86%E6%B2%BB/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了分治的原理与应用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="e:\CS\Templates\%E4%BA%8C%E5%88%86\%E5%88%86%E6%B2%BB%E6%B3%95%EF%BC%9ADivide and Conquer.assets\image-20241212214202467.png">
+<meta property="article:published_time" content="2025-12-17T16:36:10.589Z">
+<meta property="article:modified_time" content="2025-12-17T16:37:31.914Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="e:\CS\Templates\%E4%BA%8C%E5%88%86\%E5%88%86%E6%B2%BB%E6%B3%95%EF%BC%9ADivide and Conquer.assets\image-20241212214202467.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%88%86%E6%B2%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【算法】分治 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%88%86%E6%B2%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【算法】分治
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-12-18 00:36:10 / 修改时间：00:37:31" itemprop="dateCreated datePublished" datetime="2025-12-18T00:36:10+08:00">2025-12-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">(或许是)基础算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+            <div class="post-description">介绍了分治的原理与应用</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="分治">分治</h1>
+<p>​
+即将整个问题分为若干个小问题后分而治之，最后逐步合并子问题的解以找到最终解</p>
+<p>​ 分治算法是一种找大规模问题与小规模问题关系的方法，故用递归来表示</p>
+<h2 id="实例归并排序">实例：归并排序</h2>
+<p>归并排序是依靠将数组分为若干小数组分别排序，最后合并得到结果的方法实现排序的</p>
+<p>步骤如下：</p>
+<ol type="1">
+<li>将数组分为两部分</li>
+<li>递归分别将两个子数组排序</li>
+<li>合并两子序列</li>
+</ol>
+<p>时间复杂度：<span class="math inline">\(O(n\log n)\)</span></p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a[</span><span style="color: #005CC5">100001</span><span style="color: #24292E">], temp[</span><span style="color: #005CC5">100001</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #6A737D">    /*</span></span>
+<span class="line"><span style="color: #6A737D">    步骤：</span></span>
+<span class="line"><span style="color: #6A737D">    1.将数列划为两部分</span></span>
+<span class="line"><span style="color: #6A737D">    2.递归地分别对两个子序列归并排序</span></span>
+<span class="line"><span style="color: #6A737D">    3.合并两个子序列</span></span>
+<span class="line"><span style="color: #6A737D">    */</span></span>
+<span class="line"><span style="color: #6A737D">   // 时间复杂度：O(nlogn)</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">merge_sort</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">l</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">r</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #6A737D">    // 只有一个元素</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (l </span><span style="color: #D73A49">==</span><span style="color: #24292E"> r) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #6A737D">    // 将数组分为[l,mid] [mid+1,r] 使用&gt;&gt;1 相当于/2 速度更快</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mid </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">+</span><span style="color: #24292E">r) </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">    // 分数组并分别进行排序</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">merge_sort</span><span style="color: #24292E">(l, mid);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">merge_sort</span><span style="color: #24292E">(mid</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, r);</span></span>
+<span class="line"><span style="color: #6A737D">    // 合并</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l, j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> mid</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l;</span></span>
+<span class="line"><span style="color: #6A737D">    // 当两部分数组都还有数</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">mid </span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E"> j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r){</span></span>
+<span class="line"><span style="color: #6A737D">        // 把小的加入数组tmp</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (a[i] </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> a[j]) temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">a[i</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">a[j</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // 两部分数组有一部分剩余的情况下，将剩余的一个个放到tmp中</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">mid){</span></span>
+<span class="line"><span style="color: #24292E">        temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">a[i</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r){</span></span>
+<span class="line"><span style="color: #24292E">        temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">a[j</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // tmp拷贝到原数组</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) a[i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> temp[i];</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n ;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">n);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i ; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) </span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">a[i]);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">merge_sort</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,n);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">size_t</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">==</span><span style="color: #24292E"> n) </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">, a[i]);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">, a[i]);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="最大子数组问题">最大子数组问题</h2>
+<blockquote>
+<p>输入：数组a[1…n]</p>
+<p>输出：(i,j,s)使得a[i…j]为最大子数组，且和为s</p>
+</blockquote>
+<h3 id="分治策略">分治策略</h3>
+<ul>
+<li>分：取中点：最大子数组要不完全在左侧要不完全在右侧或者跨越重点</li>
+<li>治：完全位于某一侧可以递归解决；跨越中点可以从终点向两侧扩张遍历解决</li>
+<li>合：三种情况和取最大即可</li>
+</ul>
+<p>时间复杂度：<span class="math inline">\(O(n\log n)\)</span></p>
+<p><strong>对于跨越中点的子数组：</strong></p>
+<p><img src="E:\CS\Templates\二分\分治法：Divide and Conquer.assets\image-20241212214202467.png" alt="image-20241212214202467" style="zoom:67%;" /></p>
+<h3 id="代码">代码:</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 使用分治求最大子段和</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;algorithm&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;queue&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;string&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;utility&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;cstring&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iomanip&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;cmath&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;climits&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ios</span><span style="color: #24292E"> ios::sync_with_stdio(0); cin.tie(0);</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> &#39;\n&#39;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #D73A49">+</span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> arr[N];</span></span>
+<span class="line"><span style="color: #6A737D">// 寻找贯穿左右数列的数列的最大值</span></span>
+<span class="line"><span style="color: #6A737D">// 核心思路：从中点往两边寻找，分别找左右最大相加即可</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findcrossmax</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">l</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">r</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">mid</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> sum</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> left_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> INT_MIN;</span><span style="color: #6A737D"> // 初始化要足够小，因为有负数最小为-1e4</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> mid; i</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">l;i</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 中间往左寻找</span></span>
+<span class="line"><span style="color: #24292E">    sum</span><span style="color: #D73A49">+=</span><span style="color: #24292E">arr[i];</span><span style="color: #6A737D"> // 一个个求和</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sum</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">left_big) left_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sum;</span><span style="color: #6A737D"> // 寻找最大左段和</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  sum</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> right_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> INT_MIN;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> mid</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 中间往右寻找</span></span>
+<span class="line"><span style="color: #24292E">    sum</span><span style="color: #D73A49">+=</span><span style="color: #24292E">arr[i];</span><span style="color: #6A737D"> // 一个个求和</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sum</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">right_big) right_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sum;</span><span style="color: #6A737D"> // 寻找最大右段和</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> left_big</span><span style="color: #D73A49">+</span><span style="color: #24292E">right_big;</span><span style="color: #6A737D"> // 返回最大两段和</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #6A737D">// 寻找最大值</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findmax</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">l</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">r</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">==</span><span style="color: #24292E">r) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> arr[l];</span><span style="color: #6A737D"> // 分段达到最小，返回值</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mid </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l</span><span style="color: #D73A49">+</span><span style="color: #24292E">r</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 选择中间值</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> left_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findmax</span><span style="color: #24292E">(l,mid);</span><span style="color: #6A737D"> // 递归寻找左端最大值</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> right_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findmax</span><span style="color: #24292E">(mid</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">,r);</span><span style="color: #6A737D"> // 递归寻找右端最大值</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> cross_big </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findcrossmax</span><span style="color: #24292E">(l,r,mid);</span><span style="color: #6A737D"> // 寻找中段最大值</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(cross_big, </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(left_big,right_big));</span><span style="color: #6A737D"> // 返回三者最大值</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">findmax</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,n);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="求逆序对">求逆序对</h2>
+<blockquote>
+<h3 id="题目描述">题目描述</h3>
+<p>猫猫 TOM 和小老鼠 JERRY
+最近又较量上了，但是毕竟都是成年人，他们已经不喜欢再玩那种你追我赶的游戏，现在他们喜欢玩统计。</p>
+<p>最近，TOM
+老猫查阅到一个人类称之为“逆序对”的东西，这东西是这样定义的：对于给定的一段正整数序列，逆序对就是序列中
+<span class="math inline">\(a_i&gt;a_j\)</span> 且 <span
+class="math inline">\(i&lt;j\)</span>
+的有序对。知道这概念后，他们就比赛谁先算出给定的一段正整数序列中逆序对的数目。注意序列中可能有重复数字。</p>
+<h3 id="输入格式">输入格式</h3>
+<p>第一行，一个数 <span class="math inline">\(n\)</span>，表示序列中有
+<span class="math inline">\(n\)</span> 个数。</p>
+<p>第二行 <span class="math inline">\(n\)</span>
+个数，表示给定的序列。序列中每个数字不超过 <span
+class="math inline">\(10^9\)</span>。</p>
+<h3 id="输出格式">输出格式</h3>
+<p>输出序列中逆序对的数目。</p>
+<h3 id="输入-1">输入 #1</h3>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">6</span></span>
+<span class="line"><span style="color: #24292e">5 4 2 6 3 1</span></span></code></pre></div></div></figure>
+<h3 id="输出-1">输出 #1</h3>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">11</span></span></code></pre></div></div></figure>
+<h3 id="说明提示">说明/提示</h3>
+<p>对于 <span class="math inline">\(25\%\)</span> 的数据，<span
+class="math inline">\(n \leq 2500\)</span>。</p>
+<p>对于 <span class="math inline">\(50\%\)</span> 的数据，<span
+class="math inline">\(n \leq 4 \times 10^4\)</span>。</p>
+<p>对于所有数据，<span class="math inline">\(n \leq 5 \times
+10^5\)</span>。</p>
+<p>请使用较快的输入输出。</p>
+<p>应该不会 <span class="math inline">\(O(n^2)\)</span> 过 50 万吧 by
+chen_zhe。</p>
+</blockquote>
+<ul>
+<li>分：取中点，逆序对存在于中点左侧，右侧以及跨中点部分</li>
+<li>治：分别统计两侧的逆序对数量，跨中点部分统计如下</li>
+<li>合：对左右以及左右merge过程产生逆序对数量求和，统计完后让原数组l到r有序</li>
+</ul>
+<p>merge函数伪代码：</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #6F42C1">l</span><span style="color: #24292E">,</span><span style="color: #6F42C1">r</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">+</span><span style="color: #24292E">r)</span><span style="color: #D73A49">/</span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(l,m)</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">f</span><span style="color: #24292E">(m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">,r)</span><span style="color: #D73A49">+</span><span style="color: #032F62">&#39;&#39;&#39;左右merge过程中产生的逆序对数量&#39;&#39;&#39;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p><strong>如何统计跨中点部分的逆序对数量：</strong></p>
+<p>让i，j分别在两区间右侧开始向左遍历（此时左右区间已经统计完毕并复原）</p>
+<p>若arr[i]&gt;arr[j]
+则证明该j位置与该j位置之前的位置的数均可以组成逆序对</p>
+<p>若arr[i]&lt;=arr[j]，则让j–，继续判断，当j移动到左侧区间时，判定逆序对数为0</p>
+<p>以上两种情况发生后让i–，继续统计逆序对</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> &#39;\n&#39;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ll;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ull;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">double</span><span style="color: #24292E"> ld;</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> pair</span><span style="color: #D73A49">&lt;int</span><span style="color: #24292E">,</span><span style="color: #D73A49">int&gt;</span><span style="color: #24292E"> PII;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> N </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">5</span><span style="color: #D73A49">e</span><span style="color: #005CC5">5</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">double</span><span style="color: #24292E"> pi </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">acos</span><span style="color: #24292E">(</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1.0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e</span><span style="color: #005CC5">9</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">7</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> INF </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">0x</span><span style="color: #005CC5">3f3f3f3f</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">double</span><span style="color: #24292E"> eps </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #D73A49">e-</span><span style="color: #005CC5">6</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">ll arr[N];</span></span>
+<span class="line"><span style="color: #24292E">ll temp[N];</span></span>
+<span class="line"><span style="color: #6A737D">// 查询跨左右区间的逆序对数</span></span>
+<span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">l</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">r</span><span style="color: #24292E"> ,</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">m</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  ll ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> m,j</span><span style="color: #D73A49">=</span><span style="color: #24292E">r;i</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">l;i</span><span style="color: #D73A49">--</span><span style="color: #24292E">){</span><span style="color: #6A737D"> // 从左右区间的右侧开始比较</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(arr[i]</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">arr[j]</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">j</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">) j</span><span style="color: #D73A49">--</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // j不到左区间的情况下以及未发现逆序对时往左遍历</span></span>
+<span class="line"><span style="color: #24292E">    ans </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> j</span><span style="color: #D73A49">-</span><span style="color: #24292E">m;</span><span style="color: #6A737D"> // 若发现第一个逆序对(arr[i]&gt;arr[j]&amp;&amp;i&lt;j)，由于已经排序，前面剩下的都可以组成逆序对</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #6A737D">  // 归并排序，将查询过的区间进行排序</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l, j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m </span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E"> j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (arr[i]</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">arr[j])temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">arr[i</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">arr[j</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m) temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">arr[i</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r) temp[k</span><span style="color: #D73A49">++</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">arr[j</span><span style="color: #D73A49">++</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) arr[i]</span><span style="color: #D73A49">=</span><span style="color: #24292E">temp[i];</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ans;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #6A737D">// 分治，分为左右区间以及跨区间逆序对</span></span>
+<span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">l</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">r</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">==</span><span style="color: #24292E">r) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  ll m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">+</span><span style="color: #24292E">r)</span><span style="color: #D73A49">/</span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(l,m)</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">f</span><span style="color: #24292E">(m</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">,r)</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(l,r,m);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,n);  </span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">ios</span><span style="color: #24292E">::</span><span style="color: #6F42C1">sync_with_stdio</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cin.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">); cout.</span><span style="color: #6F42C1">tie</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tomorin</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">  //cin &gt;&gt; tomorin;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%88%86/" rel="prev" title="【算法】二分查找">
+      <i class="fa fa-chevron-left"></i> 【算法】二分查找
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="next" title="【数学】位运算">
+      【数学】位运算 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%B2%BB"><span class="nav-number">1.</span> <span class="nav-text">分治</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">实例：归并排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">最大子数组问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%B2%BB%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">分治策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">代码:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%82%E9%80%86%E5%BA%8F%E5%AF%B9"><span class="nav-number">1.3.</span> <span class="nav-text">求逆序对</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.3.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.3.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5-1"><span class="nav-number">1.3.4.</span> <span class="nav-text">输入 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA-1"><span class="nav-number">1.3.5.</span> <span class="nav-text">输出 #1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E%E6%8F%90%E7%A4%BA"><span class="nav-number">1.3.6.</span> <span class="nav-text">说明&#x2F;提示</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">448k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:35</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

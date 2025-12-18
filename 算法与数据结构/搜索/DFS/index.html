@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了深度优先搜索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【算法】DFS">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/DFS/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了深度优先搜索">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/DFS/image-20241110095017456.png">
+<meta property="article:published_time" content="2025-03-01T03:29:57.440Z">
+<meta property="article:modified_time" content="2025-12-17T14:12:45.776Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="搜索">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/DFS/image-20241110095017456.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/DFS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【算法】DFS | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/DFS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【算法】DFS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-01 11:29:57" itemprop="dateCreated datePublished" datetime="2025-03-01T11:29:57+08:00">2025-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-17 22:12:45" itemprop="dateModified" datetime="2025-12-17T22:12:45+08:00">2025-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/" itemprop="url" rel="index"><span itemprop="name">搜索</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+            <div class="post-description">介绍了深度优先搜索</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="dfs">DFS</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1hH4y1L7yz/?share_source=copy_web&amp;vd_source=d51bc147506d4e930a5fca5c791cb3d8">参考视频</a></p>
+</blockquote>
+<h2 id="前置知识二叉树的遍历">前置知识：二叉树的遍历</h2>
+<h3 id="三种遍历">三种遍历</h3>
+<ol type="1">
+<li>先根遍历（根左右）</li>
+<li>中根遍历（左根右）</li>
+<li>后根遍历（左右根）</li>
+</ol>
+<p><strong>注意：这里的左右为左右子树</strong></p>
+<p>e.g.</p>
+<img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/DFS/image-20241110095017456.png" class="" title="树的遍历">
+<pre><code>1. 先根遍历：271653894
+1. 中根遍历：175632849
+1. 后根遍历：153674982</code></pre>
+<h3 id="二叉树的确定">二叉树的确定</h3>
+<ol type="1">
+<li><p>给定先根和中根、中根和后根遍历结果，可以唯一确定二叉树</p>
+<p>e.g. 上面，在先根中确定2为根，在中根中找到2，则2前后分别为其左右子树；再在先根中找到7，在中根中找到7，则7前后为其左右子树，以此类推。中根后根与前根后根是对称的。</p></li>
+<li><p>给定先根和后根遍历结果，不能唯一确定二叉树</p>
+<p>只知道根数量而不知道左右子树数量</p></li>
+</ol>
+<h2 id="递归">递归</h2>
+<p>递归特征：大问题与子问题除了规模其他都一样</p>
+<blockquote>
+<p>斐波那契数列的递归实现</p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fi</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (a</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #D73A49">||</span><span style="color: #24292E">a</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fi</span><span style="color: #24292E">(a</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">fi</span><span style="color: #24292E">(a</span><span style="color: #D73A49">-</span><span style="color: #005CC5">2</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>即有一个特定模板：</p>
+<p><strong>即先写程序出口（不需要递归的特殊情况），再写普通情况（递归）</strong></p>
+<h2 id="全排列问题">全排列问题</h2>
+<blockquote>
+<p>输入一个正整数n，按字典序输出n-1的全排列</p>
+</blockquote>
+<h3 id="递归特征">递归特征</h3>
+<ul>
+<li>若第一个数确定，剩余的问题就是其余n-1个数的全排列</li>
+<li>若前k个数已经排好，剩余问题就是其余n-k个数的全排列</li>
+</ul>
+<h3 id="代码实现">代码实现</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> num[</span><span style="color: #005CC5">10</span><span style="color: #24292E">], vis[</span><span style="color: #005CC5">10</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">step</span><span style="color: #24292E">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (</span><span style="color: #6F42C1">scanf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">,</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">n)</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">memset</span><span style="color: #24292E">(vis,</span><span style="color: #005CC5">0</span><span style="color: #24292E">,sizeof vis);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span><span style="color: #6A737D"> // 从第一位开始处理</span></span>
+<span class="line"><span style="color: #24292E">        </span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">step</span><span style="color: #24292E">){</span><span style="color: #6A737D">  // 接下来准备处理第step位</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (step</span><span style="color: #D73A49">==</span><span style="color: #24292E">n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span><span style="color: #6A737D">  // 前n位都放好了，进行输出</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">%d</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">, num[i]);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">printf</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;</span><span style="color: #005CC5">\n</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (vis[i]</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">){</span><span style="color: #6A737D">  // 第i位数没用过</span></span>
+<span class="line"><span style="color: #24292E">            num[step]</span><span style="color: #D73A49">=</span><span style="color: #24292E">i;</span><span style="color: #6A737D">  // nun中当前这一位保存一个i</span></span>
+<span class="line"><span style="color: #24292E">            vis[i]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D">  // i被用过了，做标记1</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(step</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">); </span></span>
+<span class="line"><span style="color: #24292E">            vis[i]</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>若n==3：</p>
+<p>vis：0 0 0 0 step==1</p>
+<p>​ 进入for循环: vis[1]==0</p>
+<p>​ 使num[1]=1 vis[1] = 1</p>
+<p>​ num： 0 1 0 0 0</p>
+<p>​ vis：0 1 0 0 表示1用过了</p>
+<p>vis： 0 1 0 0 step==2</p>
+<p>​ 进入for循环: vis[2]==0</p>
+<p>​ num[2]=2 vis[2] = 1</p>
+<p>​ num： 0 1 2 0 0</p>
+<p>​ vis：0 1 1 0 表示1,2用过了</p>
+<p>vis：0 1 1 0 step==3</p>
+<p>​ 进入for循环: vis[3]==0</p>
+<p>​ num[3]=3 vis[3] = 1</p>
+<p>​ num： 0 1 2 3 0</p>
+<p>​ vis：0 1 1 1 表示1,2,3用过了</p>
+<p>vis：0 1 1 1 step==4</p>
+<p>​ step == 3+1成立，到达边界，则输出num[1]到num[n] 123</p>
+<p>​ return 到dfs(3)中（<strong>谁调用的返回谁</strong>）</p>
+<p>dfs(3)：vis[3]=0 vis：0 1 1 0 程序结束返回dfs(2)</p>
+<p>dfs(2)：vis[2]=0 vis：0 1 0 0</p>
+<p>​ 此时进行下一次循环 i==3，vis[3]==0</p>
+<p>​ num[2]=3,vis[3]=1</p>
+<p>​ num： 0 1 3 0</p>
+<p>​ vis：0 1 0 1 表示1,3用过了</p>
+<p>​ 再进入dfs(3)，重复上述操作后</p>
+<p>​ num：0 1 3 2</p>
+<p>​ vis：0 1 1 1</p>
+<p>​ 进入dfs(4)到达边界输出 132</p>
+<p>​ return 到dfs(3)中重复上述过程</p>
+<p><strong>若没有vis[i]=0的回溯，则第一遍return后vis仍保持全标记1状态，则无法再输出其他排列直接结束</strong></p>
+<h2 id="基本模型">基本模型</h2>
+<p>关键在于<strong>着眼于当下如何做</strong>，下一步的做法与当前一样，只是参数不同</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">void dfs(int step){</span></span>
+<span class="line"><span style="color: #24292e">特殊情况处理(结束递归情况)</span></span>
+<span class="line"><span style="color: #24292e">枚举当前每一种可能for(int i=1;i&lt;=;i++)</span></span>
+<span class="line"><span style="color: #24292e">	在枚举的每一种可能中，递归dfs(step+1);</span></span>
+<span class="line"><span style="color: #24292e">	回溯</span></span>
+<span class="line"><span style="color: #24292e">}</span></span></code></pre></div></div></figure>
+<h2 id="例迷宫搜索">例：迷宫搜索</h2>
+<blockquote>
+<h3 id="tempter-of-the-bone">Tempter of the Bone</h3>
+<p>Problem Description</p>
+<p>The doggie found a bone in an ancient maze, which fascinated him a
+lot. However, when he picked it up, the maze began to shake, and the
+doggie could feel the ground sinking. He realized that the bone was a
+trap, and he tried desperately to get out of this maze.</p>
+<p>The maze was a rectangle with sizes N by M. There was a door in the
+maze. At the beginning, the door was closed and it would open at the
+T-th second for a short period of time (less than 1 second). Therefore
+the doggie had to arrive at the door on exactly the T-th second. In
+every second, he could move one block to one of the upper, lower, left
+and right neighboring blocks. Once he entered a block, the ground of
+this block would start to sink and disappear in the next second. He
+could not stay at one block for more than one second, nor could he move
+into a visited block. Can the poor doggie survive? Please help him.</p>
+<p>Input</p>
+<p>The input consists of multiple test cases. The first line of each
+test case contains three integers N, M, and T (1 &lt; N, M &lt; 7; 0
+&lt; T &lt; 50), which denote the sizes of the maze and the time at
+which the door will open, respectively. The next N lines give the maze
+layout, with each line containing M characters. A character is one of
+the following:</p>
+<p>‘X’: a block of wall, which the doggie cannot enter; ‘S’: the start
+point of the doggie; ‘D’: the Door; or ‘.’: an empty block.</p>
+<p>The input is terminated with three 0’s. This test case is not to be
+processed.</p>
+<p>Output</p>
+<p>For each test case, print in one line “YES” if the doggie can
+survive, or “NO” otherwise.</p>
+<p>Sample Input</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">4 4 5</span></span>
+<span class="line"><span style="color: #24292e">S.X.</span></span>
+<span class="line"><span style="color: #24292e">..X.</span></span>
+<span class="line"><span style="color: #24292e">..XD</span></span>
+<span class="line"><span style="color: #24292e">....</span></span>
+<span class="line"><span style="color: #24292e">3 4 5</span></span>
+<span class="line"><span style="color: #24292e">S.X.</span></span>
+<span class="line"><span style="color: #24292e">..X.</span></span>
+<span class="line"><span style="color: #24292e">...D</span></span>
+<span class="line"><span style="color: #24292e">0 0 0</span></span></code></pre></div></div></figure>
+<p>Sample Output</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">NO</span></span>
+<span class="line"><span style="color: #24292e">YES</span></span></code></pre></div></div></figure>
+</blockquote>
+<p>分析：</p>
+<ul>
+<li><p>每个block只能走一次</p></li>
+<li><p>恰好给定时间到达出口</p></li>
+<li><p>剪枝条件：</p>
+<ul>
+<li><p>若可走的block总数小于时间：全走完都开不了门，肯定NO</p></li>
+<li><p>若起点在左上角，门在右下角，没有障碍物且最短路径（曼哈顿距离：行坐标差减列坐标差）都比时间长，肯定NO</p></li>
+<li><p><strong>奇偶性剪枝</strong>（应用条件：每个格子只能等一秒）：</p>
+<p>使行列坐标相加为偶数的标为0，为奇数的标为1，发现1的下一步一定为0，0的下一步一定为1</p>
+<p>那么<strong>如果从0走到1或从1走到0，所需时间为奇数；如果从1走到1或从0走到0，所需时间为偶数</strong></p>
+<p>那么如果规定时间为偶数，则从0到1或从1到0肯定NO，反之亦然。</p></li>
+</ul></li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;iostream&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;algorithm&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;string&gt;</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ios</span><span style="color: #24292E"> ios::sync_with_stdio(0); cin.tie(0);</span></span>
+<span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">endl</span><span style="color: #24292E"> &#39;\n&#39;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">char</span><span style="color: #24292E"> mmap[</span><span style="color: #005CC5">9</span><span style="color: #24292E">][</span><span style="color: #005CC5">9</span><span style="color: #24292E">];</span><span style="color: #6A737D">  // 存储地图 注意地图要比数据范围大一点</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> n,m,t,escape;</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> si,sj,di,dj;</span><span style="color: #6A737D">  // 记录起始与结束点坐标</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> dir[</span><span style="color: #005CC5">4</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span><span style="color: #D73A49">=</span><span style="color: #24292E">{{</span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">},{</span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span><span style="color: #005CC5">1</span><span style="color: #24292E">},{</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">0</span><span style="color: #24292E">},{</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">0</span><span style="color: #24292E">}};</span><span style="color: #6A737D">  // 进行上下左右四个方向的行走</span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">cnt</span><span style="color: #24292E">){</span><span style="color: #6A737D">  // 行列坐标，已经花的时间</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">n</span><span style="color: #D73A49">||</span><span style="color: #24292E">y</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">m</span><span style="color: #D73A49">||</span><span style="color: #24292E">x</span><span style="color: #D73A49">&lt;=</span><span style="color: #005CC5">0</span><span style="color: #D73A49">||</span><span style="color: #24292E">y</span><span style="color: #D73A49">&lt;=</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span><span style="color: #6A737D">  // 越过边界，跳过</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (cnt</span><span style="color: #D73A49">==</span><span style="color: #24292E">t</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">x</span><span style="color: #D73A49">==</span><span style="color: #24292E">di</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">y</span><span style="color: #D73A49">==</span><span style="color: #24292E">dj) {</span><span style="color: #6A737D">  // 在开门时间到达出口</span></span>
+<span class="line"><span style="color: #24292E">    escape</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D">  // 标记逃离成功</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (escape) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #6A737D">  // t-cnt:剩余时间 两abs:剩余距离</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> tmp</span><span style="color: #D73A49">=</span><span style="color: #24292E">((t</span><span style="color: #D73A49">-</span><span style="color: #24292E">cnt)</span><span style="color: #D73A49">-</span><span style="color: #6F42C1">abs</span><span style="color: #24292E">(di</span><span style="color: #D73A49">-</span><span style="color: #24292E">x)</span><span style="color: #D73A49">-</span><span style="color: #6F42C1">abs</span><span style="color: #24292E">(dj</span><span style="color: #D73A49">-</span><span style="color: #24292E">y));</span></span>
+<span class="line"><span style="color: #6A737D">  // 小于零：剩余时间内走不到终点</span></span>
+<span class="line"><span style="color: #6A737D">  /* 是奇数：为了到达门口，剩余时间与剩余距离的奇偶性一定要相同</span></span>
+<span class="line"><span style="color: #6A737D">  奇数-奇数=偶数   偶数-偶数=偶数</span></span>
+<span class="line"><span style="color: #6A737D">  故tmp一定要是偶数才能保证走到门口，否则包走不到</span></span>
+<span class="line"><span style="color: #6A737D">  即奇偶性剪枝</span></span>
+<span class="line"><span style="color: #6A737D">  */</span></span>
+<span class="line"><span style="color: #6A737D"> // 该奇偶性剪枝可以在主函数里写，因为时间和距离是同步进行的</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (tmp</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #6A737D">  // 四个方向遍历</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E"> ;i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">4</span><span style="color: #24292E">;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (mmap[x</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">]][y</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">]]</span><span style="color: #D73A49">!=</span><span style="color: #032F62">&#39;X&#39;</span><span style="color: #24292E">){</span><span style="color: #6A737D">  // 不是障碍物</span></span>
+<span class="line"><span style="color: #24292E">      mmap[x</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">]][y</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">]]</span><span style="color: #D73A49">=</span><span style="color: #032F62">&#39;X&#39;</span><span style="color: #24292E">;</span><span style="color: #6A737D">  //修改</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">],y</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">],cnt</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span><span style="color: #6A737D">  //递归</span></span>
+<span class="line"><span style="color: #24292E">      mmap[x</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">]][y</span><span style="color: #D73A49">+</span><span style="color: #24292E">dir[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">]]</span><span style="color: #D73A49">=</span><span style="color: #032F62">&#39;.&#39;</span><span style="color: #24292E">;</span><span style="color: #6A737D">  //回溯，这样可以回到上一步换一条路走</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E">(cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E">t){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">m</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">t</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span><span style="color: #6A737D">  // 结束条件</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> block </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D">  // 障碍物数量：用来剪枝</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">for</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; j</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">m;j</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> mmap[i][j];</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (mmap[i][j]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;S&#39;</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">          si</span><span style="color: #D73A49">=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">          sj</span><span style="color: #D73A49">=</span><span style="color: #24292E">j;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (mmap[i][j]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;D&#39;</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">          di</span><span style="color: #D73A49">=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">          dj</span><span style="color: #D73A49">=</span><span style="color: #24292E">j;</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (mmap[i][j]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;X&#39;</span><span style="color: #24292E">) block</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // 剪枝1：迷宫格子数量减去障碍物数量小于等于开门时间，一定出不去</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (n</span><span style="color: #D73A49">*</span><span style="color: #24292E">m</span><span style="color: #D73A49">-</span><span style="color: #24292E">block</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">t) {</span></span>
+<span class="line"><span style="color: #24292E">      cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;NO&quot;</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // 剪枝2：见dfs里的解释</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> ((t</span><span style="color: #D73A49">-</span><span style="color: #24292E">(</span><span style="color: #6F42C1">abs</span><span style="color: #24292E">(di</span><span style="color: #D73A49">-</span><span style="color: #24292E">si)</span><span style="color: #D73A49">+</span><span style="color: #6F42C1">abs</span><span style="color: #24292E">(dj</span><span style="color: #D73A49">-</span><span style="color: #24292E">sj)))</span><span style="color: #D73A49">%</span><span style="color: #005CC5">2</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">      cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;NO&quot;</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #6A737D">    // escape标记是否成功，把起点标为障碍物，确保不会再回来</span></span>
+<span class="line"><span style="color: #24292E">    escape </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, mmap[si][sj]</span><span style="color: #D73A49">=</span><span style="color: #032F62">&#39;X&#39;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6F42C1">dfs</span><span style="color: #24292E">(si,sj,</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #6A737D">    // 判断是否能逃离</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (escape) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #032F62">&quot;YES&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;NO&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%90%9C%E7%B4%A2/" rel="tag"># 搜索</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%89%8D%E7%BC%80%E5%92%8C%E4%B8%8E%E5%B7%AE%E5%88%86/" rel="prev" title="【算法】前缀和与差分">
+      <i class="fa fa-chevron-left"></i> 【算法】前缀和与差分
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/BFS/" rel="next" title="【算法】BFS">
+      【算法】BFS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dfs"><span class="nav-number">1.</span> <span class="nav-text">DFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86"><span class="nav-number">1.1.</span> <span class="nav-text">前置知识：二叉树的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E9%81%8D%E5%8E%86"><span class="nav-number">1.1.1.</span> <span class="nav-text">三种遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%A1%AE%E5%AE%9A"><span class="nav-number">1.1.2.</span> <span class="nav-text">二叉树的确定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%92%E5%BD%92"><span class="nav-number">1.2.</span> <span class="nav-text">递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E6%8E%92%E5%88%97%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">全排列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E7%89%B9%E5%BE%81"><span class="nav-number">1.3.1.</span> <span class="nav-text">递归特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.3.2.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.4.</span> <span class="nav-text">基本模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E8%BF%B7%E5%AE%AB%E6%90%9C%E7%B4%A2"><span class="nav-number">1.5.</span> <span class="nav-text">例：迷宫搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tempter-of-the-bone"><span class="nav-number">1.5.1.</span> <span class="nav-text">Tempter of the Bone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.5.2.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">448k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13:35</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
