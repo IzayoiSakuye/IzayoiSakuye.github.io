@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="详细介绍了汇编代码相关知识，以及C语言和汇编之间的转化与gcc对代码的优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机组成原理】程序的机器级表示">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="详细介绍了汇编代码相关知识，以及C语言和汇编之间的转化与gcc对代码的优化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313103452110.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164059857.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164319738.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164414436.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164431456.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164441918.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313112748062.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162003250.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162216247.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162250229.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162344938.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162414698.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162439078.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251007101206963.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316090524795.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111548339.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111939996.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316092335113.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017160828935.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017160850024.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251107161530925.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316095953152.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251107161436883.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316101414882.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309085447104.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309101311150.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309102426176.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309104200979.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310082126191.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310084352343.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310090345394.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310093658011.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312142245448.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312150128763.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312150215877.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151008030.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151637594.png">
+<meta property="article:published_time" content="2026-03-16T13:22:36.899Z">
+<meta property="article:modified_time" content="2026-03-16T02:39:51.445Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="CSAPP">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313103452110.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【计算机组成原理】程序的机器级表示 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【计算机组成原理】程序的机器级表示
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-03-16 21:22:36 / 修改时间：10:39:51" itemprop="dateCreated datePublished" datetime="2026-03-16T21:22:36+08:00">2026-03-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>24k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>43 分钟</span>
+            </span>
+            <div class="post-description">详细介绍了汇编代码相关知识，以及C语言和汇编之间的转化与gcc对代码的优化</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="程序的机器级表示">程序的机器级表示</h1>
+<p>计算机执行机器代码，用字节序列编码低级操作</p>
+<p>gcc编译器通过调用汇编器与链接器以汇编代码形式输出，根据汇编代码生成可执行的机器代码</p>
+<h2 id="程序编码">程序编码</h2>
+<p>gcc编译器调用了一整套程序将源代码转化为可执行代码：（假如源代码名称为<code>p1.c</code>与<code>p2.c</code>）</p>
+<ul>
+<li>首先，C预处理器扩展源代码，插入所有用<code>#include</code>命令指定的文件，并扩展所有<code>#define</code>声明指定的宏</li>
+<li>其次，编译器产生两个源文件的汇编代码，名为<code>p1.s</code>与<code>p2.s</code></li>
+<li>接下来，汇编器会将汇编代码转换为二进制目标代码文件<code>p1.o</code>与<code>p2.o</code>，这是机器代码的一种形式，包含所有二进制表示，但未填入全局值的地址</li>
+<li>最后，链接器将两个目标代码文件与实现库函数的代码合并，并产生最终的可执行文件代码<code>p</code></li>
+</ul>
+<h3 id="机器级代码">机器级代码</h3>
+<p>计算机系统使用了多种不同形式的抽象，利用更简单的抽象模型来隐藏实现细节。</p>
+<p>第一种是由<strong>指令集体系结构货指令集架构（ISA</strong>）来定义机器级程序的格式与行为，定义了处理器状态、指令格式以及每条指令对状态的影响</p>
+<p>大多数ISA采取顺序执行，处理器硬件并发执行许多指令，但可以采取措施保证整体行为与ISA一致</p>
+<p>第二种是机器级程序使用的内存地址是虚拟地址，提供的内存模型看上去是一个非常大的字节数组</p>
+<p>x86-64的机器码与原始C的代码差别非常大，一些通常对C语言程序员隐藏的处理器状态都可见：</p>
+<ul>
+<li>程序计数器：通常称为PC，x86-64中用<code>%rip</code>表示，给出将要执行的下一条指令在内存中的地址</li>
+<li>整数寄存器：包含16个命名的地址，分别存储64位的值。他们可以存储地址或整数数据。有的寄存器被用来记录某些重要的程序信息，而其他寄存器用来保存临时数据，包括过程参数、局部变量、函数返回值</li>
+<li>条件码寄存器：保存最近执行的算术与逻辑指令的状态信息，用来实现控制或数据流中的条件变化，如if与while</li>
+<li>向量寄存器：可以存储一或多个整数或浮点值</li>
+</ul>
+<p>机器代码将内存看做一个很大的，按字节寻址的数组，如数组或结构体等，在机器码中用一组连续字节表示</p>
+<p>汇编代码不区分有无符号整数、不区分各种类型的指针、甚至不区分指针与整数</p>
+<p>程序内存包含：程序的可执行机器代码、操作系统需要的一些信息、用来管理过程调用和返回的运行时栈、以及用户分配的内存块</p>
+<p>程序内存用虚拟地址来寻址。在任意给定时刻，只有有限的一部分虚拟地址被认为是合法的，如x86-64的虚拟地址是由64位的字来表示的。在目前的实现中，地址的高16位必须设置为0，操作系统负责管理虚拟空间，将虚拟地址翻译为处理器内存中的物理地址。</p>
+<p>一条机器指令只进行一个非常基本的操作，如将寄存器中的数字相加、在存储器与寄存器间传送数据等，编译器必须产生这些指令的序列，从而实现程序结构</p>
+<h3 id="编译细节">编译细节</h3>
+<p>假设有一个c语言代码<code>mstore.c</code>，包含下面的函数定义：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mult2</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    </span></span>
+<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">multstore</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">, </span><span style="color: #D73A49">long*</span><span style="color: #24292E"> </span><span style="color: #E36209">dest</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">mult2</span><span style="color: #24292E">(x,y);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">*</span><span style="color: #24292E">dest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>在命令行上添加<code>-S</code>选项，可以看到产生的汇编代码<code>mstore.s</code></p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre><code>multstore:
+	pushq %rbx
+	movq %rdx, %rbx
+	call mult2
+	movq %rax, (%rbx)
+	popq %rbx
+	ret</code></pre></div></div></figure>
+<p>上面代码每个缩进行都对应于一条机器指令，如pushq指令表示应该将寄存器<code>%rbx</code>的内容压入程序栈</p>
+<p>在命令行上使用<code>-c</code>选项，gcc会编译并汇编该代码，产生目标代码文件<code>mstore.o</code>，是二进制格式</p>
+<p>因此我们可以知道：机器执行的程序只是一个字节序列，机器对产生这些指令的源代码几乎一无所知</p>
+<p>可以通过<strong>反汇编器</strong>查看机器代码的内容，这些程序根据机器代码产生一种类似汇编代码的格式，Linux中带<code>-d</code>命令行标志的程序objdump可以使用<code>dbjdump -d mstore.o</code>来进行反汇编</p>
+<style>.ooyjldufblea{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313103452110.png" class="ooyjldufblea" alt="反汇编">
+<p>机器码与其对应的反汇编码表示有一些特性：</p>
+<ul>
+<li>x86-64的指令长度由1－15字节不等，常用的指令以及操作数少的所需字节少，反之所需字节多</li>
+<li>设计指令格式的方法：从某个给定位置开始，可以将字节唯一地解码为机器指令</li>
+<li>反汇编器基于机器代码文件中的字节序列确定汇编代码，不需要访问源代码与汇编代码</li>
+<li>反汇编器的指令命名规则与gcc生成的有些细微差别</li>
+</ul>
+<p>若将之前的代码添加一个main函数，再进行编译，会增加用来启动和终止程序的代码，以及与操作系统交互的代码，而有关<code>multstore</code>函数的汇编代码几乎一样，</p>
+<p>第一个不同的是地址，链接器将这段代码地址移到了一段不同的地址范围中；</p>
+<p>第二个不同的是链接器填上了<code>callq</code>指令调用函数mult2需要使用的地址，因为链接器的任务之一就是为函数调用找到匹配的函数的可执行代码的位置</p>
+<p>最后一个不同是多了两行代码nop，它们出现在返回指令后，对程序无影响，输入这些是为了让函数代码变为16字节，使得能更好放置下一个代码块</p>
+<h3 id="格式注解">格式注解</h3>
+<p>所有以.开头的行都是指导汇编器和链接器工作的伪指令，我们通常可以忽略。</p>
+<p>为了更好的说明汇编代码，我们省略大部分伪指令，但包括行号和解释说明</p>
+<p>通常只会给出与讨论内容相关的代码行，行左有编号供引用，右侧是注解，简单的描述指令的效果以及与原始c代码中计算操作的关系，这是一种汇编程序员写代码的风格。</p>
+<blockquote>
+<p>我们表述的是ATT格式的汇编代码，这是gcc等工具的默认格式</p>
+<p>而如微软的文档等其他工具，其汇编代码是Intel格式的，不同之处在于：</p>
+<ul>
+<li>Intel忽略了指示大小的后缀，如pushq变为push</li>
+<li>Intel省略了寄存器名字前面的%，如%rbx变为rbx</li>
+<li>Intel代码使用不同方式描述内存中的位置</li>
+<li>在带有多个操作数的指令情况下，列出的操作数顺序相反</li>
+</ul>
+</blockquote>
+<h3 id="数据格式">数据格式</h3>
+<p>Intel用“字”表示16位数据类型，用“双字”表示32位数据类型，用“四字”表示64位数据类型，下图给出了c语言基本数据类型对应的x86-64表示</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164059857.png" class="" title="数据格式">
+<p>大多数gcc生成的汇编代码指令都有一个字符的后缀，表明操作数的大小，如mov有movb（传送字节）、movw（传送字）、movl（传送双字）、movq（传送四字），其中l也表示8字节的双精度浮点，但不会产生歧义</p>
+<h3 id="访问信息">访问信息</h3>
+<p>一个x86-64的CPU包含一组16个存储64位值的通用目的寄存器，用来存储整数和指针，它们的名字都以<code>%r</code>开头</p>
+<p>其中从8086指令集拓展而来八个寄存器的标号从<code>%rax</code>到<code>%rsp</code>，增加的八个新寄存器的标号从<code>%r8</code>到<code>%r15</code></p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164319738.png" class="" title="访问信息">
+<p>如图，指令可以对这16个寄存器的低位字节中存放的不同大小的数据操作，字节级操作可以访问最低字节，16位操作可以访问最低两个字节，32位操作可以访问最低的4个字节，而64位操作可以访问整个寄存器</p>
+<p>根据传入数据的大小不同，使用的寄存器表示方式也不同，如longlong类型占用8字节，使用<code>%rax</code>，int占用4字节，使用<code>%eax</code>，以此类推，虽然表示不同，实际上它们是针对同一寄存器的不同数位进行操作</p>
+<p>对于生成小于8字节结果的指令，寄存器中剩下的字节有两个规则：</p>
+<ul>
+<li>生成1与2字节数字指令会保持剩下的字节不变</li>
+<li>生成4字节数字指令会把高位的4个字节置零</li>
+</ul>
+<p>常见的程序中，不同寄存器扮演着不同的角色，最特别的是栈指针<code>%rsp</code>，用来指明运行时栈的结束位置，有些指令会明确读写这个寄存器。有一组标准的编程规范控制着如何使用寄存器。</p>
+<h3 id="操作数指示符">操作数指示符</h3>
+<p>一条机器指令由操作码＋操作数组成，操作码决定了cpu操作的类型</p>
+<p>大多数指令有一个或多个<strong>操作数</strong>（ret没有），指示执行一个操作中要使用的源数据值，和放置结果的目的位置。</p>
+<p>x86-64支持多种操作数格式，源数据值可以以常数形式给出，或是从寄存器或内存中读出，结果可以存放在寄存器或内存中。</p>
+<p>因此不同操作数的可能性被分为三种：</p>
+<ul>
+<li><p><strong>立即数</strong>：表示示常数值。ATT格式下，书写方式为用<code>$</code>后面跟着一个用标准c表示法表示的整数，如<code>$-1</code>，<code>$0x1F</code>等</p>
+<p>不同指令允许的立即数值范围不同，汇编器会自动选择最紧凑的方式进行数值编码</p></li>
+<li><p><strong>寄存器</strong>：表示某个寄存器的内容，16个寄存器的低位1、2、4、8字节中的一个作为操作数，这些字节数分别对应于8、16、32、64位</p>
+<p>用符号<span
+class="math inline">\(r_a\)</span>来表示任意寄存器a，用引用<span
+class="math inline">\(R[r_a]\)</span>来表示值，即将寄存器集合看作数组，用寄存器标识符作为索引</p>
+<p>格式中，用小括号括起来的寄存器表示的是内存引用</p></li>
+<li><p><strong>内存引用</strong>：会根据计算出来的地址（通常称为有效地址）访问某个内存位置。因为将内存看成一个很大的字节数组，用符号<span
+class="math inline">\(M_b[Addr]\)</span>表示对存储在内存中从地址Addr开始的b个字节的引用，一般省去下标b</p></li>
+</ul>
+<p>如图，有多种不同的寻址模式，允许不同形式的内存引用</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164414436.png" class="" title="指示符">
+<p>其中底部<span class="math inline">\(Imm(r_b,
+r_i,s)\)</span>表示的是最常用的形式，引用数组元素时会用到，有四个组成部分：</p>
+<ul>
+<li>立即数偏移Imm</li>
+<li>基址寄存器<span
+class="math inline">\(r_b\)</span>，必须是64位寄存器</li>
+<li>变址寄存器<span
+class="math inline">\(r_i\)</span>，必须是64位寄存器</li>
+<li>比例因子s，s必须是1、2、4、8</li>
+</ul>
+<p>有效地址被计算为<span class="math inline">\(Imm+R[r_b]+R[r_i]\cdot
+s\)</span>，如引用数组元素时，会用到这种通用形式</p>
+<p>其他形式都是这种通用形式的特殊情况</p>
+<h3 id="数据传送指令">数据传送指令</h3>
+<p>最频繁使用的指令是数据的传送指令，操作数表示的通用型使得一条简单的数据传送指令能够完成在许多机器中要好几条不同指令才能完成的功能</p>
+<p>我们将许多不同的指令划分为<strong>指令类</strong>，每一类中的指令执行相同的操作，只不过操作数大小不同</p>
+<p>下图为最简单形式的数据传送指令——MOV类，它们将数据从源位置复制到目的位置，不做任何变化</p>
+<p>MOV类由四条指令组成：movb、movw、movl、movq，它们执行相同操作，但操作数据大小不同，分别为1、2、4、8字节</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164431456.png" class="" title="MOV">
+<p>源操作数指定的值是一个立即数，存储在寄存器或内存中，目的操作数指定一个位置，一个寄存器或一个内存地址</p>
+<p>x86-64加了一条限制：<strong>传送指令的两个操作数不能指向内存位置</strong></p>
+<p>将一个值从一个内存位置复制到另一个内存位置需要两条指令：</p>
+<ul>
+<li>第一条指令将源值加载到寄存器中</li>
+<li>第二条指令将该寄存器写入目的位置</li>
+</ul>
+<p>寄存器操作数可以是16个寄存器中有标号部分中的任意一个，大小必须与指令最后一个字符指定大小匹配</p>
+<p>大多情况下，MOV指令只会更新目的操作数指定的那些寄存器字节或内存位置。唯一例外是movl以<strong>寄存器</strong>作为目的时，它会将该寄存器的<strong>高位4字节设为0</strong></p>
+<p>当源操作数是立即数时，该立即数只能是32位的补码表示，对该数值进行符号扩展后，将得到的64位传送到目的位置</p>
+<p>当立即数是64位时，最后一条指令<code>movabsq</code>可以处理64位立即数数据的，它可以以任意64位立即数作为源操作数，并且<strong>只能以寄存器作为目的</strong></p>
+<p><strong>注意：x86-64位下，内存寻址使用的是64位（四字）地址空间，故总是用四字寄存器给</strong>出</p>
+<p>这些指令只能实现相同大小源值之间的移动</p>
+<p>例：<code>movl %eax (%rsp)</code>中，%eax为双字，即将该寄存器的32位内容存到%rsp指向的32位操作单元，尽管%rsp是64位，但实际上只在那个地址写入了32位</p>
+<p>下图记录了两类数据移动指令，在将较小数位源值复制到较大目的时使用。所有这些指令都把数据从源复制到目的寄存器</p>
+<p>MOVZ类中的指令把目的中的剩余字节填充为0，而MOVS类中的指令通过符号拓展来填充，即把最高位进行复制</p>
+<p>每条指令的最后两个字符都是大小指示符，分别指示源的大小与目的的大小</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250919164441918.png" class="" title="MOVZS">
+<p>注意，图中没有一条指令可以实现把4字节零扩展到8字节，但可以使用以寄存器为目的的<code>movl</code>指令实现</p>
+<p><code>cltq</code>指令没有操作数，总是以寄存器<code>%eax</code>为源，<code>%rax</code>为符号拓展的目的，效果与<code>movslq %eax, %rax</code>一致，但编码更紧凑</p>
+<h3 id="数据传送实例">数据传送实例</h3>
+<p>给予一段C语言代码与对应汇编代码</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">exchange</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">xp </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">xp;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">*</span><span style="color: #24292E">xp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> y;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre><code>exchange:
+	movq (%rdi), %rax
+	movq %rsi, (%rdi)
+	ret</code></pre></div></div></figure>
+<p>函数exchange由三条指令实现：两个数据传送与一条返回函数被调用点的指令，根据惯例，<code>%rdi</code>和<code>%rsi</code>分别来保存函数传递的第一个和第二个参数，函数把值存储在寄存器<code>%rax</code>或该寄存器的某个低位部分中返回</p>
+<p>过程开始执行时，过程参数xp与y分别存储在寄存器<code>%rdi</code>和<code>%rsi</code>中。然后指令2从内存中读出x，把他存放到寄存器<code>rax</code>中，对应<code>x=*xp</code>，并设置用寄存器<code>%rax</code>从这个函数返回一个值x</p>
+<p>指令3将y写入寄存器<code>%rdi</code>中的xp指向的内存位置，对应<code>*xp=y</code></p>
+<p>可以注意到，C语言中使用指针（间接引用），对应的操作就是将该指针放在一个寄存器中，然后在内存引用中使用这个寄存器</p>
+<p>像x这样的局部变量通常存储在<strong>寄存器</strong>中，而非内存中，访问寄存器比访问内存快得多</p>
+<h3 id="压入与弹出栈数据">压入与弹出栈数据</h3>
+<p>最后两个数据传送操作可以将数据压入程序栈中，以及从程序栈中弹出数据，在处理过程调用中起到至关重要的作用，下面是一个程序栈：</p>
+<style>.wtpwszfyenjf{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313112748062.png" class="wtpwszfyenjf" alt="程序栈">
+<p>在X86-64中，程序栈放在内存中某个区域，从高地址向低地址向下增长，因此栈顶元素的地址是所有栈中元素地址最低的（根据惯例，栈是倒过来画的）</p>
+<p>栈指针<code>%rsp</code>保存着栈顶元素的地址，下图为入栈与出栈指令：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162003250.png" class="" title="栈">
+<p>将一个四字值压入栈中，首先要将栈指针－8，然后将值写到新的栈顶地址，因此<code>pushq %rbp</code>等价于下面两条指令：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre><code>subq $8, %rsp
+movq %rbp, (%rsp)</code></pre></div></div></figure>
+<p>这两条指令占8字节</p>
+<p>弹出四字值时，首先从栈顶位置读出数据，然后将栈指针+8，因此<code>popq %rbp</code>等价于下面两条指令：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre><code>movq %rsp, (%rax)
+addq $8, %rsp</code></pre></div></div></figure>
+<p>另外，弹出时原地址保存的数据仍然存在，等待新数据push将其覆盖</p>
+<p>程序可以用标准的内存寻址方法来访问栈的任意位置</p>
+<p>例如：<code>movq 8(%rsp), %rdx</code>会将第二个四字从栈中复制到寄存器<code>%rdx</code></p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162216247.png" class="" title="存栈示例">
+<h2 id="算术与逻辑操作">算术与逻辑操作</h2>
+<p>以下是常见算术与逻辑操作</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162250229.png" class="" title="算术与逻辑">
+<p>注意：</p>
+<ul>
+<li>使用<span
+class="math inline">\(&gt;&gt;_A\)</span>来表示算术右移，使用<span
+class="math inline">\(&gt;&gt;_L\)</span>来表示逻辑右移</li>
+<li>ATT格式的汇编代码中的操作数顺序与一般直觉相反</li>
+</ul>
+<h3 id="加载有效地址">加载有效地址</h3>
+<p><code>leaq</code>是<code>movq</code>的变形，但该指令并没有引用内存，而是<strong>将有效地址写入目的操作数</strong></p>
+<p>注意其与mov系列的区别：<strong>mov是传输数据，而leaq是传输地址</strong></p>
+<p>也可以用于描述普通的算术操作，如<code>leaq 7(%rdx, %rdx, 4), %rax</code>设置寄存器<code>%rax</code>的值为<span
+class="math inline">\(5x+7\)</span></p>
+<p>如以下c语言代码：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">scale</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">z</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x</span><span style="color: #D73A49">+</span><span style="color: #005CC5">4</span><span style="color: #D73A49">*</span><span style="color: #24292E">y</span><span style="color: #D73A49">+</span><span style="color: #005CC5">12</span><span style="color: #D73A49">*</span><span style="color: #24292E">z;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>编译时，可以以三条leaq指令实现</p>
+<p>其中x在<code>%rdi</code>中，y在<code>%rsi</code>中，z在<code>%rdx</code>中</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre><code>scale:
+	leaq (%rdi,%rsi,4), %rax
+	leaq (%rdx,%rdx,2), %rdx
+	leaq (%rax,%rdx,4), %rax
+	ret</code></pre></div></div></figure>
+<h3 id="一元与二元操作">一元与二元操作</h3>
+<p>一元操作只有一个操作数，既是源又是目的，操作数可以是一个寄存器、也可以是一个内存地址</p>
+<p>二元操作中的第二个操作数既是源又是目的，注意：源操作数是第一个、目的操作数是第二个</p>
+<ul>
+<li>第一个数可以是立即数、寄存器或内存位置</li>
+<li>第二个数可以是寄存器或内存位置</li>
+</ul>
+<p>注意：当第二个数是内存地址时，处理器必须<strong>从内存读出值，执行操作，再把结果写回内存</strong></p>
+<p>e.g. </p>
+<p><code>xorq %rdx, %rdx</code>实现了将寄存器清零，即使用了异或的性质，相当于<code>movq $0, %rdx</code></p>
+<p>但是前者只需要三个字节而后者需要七个字节</p>
+<h3 id="移位操作">移位操作</h3>
+<p>移位操作先给出移位量，再给出要移位的数，可以进行算术和逻辑右移</p>
+<p>移位量可以是一个立即数，也可以放在单字节寄存器<code>%cl</code>中（只允许该寄存器）</p>
+<p>x86-64中，移位操作对w位长的数据值进行操作，移位量都是由<code>%cl</code>寄存器的低m位决定的，<span
+class="math inline">\(2^m=w\)</span>，高位会被忽略</p>
+<p>如<code>%cl</code>的十六进制值为0xFF时，salb会移7位、salw会移15位、sall会移31位、salq会移63位</p>
+<p>左移指令有两个，sal与shl，两者都是将右边填充0</p>
+<p>右移指令有两个，sar与shr，前者执行算术移位，后者执行逻辑移位</p>
+<p><strong>混淆点：</strong></p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre><code>shift:
+	movl %esi, %ecx
+	sarq %cl, %rax</code></pre></div></div></figure>
+<p>由于变量移位量只能放在<code>%cl</code>中，故第二行代码其实是将n的低32位拷贝到<code>%ecx</code>，这样<code>%cl</code>(<code>%ecx</code>的低八位)就被复制了</p>
+<p>故此时<code>%cl</code>的值是<code>n&amp;0xFF</code>，作为移位量用于<code>sarq</code></p>
+<h3 id="特殊算术操作">特殊算术操作</h3>
+<p>两个64位的有符号或无符号整数相乘得到的乘积需要128位（16字节）来表示，Intel把16字节的数称为八字，下图是针对产生128位乘积以及整数除法的指令：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162344938.png" class="" title="特殊操作">
+<h4 id="高位乘法">高位乘法</h4>
+<p><code>imulq</code>指令有两种不同形式，其中一种如上上个图中所示，是一个双操作数指令，从两个64位操作数中产生一个64位乘积，实现了有符号或无符号乘积</p>
+<p>另外，x86-64指令集还提供了两条不同的单操作数乘法指令，如上图，用来计算两个64位的全128位乘积，分别为有符号和无符号乘法</p>
+<p>这两个指令都要求一个参数必须在寄存器<code>%rax</code>中，而另一个作为指令的源操作数给出，结果存放在寄存器<code>%rdx</code>（高64位）与<code>%rax</code>（低64位）中</p>
+<p>e.g. 下面的汇编代码实现了一个结果为128位的乘法</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre><code>store_uprod:
+	movq %rsi, %rax
+	mulq %rdx
+	movq %rax, (%rdi)
+	movq %rdx, 8(%rdi)
+	ret</code></pre></div></div></figure>
+<p>可以发现，存储乘积需要两个movq指令，一个存储低八个字节，另一个存储高八位字节</p>
+<p>由于针对的是小端法机器，则高位字节存储在大地址（第五行要+8字节）</p>
+<h4 id="除法与取模">除法与取模</h4>
+<p>除法与取模是用单操作数除法指令来提供的，类似于单操作数乘法指令</p>
+<p>有符号除法<code>idivl</code>将寄存器<code>%rdx</code>和<code>%rax</code>中的128位数作为被除数，而除数作为指令的操作数给出，商存在<code>%rax</code>中，余数存在<code>%rdx</code>中</p>
+<p>对于大多数64位除法来说，被除数也常常是一个64位值，应存在<code>%rax</code>中，<code>%rdx</code>的位应该全设置为0（无符号）或<code>%rax</code>的符号位（有符号），后面这个操作可以使用指令<code>cqto</code>完成，不需要操作数，它隐含的读出<code>%rax</code>的符号位，并复制到<code>%rdx</code>的所有位</p>
+<p>e.g. 下面的汇编代码实现了除法与取模操作</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre><code>remdiv:
+	movq %rdx, %r8
+	movq %rdi, %rax
+	cqto
+	idivq %rsi
+	movq %rax, (%r8)
+	movq %rdx, (%rcx)
+	ret</code></pre></div></div></figure>
+<p>上述代码中，第一行中原来的<code>%rdx</code>中存着商的地址，而除法本身会改写<code>%rdx</code>，故需要先将该指针存在其他寄存器中</p>
+<p>接下来将被除数放入<code>%rax</code>，并扩展符号位到<code>%rdx</code>，除以<code>%rsi</code>，得到商在<code>%rax</code>中，余数在<code>%rdx</code>中并写入对应寄存器指向的内存</p>
+<h2 id="控制">控制</h2>
+<h3 id="条件码">条件码</h3>
+<p>除了整数寄存器，CPU还维护着一组单个位的<strong>条件码</strong>寄存器，它们描述了最近的算术或逻辑操作的属性，可以检测这些寄存器来执行条件分支指令</p>
+<p>常用条件码有：</p>
+<ul>
+<li>CF：进位标志，最近的操作数使最高位产生了进位，可以用来检查无符号操作的溢出</li>
+<li>ZF：零标志，最近操作得出的结果为0</li>
+<li>SF：符号标志，最近操作得到的结果为负数</li>
+<li>OF：溢出标志，最近的操作导致一个补码溢出（正或负）</li>
+</ul>
+<p>如，用add指令完成<code>t=a+b</code>的功能，均为整形，则根据下面的表达式来设置条件码：</p>
+<ul>
+<li>CF：<code>(unsigned)t&lt;(unsigned)a</code></li>
+<li>ZF：<code>t==0</code></li>
+<li>SF：<code>t&lt;0</code></li>
+<li>OF：<code>(a&lt;0==b&lt;0)&amp;&amp;(c&lt;0!=a&lt;0)</code></li>
+</ul>
+<p>leaq是用来进行地址计算的，故不改变任何条件码，除此之外算术和逻辑操作都会设置条件码</p>
+<ul>
+<li>对于逻辑操作，进位与溢出标志会被设为0</li>
+<li>对于移位操作，进位标志将设置为最后一个被移出的位，而溢出标志设置为0</li>
+<li>INC与DEC指令会设置溢出和零标志，但不会改变进位标志</li>
+</ul>
+<p>还有两类指令会设置条件码，它们只设置条件码而不更新目的寄存器，如图：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162414698.png" class="" title="条件指令">
+<p>CMP指令据两个操作数之差来设置条件码，除了不更新目的寄存器之外，它与SUB指令的行为是一样的</p>
+<p>注意列出的操作数的顺序是反着的，若两个操作数相同则将零标志设置为1，而其他标志可以用来确定两个操作数之间的大小关系</p>
+<p>TEST指令与AND指令的行为是一样的，但不改变目的寄存器的值</p>
+<p>典型用法是两个操作数是一样的或者其中一个是掩码，用来指示哪些位应该被测试</p>
+<h3 id="访问条件码">访问条件码</h3>
+<p>条件码通常不会直接读取，常用方法有三种：</p>
+<ol type="1">
+<li>根据条件码的某种组合，将一个字节设置为0或1</li>
+<li>可以条件跳转到程序的某个其他的部分</li>
+<li>可以有条件的传输数据</li>
+</ol>
+<p>对于第一种情况，有一类指令被称为SET，可以根据条件码的某种组合将一个字节设置为0或1，如图，它们的不同后缀指明了<strong>所考虑的条件码组合</strong>，而不是操作数大小</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162439078.png" class="" title="访问">
+<p>某些底层的机器指令可能有多个名字，称为<strong>同义名</strong>，如<code>setg</code>与<code>setnle</code>指的是同一条机器指令，编译器会随意决定选哪个名字</p>
+<p>虽然所有算术与逻辑操作都会设置条件码，但是各个SET命令的描述都适用的情况是：首先<strong>执行比较指令</strong>，根据计算<span
+class="math inline">\(t=a-_{w}^{t}b\)</span>设置条件码。</p>
+<p>如<code>sete</code>，当<span
+class="math inline">\(a=b\)</span>时，<span
+class="math inline">\(t=0\)</span>，零标志置为表示相等。<code>setl</code>时，当没有发生溢出时（OF
+=0），我们有 t &lt; 0 当且仅当 a &lt; b，故 SF 设置为 1。再当 a – b &gt;
+0 时，ZF=0 且 SF=0 说明 a &gt; b。当发生溢出时，我们仍有 a – b &lt;
+0（负溢出）当且仅当 a &lt; b，而当 a – b &lt; 0（正溢出）时 a &gt;
+b，不会有溢出。因此当 OF 被设置为 1 时，只有 SF ≠ OF（SF ⊕ OF =
+1）才表示 a &lt;
+b，因为此时溢出改变了SF与OF的关系，故只能通过SF⊕OF来判断大小关系</p>
+<p>而无符号整数使用的是进位与零标志的结合</p>
+<p>综上：</p>
+<ol type="1">
+<li>先执行 cmp a, b（或 sub a, b），由此产生一组标志：CF, ZF, SF,
+OF。</li>
+<li>再执行 SETX 指令（X 表示各种条件码），把目标字节设成 0 或
+1，条件成立时写 1，否则写 0。</li>
+<li>判断条件如下：
+<ul>
+<li>SETE / SETZ : ZF = 1 （等于）</li>
+<li>SETNE / SETNZ : ZF = 0 （不等于）</li>
+<li>SETL / SETNGE : (SF ⊕ OF) = 1 （有符号小于）</li>
+<li>SETGE / SETNL : (SF ⊕ OF) = 0 （有符号大于等于）</li>
+<li>SETB / SETC : CF = 1 （无符号小于）</li>
+<li>SETA / SETNBE : (CF = 0 ∧ ZF = 0) （无符号大于）</li>
+<li>SETBE : (CF = 1 ∨ ZF = 1) （无符号小于等于）</li>
+<li>SETA : (CF = 0 ∧ ZF = 0) （无符号大于）</li>
+</ul></li>
+</ol>
+<h3 id="跳转指令">跳转指令</h3>
+<p>跳转指令会导致执行切换到程序中一个全新位置，汇编代码中，跳转的目的地通常用一个<strong>标号</strong>指明</p>
+<p>图中列出了不同跳转指令</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251007101206963.png" class="" title="jump">
+<p>其中，<code>jmp</code>指令是无条件跳转：</p>
+<ul>
+<li>直接跳转：跳转目标是作为指令的一部分编码的，代码中给出一个标号作为跳转目标，如<code>jmp .L1</code></li>
+<li>间接跳转：跳转目标是从寄存器或内存位置中读出的，写法是*后面跟一个操作数指示符，如<code>jmp *%rax</code></li>
+</ul>
+<p>而其他跳转指令都是有条件的，他们根据条件码的特定组合进行跳转或继续执行下一条指令，他们的名字和跳转条件与SET指令的名字和设置条件是相匹配的，一些底层机器指令有多个名字，条件跳转只能是直接跳转</p>
+<h3 id="跳转指令的编码">跳转指令的编码</h3>
+<p>汇编代码中，跳转目标用符号标号书写。汇编器与后来的链接器会产生跳转目标的适当编码。最常用的是<strong>PC相对的</strong>。它们会将目标指令的地址与紧跟在跳转指令后面那条指令的地址之间的差作为编码，偏移量可以是1、2或4字节。另一种编码方式是给出绝对地址，用四字节直接指定目标，汇编器与链接器会选择适当的跳转目的代码。</p>
+<p>当执行PC相对寻址时，程序计数器的值是跳转指令后面那条指令的地址，而不是本身的地址</p>
+<h3 id="条件控制来实现条件分支">条件控制来实现条件分支</h3>
+<p>如以下条件控制代码：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> lt_cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> ge_cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">absdiff_se</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> y) {</span></span>
+<span class="line"><span style="color: #24292E">        lt_cnt</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> y </span><span style="color: #D73A49">-</span><span style="color: #24292E"> x;</span></span>
+<span class="line"><span style="color: #24292E">    } </span><span style="color: #D73A49">else</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        ge_cnt</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x </span><span style="color: #D73A49">-</span><span style="color: #24292E"> y;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>使用了goto风格的代码如下：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> lt_cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> ge_cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gotodiff_se</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x </span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E"> y)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">goto</span><span style="color: #24292E"> x_ge_y;</span></span>
+<span class="line"><span style="color: #24292E">    lt_cnt</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> y </span><span style="color: #D73A49">-</span><span style="color: #24292E"> x;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">x_ge_y:</span></span>
+<span class="line"><span style="color: #24292E">    ge_cnt</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x </span><span style="color: #D73A49">-</span><span style="color: #24292E"> y;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>产生的汇编代码：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre><code># long absdiff_se(long x, long y)
+# x -> %rdi, y -> %rsi
+absdiff_se:
+    cmpq    %rsi, %rdi        # 比较 x, y
+    jge     .L2               # 如果 x >= y, 跳到 .L2
+    # x < y 分支
+    addq    $1, lt_cnt(%rip)  # lt_cnt++
+    movq    %rsi, %rax        # result = y
+    subq    %rdi, %rax        # result = y - x
+    ret
+.L2:
+    # x >= y 分支
+    addq    $1, ge_cnt(%rip)  # ge_cnt++
+    movq    %rdi, %rax        # result = x
+    subq    %rsi, %rax        # result = x - y
+    ret</code></pre></div></div></figure>
+<p>可以发现对应汇编代码与goto风格类似</p>
+<p>对于c语言中if-else，汇编实现通常会使用下面形式（C语法描述）</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> test</span><span style="color: #D73A49">-</span><span style="color: #24292E">expr;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">t){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">goto</span><span style="color: #24292E"> </span><span style="color: #005CC5">false</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    then</span><span style="color: #D73A49">-</span><span style="color: #24292E">statement;</span></span>
+<span class="line"><span style="color: #D73A49">goto</span><span style="color: #24292E"> done;</span></span>
+<span class="line"><span style="color: #005CC5">false</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">else-</span><span style="color: #24292E">statement;</span></span>
+<span class="line"><span style="color: #24292E">done:</span></span></code></pre></div></div></figure>
+<p>注意：对于复合条件，在汇编中是按顺序依次跳转的，如果对第一个的测试失败，则会直接跳过后面的测试，即短路效应</p>
+<h3 id="条件传送来实现条件分支">条件传送来实现条件分支</h3>
+<p>上述使用控制的条件转移在现代处理器中可能会非常低效</p>
+<p>我们可以使用<strong>数据</strong>的条件转移，计算一个条件操作的两种结果，根据条件是否满足从中选取一个</p>
+<p>只有在一些受限制情况中才可行，但若可行，就可以用一条简单的条件传送指令来实现</p>
+<p>以下是常见条件传送指令，指令结果取决于条件码的值，源值可从内存或寄存器中读取，但只有在指定条件满足时，才会被复制到目标寄存器，同条件跳转不同，处理器无需预测测试结果就可以执行跳转传送</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316090524795.png" class="" title="条件传送">
+<p>如以下条件分支代码：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">absdiff</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">y){</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> y</span><span style="color: #D73A49">-</span><span style="color: #24292E">x;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x</span><span style="color: #D73A49">-</span><span style="color: #24292E">y;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>对应的汇编代码：(x in <code>%rdi</code>, y in <code>%rsi</code>)</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre><code>absdiff:
+	movq %rsi, %rax
+	subq %rdi, %rax
+	movq %rdi, %rdx
+	subq %rsi, %rdx
+	cmpq %rsi, %rdi
+	cmovge %rdx, %rax
+	ret</code></pre></div></div></figure>
+<p>用C语言表达：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cmovdiff</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">y</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> rval </span><span style="color: #D73A49">=</span><span style="color: #24292E"> y</span><span style="color: #D73A49">-</span><span style="color: #24292E">x;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> eval </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x</span><span style="color: #D73A49">-</span><span style="color: #24292E">y;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> ntest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> x</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">y;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(ntest) rval </span><span style="color: #D73A49">=</span><span style="color: #24292E"> eval;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> rval;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>其中，<code>cmov</code>会根据条件码的某种组合来进行有条件的传送数据，上述代码中，当满足指定条件<span
+class="math inline">\(x\geq
+y\)</span>时，指令会将<code>%rdx</code>内的数据复制到<code>%rax</code>内</p>
+<p>原理：</p>
+<p>处理器使用<strong>流水线</strong>来获得高性能，在流水线中，一条指令的处理要进行一系列阶段，每个阶段执行所需操作的一小部分</p>
+<p>这些方法通过重叠连续指令的步骤来获得高性能。如在取一条指令的同时，执行前面一条指令的算术运算，则需要要求事先确定需要执行的指令序列</p>
+<p>当机器遇到条件跳转时，只有将分支条件求值完成后才会决定分支往哪走</p>
+<p>处理器采用非常精密的<strong>分支预测逻辑</strong>来猜测每条跳转指令是否执行，只要猜测可靠，流水线中就会充满指令，否则处理器会丢掉它为该跳转指令后所有指令的工作</p>
+<p>无论测试数据是什么，遍历出来使用条件传送代码的时间大约是8个时钟周期</p>
+<p>不是所有的条件表达式都可以用条件传送编译，最重要的是，无论测试结果如何，我们给出的抽象代码会对两种情况的表达式都求值，若任意一个产生错误条件或者副作用，就会导致非法行为</p>
+<p>e.g.</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cread</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">xp</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> (xp</span><span style="color: #D73A49">?*</span><span style="color: #24292E">xp</span><span style="color: #D73A49">:</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre><code>cred:
+	movq (%rdi), %rax
+	testq %rdi, %rdi
+	movl $0, %edx
+	cmove %rdx, %rax
+	ret</code></pre></div></div></figure>
+<p>这个实现是非法的，因为即使测试为假，<code>movq</code>对%rdi的间接引用也会发生，导致间接引用了空指针，故必须用分支代码来编译</p>
+<p>gcc表明，只有当两个表达式都很容易计算时，才会使用条件传送，大部分还是会使用条件控制</p>
+<h3 id="循环">循环</h3>
+<p>汇编中使用条件测试+跳转组合来实现循环的效果</p>
+<h4 id="do-while循环">do-while循环</h4>
+<p>用条件+goto语句翻译得到：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">loop:</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">//body-statement</span></span>
+<span class="line"><span style="color: #24292E">	t </span><span style="color: #D73A49">=</span><span style="color: #6A737D"> //test-expr;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E">(t)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">goto</span><span style="color: #24292E"> loop;</span></span></code></pre></div></div></figure>
+<p>即每次循环，程序会执行循环体中的语句，然后执行测试表达式，如果测试为真，就再回去执行一次循环</p>
+<p>e.g. 计算阶乘</p>
+<p>C代码：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fact</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">do</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">        result</span><span style="color: #D73A49">*=</span><span style="color: #24292E">n;</span></span>
+<span class="line"><span style="color: #24292E">        n</span><span style="color: #D73A49">=</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span><span style="color: #D73A49">while</span><span style="color: #24292E">(n</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>汇编代码：n in <code>%rdi</code></p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre><code>fact:
+	movl $1, %eax
+.L2:
+	imulq %rdi, %rax
+	subq $1, %rdi
+	cmpq $1, %rdi
+	jg .L2
+	rep; ret</code></pre></div></div></figure>
+<p>对该代码进行逆向工程，我们发现寄存器<code>%rax</code>初始化为1（注意：虽然目的是<code>%eax</code>，但它还会把<code>%rax</code>高4字节设置为0），该寄存器还会在第4行被乘法改变值。此外<code>%rax</code>用来返回函数值，故通常会用来存放需要返回的程序值，故对应result</p>
+<h4 id="while循环">while循环</h4>
+<p>gcc在代码生成时使用两种方法将while循环翻译成机器代码</p>
+<p>第一种：跳转到中间</p>
+<p>执行一个无条件跳转跳到循环结尾处的测试，以此执行初始的测试</p>
+<p>条件+goto语句：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">goto</span><span style="color: #24292E"> test;</span></span>
+<span class="line"><span style="color: #24292E">loop:</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// body-statement</span></span>
+<span class="line"><span style="color: #24292E">test:</span></span>
+<span class="line"><span style="color: #24292E">	t </span><span style="color: #D73A49">=</span><span style="color: #6A737D"> //test-expr;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (t)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">goto</span><span style="color: #24292E"> loop;</span></span></code></pre></div></div></figure>
+<p>e.g. 计算阶乘</p>
+<p>C代码：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fact</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(n</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">1</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">*=</span><span style="color: #24292E">n;</span></span>
+<span class="line"><span style="color: #24292E">        n</span><span style="color: #D73A49">=</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>汇编代码：n in <code>%rdi</code></p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre><code>fact:
+	movl $1, %eax
+	jmp .L5
+.L6:
+	imulq %rdi, %rax
+	subq $1, %rdi
+.L5:
+	cmpq $1, %rdi
+	jg .L6
+	rep; ret</code></pre></div></div></figure>
+<p>第二种：guarded-do</p>
+<p>首先使用条件分支，若初始不成立就跳过循环，把代码变为do-while</p>
+<p>当使用-O1等优化编译时，gcc会采用这种策略，这种策略可以优化初始的测试，例如认为测试条件总是满足</p>
+<p>条件+goto语句：</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">t </span><span style="color: #D73A49">=</span><span style="color: #6A737D"> //test-expr;</span></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E">(</span><span style="color: #D73A49">!</span><span style="color: #24292E">t)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">goto</span><span style="color: #24292E"> done;</span></span>
+<span class="line"><span style="color: #24292E">loop:</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// body-statement</span></span>
+<span class="line"><span style="color: #24292E">	t </span><span style="color: #D73A49">=</span><span style="color: #6A737D"> //test-expr;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E">(t)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">goto</span><span style="color: #24292E"> loop;</span></span>
+<span class="line"><span style="color: #24292E">done:</span></span></code></pre></div></div></figure>
+<p>e.g. 计算阶乘</p>
+<p>C代码与上面相同，第二种策略下，汇编代码如下：n in
+<code>%rdi</code></p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre><code>fact:
+	cmpq $1, %rdi
+	jle .L7
+	movl $1, %eax
+.L6:
+	imulq %rdi, %rax
+	subq $1, %rdi
+	cmpq $1, %rdi
+	jne .L6
+	rep;ret
+.L7:
+	movl $1, %eax
+	ret</code></pre></div></div></figure>
+<h4 id="for循环">for循环</h4>
+<p>C语言标准说明，大部分情况下，for循环的行为等价于下面的while循环</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// init-expr</span></span>
+<span class="line"><span style="color: #D73A49">while</span><span style="color: #24292E">(</span><span style="color: #6A737D">/*test-expr*/</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// body-statement</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// update-expr</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>故gcc为for循环产生的代码是while的两种翻译之一，根据优化等级选择</p>
+<p>e.g. 计算阶乘</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fact</span><span style="color: #24292E">(</span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n;i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        result</span><span style="color: #D73A49">*=</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>将他转化为对应的while版本，再转化为goto版本，对应阶乘汇编代码如下：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre><code>fact:
+	movl $1, %eax
+	movl $2, %edx
+	jmp .L8
+.L9:
+	imulq %rdx, %rax
+	addq $1, %rdx
+.L8:
+	cmpq %rdi, %rax
+	jle .L9
+	rep; ret</code></pre></div></div></figure>
+<h3 id="switch语句">switch语句</h3>
+<p>switch语句使用<strong>跳转表</strong>实现多重分支</p>
+<p>跳转表是一个数组，记录着每一个代码段的地址，实现当开关索引值来执行一个跳转表内的数组引用，确定跳转指令的目标</p>
+<p>gcc根据开关情况的数量和开关情况值的稀疏程度来翻译开关语句，当数量比较多且值的范围跨度比较小时，就会使用跳转表</p>
+<p>优点在于，执行语句的时间与case的数量无关</p>
+<p>下面是C语言的switch语句以及翻译为跳转表的版本及转为汇编的版本</p>
+<p>开关变量n可以是任意数，因此编译器首先将n-100，将值移到0-6之间，创建新的程序变量index，补码的负数会映射为无符号的大整数，因此看作无符号值，测试index是否在0-6的范围之外来跳转分支（不在的话跳转到loc_def）</p>
+<style>.aionsnhfejqo{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111548339.png" class="aionsnhfejqo" alt="c&amp;go">
+<style>.fpuohiuzktqe{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111939996.png" class="fpuohiuzktqe" alt="编译语句">
+<p>执行switch语句的关键是通过跳转表来访问代码位置，上图C中的第16行与汇编第5行均实现了跳转表的访问</p>
+<p>其中<code>jmp</code>的操作数有前缀<code>*</code>，表明是一个间接跳转，操作数指定一个内存位置，索引由<code>%rsi</code>给出，保存着<code>index</code>的值</p>
+<p>处理重复case的方式是使用同样的代码编号(<code>loc_D</code>)，处理缺失case的方式是使用默认情况的编号<code>loc_def</code></p>
+<p>上述代码跳转表的声明如下:</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316092335113.png" class="" title="跳转表声明">
+<p>这些声明表示，在<code>.rodata</code>(Read-Only
+Data)的目标代码文件的段中，有一组7个四字，每个字的值都是与指定汇编代码标号相关联的指令地址</p>
+<p><code>.L4</code>标记出分配地址的起始，与这个标记相对应的地址会作为间接跳转的基地址</p>
+<h2 id="过程">过程</h2>
+<p>过程是一种很重要的抽象，提供了一种封装代码的方式，用一组制定参数和一个可选的返回值实现某种功能。可以在程序不同地方调用这个过程</p>
+<p>要提供对过程的机器级支持，必须要处理许多不同的属性。假设过程P调用过程Q，Q执行后返回到P，这些动作包含下面一个或多个机制：</p>
+<ul>
+<li>传递控制：进入过程Q时，程序计数器必须被设置为Q的代码的起始地址，返回时，要把程序计数器设置为P中调用Q后面那条指令的地址</li>
+<li>传递数据：P必须能够向Q提供一个或多个参数，Q必须能够向P返回一个值</li>
+<li>分配和释放内存：开始时Q可能要为局部变量分配空间，而返回前，又必须释放这些存储空间</li>
+</ul>
+<p>x86-64的过程实现包括一组特殊指令和一些对机器资源的约定规则</p>
+<h3 id="运行时栈">运行时栈</h3>
+<p>C语言过程调用的一个关键特性在于使用了栈数据结构提供的<strong>后进先出（LIFO）</strong>的内存管理原则，程序可以用栈来管理它的过程所需要的存储空间</p>
+<p>x86-64的栈向低地址方向增长，栈指针<code>%rsp</code>指向栈顶元素，将栈指针减少一个适当的量可以为没有指定初始值的数据在栈上分配空间，增加一个适当的量可以释放空间</p>
+<p>当过程的存储空间超过了寄存器能够存放的大小时，就会在栈上分配空间，这部分空间称为过程的<strong>栈帧</strong>，下图给出了运行时栈的通用结构，当前执行的过程的帧总是在栈顶，当过程P调用Q时，会把返回地址压入栈中，指明当Q返回时，要从P程序的哪个位置继续执行，是P的栈帧的一部分</p>
+<style>.ldrmydmmimhl{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017160828935.png" class="ldrmydmmimhl" alt="运行时栈">
+<p>Q的代码会扩展当前栈顶边界，分配它的栈帧所需的空间，在这个空间中，它可以保存寄存器的值，分配局部变量空间，为调用过程设置参数。大多过程的栈帧是定长的，但有些过程需要变长的帧，通过寄存器，过程p可以传递最多6个整数值，但如果Q需要更多参数，P可以在调用Q之前在自己的栈帧里存储好这些参数</p>
+<p>X86-64过程只分配自己所需的栈帧部分，当所有局部变量都可以保存在寄存器中，且不调用其他函数，可以不需要栈帧</p>
+<h3 id="转移控制">转移控制</h3>
+<p>将控制从函数P转移到Q只需要将程序计数器（PC）设置为Q的代码的起始位置，不过当从Q返回时，处理器必须记录好它需要继续执行P的代码地址</p>
+<p>x86-64中，这个信息使用<code>call Q</code>调用过程Q记录，该指令会将地址A压入栈中，并将PC设置为Q的起始地址，压入的A称为返回地址，<strong>是紧跟在call后面那条指令的地址</strong>，对应指令ret会从栈中弹出地址A，将PC设置为A，下表为一般形式：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017160850024.png" class="" title="转移指令">
+<p>call指令有一个目标，即指明被调用过程起始的指令地址，直接调用的目标是一个标号，间接调用的目标是<code>*</code>后跟一个操作数指示符</p>
+<p>这种将返回地址压入栈顶简单机制能够让函数在稍后返回到程序中正确的点，与栈LIFO的内存管理方法吻合</p>
+<h3 id="数据传送">数据传送</h3>
+<p>x86-64中，大部分过程间的数据传送是通过寄存器实现的，可以通过寄存器最多传递<strong>6个</strong>整形参数。</p>
+<p>寄存器使用的名称取决于要传递的数据类型的大小，如下图，会根据参数在参数列表中的顺序为他们分配寄存器。</p>
+<p>可以通过64位寄存器适当的部分访问小于64位的参数，如若第一个参数是32位的，可以用<code>%edi</code>访问</p>
+<p><img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251107161530925.png" class="" title="传递参数的寄存器"></p>
+<p>若一个函数有大于六个整型参数，超出六个的部分需要通过栈来传递，此时需要在对应的栈帧中分配多出六个的部分参数分配空间</p>
+<p>注意：</p>
+<ol type="1">
+<li>通过栈来传递数据时，所有数据大小都要向8的倍数对齐</li>
+<li>参数传递时寄存器的使用顺序要按照上表来使用，且寄存器名称的使用取决于传参大小</li>
+</ol>
+<h3 id="栈上的局部存储">栈上的局部存储</h3>
+<p>有些时候，局部数据必须存放在内存中：</p>
+<p>寄存器不够存放所有的本地数据
+对一个局部变量取地址（必须能够为它产生一个地址）
+某些局部变量是数组或结构体，必须通过数组或结构引用访问到</p>
+<p>一般来说，过程通过小栈指针在栈上分配空间，分配的结果作为栈帧的一部分，标号为局部变量</p>
+<p>可以看到，运行时栈提供了在需要时分配，函数完成时释放局部存储的机制</p>
+<p>局部变量不需要对齐</p>
+<h3 id="寄存器中的局部存储空间">寄存器中的局部存储空间</h3>
+<p>寄存器组是唯一被所有过程共享的资源。虽然在给定时刻只有一个过程是活动的，但我们仍然要确保当一个过程调用另一个过程时，被调用者不会覆盖调用者稍后会使用的寄存器值，因此，x86-64采用了一组统一的寄存器使用惯例：</p>
+<h4 id="被调用者保存">被调用者保存</h4>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">multistore:</span></span>
+<span class="line"><span style="color: #24292E">	pushq </span><span style="color: #D73A49">%</span><span style="color: #24292E">rbx</span></span>
+<span class="line"><span style="color: #24292E">	movq </span><span style="color: #D73A49">%</span><span style="color: #24292E">rdx, </span><span style="color: #D73A49">%</span><span style="color: #24292E">rbx</span></span>
+<span class="line"><span style="color: #24292E">	call mult2</span></span>
+<span class="line"><span style="color: #24292E">	movq </span><span style="color: #D73A49">%</span><span style="color: #24292E">rax, (</span><span style="color: #D73A49">%</span><span style="color: #24292E">rbx)</span></span>
+<span class="line"><span style="color: #24292E">	popq </span><span style="color: #D73A49">%</span><span style="color: #24292E">rbx</span></span>
+<span class="line"><span style="color: #24292E">	ret</span></span></code></pre></div></div></figure>
+<p>当过程P调用过程Q时，Q必须保存这些寄存器的值，保证它们的值在Q返回到P时与Q被调用时是一样的。过程Q保存一个寄存器的值不变，这样P的代码就能安全的把值存在被调用者保存寄存器中，调用Q并继续使用寄存器中的值，不用担心被破坏</p>
+<p>寄存器<code>%rbx</code>,<code>%rbp</code>和<code>%r12</code>～<code>%r15</code>被划分为<strong>被调用者保存寄存器</strong></p>
+<p>因此，上文代码pushq和popq就是执行以上策略，被保存的内容置于栈帧中</p>
+<h4 id="调用者保存">调用者保存</h4>
+<p>调用者保存策略使得过程P在调用过程Q之前，提前保存<code>%rbx</code>的内容，执行完过程Q后，再恢复寄存器<code>%rbx</code>原来存储的内容</p>
+<p>所有其他寄存器，除了栈指针，都分类为调用者保存寄存器，意味着所有函数都能修改它们</p>
+<h3 id="递归过程">递归过程</h3>
+<p>前面描述的惯例使得x86-64可以递归的调用它们自身，每个过程调用在栈中都有它自己的私有空间，因此多个未完成调用的局部变量不会相互影响
+下图给出了递归的阶乘函数代码与汇编代码，汇编代码使用了<code>%rbx</code>来保存参数n，先把已有的值存在栈上，随后在返回前恢复该值，这可以保证当递归调用rfact(n-1)时，该次调用结果会保存在<code>%rax</code>中，参数n的值仍然在寄存器<code>%rbx</code>中，相乘即可获得结果</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316095953152.png" class="" title="递归过程">
+<h2 id="数组的分配与访问">数组的分配与访问</h2>
+<h3 id="基本原则">基本原则</h3>
+<p>对于一个数组声明：<code>T A[N]</code>，有以下效果：</p>
+<ul>
+<li>在内存中分配一个<span class="math inline">\(L\times
+N\)</span>字节的连续区域，L为数据类型T的大小</li>
+<li>引入了标识符A，可以用A来作为指向数组开头的指针，值为<span
+class="math inline">\(x_a\)</span></li>
+</ul>
+<p>x86-64的内存引用指令可以用来简化数组访问，如假设E是一个int类型的数组，如果想计算<code>E[i]</code>，E的地址放在寄存器<code>%rdx</code>中，i存放在寄存器<code>%rax</code>中，则指令<code>movl(%rdx,%rcx,4),%eax</code>会执行地址计算<span
+class="math inline">\(x_E+4i\)</span>，并放到编译器<code>%eax</code>中</p>
+<h3 id="指针运算">指针运算</h3>
+<p>可以对指针应用数组下标操作，如A[i]等价于<code>*(A+i)</code>，计算第i个数组元素的地址，然后访问这个内存位置
+假设整型数组E，起始地址与整数索引分别在<code>%rdx</code>与<code>%rax</code>中，结果存放在寄存器<code>%eax</code>或寄存器<code>%rax</code>中
+下表为一些相关表达式</p>
+<p>、<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251107161436883.png" class="" title="指针运算"></p>
+<h3 id="嵌套数组">嵌套数组</h3>
+<p>如二维数组，在内存中按照行优先的顺序排列
+要访问多维数组的内容，编译器会以数组起始为基地址（可能需要伸缩）偏移量为索引，产生计算期望元素的偏移量，然后使用某种mov指令
+通常来说，对于如下数组<code>T D[R][C]</code>，他的数组元素<code>D[i][j]</code>的内存地址为<span
+class="math inline">\(\&amp;D[i][j]=x_0+L(C\times i+j)\)</span></p>
+<p>其中，L为类型大小，C为每行元素个数</p>
+<h3 id="定长数组">定长数组</h3>
+<p>C语言编译器可以优化定长多维数组的操作代码，下面展示的是<code>-O1</code>时的优化，如下方函数
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#define</span><span style="color: #24292E"> </span><span style="color: #6F42C1">N</span><span style="color: #24292E"> </span><span style="color: #005CC5">16</span></span>
+<span class="line"><span style="color: #D73A49">typedef</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">fix_matrix</span><span style="color: #24292E">[N][N]</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fix_prod_ele</span><span style="color: #24292E">(fix_matrix </span><span style="color: #E36209">A</span><span style="color: #24292E">, fix_matrix </span><span style="color: #E36209">B</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">k</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">long</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">N; j</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> </span><span style="color: #E36209">A</span><span style="color: #24292E">[i][j]</span><span style="color: #D73A49">*</span><span style="color: #E36209">B</span><span style="color: #24292E">[j][k];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure></p>
+<ol type="1">
+<li>生成一个指针<code>Aptr</code>，指向A行i中的连续元素，初始值是<code>&amp;A[i][0]</code></li>
+<li>生成一个指针<code>Bptr</code>，指向B列k中的连续元素，初始值是<code>&amp;B[0][K]</code></li>
+<li>生成一个指针<code>Bend</code>，要终止循环时，它等于<code>Bptr</code>的值，是假想中B的列j的第n+1个元素的值，即<code>&amp;B[N][k]</code></li>
+</ol>
+<p>则优化后的代码如下</p>
+<figure class="shiki c"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">/* Compute i,k of fixed matrix product */</span></span>
+<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fix_prod_ele_opt</span><span style="color: #24292E">(fix_matrix </span><span style="color: #E36209">A</span><span style="color: #24292E">, fix_matrix </span><span style="color: #E36209">B</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #E36209">k</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">Aptr </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">A</span><span style="color: #24292E">[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">];</span><span style="color: #6A737D"> /* Points to elements in row i of A*/</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">Bptr </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">B</span><span style="color: #24292E">[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][k];</span><span style="color: #6A737D"> /* Points to elements in column k of B */</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">Bend </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">B</span><span style="color: #24292E">[N][k];</span><span style="color: #6A737D"> /* Marks stopping point for Bptr*/</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">do</span><span style="color: #24292E"> {</span><span style="color: #6A737D">     /* No need for initial test */</span></span>
+<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">Aptr </span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">Bptr;</span><span style="color: #6A737D"> /* Add next product to sum */</span></span>
+<span class="line"><span style="color: #24292E">        Aptr </span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span><span style="color: #6A737D"> /* Move Aptr to next column */</span></span>
+<span class="line"><span style="color: #24292E">        Bptr </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> N;</span><span style="color: #6A737D"> /* Move Bptr to next row*/</span></span>
+<span class="line"><span style="color: #24292E">    } </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (Bptr </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> Bend);</span><span style="color: #6A737D"> /* Test for stopping point*/</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="变长数组">变长数组</h3>
+<p>将一个数组声明为<code>int A[expr1][expr2]</code>，即为变长数组</p>
+<p>它可以作为局部变量或函数参数，遇到声明后通过表达式求值来确定数组大小</p>
+<p>在汇编中的改变为使用乘法指令来伸缩索引i</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260316101414882.png" class="" title="变长数组">
+<p>同样是上文中的例子，变为变长数组后，优化会变为通过循环n次的j来判断是否结束和到达哪一列</p>
+<h2 id="异质数据结构">异质数据结构</h2>
+<h3 id="结构">结构</h3>
+<p>结构的所有组成部分都存放在内存的一段连续区域中，指向结构的指针就是结构第一个字节的地址</p>
+<p>例：</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">rec</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> a[</span><span style="color: #005CC5">2</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">p;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309085447104.png" class="" title="image-20260309085447104">
+<p>整个结构在内存中的内存分配如图所示，上图中的数组是各个字段对于结构开始处的字节偏移</p>
+<p>为了访问结构字段，我们需要将结构的地址加上该字段的偏移量，如将<code>r-&gt;i</code>
+复制到<code>r-&gt;j</code>：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre><code># r in %rdi
+movl (%rdi), %eax
+movl %eax, 4(%rdi)</code></pre></div></div></figure>
+<p>需要将r的地址加上偏移量4</p>
+<p>又如得到<code>&amp;(r-&gt;a[i])</code>的值：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre><code># r in %rdi, i in %rsi
+leaq 8(%rdi, %rsi, 4), %rax</code></pre></div></div></figure>
+<h3 id="联合">联合</h3>
+<p><strong>联合中的所有成员共享同一块内存空间</strong></p>
+<p>联合与结构的区别在于，联合引用的都是数据结构的起始位置，而没有偏移</p>
+<p>因此一个联合的总大小等于它最大字段的大小</p>
+<p>联合可以绕过c语言类型系统提供的安全措施，减少分配的空间</p>
+<p>一种应用场景：对一个数据结构中的两个不同字段的使用是互斥的，那将这两个字段声明为联合的一部分会减少分配空间的总量</p>
+<p>例如：我们想实现一个二叉树，若声明如下：</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">left;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">right;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">double</span><span style="color: #24292E"> data[</span><span style="color: #005CC5">2</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<p>每个节点需要分配32字节内存，但是每种类型的节点只需要16字节，这时可以使用联合</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">union</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">struct</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">union</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">left;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">union</span><span style="color: #24292E"> </span><span style="color: #6F42C1">node</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">right;</span></span>
+<span class="line"><span style="color: #24292E">    } internal;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">double</span><span style="color: #24292E"> data[</span><span style="color: #005CC5">2</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<p>此时每个节点只需要16个字节，作为不同节点使用时，引用的是同一块内存中的不同数据</p>
+<p>联合还能用来访问不同数据类型的位模式，如将double强转为unsigned
+long，普通转换时肯定会出现问题，我们可以使用联合</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> </span><span style="color: #6F42C1">double2bits</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">d</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">union</span><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">double</span><span style="color: #24292E"> d;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> </span><span style="color: #D73A49">long</span><span style="color: #24292E"> u;</span></span>
+<span class="line"><span style="color: #24292E">    }temp;</span></span>
+<span class="line"><span style="color: #24292E">    temp.d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> temp.u;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>即我们用一种数据类型来存储联合中的参数，又用另一种数据类型来访问，使得u有和d一样的位表示</p>
+<p>当用联合将不同大小的数据类型结合时，需要注意字节顺序问题。如：</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">uu2double</span><span style="color: #24292E">(</span><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> </span><span style="color: #E36209">word0</span><span style="color: #24292E">, </span><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> </span><span style="color: #E36209">word1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">union</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">double</span><span style="color: #24292E"> d;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">unsigned</span><span style="color: #24292E"> u[</span><span style="color: #005CC5">2</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    } temp;</span></span>
+<span class="line"><span style="color: #24292E">    temp.u[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> word0;</span></span>
+<span class="line"><span style="color: #24292E">    temp.u[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> word1;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> temp.d;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>在小端法机器上，word0是d的低四位字节，word1是d的高四位字节，大端法相反</p>
+<h3 id="数据对齐">数据对齐</h3>
+<p>许多计算机系统对基本数据类型的合法地址作出了限制，要求某种类型的对象起始地址必须是某个值k（2、4或8）的倍数</p>
+<p>如假设一个处理器总是从内存中取8个字节，则地址必须是8的倍数，如果我们保证能讲所有double类型数据地址对齐成8的倍数，就可以用一个内存操作来读写值了，否则可能需要执行两次</p>
+<p>对齐原则为<strong>任何k字节的基本对象的地址必须是k的倍数</strong></p>
+<style>.lwibzwtbdere{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309101311150.png" class="lwibzwtbdere" alt="数据对齐">
+<p>确保每种数据类型的对象都要满足他的对齐限制，编译器在汇编代码中放入指令<code>.align</code>来指明全局数据所需的对齐，这样就保证了它后面的数据的起始地址是8的倍数</p>
+<p>对于包含结构的代码，编译器可能需要在字段的分配中插入间隙，以保证每个结构元素都满足对其要求，如</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">s</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">char</span><span style="color: #24292E"> c;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> j;</span></span>
+<span class="line"><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309102426176.png" class="" title="结构体对齐">
+<p>分配如上，蓝色阴影是插入的间隙</p>
+<h2 id="控制与数据的交互">控制与数据的交互</h2>
+<h3 id="gdb调试器">gdb调试器</h3>
+<p>gdb支持机器级程序运行时评估和分析</p>
+<p>通常要先在感兴趣的地方设置断点，程序在执行过程中遇到一个断点时，程序会停下来，并返回给用户，我们可以看到各个寄存器和内存位置</p>
+<p>以下是常用的一些gdb命令：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309104200979.png" class="" title="gdb命令">
+<h3 id="内存越界引用与缓冲区溢出">内存越界引用与缓冲区溢出</h3>
+<p>C对于数组引用不进行任何边界检查，而且局部变量和状态信息都存放在栈中，这两种情况结合能导致严重的程序错误</p>
+<p>对越界数组元素的写操作会破坏存储在栈中的状态信息，当程序使用这个被破坏的状态时，就会出现很严重的错误</p>
+<p>一种常见的状态破坏称为<strong>缓冲区溢出</strong>，如在栈中分配某个字符数组来保存字符串，但是字符串长度超出了为数组分配的空间</p>
+<p>例如，库函数gets的实现：</p>
+<p>该函数从标准输入读入一行，在遇到一个回车或者某个错误情况时停止，并将这个字符串复制到指定位置，并在字符串结尾加上null字符</p>
+<p>它的问题在于，没有办法确定是否为保存整个字符串分配了足够空间</p>
+<p>很多常用的库函数如strcpy、strcat等，不需要告诉目标缓冲区大小的情况就会导致缓冲区溢出漏洞</p>
+<h3 id="缓冲区溢出攻击">缓冲区溢出攻击</h3>
+<p>缓冲区溢出还能导致程序执行本来不愿意执行的函数，通常输入给程序一个字符串，这个字符串包含一些可执行代码的字节编码，称为攻击代码。另外还有一些字节会用一个指向攻击代码的指针覆盖返回地址，那么执行ret指令的效果就是跳转到攻击代码</p>
+<p>gcc中有很多机制可以防止缓冲区溢出</p>
+<ol type="1">
+<li><p><strong>栈随机化</strong></p>
+<p>攻击者需要插入指向这段代码的指针，由于指针也是攻击字符串的一部分，因此需要知道这个字符串放置的栈地址</p>
+<p>过去栈的位置是很容易预测的，对于同样程序和操作系统的不同机器，栈的位置是固定的，因此很容易进行传染式的攻击，称为安全单一化</p>
+<p>栈随机化使得栈的位置在程序运行时都会有变化，实现方式是：</p>
+<p>程序开始时，在栈上分配一段1－n字节之间的随机大小空间，程序不使用，但是它会导致程序每次执行后续的栈位置发生变化</p>
+<p>linux系统中，栈随机化已经变为标准行为，是地址空间布局随机化中的一类技术</p></li>
+<li><p><strong>栈破坏检测</strong></p>
+<p>计算机的第二道防线是能够检测到何时栈已被破坏，破坏通常发生在当超越局部缓冲区的边界时，在C语言中，没有可靠的方法来防止对数组的越界写，但是我们可以在发生的时候，在成有害结果前尝试检测到它</p>
+<p>最近的gcc版本添加了一种栈保护者机制来检测缓冲区越界，其思想是在栈帧中任何局部缓冲区与栈状态之间存储一个特殊的金丝雀值（哨兵值），是程序每次运行时随机产生的。在恢复寄存器状态和从函数返回前，程序会检查这个值是否被某个操作改变了，如果是则异常中止</p>
+<p>最近的gcc版本会试着确定一个函数是否容易受到栈溢出攻击，并且自动插入这种溢出检测</p></li>
+<li><p><strong>限制可执行代码区域</strong></p></li>
+</ol>
+<p>​
+通过限制哪些内存区域能够存放可执行代码，可以消除攻击者向系统中插入可执行代码的能力</p>
+<p>​
+在典型的程序中，只有保存编译器产生代码的那部分内存才是需要可执行的，其他部分限制为只允许读写</p>
+<h3 id="支持变长栈帧">支持变长栈帧</h3>
+<p>编译器总能预先确定需要为栈帧分配多少空间，但是有些函数需要的局部存储是变长的，如alloca</p>
+<p>为了管理变长栈帧，x86-64使用寄存器<code>%rbp</code>作为帧指针（基指针），代码必须把该寄存器之前的值保存到栈中，是一个被调用者保存寄存器。在函数的执行过程中，都使得该寄存器指向那个时刻栈的位置，然后用固定长度的局部变量相对于该寄存器的偏移量来引用他们</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310082126191.png" class="" title="vframe">
+<h2 id="浮点代码">浮点代码</h2>
+<p>处理器的浮点体系结构包含多个方面：</p>
+<ul>
+<li>如何存储和访问浮点数值，通常通过某种寄存器方式</li>
+<li>对浮点数据操作的指令</li>
+<li>函数传参和返回浮点数结果的规则</li>
+<li>函数调用过程中保存寄存器的规则</li>
+</ul>
+<p>我们通常使用AVX（AVX2）浮点体系结构，它允许数据存储在16个寄存器中，名字分别为<code>%ymm0</code>～<code>%ymm15</code>，均为32字节</p>
+<p>当对标量数据操作时，这些寄存器只保存浮点数，且只使用低32或64位</p>
+<p>汇编代码用寄存器<code>%xmm0</code>～<code>%xmm15</code>来引用它们，都是对应ymm的低128位</p>
+<style>.exhntzajjivt{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310084352343.png" class="exhntzajjivt" alt="浮点代码">
+<h3 id="浮点传送和转换操作">浮点传送和转换操作</h3>
+<p>下面是传送浮点数的指令，它们都是标量指令，移位置只对单个数据值进行操作</p>
+<p>数据要么保存在内存中（表中的M），要么保存在xmm寄存器中（表中的X），代码优化规则建议32位数据满足四字节对齐，64位数据满足八字节对齐，内存引用的指定方式与整数mov指令相同</p>
+<style>.vcywtmejixls{zoom:80%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310090345394.png" class="vcywtmejixls" alt="浮点数传送">
+<p>gcc只用标量传送操作从内存传送数据到xmm寄存器或相反，而对于在xmm寄存器之间传送数据，gcc会使用vmovaps或vmovapd</p>
+<p>对于这些情况，程序复制整个寄存器还是只复制低位值不会影响，针对标量数据的指令没有实质上的差别</p>
+<p>e.g.</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #6F42C1">float_mov</span><span style="color: #24292E">(</span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #E36209">v1</span><span style="color: #24292E">, </span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">src</span><span style="color: #24292E">, </span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #E36209">dst</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">float</span><span style="color: #24292E"> v2 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E">src;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">*</span><span style="color: #24292E">dst </span><span style="color: #D73A49">=</span><span style="color: #24292E"> v1;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> v2;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>以下是对应的汇编</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre><code>float_mov:
+	vmovaps %xmm0, %xmm1
+	vmovss (%rdi), %xmm0
+	vmovss %xmm1, (%rsi)
+	ret</code></pre></div></div></figure>
+<p>下面是在浮点数和整数类型以及不同浮点格式之间进行转换的指令集合</p>
+<p>把浮点数转换为整数时，指令会执行<strong>截断</strong>，向0舍入</p>
+<style>.joydguiboohg{zoom:80%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310093658011.png" class="joydguiboohg" alt="不同类型转换">
+<p>以上指令使用的是三操作数格式，有两个源和一个目的</p>
+<p>第一个操作数读自内存或一个通用目的寄存器，第二个操作数的值只会影响结果的高位字节，目的必须是xmm寄存器</p>
+<p>在常用场景中，第二个源和目的操作数是一样的，如：</p>
+<p><code>vcvtsi2sdq %rax, %xmm1, %xmm1</code>，用于从寄存器<code>%rax</code>读出一个长整数，转为double，并将结果存进<code>%xmm1</code>的地字节中</p>
+<p>若要将单精度值转换为一个双精度值，gcc会生成如下的汇编代码：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre><code>vunpcklps %xmm0, %xmm0, %xmm0
+vcvtps2pd %xmm0, %xmm0</code></pre></div></div></figure>
+<p>其中，vunpcklps通常用来交叉放置来自两个xmm寄存器的值，并把它存储到第三个寄存器中。上面的代码中，由于三个操作数使用同一个寄存器，顾如果原始寄存器的值为<code>[x3,x2,x1,x0]</code>，那么该指令会将寄存器的值更新为<code>[x1,x1,x0,x0]</code></p>
+<p>vcvtps2pd将源xmm寄存器中的两个低位单精度值扩展为目的xmm寄存器中的两个双精度值，上面的代码中，结果得到值为<code>[dx0, dx0]</code>，即将x0转换为双精度后的结果</p>
+<p>即，这两条指令最终会将原始％xmm0低位四字节中的单精度值转换为双精度值，再将其两个副本保存在％xmm0中，这种做法没有明显的意义</p>
+<p>将双精度转换为单精度，gcc会生成如下的汇编代码：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre><code>vmovddup %xmm0, %xmm0
+vcvtpd2psx %xmm0, %xmm0</code></pre></div></div></figure>
+<p>假设开始执行前寄存器％xmm0保存着两个双精度值<code>[x1, x0]</code></p>
+<p>vmovddup会复制第一个操作数的元素，将原值设置为<code>[x0, x0]</code></p>
+<p>vcvtpd2psx将这两个值转换为单精度，再存放到该寄存器的低位一半中，并将高位一半设置为0，得到<code>[0.0, 0.0, x0, x0]</code></p>
+<p>同样，这种做法没有明显的意义</p>
+<h3 id="过程中的浮点代码">过程中的浮点代码</h3>
+<p>xmm寄存器可以用来向函数传递浮点参数，以及从函数返回浮点值，有如下规则：</p>
+<ul>
+<li>xmm寄存器<code>％xmm0～％xmm7</code>最多可以传递八个浮点参数，按照参数列出的顺序使用，可以通过栈传递额外的浮点参数</li>
+<li>函数使用<code>％xmm0</code>来返回浮点值</li>
+<li>所有xmm寄存器都是调用者保存的，被调用者可以不用保存就覆盖这些寄存器中的任意一个</li>
+<li>指针和整数通过通用寄存器传递，浮点值通过xmm寄存器传递，即参数到寄存器的映射取决于类型和排列顺序</li>
+</ul>
+<h3 id="浮点运算操作">浮点运算操作</h3>
+<p>下图是一组执行算术运算的标量AVX2浮点指令，每条指令有一个或两个源操作数和一个目的操作数，第一个源操作数可以是一个xmm寄存器或一个内存位置，第二个源操作数和目的操作数都必须是xmm寄存器</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312142245448.png" class="" title="算术浮点指令">
+<p>e.g.</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">func</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">float</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">, </span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">*</span><span style="color: #24292E">x</span><span style="color: #D73A49">-</span><span style="color: #24292E">b</span><span style="color: #D73A49">/</span><span style="color: #24292E">i;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>汇编代码如下：</p>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre><code># a in %xmm0, x in %xmm1, b in %xmm2, i in %edi
+func:
+	vunpcklps %xmm1, %xmm1, %xmm1
+	vcvtps2pd %xmm1, %xmm1
+	vmulsd %xmm0, %xmm1, %xmm0
+	vcvtsi2sd %edi %xmm1 %xmm1
+	vdivsd %xmm1, %xmm2, %xmm2
+	vsubsd %xmm2, %xmm0, %xmm0
+	ret</code></pre></div></div></figure>
+<p>其中3－4行用以将参数x转换为双精度类型，第6行用来将参数i转换为双精度类型，通过寄存器<code>%xmm0</code>返回</p>
+<h3 id="定义和使用浮点常数">定义和使用浮点常数</h3>
+<p>AVX浮点操作不能以立即数作为操作数，相反，编译器必须为所有常量值分配和初始化存储空间，然后代码在把这些值从内存读入</p>
+<p>e.g.</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cel2fahr</span><span style="color: #24292E">(</span><span style="color: #D73A49">double</span><span style="color: #24292E"> </span><span style="color: #E36209">temp</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1.8</span><span style="color: #D73A49">*</span><span style="color: #24292E">temp</span><span style="color: #D73A49">+</span><span style="color: #005CC5">32.0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="shiki assembly"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre><code># temp in %xmm0
+cel2fahr:
+	vmulsd .LC2(%rip), %xmm0, %xmm0
+	vaddsd .LC3(%rip), %xmm0, %xmm0
+	ret
+,LC2:
+	.long 3435973837
+	.long 1073532108
+.LC3:
+	.long 0
+	.long 1077936128</code></pre></div></div></figure>
+<p>可以发现，函数从<code>.LC2</code>的位置处读出值1.8，从<code>.LC3</code>处的位置读入32.0</p>
+<p>这些常数值都是通过一对.long声明和十进制表示的值指定的，如<code>.LC2</code>中有两个值0xcccccccd和0x3ffccccc，由于机器采用的是小端法，第一个值给出的是低位4字节，第二个给出的是高位4字节，通过拼接，转换可得到1.8</p>
+<h3 id="在浮点代码中使用位级操作">在浮点代码中使用位级操作</h3>
+<p>以下是一些位级操作的相关指令，它们都作用于封装好的数据，即更新整个目的xmm寄存器</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312150128763.png" class="" title="浮点位级指令">
+<h3 id="浮点比较操作">浮点比较操作</h3>
+<p>AVX2提供了两条比较浮点数的指令</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312150215877.png" class="" title="浮点比较指令">
+<p>类似cmp指令，它们都比较操作数s1和s2，并设置条件码指示它们的相对值，它们遵循以相反顺序列出操作数的ATT格式，参数s2必须在xmm寄存器中，而s1可以在xmm寄存器中，也可以在内存中</p>
+<p>浮点数比较指令会设置三个条件码：零标志位ZF，进位标志位CF和奇偶标志位PF</p>
+<p>对于整数操作，当最近的一次算术或逻辑运算产生的值最低位字节是偶校验的（字节中有偶数个1），那么就会设置这个标志位；不过对于浮点比较，当两个操作数中任意一个是NaN时，会设置该位，根据惯例，c语言中若有个参数为NaN，就认为比较失败了，这个标志位就用来发现这个条件。</p>
+<p>条件码的设置条件如下：</p>
+<style>.rdecruwpmdpk{zoom:80%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151008030.png" class="rdecruwpmdpk" alt="比较条件码">
+<p>当任意一个操作数为NaN时，就会出现7无序的情况，可以通过奇偶标志位发现这种情况</p>
+<p>通常jp指令是条件跳转，条件就是浮点比较得到一个无序的结果</p>
+<p>除了这种情况以外，进位和零标志位的值都和对应的无符号比较一样，当两个操作数相等时，设置ZF；当S2&lt;S1时，设置CF，像ja和jb这样的指令就可以根据标志位的各种组合进行条件跳转</p>
+<p>如下面的代码：</p>
+<style>.jplrbiymenuj{zoom: 67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151637594.png" class="jplrbiymenuj" alt="比较例子">
+<p>这个函数会出现四种可能的比较结果：</p>
+<ul>
+<li><code>x&lt;0.0</code>：第四行的ja分支指令会选择跳转到结尾，返回值为0</li>
+<li><code>x=0.0</code>：第四行的ja分支指令会选择跳转，跳转到结尾，返回值为0</li>
+<li><code>X&gt;0.0</code>：这三个分支都不会选择跳转，setbe会得到0，addl会＋2，得到返回值为2</li>
+<li><code>x=NaN</code>：jp分支会选择跳转，第三个vucomiss指令会设置进位和0标志位，故setbe指令和后面的会把<code>%eax</code>设置为1，addl指令会＋2，得到返回值为3</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CSAPP/" rel="tag"># CSAPP</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/Python%E5%9C%A8%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/" rel="prev" title="【杂项】Python在算法竞赛中的常用技巧">
+      <i class="fa fa-chevron-left"></i> 【杂项】Python在算法竞赛中的常用技巧
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">程序的机器级表示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">程序编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E7%BA%A7%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">机器级代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E7%BB%86%E8%8A%82"><span class="nav-number">1.1.2.</span> <span class="nav-text">编译细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E6%B3%A8%E8%A7%A3"><span class="nav-number">1.1.3.</span> <span class="nav-text">格式注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.4.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.5.</span> <span class="nav-text">访问信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8C%87%E7%A4%BA%E7%AC%A6"><span class="nav-number">1.1.6.</span> <span class="nav-text">操作数指示符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E6%8C%87%E4%BB%A4"><span class="nav-number">1.1.7.</span> <span class="nav-text">数据传送指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.1.8.</span> <span class="nav-text">数据传送实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%8B%E5%85%A5%E4%B8%8E%E5%BC%B9%E5%87%BA%E6%A0%88%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.9.</span> <span class="nav-text">压入与弹出栈数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E4%B8%8E%E9%80%BB%E8%BE%91%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">算术与逻辑操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%9C%89%E6%95%88%E5%9C%B0%E5%9D%80"><span class="nav-number">1.2.1.</span> <span class="nav-text">加载有效地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%B8%8E%E4%BA%8C%E5%85%83%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.2.</span> <span class="nav-text">一元与二元操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E4%BD%8D%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.3.</span> <span class="nav-text">移位操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%AE%97%E6%9C%AF%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.4.</span> <span class="nav-text">特殊算术操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E4%BD%8D%E4%B9%98%E6%B3%95"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">高位乘法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4%E6%B3%95%E4%B8%8E%E5%8F%96%E6%A8%A1"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">除法与取模</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E7%A0%81"><span class="nav-number">1.3.1.</span> <span class="nav-text">条件码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E6%9D%A1%E4%BB%B6%E7%A0%81"><span class="nav-number">1.3.2.</span> <span class="nav-text">访问条件码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.3.</span> <span class="nav-text">跳转指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC%E6%8C%87%E4%BB%A4%E7%9A%84%E7%BC%96%E7%A0%81"><span class="nav-number">1.3.4.</span> <span class="nav-text">跳转指令的编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E6%8E%A7%E5%88%B6%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF"><span class="nav-number">1.3.5.</span> <span class="nav-text">条件控制来实现条件分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E4%BC%A0%E9%80%81%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF"><span class="nav-number">1.3.6.</span> <span class="nav-text">条件传送来实现条件分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.3.7.</span> <span class="nav-text">循环</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#do-while%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.3.7.1.</span> <span class="nav-text">do-while循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#while%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.3.7.2.</span> <span class="nav-text">while循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#for%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.3.7.3.</span> <span class="nav-text">for循环</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#switch%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.3.8.</span> <span class="nav-text">switch语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%A0%88"><span class="nav-number">1.4.1.</span> <span class="nav-text">运行时栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E7%A7%BB%E6%8E%A7%E5%88%B6"><span class="nav-number">1.4.2.</span> <span class="nav-text">转移控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81"><span class="nav-number">1.4.3.</span> <span class="nav-text">数据传送</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88%E4%B8%8A%E7%9A%84%E5%B1%80%E9%83%A8%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.4.</span> <span class="nav-text">栈上的局部存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E4%B8%AD%E7%9A%84%E5%B1%80%E9%83%A8%E5%AD%98%E5%82%A8%E7%A9%BA%E9%97%B4"><span class="nav-number">1.4.5.</span> <span class="nav-text">寄存器中的局部存储空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A2%AB%E8%B0%83%E7%94%A8%E8%80%85%E4%BF%9D%E5%AD%98"><span class="nav-number">1.4.5.1.</span> <span class="nav-text">被调用者保存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E8%80%85%E4%BF%9D%E5%AD%98"><span class="nav-number">1.4.5.2.</span> <span class="nav-text">调用者保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.6.</span> <span class="nav-text">递归过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84%E5%88%86%E9%85%8D%E4%B8%8E%E8%AE%BF%E9%97%AE"><span class="nav-number">1.5.</span> <span class="nav-text">数组的分配与访问</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99"><span class="nav-number">1.5.1.</span> <span class="nav-text">基本原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E8%BF%90%E7%AE%97"><span class="nav-number">1.5.2.</span> <span class="nav-text">指针运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E6%95%B0%E7%BB%84"><span class="nav-number">1.5.3.</span> <span class="nav-text">嵌套数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E9%95%BF%E6%95%B0%E7%BB%84"><span class="nav-number">1.5.4.</span> <span class="nav-text">定长数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%95%BF%E6%95%B0%E7%BB%84"><span class="nav-number">1.5.5.</span> <span class="nav-text">变长数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E8%B4%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.6.</span> <span class="nav-text">异质数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">1.6.1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%94%E5%90%88"><span class="nav-number">1.6.2.</span> <span class="nav-text">联合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%B9%E9%BD%90"><span class="nav-number">1.6.3.</span> <span class="nav-text">数据对齐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="nav-number">1.7.</span> <span class="nav-text">控制与数据的交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gdb%E8%B0%83%E8%AF%95%E5%99%A8"><span class="nav-number">1.7.1.</span> <span class="nav-text">gdb调试器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E8%B6%8A%E7%95%8C%E5%BC%95%E7%94%A8%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA"><span class="nav-number">1.7.2.</span> <span class="nav-text">内存越界引用与缓冲区溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB"><span class="nav-number">1.7.3.</span> <span class="nav-text">缓冲区溢出攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%8F%98%E9%95%BF%E6%A0%88%E5%B8%A7"><span class="nav-number">1.7.4.</span> <span class="nav-text">支持变长栈帧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E4%BB%A3%E7%A0%81"><span class="nav-number">1.8.</span> <span class="nav-text">浮点代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E4%BC%A0%E9%80%81%E5%92%8C%E8%BD%AC%E6%8D%A2%E6%93%8D%E4%BD%9C"><span class="nav-number">1.8.1.</span> <span class="nav-text">浮点传送和转换操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E6%B5%AE%E7%82%B9%E4%BB%A3%E7%A0%81"><span class="nav-number">1.8.2.</span> <span class="nav-text">过程中的浮点代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E6%93%8D%E4%BD%9C"><span class="nav-number">1.8.3.</span> <span class="nav-text">浮点运算操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8%E6%B5%AE%E7%82%B9%E5%B8%B8%E6%95%B0"><span class="nav-number">1.8.4.</span> <span class="nav-text">定义和使用浮点常数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E6%B5%AE%E7%82%B9%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%BD%8D%E7%BA%A7%E6%93%8D%E4%BD%9C"><span class="nav-number">1.8.5.</span> <span class="nav-text">在浮点代码中使用位级操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%AF%94%E8%BE%83%E6%93%8D%E4%BD%9C"><span class="nav-number">1.8.6.</span> <span class="nav-text">浮点比较操作</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">142</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">495k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">14:59</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

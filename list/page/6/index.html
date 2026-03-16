@@ -183,6 +183,489 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Project0%20-%202048/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61B/Project0%20-%202048/" class="post-title-link" itemprop="url">【CS61B】Project0-2048</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:46:56" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="project0---2048">Project0 - 2048</h1>
+<blockquote>
+<p>Hard Mode</p>
+</blockquote>
+<h2 id="项目结构">项目结构</h2>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">proj0_hardmode</span></span>
+<span class="line"><span style="color: #24292e">├── game2048logic</span></span>
+<span class="line"><span style="color: #24292e">|   ├── GameLogic.java</span></span>
+<span class="line"><span style="color: #24292e">|   ├── MatrixUtils.java</span></span>
+<span class="line"><span style="color: #24292e">├── game2048rendering</span></span>
+<span class="line"><span style="color: #24292e">    ├── Board.java</span></span>
+<span class="line"><span style="color: #24292e">    ... (some other files) ...</span></span>
+<span class="line"><span style="color: #24292e">    ├── Main.java</span></span>
+<span class="line"><span style="color: #24292e">    ├── Side.java</span></span>
+<span class="line"><span style="color: #24292e">    ├── Tile.java</span></span></code></pre></div></div></figure>
+<p>分为了两个包：负责逻辑与负责渲染的，主要更改在负责逻辑的包中</p>
+<h2 id="task1游戏原理">Task1：游戏原理</h2>
+<p>2048的核心规则为Tilting，项目需要主要实现该功能</p>
+<p>当两个方格发生融合时，遵循以下规则</p>
+<ol type="1">
+<li><p>两相同值的方格融合为一个，数值翻倍</p></li>
+<li><p>由合并产生的新方块在该次移动中不会再次合并。例如，当[X, 2, 2,
+4]（X 代表空格）向左移动时，结果应为[4, 4, X, X]而非[8, X, X,
+X]。这是因为最左侧的 4 已参与过合并，故不应二次合并</p></li>
+<li><p>当融合方向上有三个相邻同值方块时，仅该方向最前方的两个方块会合并，第三个方块保不变。例如[X,
+2, 2, 2]左移后应为[4, 2, X, X]，而非[2, 4, X, X]。</p></li>
+<li><p>推论：若有四个相邻同值方块，则会合并出两个同值方块，如[2, 2, 2,
+2]左移后应该为[4, 4, X, X]，但合并出的两个同值方块不会合并</p></li>
+</ol>
+<h2 id="task2实现">Task2：实现</h2>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">compress</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E">[][] board, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> c){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> board.length;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E">[] comp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E">[n];</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> index </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E">[] ints </span><span style="color: #D73A49">:</span><span style="color: #24292E"> board) {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (ints[c] </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">            comp[index</span><span style="color: #D73A49">++</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ints[c];</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        board[i][c] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> comp[i];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E">[][] board, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> c){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> board.length;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E">(board[i][c]</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E"> board[i][c]</span><span style="color: #D73A49">==</span><span style="color: #24292E">board[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">][c]){</span></span>
+<span class="line"><span style="color: #24292E">            board[i][c] </span><span style="color: #D73A49">*=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">            board[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">][c] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">            i</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">moveColumn</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E">[][] board, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> c){</span></span>
+<span class="line"><span style="color: #24292E">   </span><span style="color: #6F42C1">compress</span><span style="color: #24292E">(board, c);</span></span>
+<span class="line"><span style="color: #24292E">   </span><span style="color: #6F42C1">merge</span><span style="color: #24292E">(board, c);</span></span>
+<span class="line"><span style="color: #24292E">   </span><span style="color: #6F42C1">compress</span><span style="color: #24292E">(board, c);</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">moveUp</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E">[][] board){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">board.length; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">moveColumn</span><span style="color: #24292E">(board, i);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>compress函数用于压缩，即将所有数都移动到顶上，而不进行合并</p>
+<p>merge函数用于将相邻的数进行合并</p>
+<p>每次移动一列，然后循环处理每列，处理一列时移动后合并，合并后可能会出现中间合并剩下的空位置，需要再进行压缩</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec16%20-%20Extends,%20Sets,%20Maps,%20and%20BSTs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61B/Lec16%20-%20Extends,%20Sets,%20Maps,%20and%20BSTs/" class="post-title-link" itemprop="url">【CS61B】Lec16-Extends, Sets, Maps, and BSTs</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:45:59" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="lec16---extends-sets-maps-and-bsts">Lec16 - Extends, Sets, Maps,
+and BSTs</h1>
+<h2 id="extends">Extends</h2>
+<p>从前，若一个类是接口的下位词，我们使用<code>implements</code>来书写方法的实现</p>
+<p>但若想实现一个类是另一个类的下位词，我们需要使用<code>extends</code></p>
+<p>extends可以用于类与类、接口与接口之间</p>
+<h3 id="例实现rotatingsllist">例：实现RotatingSLList</h3>
+<p>即让最后一个元素右旋到第一个元素</p>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #B31D28; font-style: italic">L</span><span style="color: #24292E">ec16;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">RotatingSLList</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">Item</span><span style="color: #24292E">&gt; </span><span style="color: #D73A49">extends</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">Item</span><span style="color: #24292E">&gt; {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">rotateRight</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        Item x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">removeLast</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(x);</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        RotatingSLList&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; rsl </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> RotatingSLList&lt;&gt;();</span></span>
+<span class="line"><span style="color: #24292E">        rsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        rsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">11</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        rsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">12</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        rsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">13</span><span style="color: #24292E">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        rsl.</span><span style="color: #6F42C1">rotateRight</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        rsl.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>extends继承了SLList中的所有成员：</p>
+<ul>
+<li>所有实例与静态变量</li>
+<li>所有方法（除了构造函数）</li>
+<li>所有嵌套类</li>
+</ul>
+<p>但若成员是私有的就无法访问了</p>
+<h3 id="例实现vengefulsllist">例：实现VengefulSLList</h3>
+<p>记录被删除的元素</p>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #B31D28; font-style: italic">L</span><span style="color: #24292E">ec16;</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> java.util.ArrayList;</span></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> java.util.List;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">VengefulSLList</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">Item</span><span style="color: #24292E">&gt; </span><span style="color: #D73A49">extends</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">Item</span><span style="color: #24292E">&gt;{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> SLList&lt;</span><span style="color: #D73A49">Item</span><span style="color: #24292E">&gt; deletedItems ;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">VengefulSLList</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        deletedItems </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> SLList&lt;</span><span style="color: #D73A49">Item</span><span style="color: #24292E">&gt;();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    @</span><span style="color: #D73A49">Override</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> Item </span><span style="color: #6F42C1">removeLast</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        Item removedItem </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">super</span><span style="color: #24292E">.</span><span style="color: #6F42C1">removeLast</span><span style="color: #24292E">(); </span><span style="color: #6A737D">// 使用父类的方法</span></span>
+<span class="line"><span style="color: #24292E">        deletedItems.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(removedItem);</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> removedItem;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">printLostItems</span><span style="color: #24292E">(){</span></span>
+<span class="line"><span style="color: #24292E">        deletedItems.</span><span style="color: #6F42C1">print</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
+<span class="line"><span style="color: #24292E">        VengefulSLList&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; vsl </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> VengefulSLList&lt;&gt;();</span></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">removeLast</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">removeLast</span><span style="color: #24292E">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">        vsl.</span><span style="color: #6F42C1">printLostItems</span><span style="color: #24292E">();</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>这里我们实现了对继承方法的重写</p>
+<p>其中，我们可以使用<code>super</code>来调用父类中的方法</p>
+<h2 id="bst">BST</h2>
+<h3 id="随机表">随机表</h3>
+<p>链表的搜索效率较慢，我们可以在不同节点间随机额外添加一些链接，这样可以依赖随机性获得更好的效率</p>
+<h3 id="二叉搜索树的原理">二叉搜索树的原理</h3>
+<p>若我们将每次搜索都折半，就能大幅提高效率，一个链表可以进行如下改造：</p>
+<style>.vfntixedkqbk{zoom:67%;}</style>
+<img src="/CS61B/Lec16%20-%20Extends,%20Sets,%20Maps,%20and%20BSTs/image-20250729203948925.png" class="vfntixedkqbk" alt="BST">
+<p>这是一棵二叉搜索树</p>
+<p>二叉搜索树是一个有根的二叉树，对于书中的每个节点</p>
+<ul>
+<li>左子树中的每个节点的值都小于该节点的值</li>
+<li>右子树中的每个节点的值都大于该节点的值</li>
+</ul>
+<style>.qjiaudlmerfd{zoom:50%;}</style>
+<img src="/CS61B/Lec16%20-%20Extends,%20Sets,%20Maps,%20and%20BSTs/image-20250729204424840.png" class="qjiaudlmerfd" alt="BST">
+<h3 id="寻找特定元素">寻找特定元素</h3>
+<ul>
+<li>若待寻找元素等于当前元素，返回</li>
+<li>若待寻找元素小于当前元素，前往左子树寻找</li>
+<li>若待寻找元素大于当前元素，前往右子树寻找</li>
+</ul>
+<p>时间复杂度：<span class="math inline">\(\Theta(\log n)\)</span></p>
+<p>因此搜索一颗完全BST的速度是很快的</p>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">static</span><span style="color: #24292E"> BST </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(BST T, key sk){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (T</span><span style="color: #D73A49">==</span><span style="color: #005CC5">null</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">null</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sk.</span><span style="color: #6F42C1">equals</span><span style="color: #24292E">(T.key))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> T;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sk</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T.key)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(T.left, sk);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">find</span><span style="color: #24292E">(T.right, sk);</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="添加元素">添加元素</h3>
+<p>首先寻找待插入元素</p>
+<ul>
+<li>若找到了就不进行操作</li>
+<li>若没找到
+<ul>
+<li>创建一个新节点</li>
+<li>创建合适链接</li>
+</ul></li>
+</ul>
+<p>使用递归书写</p>
+<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">static</span><span style="color: #24292E"> BST </span><span style="color: #6F42C1">insert</span><span style="color: #24292E">(BST T, key ik){</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (T</span><span style="color: #D73A49">==</span><span style="color: #005CC5">null</span><span style="color: #24292E">) </span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">BST</span><span style="color: #24292E">(ik);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (ik</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">T.key)</span></span>
+<span class="line"><span style="color: #24292E">        T.left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insert</span><span style="color: #24292E">(T.left, ik);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (ik</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">T.key)</span></span>
+<span class="line"><span style="color: #24292E">        T.right </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">insert</span><span style="color: #24292E">(T.right, ik);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> T;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h3 id="删除元素">删除元素</h3>
+<p><strong>删除没有孩子的节点：</strong></p>
+<p>直接删除，即将其父节点对应的左/右节点置空</p>
+<p><strong>删除一个孩子的节点：</strong></p>
+<p>要在维持BST性质的前提下删除：可以发现该节点的孩子一定大于（右侧）或小于（左侧）该节点</p>
+<p>故我们可以寻找该节点的孩子，将指向它的节点指向他的孩子即可</p>
+<p><strong>删除两个孩子的节点：</strong></p>
+<p>找到左子树最大的节点或右子树最小的节点，替代待删除节点即可</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec15%20-%20Disjoint%20Sets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61B/Lec15%20-%20Disjoint%20Sets/" class="post-title-link" itemprop="url">【CS61B】Lec15-Disjoint Sets</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:45:36" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>555</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="lec15---disjoint-sets">Lec15 - Disjoint Sets</h1>
+<p>解决连通性问题</p>
+<p>较好的方法是只需要记录每个相连元素属于哪个集合，至于如何连接不必关心</p>
+<h2 id="数据结构的选择">数据结构的选择</h2>
+<h3 id="sets">sets</h3>
+<img src="/CS61B/Lec15%20-%20Disjoint%20Sets/image-20250725201031703.png" class="" title="set">
+<p>过于复杂并且耗时高</p>
+<h3 id="arrays">arrays</h3>
+<p>另一个想法是：起始将每个元素设置为不同id，只需要记录每个元素所在集合的id，连通只需要将该元素所在集合id改变为目标id即可；检查是否连通只需要检查id是否一致</p>
+<p>时间复杂度：</p>
+<img src="/CS61B/Lec15%20-%20Disjoint%20Sets/image-20250725201043534.png" class="" title="arrays">
+<p>连通方法复杂度还是高了一些</p>
+<h3 id="trees">trees</h3>
+<p>想法是：给每一个元素分配一个父节点来代替id</p>
+<ul>
+<li><p>对于连通操作：可以找到要连通的两个集合的根节点，将一个的根节点设置为另一个</p></li>
+<li><p>对于检查连通操作：从待检查节点向上寻找父节点，一直找到根节点看是否相同即可</p></li>
+</ul>
+<p>操作本质即寻根并操作根节点</p>
+<p>时间复杂度：</p>
+<img src="/CS61B/Lec15%20-%20Disjoint%20Sets/image-20250725201852805.png" class="" title="trees">
+<h2 id="优化树结构">优化树结构</h2>
+<p>我们需要最小化树高</p>
+<ul>
+<li>将较短的树连接到较长的树下</li>
+<li>若高度相同，则需要打破相同</li>
+</ul>
+<p>规定：总是将更小的树根连接到更大的树上</p>
+<p>注意：使用权重衡量才能最小化平均步数，而使用高度衡量只能最小化最坏步数</p>
+<p>时间复杂度：</p>
+<img src="/CS61B/Lec15%20-%20Disjoint%20Sets/image-20250725204030644.png" class="" title="goodtree">
+<p>再次进行优化：</p>
+<p>查找后将所有节点都连接到根节点上，这样再次查找不必再遍历</p>
+<p>这样，随着操作继续，我们的树会变得越来越矮，直到树高为1，这样所有操作都很快</p>
+<img src="/CS61B/Lec15%20-%20Disjoint%20Sets/image-20250725205429211.png" class="" title="bettter">
+<p>其中<span
+class="math inline">\(\alpha(N)\)</span>为逆阿克曼函数，该函数的增长速度特别缓慢，对于具有意义的值x，<span
+class="math inline">\(\alpha(x)\)</span>的值始终不大于4，故可以看作常数时间</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec13%20-%20Asymptotics%20II/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1294,692 +1777,10 @@ Sort</h2>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec5-DLList/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61B/Lec5-DLList/" class="post-title-link" itemprop="url">【CS61B】Lec5-DLList</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:11" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="dllist">DLList</h1>
-<h2 id="dllist-1">DLList</h2>
-<p>为了让remove等操作更加高效，我们在SLList的基础上进行改进，变为双向链表，这样有利于提升操作效率</p>
-<p>同时，对于头节点的操作，我们可以用两个头节点，但更好的方法是使用循环链表</p>
-<p>具体实现详见Project1</p>
-<h2 id="generic-lists">Generic Lists</h2>
-<p>我们设计的SLList目前只接受int类型，通过修改可以实现接受各种类型</p>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec5;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">GenericList</span><span style="color: #24292E">&lt;</span><span style="color: #D73A49">T</span><span style="color: #24292E">&gt; {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> T item;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> TNode next;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(T </span><span style="color: #E36209">i</span><span style="color: #24292E">, TNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> TNode sentinel;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">GenericList</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        sentinel </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(</span><span style="color: #005CC5">null</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(T </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        sentinel.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(x, sentinel.next);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> T </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> sentinel.next.item;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(T </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        TNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sentinel;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">TNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> size;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        GenericList&lt;</span><span style="color: #D73A49">Integer</span><span style="color: #24292E">&gt; L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> GenericList&lt;&gt;();</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">20</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>泛型的规则如下：</p>
-<ul>
-<li><p>.java文件中实现数据结构时，需要在文件开头设定泛型且只能设定一次</p></li>
-<li><p>.java文件中使用数据结构时，设定需要的数据类型</p>
-<p><code>类名&lt;引用类型&gt; 实例名 = new 类名&lt;&gt;();</code></p></li>
-<li><p>声明和实例化时，需要使用引用类型</p>
-<ul>
-<li><p>int：Integer</p></li>
-<li><h3 id="doubledouble">double：Double</h3></li>
-<li><p>char：Character</p></li>
-<li><p>boolean：Boolean</p></li>
-<li><p>long：Long</p></li>
-</ul></li>
-</ul>
-<h3 id="arrays">Arrays</h3>
-<p>数组是一种拥有指定长度内存的对象，组成如下：</p>
-<ul>
-<li><h3 id="固定整型长度">固定整型长度</h3></li>
-<li><p>N=length个内存空间</p>
-<ul>
-<li>所有内存空间有着相同数据类型</li>
-<li>索引从0到length-1</li>
-</ul></li>
-</ul>
-<h3 id="初始化方法">初始化方法</h3>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E">[</span><span style="color: #005CC5">3</span><span style="color: #24292E">];</span></span>
-<span class="line"><span style="color: #24292E">y </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E">[]{</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">,</span><span style="color: #005CC5">5</span><span style="color: #24292E">};</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E">[] z </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">9</span><span style="color: #24292E">, </span><span style="color: #005CC5">10</span><span style="color: #24292E">, </span><span style="color: #005CC5">12</span><span style="color: #24292E">, </span><span style="color: #005CC5">13</span><span style="color: #24292E">};</span></span></code></pre></div></div></figure>
-<h3 id="数组复制">数组复制</h3>
-<ul>
-<li>使用循环逐个复制</li>
-<li>使用System.arraycopy()，包括五个参数
-<ul>
-<li>源数组</li>
-<li>源数组起始位置</li>
-<li>目标数组</li>
-<li>目标数组起始位置</li>
-<li>复制元素个数</li>
-</ul></li>
-</ul>
-<h3 id="二维数组">二维数组</h3>
-<figure>
-<img src="Lec5-Java%20Basic%204/image-20250709203930693.png"
-alt="二维数组" />
-<figcaption aria-hidden="true">二维数组</figcaption>
-</figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec4-SLList/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61B/Lec4-SLList/" class="post-title-link" itemprop="url">【CS61B】Lec4-SLList</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:23" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="sllist">SLList</h1>
-<h2 id="sllist-1">SLList</h2>
-<p>我们将对前面创建的链表进行封装与优化</p>
-<p>对上节课的IntList的修改：</p>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">        next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>重构为IntNode</p>
-<p>接下来创建类SLList并进行封装</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">package lec4;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
-<span class="line"><span style="color: #24292E">public </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #6A737D">    //列表的第一项</span></span>
-<span class="line"><span style="color: #24292E">    public IntNode first;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    public </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x,null);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    public </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, first);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    public </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> first.item;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    public </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(String[] args){</span></span>
-<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>但接下来有一个问题：有些用户可能会不通过给定的方法，而是直接操纵内部属性，这样可能会导致一些致命性的错误，如<code>L.first = null</code>，这时我们需要加强抽象屏障</p>
-<p>我们需要修改一些实例的权限，防止可以直接被操纵，具体操作为<strong>将public改为private</strong></p>
-<p>private关键字使得其他类中的代码调用该类中的成员</p>
-<p>隐藏实现细节：</p>
-<ul>
-<li>让用户理解更少</li>
-<li>修改方法时是安全的（因为没有人可以调用）</li>
-</ul>
-<h2 id="嵌套类">嵌套类</h2>
-<p>Java中可以将类进行嵌套，如我们可以将IntNode类放入SLList类中</p>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> IntNode first;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, first);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> first.item;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>当一个类无法独立存在（明显从属于另一个类）时，设为嵌套类是合适的。</p>
-<p>对于第5行嵌套类是否设为静态：若嵌套类不使用外部类的任何内容，则可以设为static</p>
-<h2 id="增加功能">增加功能</h2>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
-<span class="line"><span style="color: #24292E">    IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(first);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(IntNode p){</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (p</span><span style="color: #D73A49">==</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #6F42C1">size</span><span style="color: #24292E">(p.next);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>其中，计算size时使用了递归，是通过在一个非递归类里调用了递归方法实现的：</p>
-<ul>
-<li>创建一个私有的递归方法，以那些裸递归对象作为参数</li>
-<li>在一个公共方法中直接调用该递归方法</li>
-</ul>
-<p>但这种方式很低效，我们需要优化为<span
-class="math inline">\(O(1)\)</span>复杂度</p>
-<h2 id="优化递归">优化递归</h2>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> IntNode first;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, first);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> first.item;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> size;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">20</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>我们创建了一个size变量，存储数据来方便检索，在add的时候同时更新该值</p>
-<h2 id="创建空链表">创建空链表</h2>
-<p>修改为空链表后，addLast方法会出现问题，因为此时的first为null，无法访问first.next</p>
-<p>解决方法1：</p>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> x){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (first </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> first;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span></code></pre></div></div></figure>
-<p>这样需要一个特殊情况，使得代码更加复杂以及更难追踪</p>
-<p>解决方法2：</p>
-<p>在空链表初始化时加入头节点（sentinel）</p>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec4;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 数字列表</span></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> item;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntNode next;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">i</span><span style="color: #24292E">, IntNode </span><span style="color: #E36209">n</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            item </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">            next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">//列表的第一项</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> IntNode sentinel;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">private</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> size;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        sentinel </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        sentinel.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        sentinel </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        size </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        sentinel.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, sentinel.next);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> sentinel.next.item;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        size</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        IntNode p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sentinel;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">while</span><span style="color: #24292E">(p.next</span><span style="color: #D73A49">!=</span><span style="color: #005CC5">null</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">            p </span><span style="color: #D73A49">=</span><span style="color: #24292E"> p.next;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        p.next </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntNode</span><span style="color: #24292E">(x, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">(){</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> size;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">        SLList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SLList</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addFirst</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L.</span><span style="color: #6F42C1">addLast</span><span style="color: #24292E">(</span><span style="color: #005CC5">20</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">getFirst</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<p>sentinal在这里的用处为占位，该节点永远不为空，且其值随意</p>
-<h2 id="不变式invariants">不变式(Invariants)</h2>
-<p>不变式就是代码运行中保证成立的条件</p>
-<p>存在头节点的SLList有以下不变式：</p>
-<ul>
-<li>头节点的引用总指向头节点</li>
-<li>第一个节点总存在<code>sentinal.next</code></li>
-<li><code>size</code>变量总是表示添加节点的数目</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61B/Lec3-Java%20Basic%202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61B/Lec3-Java%20Basic%202/" class="post-title-link" itemprop="url">【CS61B】Lec3-Java Basic2</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2025-07-31 17:37:16 / 修改时间：17:42:36" itemprop="dateCreated datePublished" datetime="2025-07-31T17:37:16+08:00">2025-07-31</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61B/" itemprop="url" rel="index"><span itemprop="name">CS61B</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>949</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="java-basic-2">Java Basic 2</h1>
-<h2 id="声明变量的原理">声明变量的原理</h2>
-<ul>
-<li>计算机留出对应变量类型的内存空间</li>
-<li>Java创建一个内部表用来将变量名与各个位进行对应</li>
-<li>首次声明时，Java不会在这些空间里写入任何东西，但你不可以使用一个未定义的变量，对变量赋值后，才会向里面填充内容</li>
-</ul>
-<h2 id="类的实例化">类的实例化</h2>
-<p>当实例化一个对象时</p>
-<ul>
-<li>Java对类中的每个实例变量分配空间并初始化值</li>
-<li>构造函数用其他一些值填充这些空间</li>
-</ul>
-<p>其中，new关键字的作用类似于寻找并返回新创建的对象的地址</p>
-<h2 id="引用类型">引用类型</h2>
-<p>不属于Java的八种基本类型的类型统称为引用类型</p>
-<p>当声明一个引用类型时：</p>
-<ul>
-<li>Java会分配64bits空间，无论是哪一种对象</li>
-<li>这些空间会被设置为
-<ul>
-<li>Null（二进制位全0）</li>
-<li>该类特定实例的地址</li>
-</ul></li>
-</ul>
-<img src="/CS61B/Lec3-Java%20Basic%202/image-20250708195819240.png" class="" title="内存">
-<h2 id="参数传递">参数传递</h2>
-<p>The Golden Rule of Equals：</p>
-<p>给予变量a与b，<code>a=b</code>的意义为<strong>把b的bits值复制给a</strong></p>
-<p>参数传递的方式按照此规律：即按值传递（有时候值为地址），而不能使用引用（如C++中的&amp;）</p>
-<h2 id="数组的比较">数组的比较</h2>
-<p>Java中，==运算符仅仅是比较两个数组的地址是否相同</p>
-<p>如果需要比较内容是否已知，可以使用<code>Arrays.equals(x,y);</code>方法</p>
-<h2 id="实例递归实现链表">实例：递归实现链表</h2>
-<figure class="shiki java"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> lec3;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 无限长的整型链表</span></span>
-<span class="line"><span style="color: #6A737D">// 使用递归写</span></span>
-<span class="line"><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> first;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> IntList rest;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">f</span><span style="color: #24292E">, IntList </span><span style="color: #E36209">r</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">        first </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f;</span></span>
-<span class="line"><span style="color: #24292E">        rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> r;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">size</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (rest </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">null</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">        }</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> rest.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">();</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">get</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">x</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">.first;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">this</span><span style="color: #24292E">.rest.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(x </span><span style="color: #D73A49">-</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">public</span><span style="color: #24292E"> </span><span style="color: #D73A49">static</span><span style="color: #24292E"> </span><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">(</span><span style="color: #D73A49">String</span><span style="color: #24292E">[] </span><span style="color: #E36209">args</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">        IntList L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #005CC5">15</span><span style="color: #24292E">, </span><span style="color: #005CC5">null</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">        L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">, L);</span></span>
-<span class="line"><span style="color: #24292E">        L </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">new</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IntList</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">, L);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">size</span><span style="color: #24292E">());</span></span>
-<span class="line"><span style="color: #24292E">        System.out.</span><span style="color: #6F42C1">println</span><span style="color: #24292E">(L.</span><span style="color: #6F42C1">get</span><span style="color: #24292E">(</span><span style="color: #005CC5">2</span><span style="color: #24292E">));</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/list/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/list/">1</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/list/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/14/">14</a><a class="extend next" rel="next" href="/list/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/list/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/list/">1</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/list/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/list/page/15/">15</a><a class="extend next" rel="next" href="/list/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2046,20 +1847,20 @@ class="math inline">\(O(1)\)</span>复杂度</p>
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">139</span>
+          <span class="site-state-item-count">142</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -2100,12 +1901,12 @@ class="math inline">\(O(1)\)</span>复杂度</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">468k</span>
+    <span title="站点总字数">495k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">14:11</span>
+    <span title="站点阅读时长">14:59</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
