@@ -183,6 +183,483 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Representations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Representations/" class="post-title-link" itemprop="url">【CS61A】CS61A——Representations</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:52:23" itemprop="dateModified" datetime="2025-07-31T17:52:23+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="representations">Representations</h1>
+<h2 id="string-representations">String Representations</h2>
+<p>字符串用来表达语言与程序<br />
+Python中，有两种字符串表达 - <code>str</code>：对人类可读 -
+<code>repr</code>：对解释器刻可读 这两种一般相同，但也有不同之处<br />
+### repr String for an Object
+repr函数返回一个python表达式(字符串)，该表达式会评估为一个等同的对象<br />
+对一个对象的repr调用eval会给你一个与原始对象等价的对象<br />
+调用repr的结果与在python交互界面输出的结果相同</p>
+<h3 id="str-string-for-an-object">str String for an Object</h3>
+<p>str函数接受任何对象，返回一个字符串，字符串是原始对象的人类可以解释的表示<br />
+对表达式调用str的结果与调用print时输出的结果相同</p>
+<h2 id="f-strings">F-strings</h2>
+<h3 id="string-interpolation">String Interpolation</h3>
+<p>字符串插值包括对一些含有表达式的字符串字面量求值 -
+可以使用+进行字符串连接实现 <code>'pi starts with'+str(pi)+'...'</code>
+- 也可以使用f-string功能实现字符串插值
+<code>f'pi starts with &#123;pi&#125;'</code>
+花括号中的将会作为表达式看待并给出计算结果 f-string的计算结果包括str
+string和子表达式的值</p>
+<h2 id="polymorphic-functions">Polymorphic Functions</h2>
+<p>多态函数是一种适用于多种数据类型的函数<br />
+如str和repr函数都是多态函数，它们接受任何类型的对象<br />
+原理：repr调用了一个零参数方法<code>__repr__</code>以便在参数上获取他返回的repr字符串<br />
+str同样调用一个 零参数方法<code>__str__</code><br />
+对于repr函数：</p>
+<ul>
+<li>repr函数内部只调用了一个名为repr的类属性，而实例属性<code>__repr__</code>被忽略了</li>
+<li>实现如下：</li>
+</ul>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">repr</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">type</span><span style="color: #24292E">(x).</span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(x)</span></span></code></pre></div></div></figure>
+<p>对于str函数： - 实例属性<code>__str__</code>被忽略了 -
+若类上根本没有<code>__str__</code>属性，则调用str只会返回repr返回的内容</p>
+<h3 id="interface">Interface</h3>
+<p>对象传递信息的方式：通过互相查找属性或方法<br />
+属性的查找规则允许不同数据类型通过具有相同属性名称来响应相同信息</p>
+<p>共享信息：在许多不同类上引起相似行为的属性名称<br />
+接口：一组共享信息与一些规范（表示其含义）</p>
+<p>如实现__repr__与__str__的类实现了一个接口，一下是用类来展示该接口的代码</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Ratio</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, n, d):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;Ratio(</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">, </span><span style="color: #005CC5">{1}</span><span style="color: #032F62">)&#39;</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__str__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">/</span><span style="color: #005CC5">{1}</span><span style="color: #032F62">&#39;</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span></code></pre></div></div></figure>
+<p>当我们令<code>half = Ratio(1,2)</code>，直接打印half，输出为可读版本，而直接在解释器展示half，就会输出python表达式</p>
+<h2 id="special-method-names">Special Method Names</h2>
+<p>python中，以两个下划线包围的名字表示它们具有某种内置行为 -
+<code>__init__</code>：构造对象时会自动调用的方法 -
+<code>__repr__</code>：将对象以python表达式的方式输出，在交互式python界面时用于显示值的方法
+- <code>__add__</code>：用于将一个对象加入另一个对象 -
+<code>__bool__</code>：用于将一个对象转换为布尔值 -
+<code>__float__</code>：用于将一个对象转换为实数
+同时，以下代码实现了将两个对象相加</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Ratio</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, n, d):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;Ratio(</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">, </span><span style="color: #005CC5">{1}</span><span style="color: #032F62">)&#39;</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__str__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;</span><span style="color: #005CC5">{0}</span><span style="color: #032F62">/</span><span style="color: #005CC5">{1}</span><span style="color: #032F62">&#39;</span><span style="color: #24292E">.format(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__add__</span><span style="color: #24292E">(self, other):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(other, </span><span style="color: #005CC5">int</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">            n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer</span><span style="color: #D73A49">+</span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span><span style="color: #D73A49">*</span><span style="color: #24292E">other</span></span>
+<span class="line"><span style="color: #24292E">            d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(other, Ratio):</span></span>
+<span class="line"><span style="color: #24292E">            n </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer</span><span style="color: #D73A49">*</span><span style="color: #24292E">other.denom </span><span style="color: #D73A49">+</span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span><span style="color: #D73A49">*</span><span style="color: #24292E">other.numer</span></span>
+<span class="line"><span style="color: #24292E">            d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span><span style="color: #D73A49">*</span><span style="color: #24292E">other.denom</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> </span><span style="color: #005CC5">isinstance</span><span style="color: #24292E">(other, </span><span style="color: #005CC5">float</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">float</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #24292E">other</span></span>
+<span class="line"><span style="color: #24292E">        g </span><span style="color: #D73A49">=</span><span style="color: #24292E"> gcd(n,d)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Ratio(n</span><span style="color: #D73A49">//</span><span style="color: #24292E">g, d</span><span style="color: #D73A49">//</span><span style="color: #24292E">g)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">__radd__</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">__add__</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__float__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.numer</span><span style="color: #D73A49">/</span><span style="color: #005CC5">self</span><span style="color: #24292E">.denom</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(n, d):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> n</span><span style="color: #D73A49">!=</span><span style="color: #24292E">d:</span></span>
+<span class="line"><span style="color: #24292E">        n, d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(n, d), </span><span style="color: #005CC5">abs</span><span style="color: #24292E">(n</span><span style="color: #D73A49">-</span><span style="color: #24292E">d)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> n</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Inheritance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Inheritance/" class="post-title-link" itemprop="url">【CS61A】CS61A——Inheritance</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:50:45" itemprop="dateModified" datetime="2025-07-31T17:50:45+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="inheritance">Inheritance</h1>
+<p>继承是将多个类关联起来的一种方法
+当两个类相似时，可以使用继承，相似的类可能具有与通用类相同的所有属性，外加自带的特殊属性
+<strong>语法：</strong> <figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">class &lt;name&gt;(&lt;base class&gt;):</span></span>
+<span class="line"><span style="color: #24292e">    &lt;suite&gt;</span></span></code></pre></div></div></figure>
+通过该语句创建的子类与其基类共享所有属性，子类可能会覆盖某些继承的属性，但未更改的保持不变
+当编写子类是，只需要指出其与基类不同之处即可 ## 例
+创建一个支票账户(CheckingAccount)类，作为账户(Account)类的子类</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 类的继承</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">CheckingAccount</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Account</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;A bank account that charges for withdrawals&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    withdraw_fee </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    interest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0.01</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Account.withdraw(</span><span style="color: #005CC5">self</span><span style="color: #24292E">, amount </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.withdraw_fee)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">ch </span><span style="color: #D73A49">=</span><span style="color: #24292E"> CheckingAccount(</span><span style="color: #032F62">&#39;Tom&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(ch.interest)</span></span>
+<span class="line"><span style="color: #24292E">ch.deposit(</span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">ch.withdraw(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(ch.balance)</span></span></code></pre></div></div></figure>
+<p>此处我们在Account类的基础上修改了interest属性与withdraw方法，而其余属性与方法可以继续使用</p>
+<h2 id="在类上寻找属性名称">在类上寻找属性名称</h2>
+<p><strong>基类属性不会复制到子类中</strong>，确保了未经修改的属性与基类保持一致，在类中寻找名称遵循如下规则
+- 如果名称为类中的属性，则返回属性值 - 若不在，在其基类中寻找该名称</p>
+<h2 id="面向对象设计">面向对象设计</h2>
+<p>在进行面向对象编程时，建议遵循如下原则 -
+不要重复复制粘贴已经存在的，而是利用已经存在的实现 -
+已被覆盖的属性仍需要通过类来访问</p>
+<p>如以上代码，在计算提款时最佳方式是查找实例本身上的withdraw_fee
+这样，如果当前实例有一个特定的withdraw_fee，我们就使用它，否则使用Account类中的</p>
+<h2 id="继承与组合">继承与组合</h2>
+<p>继承最适合<strong>is-a</strong>关系，如支票账户是(is
+a)账户的特定类型，故适合使用继承
+组合最适合<strong>has-a</strong>关系，如一个银行具有(has
+a)有一组他管理的账户，该组账户是它的一个属性，而不会继承</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Bank</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;a bank has accounts&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">     </span><span style="color: #005CC5">self</span><span style="color: #24292E">.accounts</span><span style="color: #D73A49">=</span><span style="color: #24292E">[]   </span><span style="color: #6A737D"># 账户列表</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">open_account</span><span style="color: #24292E">(self, holder, amount, kind </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Account):</span></span>
+<span class="line"><span style="color: #24292E">        account </span><span style="color: #D73A49">=</span><span style="color: #24292E"> kind(holder)   </span><span style="color: #6A737D"># 创建某种类型的账户</span></span>
+<span class="line"><span style="color: #24292E">        account.deposit(amount)   </span><span style="color: #6A737D"># 存入amount的钱</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.accounts.append(account)   </span><span style="color: #6A737D"># 将创建的账户加入当前银行的账户列表</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> account</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">pay_interest</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D"># 计算列表中的利息</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> a </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.accounts:</span></span>
+<span class="line"><span style="color: #24292E">            a.deposit(a.balance</span><span style="color: #D73A49">*</span><span style="color: #24292E">a.interest)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">bank </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Bank()</span></span>
+<span class="line"><span style="color: #24292E">john </span><span style="color: #D73A49">=</span><span style="color: #24292E"> bank.open_account(</span><span style="color: #032F62">&#39;john&#39;</span><span style="color: #24292E">, </span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">jack </span><span style="color: #D73A49">=</span><span style="color: #24292E"> bank.open_account(</span><span style="color: #032F62">&#39;jack&#39;</span><span style="color: #24292E">, </span><span style="color: #005CC5">5</span><span style="color: #24292E">, CheckingAccount)</span></span>
+<span class="line"><span style="color: #24292E">bank.pay_interest()</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(jack.balance)</span></span>
+<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(john.balance)</span></span></code></pre></div></div></figure>
+<h2 id="多重继承">多重继承</h2>
+<p>一个子类可以有多个基类
+其中，这里直接调用父类<code>account_holder</code>时，使用<code>super()</code>实现了超类调用，防止破坏多重继承的调用逻辑</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D"># 类的多重继承</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">SavingsAccount</span><span style="color: #24292E">(</span><span style="color: #6F42C1">Account</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    deposit_fee </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> Account.deposit(</span><span style="color: #005CC5">self</span><span style="color: #24292E">, amount</span><span style="color: #D73A49">-</span><span style="color: #005CC5">self</span><span style="color: #24292E">.deposit_fee)</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">GoodAccount</span><span style="color: #24292E">(</span><span style="color: #6F42C1">CheckingAccount</span><span style="color: #24292E">, </span><span style="color: #6F42C1">SavingsAccount</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">super</span><span style="color: #24292E">().</span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(account_holder)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Decomposition/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Decomposition/" class="post-title-link" itemprop="url">【CS61A】CS61A——Decomposition</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-18 21:40:12" itemprop="dateCreated datePublished" datetime="2025-05-18T21:40:12+08:00">2025-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:49:16" itemprop="dateModified" datetime="2025-07-31T17:49:16+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="decomposition">Decomposition</h1>
+<h2 id="modular-design">Modular Design</h2>
+<p>程序的设计原则：将程序的不同部分分离开来，使得每个模块可以独立开发与测试
+以以下餐厅搜索代码为例，实现从文件中读取评分与评论（使用<code>similarity</code>评估相似性）搜索对应评分前k个餐厅去过的其他餐厅的功能：</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">search</span><span style="color: #24292E">(query, ranking </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> r: </span><span style="color: #D73A49">-</span><span style="color: #24292E">r.stars):</span></span>
+<span class="line"><span style="color: #24292E">    results  </span><span style="color: #D73A49">=</span><span style="color: #24292E">[r </span><span style="color: #D73A49">for</span><span style="color: #24292E"> r </span><span style="color: #D73A49">in</span><span style="color: #24292E"> Restaurant.all </span><span style="color: #D73A49">if</span><span style="color: #24292E"> query </span><span style="color: #D73A49">in</span><span style="color: #24292E"> r.name]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">sorted</span><span style="color: #24292E">(results, </span><span style="color: #E36209">key</span><span style="color: #D73A49">=</span><span style="color: #24292E"> ranking)</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">reviewed_both</span><span style="color: #24292E">(r, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">len</span><span style="color: #24292E">([x </span><span style="color: #D73A49">for</span><span style="color: #24292E"> x </span><span style="color: #D73A49">in</span><span style="color: #24292E"> r.reviewers </span><span style="color: #D73A49">if</span><span style="color: #24292E"> x </span><span style="color: #D73A49">in</span><span style="color: #24292E"> s.reviewers])</span></span>
+<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Restaurant</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">all</span><span style="color: #24292E"> </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, name, star, reviewer):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> name</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.star </span><span style="color: #D73A49">=</span><span style="color: #24292E"> star</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.reviewer </span><span style="color: #D73A49">=</span><span style="color: #24292E"> reviewer</span></span>
+<span class="line"><span style="color: #24292E">        Restaurant.all.append(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">similar</span><span style="color: #24292E">(self, k, similarity</span><span style="color: #D73A49">=</span><span style="color: #24292E">reviewed_both):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Return the k most similar restaurants to self&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">        others </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Restaurant.all</span></span>
+<span class="line"><span style="color: #24292E">        others.remove(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        different </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> r: </span><span style="color: #D73A49">-</span><span style="color: #24292E">similarity(r, </span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">sorted</span><span style="color: #24292E">(others, </span><span style="color: #E36209">key</span><span style="color: #D73A49">=</span><span style="color: #24292E">different)[:k]</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__repr__</span><span style="color: #24292E">(self):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;&lt;&#39;</span><span style="color: #D73A49">+</span><span style="color: #005CC5">self</span><span style="color: #24292E">.name</span><span style="color: #D73A49">+</span><span style="color: #032F62">&#39;&gt;&#39;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> json</span></span>
+<span class="line"><span style="color: #24292E">reviewers_for_restaurant </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {}</span></span>
+<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> line </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">open</span><span style="color: #24292E">(</span><span style="color: #032F62">&#39;reviews.json&#39;</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    r </span><span style="color: #D73A49">=</span><span style="color: #24292E"> json.loads(line)</span></span>
+<span class="line"><span style="color: #24292E">    biz </span><span style="color: #D73A49">=</span><span style="color: #24292E"> r[</span><span style="color: #032F62">&#39;business_id&#39;</span><span style="color: #24292E">]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> biz </span><span style="color: #D73A49">not</span><span style="color: #24292E"> </span><span style="color: #D73A49">in</span><span style="color: #24292E"> reviewers_for_restaurant:</span></span>
+<span class="line"><span style="color: #24292E">        reviewers_for_restaurant[biz] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [r[</span><span style="color: #032F62">&#39;user_id&#39;</span><span style="color: #24292E">]]</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        reviewers_for_restaurant[biz].append(r[</span><span style="color: #032F62">&#39;user_id&#39;</span><span style="color: #24292E">])</span></span>
+<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> line </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">open</span><span style="color: #24292E">(</span><span style="color: #032F62">&#39;restaurant.json&#39;</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">    r </span><span style="color: #D73A49">=</span><span style="color: #24292E"> json.loads(line)</span></span>
+<span class="line"><span style="color: #24292E">    reviewers </span><span style="color: #D73A49">=</span><span style="color: #24292E"> reviewers_for_restaurant[r[</span><span style="color: #032F62">&#39;business_id&#39;</span><span style="color: #24292E">]]</span></span>
+<span class="line"><span style="color: #24292E">    Restaurant(r[</span><span style="color: #032F62">&#39;name&#39;</span><span style="color: #24292E">], r[</span><span style="color: #032F62">&#39;stars&#39;</span><span style="color: #24292E">], reviewers)</span></span>
+<span class="line"><span style="color: #24292E">results </span><span style="color: #D73A49">=</span><span style="color: #24292E"> search(</span><span style="color: #032F62">&#39;Thai&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> r </span><span style="color: #D73A49">in</span><span style="color: #24292E"> results:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(r,</span><span style="color: #032F62">&#39;share reviewer with&#39;</span><span style="color: #24292E">, r.similar(</span><span style="color: #005CC5">3</span><span style="color: #24292E">))</span></span></code></pre></div></div></figure>
+<h2 id="优化时间复杂度">优化时间复杂度</h2>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">reviewed_both</span><span style="color: #24292E">(r, s):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> fast_overlap(r.reviewers, s.reviewers)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">fast_overlap</span><span style="color: #24292E">(s, t):</span></span>
+<span class="line"><span style="color: #24292E">    count, i, j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> i</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">len</span><span style="color: #24292E">(s) </span><span style="color: #D73A49">and</span><span style="color: #24292E"> j</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">len</span><span style="color: #24292E">(t):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s[i]</span><span style="color: #D73A49">==</span><span style="color: #24292E">t[j]:</span></span>
+<span class="line"><span style="color: #24292E">            count, i, j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> count</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, j</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #B31D28; font-style: italic">;</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> s[i]</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">t[i]:</span></span>
+<span class="line"><span style="color: #24292E">            i</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            j</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> count</span></span></code></pre></div></div></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/%E9%82%BB%E6%8E%A5%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1714,510 +2191,6 @@ case：若传入的是一个planet，则返回True，因为planet在这个结构
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Generators/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61A/CS61A%20Generators/" class="post-title-link" itemprop="url">【CS61A】CS61A——Generators</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-27 09:28:07" itemprop="dateCreated datePublished" datetime="2025-03-27T09:28:07+08:00">2025-03-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:49:58" itemprop="dateModified" datetime="2025-07-31T17:49:58+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="generators">Generators</h1>
-<h2 id="generator-functions">Generator Functions</h2>
-<ul>
-<li>生成器函数是用来<strong>生成(yields)</strong>值而非返回值的函数</li>
-<li>生成器函数使用yield关键字返回生成的值</li>
-<li>生成器可以多次生成值，而普通函数只能返回一次值</li>
-<li>生成器是调用生成器函数时自动创建的迭代器</li>
-<li>调用生成器函数，它会返回一个生成器来迭代该函数生成的值</li>
-<li>当函数执行到yield时，生成的值将会作为下次迭代器的数值，而此时执行在yield处执行，但会记住当前环境，以便下次继续执行
-e.g.</li>
-</ul>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">evens</span><span style="color: #24292E">(start, end):</span></span>
-<span class="line"><span style="color: #24292E">    even </span><span style="color: #D73A49">=</span><span style="color: #24292E"> start </span><span style="color: #D73A49">+</span><span style="color: #24292E"> (start</span><span style="color: #D73A49">%</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> even</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">end:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> even</span></span>
-<span class="line"><span style="color: #24292E">        even</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">2</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> evens(</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(i)</span></span></code></pre></div></div></figure>
-<pre><code>2
-4
-6
-8</code></pre>
-<h2 id="generators-iterators">Generators &amp; Iterators</h2>
-<p>yield from语句 yield from语句允许从一个迭代器或可迭代变量中生成所有值
-两个例子：</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">countdown</span><span style="color: #24292E">(k):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> k</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> k</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> countdown(k</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&#39;&#39;&#39;</span></span>
-<span class="line"><span style="color: #032F62">        等价于 </span></span>
-<span class="line"><span style="color: #032F62">        for i in countdown(k-1):</span></span>
-<span class="line"><span style="color: #032F62">            yield i</span></span>
-<span class="line"><span style="color: #032F62">        &#39;&#39;&#39;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;Blast off&#39;</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> countdown(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> t:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(i)</span></span></code></pre></div></div></figure>
-<pre><code>3
-2
-1
-Blast of</code></pre>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">prefixes</span><span style="color: #24292E">(s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> prefixes(s[:</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">])</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> s</span></span>
-<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">substrings</span><span style="color: #24292E">(s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> s:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> prefixes(s)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> substrings(s[</span><span style="color: #005CC5">1</span><span style="color: #24292E">:])</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(prefixes(</span><span style="color: #032F62">&quot;both&quot;</span><span style="color: #24292E">)))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(substrings(</span><span style="color: #032F62">&quot;top&quot;</span><span style="color: #24292E">)))</span></span></code></pre></div></div></figure>
-<pre><code>[&#39;b&#39;, &#39;bo&#39;, &#39;bot&#39;, &#39;both&#39;]
-[&#39;t&#39;, &#39;to&#39;, &#39;top&#39;, &#39;o&#39;, &#39;op&#39;, &#39;p&#39;]</code></pre>
-<h2 id="example-partitions">Example: Partitions</h2>
-<p>详见递归时的数字分割例子 使用列表：</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">partitions</span><span style="color: #24292E">(n,m):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">or</span><span style="color: #24292E"> m</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> []</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        exact_match </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #24292E">m:</span></span>
-<span class="line"><span style="color: #24292E">            exact_match </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #005CC5">str</span><span style="color: #24292E">(m)]</span></span>
-<span class="line"><span style="color: #24292E">        with_m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [p</span><span style="color: #D73A49">+</span><span style="color: #032F62">&#39;+&#39;</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(m) </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> partitions(n</span><span style="color: #D73A49">-</span><span style="color: #24292E">m,m)]</span></span>
-<span class="line"><span style="color: #24292E">        without_m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> partitions(n,m</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> exact_match</span><span style="color: #D73A49">+</span><span style="color: #24292E">with_m</span><span style="color: #D73A49">+</span><span style="color: #24292E">without_m</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> partitions(</span><span style="color: #005CC5">6</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(p)</span></span></code></pre></div></div></figure>
-<pre><code>2+4
-1+1+4
-3+3
-1+2+3
-1+1+1+3
-2+2+2
-1+1+2+2
-1+1+1+1+2
-1+1+1+1+1+1</code></pre>
-<p>使用生成器： 使代码更优雅，而且可以输出指定个数的可能结果</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">partitions</span><span style="color: #24292E">(n,m):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">and</span><span style="color: #24292E"> m</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #24292E">m:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(m)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> partitions(n</span><span style="color: #D73A49">-</span><span style="color: #24292E">m,m):</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> p</span><span style="color: #D73A49">+</span><span style="color: #032F62">&#39;+&#39;</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(m)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield from</span><span style="color: #24292E"> partitions(n,m</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;__main__&quot;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> partitions(</span><span style="color: #005CC5">6</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> p </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(t))</span></span></code></pre></div></div></figure>
-<pre><code>2+4
-1+1+4
-3+3
-1+2+3
-1+1+1+3</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">【数据结构】队列</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-26 07:14:37" itemprop="dateCreated datePublished" datetime="2025-03-26T07:14:37+08:00">2025-03-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-17 22:04:00" itemprop="dateModified" datetime="2025-12-17T22:04:00+08:00">2025-12-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>介绍了多种队列的原理与实现，以及单调队列</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E9%98%9F%E5%88%97/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Iterators/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/CS61A/CS61A%20Iterators/" class="post-title-link" itemprop="url">【CS61A】CS61A——Iterators</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-03-22 10:51:32" itemprop="dateCreated datePublished" datetime="2025-03-22T10:51:32+08:00">2025-03-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:50:57" itemprop="dateModified" datetime="2025-07-31T17:50:57+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="iterators">Iterators</h1>
-<h2 id="iterators-1">Iterators</h2>
-<p>迭代器是一种常见的接口，python中常用作一种访问不同容器元素的方式 -
-容器可以提供一个迭代器，以按照某种顺序访问容器内元素 -
-<code>iter(iterable)</code>：创建迭代器，接受任何可迭代的东西，返回可迭代元素的迭代器
-- <code>next(iterator)</code>：推进迭代器，返回迭代器的下一个元素 -
-不同迭代器可以迭代相同值，但它们彼此之间是独立的 -
-使用list，tuple或sorted函数可以查看一个迭代器的剩余元素 -
-当迭代器到达末尾，Python会返回一个StopIteration的异常 -
-所有迭代器都是可变对象</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [[</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">,</span><span style="color: #005CC5">5</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">iter</span><span style="color: #24292E">(s)</span></span>
-<span class="line"><span style="color: #24292E">u </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">iter</span><span style="color: #24292E">(s)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;t:&quot;</span><span style="color: #24292E">,</span><span style="color: #005CC5">next</span><span style="color: #24292E">(t))</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;u:&quot;</span><span style="color: #24292E">,</span><span style="color: #005CC5">next</span><span style="color: #24292E">(u))</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;t:&quot;</span><span style="color: #24292E">,</span><span style="color: #005CC5">next</span><span style="color: #24292E">(t))</span></span>
-<span class="line"><span style="color: #005CC5">list</span><span style="color: #24292E">(t)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(t))</span></span></code></pre></div></div></figure>
-<pre><code>t: [1, 2]
-u: [1, 2]
-t: 3
-
----------------------------------------------------------------------------
-StopIteration                             Traceback (most recent call last)
-
-Cell In[4], line 8
-      6 print(&quot;t:&quot;,next(t))
-      7 list(t)
-----&gt; 8 print(next(t))
-StopIteration: </code></pre>
-<h2 id="dictionary-itertion">Dictionary Itertion</h2>
-<p>字典的键，值以及键值对都是可遍历的 ，可以生成迭代器
-字典中的键值对顺序取决于它们的添加顺序（Python3.6+）
-迭代各项目的方法如下</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #032F62">&#39;one&#39;</span><span style="color: #24292E">:</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;two&#39;</span><span style="color: #24292E">:</span><span style="color: #005CC5">2</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;three&#39;</span><span style="color: #24292E">:</span><span style="color: #005CC5">3</span><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #24292E">d[</span><span style="color: #032F62">&#39;zero&#39;</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
-<span class="line"><span style="color: #6A737D"># 遍历键</span></span>
-<span class="line"><span style="color: #24292E">k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">iter</span><span style="color: #24292E">(d.keys()) </span><span style="color: #6A737D"># iter(d)</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(k))</span></span>
-<span class="line"><span style="color: #6A737D"># 遍历值</span></span>
-<span class="line"><span style="color: #24292E">v </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">iter</span><span style="color: #24292E">(d.values())</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(v))</span></span>
-<span class="line"><span style="color: #6A737D"># 遍历键值对</span></span>
-<span class="line"><span style="color: #24292E">i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">iter</span><span style="color: #24292E">(d.items()) </span><span style="color: #6A737D"># 以元组形式迭代</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(i))</span></span></code></pre></div></div></figure>
-<pre><code>one
-1
-(&#39;one&#39;, 1)</code></pre>
-<p><strong>注意：若在迭代器创建后，字典发生了结构上的改变（增加，减少元素等），迭代器会失效。若只是改变键对应的值则不会。</strong></p>
-<h2 id="for-statement">For Statement</h2>
-<p>for循环可以遍历迭代器本身，可以从迭代器当前位置遍历到迭代器末尾，但这会推进迭代器，故不能重复使用
-而可迭代对象可以从头到尾遍历多次</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">r </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">6</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">ri </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">iter</span><span style="color: #24292E">(r)</span></span>
-<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> ri:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(i)</span></span>
-<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> ri:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(i)</span></span></code></pre></div></div></figure>
-<pre><code>3
-4
-5</code></pre>
-<h2 id="built-in-function-for-iteration">Built-in Function for
-Iteration</h2>
-<p>许多python内置的序列操作使用迭代器作为返回值，以惰性方式计算
-惰性计算意味着只有被请求时才计算结果 e.g.
-<code>map(func, iterable)</code>：接受一个函数与一个可迭代对象，将该函数应用于可迭代对象中的每一个元素，返回一个迭代器遍历可迭代对象中所有x在func下的值
-<code>filter(func, iterable)</code>：接受一个断言函数与一个可迭代对象，返回一个迭代器遍历可迭代对象中所有在func下为真的x
-<code>zip(first_iter, second_iter)</code>：接受两个可迭代对象，返回迭代器遍历相同索引的(x,y)对
-<code>reversed(sequence)</code>：接受一个序列，返回迭代器反向遍历该序列</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">bcd </span><span style="color: #D73A49">=</span><span style="color: #24292E"> [</span><span style="color: #032F62">&#39;b&#39;</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;c&#39;</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;d&#39;</span><span style="color: #24292E">]</span></span>
-<span class="line"><span style="color: #24292E">m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">map</span><span style="color: #24292E">(</span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x: x.upper(), bcd) </span><span style="color: #6A737D"># 返回一个迭代器</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(m))</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(m))</span></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(m))</span></span></code></pre></div></div></figure>
-<pre><code>B
-C
-D</code></pre>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">double</span><span style="color: #24292E">(x):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(x, </span><span style="color: #032F62">&#39;=&gt;&#39;</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #D73A49">*</span><span style="color: #24292E">x)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">*</span><span style="color: #24292E">x</span></span>
-<span class="line"><span style="color: #24292E">m </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">map</span><span style="color: #24292E">(double, </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">7</span><span style="color: #24292E">))</span></span>
-<span class="line"><span style="color: #24292E">f </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> y: y</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">10</span></span>
-<span class="line"><span style="color: #24292E">t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">filter</span><span style="color: #24292E">(f,m) </span><span style="color: #6A737D"># 仅遍历满足f函数下的返回值</span></span>
-<span class="line"><span style="color: #005CC5">list</span><span style="color: #24292E">(</span><span style="color: #005CC5">filter</span><span style="color: #24292E">(f,m)) </span><span style="color: #6A737D"># 将所有可能的返回值存入列表</span></span></code></pre></div></div></figure>
-<pre><code>3 =&gt; 6
-4 =&gt; 8
-5 =&gt; 10
-6 =&gt; 12
-
-
-
-
-
-[10, 12]</code></pre>
-<h2 id="zip">Zip</h2>
-<p>zip函数返回迭代器，遍历相同索引的值组成的元组
-若一个可迭代对象比另一个长，zip会跳过多余的
-zip可以接受多个可迭代对象</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(</span><span style="color: #005CC5">zip</span><span style="color: #24292E">([</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],[</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">])))</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(</span><span style="color: #005CC5">zip</span><span style="color: #24292E">([</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],[</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">,</span><span style="color: #005CC5">5</span><span style="color: #24292E">])))</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #005CC5">print</span><span style="color: #24292E">(</span><span style="color: #005CC5">list</span><span style="color: #24292E">(</span><span style="color: #005CC5">zip</span><span style="color: #24292E">([</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">],[</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">,</span><span style="color: #005CC5">5</span><span style="color: #24292E">], [</span><span style="color: #005CC5">6</span><span style="color: #24292E">,</span><span style="color: #005CC5">7</span><span style="color: #24292E">])))</span></span></code></pre></div></div></figure>
-<pre><code>[(1, 3), (2, 4)]
-[(1, 3), (2, 4)]
-[(1, 3, 6), (2, 4, 7)]</code></pre>
-<blockquote>
-<p>e.g. 检测任意一个序列是否为回文序列，使用zip</p>
-</blockquote>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">palindrome</span><span style="color: #24292E">(s):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># &gt;&gt;&gt; palindrome([3,1,4,1,5])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># False</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># &gt;&gt;&gt; palindrome([3,1,4,1,3])</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># True</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># &gt;&gt;&gt; palindrome(&#39;seveneves&#39;)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># True</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">all</span><span style="color: #24292E">([a</span><span style="color: #D73A49">==</span><span style="color: #24292E">b </span><span style="color: #D73A49">for</span><span style="color: #24292E"> a,b </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">zip</span><span style="color: #24292E">(s,</span><span style="color: #005CC5">reversed</span><span style="color: #24292E">(s))])</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;__main__&#39;</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(palindrome([</span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">4</span><span style="color: #24292E">,</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">]))</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(palindrome(</span><span style="color: #032F62">&#39;seveneves&#39;</span><span style="color: #24292E">))</span></span></code></pre></div></div></figure>
-<pre><code>True
-True</code></pre>
-<h2 id="using-iterators">Using Iterators</h2>
-<p>使用迭代器的代码对数据本身更改不大 -
-当数据表示形式改变时，使用迭代器可以不必重写代码 -
-其他人更可能在他们的数据上使用你的代码
-迭代器将序列中的元素与所在位置绑定 -
-将对象传递给其他函数时始终保留着位置 -
-可以确保序列中的每个元素只执行一次 -
-传递迭代器限制了对序列执行的操作，即只能请求下一个值</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2288,7 +2261,7 @@ True</code></pre>
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">142</span>
+          <span class="site-state-item-count">145</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2301,7 +2274,7 @@ True</code></pre>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -2342,12 +2315,12 @@ True</code></pre>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">495k</span>
+    <span title="站点总字数">509k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">14:59</span>
+    <span title="站点阅读时长">15:25</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
