@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2026西安ICPC邀请赛补题题解，共8题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【题解】2026西安ICPC邀请赛">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E9%A2%98%E8%A7%A3/%E3%80%90%E9%A2%98%E8%A7%A3%E3%80%912026%E8%A5%BF%E5%AE%89ICPC%E9%82%80%E8%AF%B7%E8%B5%9B/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="2026西安ICPC邀请赛补题题解，共8题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-15T11:53:31.968Z">
+<meta property="article:modified_time" content="2026-05-15T07:00:26.342Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="题解">
+<meta property="article:tag" content="ICPC">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E9%A2%98%E8%A7%A3/%E3%80%90%E9%A2%98%E8%A7%A3%E3%80%912026%E8%A5%BF%E5%AE%89ICPC%E9%82%80%E8%AF%B7%E8%B5%9B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【题解】2026西安ICPC邀请赛 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E9%A2%98%E8%A7%A3/%E3%80%90%E9%A2%98%E8%A7%A3%E3%80%912026%E8%A5%BF%E5%AE%89ICPC%E9%82%80%E8%AF%B7%E8%B5%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【题解】2026西安ICPC邀请赛
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-05-15 19:53:31 / 修改时间：15:00:26" itemprop="dateCreated datePublished" datetime="2026-05-15T19:53:31+08:00">2026-05-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>16 分钟</span>
+            </span>
+            <div class="post-description">2026西安ICPC邀请赛补题题解，共8题</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="小小的总结">小小的总结</h1>
+<p>本人的第一场XCPC系列比赛，可惜遗憾打铁了，或许是对组队赛不熟悉，亦或许是队友直接磨合不好</p>
+<p>但主要原因应该是自己太菜了（</p>
+<p>赛时过了EDJ三题，A和队友琢磨了好久，最后思路是对的，但是不知道卡在了哪里，B题另一位队友的思路也是对的，但是代码写史了，WA了以后也调不出来</p>
+<p>汉堡放凉了也没吃滚榜的时候才吃的ww</p>
+<p>总结下来，打印的板子几乎没用到，够到铜牌（甚至银牌）只需要思维敏捷就够了</p>
+<p>所以加训思维，少学无用算法，或许对我这种弱队菜鸡才是最优解。</p>
+<p>另外还要加强和队友的配合，赛时和他们通思路好几次都是思路没法对到一块，要花好长时间理解他们（或许是我脑子转不动的问题）</p>
+<p>下面是题解，按照难度（自认）排序</p>
+<h1 id="e.-registration">E. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17346">Registration</a></h1>
+<p>签到，</p>
+<p>用一个map记录第<span
+class="math inline">\(t\)</span>秒有多少队伍报名，然后遍历map，若第<span
+class="math inline">\(t_i\)</span>秒的报名人数<span
+class="math inline">\(v\leq x\)</span>则记入答案，否则跳过</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  ll n, x;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> x;</span></span>
+<span class="line"><span style="color: #24292E">  map</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll, ll</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> mp;</span></span>
+<span class="line"><span style="color: #24292E">  ll tot </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    ll v;</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> v;</span></span>
+<span class="line"><span style="color: #24292E">    mp[v]</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">auto</span><span style="color: #24292E"> [v, c]:mp)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (c</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">x) tot</span><span style="color: #D73A49">+=</span><span style="color: #24292E">c;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> tot </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="j.-would-you-make-a-convex">J. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17351">Would You Make a
+Convex?</a></h1>
+<p>由于要去任意三根都要组成一个非退化凸多边形，只要三根能组成，那再加一根到这三根里面就一定可以组成一个非退化凸多边形，所以我们可以只考虑能不能组成三角形</p>
+<p>因此对木棍长度排序，组成非退化三角形的条件是<strong>两边之和大于第三边</strong>，所以两个两个的遍历排序后的长度数组，用二分找出满足条件且尽可能大的边，则由于数组有序，这一段区间内的所有木棍都可以组成非退化三角形，遍历取最长区间内的元素即可，若最长区间小于3则不存在满足要求的子集</p>
+<blockquote>
+<p>这个还是比较好想的，赛时队友直接给出了思路写了，一发A</p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">arr</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">sort</span><span style="color: #24292E">(arr.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, arr.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> maxl </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  PII maxi </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span><span style="color: #005CC5">0</span><span style="color: #24292E">};</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> arr[i]</span><span style="color: #D73A49">+</span><span style="color: #24292E">arr[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">];</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> it </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">lower_bound</span><span style="color: #24292E">(arr.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, arr.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">(), t)</span><span style="color: #D73A49">-</span><span style="color: #24292E">arr.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #6A737D">    // cout &lt;&lt; it &lt;&lt; endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (it</span><span style="color: #D73A49">-</span><span style="color: #24292E">i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">maxl)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      maxl </span><span style="color: #D73A49">=</span><span style="color: #24292E"> it</span><span style="color: #D73A49">-</span><span style="color: #24292E">i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      maxi </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {i, it};</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #6A737D">  // cout &lt;&lt; maxl &lt;&lt; endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (maxl</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">3</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> maxl </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot; &quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> maxi.first; i </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> maxi.second; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> arr[i] </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot; &quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">else</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="d.-qenerals">D. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17345">Qenerals</a></h1>
+<p>由于占领不同堡垒带来的收益是一样的，显然我们应该贪心的占领代价小的堡垒</p>
+<p>所以需要对堡垒进行排序，枚举当前堡垒能不能在<span
+class="math inline">\(sec\)</span>秒时买入，若由于士兵数<span
+class="math inline">\(x&#39;\)</span>不够而无法买入，则我们需要等待<span
+class="math inline">\(\lceil \frac{a_i-x&#39;}{i-1}
+\rceil\)</span>秒才能继续购买，直到需要等待的时间超过了总时间，提前结束，更新ans</p>
+<p>同时要考虑到中间过程主动停止购买，以当前士兵产量过完剩余时间得到的总数是否最优，因此除了超过总时间，每次购入堡垒也需要更新<span
+class="math inline">\(ans \larr \max\{ans, sod+(m-sec)\times
+cu\}\)</span>，其中<span class="math inline">\(m\)</span>为总秒数，<span
+class="math inline">\(sec\)</span>为已经过去的秒数，<span
+class="math inline">\(cur\)</span>为当前士兵产量，<span
+class="math inline">\(sod\)</span>为当前士兵数</p>
+<blockquote>
+<p>至于为什么这道题我会认为比J难，是因为赛时思路歪了，一直以为是枚举当前秒数一直尽可能在一秒内占领尽可能多堡垒，于是没和队友对上电波，还好队友给力码完A掉了这题</p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  ll n, m;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> m;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">arr</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6F42C1">sort</span><span style="color: #24292E">(arr.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, arr.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">());</span></span>
+<span class="line"><span style="color: #24292E">  ll cur </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 每秒士兵生产速度</span></span>
+<span class="line"><span style="color: #24292E">  ll sod </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 总士兵数</span></span>
+<span class="line"><span style="color: #24292E">  ll ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> m</span><span style="color: #D73A49">*</span><span style="color: #24292E">cur;</span><span style="color: #6A737D"> // 最佳答案</span></span>
+<span class="line"><span style="color: #24292E">  ll sec </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span><span style="color: #6A737D"> // 目前时间</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">) </span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sec</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">m) </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sod</span><span style="color: #D73A49">&gt;=</span><span style="color: #24292E">arr[i])</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      sod</span><span style="color: #D73A49">-=</span><span style="color: #24292E">arr[i];</span></span>
+<span class="line"><span style="color: #24292E">      cur</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(ans, sod</span><span style="color: #D73A49">+</span><span style="color: #24292E">(m</span><span style="color: #D73A49">-</span><span style="color: #24292E">sec)</span><span style="color: #D73A49">*</span><span style="color: #24292E">cur);</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    ll need </span><span style="color: #D73A49">=</span><span style="color: #24292E"> arr[i]</span><span style="color: #D73A49">-</span><span style="color: #24292E">sod;</span></span>
+<span class="line"><span style="color: #24292E">    ll nt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> ((need</span><span style="color: #D73A49">+</span><span style="color: #24292E">cur</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">/</span><span style="color: #24292E">cur);</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (sec</span><span style="color: #D73A49">+</span><span style="color: #24292E">nt</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">m)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(ans, sod</span><span style="color: #D73A49">+</span><span style="color: #24292E">(m</span><span style="color: #D73A49">-</span><span style="color: #24292E">sec)</span><span style="color: #D73A49">*</span><span style="color: #24292E">cur);</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    sec</span><span style="color: #D73A49">+=</span><span style="color: #24292E">nt;</span></span>
+<span class="line"><span style="color: #24292E">    sod</span><span style="color: #D73A49">+=</span><span style="color: #24292E">nt</span><span style="color: #D73A49">*</span><span style="color: #24292E">cur;</span></span>
+<span class="line"><span style="color: #24292E">    sod</span><span style="color: #D73A49">-=</span><span style="color: #24292E">arr[i];</span></span>
+<span class="line"><span style="color: #24292E">    cur</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(ans, sod</span><span style="color: #D73A49">+</span><span style="color: #24292E">(m</span><span style="color: #D73A49">-</span><span style="color: #24292E">sec)</span><span style="color: #D73A49">*</span><span style="color: #24292E">cur);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> ans </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="a.-north-and-south">A. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17342">North and
+South</a></h1>
+<p>由题意可知，每次操作会使长度为偶数的区间内，奇数下标元素值加一，偶数下标元素值减一</p>
+<p>所以每次操作进行的仅仅是区间内相邻值（从右往左）的交换，整个序列的和不变</p>
+<p>因此使得序列a中所有数相等的这个值一开始就可以确定：<span
+class="math inline">\(n|{\Sigma
+a_i}\)</span>，因此若序列和不能被长度整除，就无解</p>
+<p>设最终达到的值是<span
+class="math inline">\(fin\)</span>，可以贪心的选择最小的区间<span
+class="math inline">\(l=2\)</span>，若<span
+class="math inline">\(a_i\leq
+fin\)</span>，我们可以尽可能的把右边的值往左边移动，否则救不回来，无解</p>
+<p>因此我们可以记录序列a的前缀和<span
+class="math inline">\(pre\)</span>与当前位置应该到达的总和<span
+class="math inline">\(i\times fin\)</span>，若<span
+class="math inline">\(pre&gt;i\times
+fin\)</span>，证明此时前缀已经超过所需，但交换只能从右向左，所以多出的值没法处理，无解</p>
+<p>接下来是有解的情况，我们要尽可能最小化步数：</p>
+<p>设<span class="math inline">\(t = i\times fin-pre_i\)</span>，<span
+class="math inline">\(t\)</span>就是要想该区间到达<span
+class="math inline">\(fin\)</span>值缺少的值</p>
+<p>由于一次操作是在偶数区间上进行的，所以每次操作只会影响<strong>相同奇偶性下标的元素的前缀</strong></p>
+<p>所以奇数下标的需求和偶数下标的需求需要分开解决</p>
+<p>举个例子：</p>
+<p>设操作区间为<code>[2,5]</code>，则一次操作对数组的影响是<code>[+1,-1,+1,-1]</code>，对应的前缀和变化是<code>[+1,0,+1,0]</code>，你会发现，受到影响的位置只有偶数下标2和4</p>
+<p>设操作区间为<code>[1,4]</code>，同理，对应前缀和变化是<code>[+1,0,+1,0]</code>，但此时下标是从1开始，所以受到影响的位置只有奇数下标1和3</p>
+<p>这就是为什么要分别统计奇数下标前缀和偶数下标前缀</p>
+<p>则我们可以分别统计操作次数了，他们均满足<span
+class="math inline">\(\Sigma\max\{0,pre_i-pre_{i-1}\}\)</span>，即有多少个奇数/偶数区间不能被先前的区间覆盖，统一进行操作而需要新开区间</p>
+<blockquote>
+<p>A题我和另一个队友想了两个多小时，思路正确但是代码写的太长导致不知道哪里错误</p>
+<p>到最后也没调出来，可能放弃这个题去帮忙开B题或者L题会更好一点吧</p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  ll n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">arr</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)  </span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> arr[i];</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #6A737D">  // ll op = 0;</span></span>
+<span class="line"><span style="color: #24292E">  ll tot </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">accumulate</span><span style="color: #24292E">(arr.</span><span style="color: #6F42C1">begin</span><span style="color: #24292E">()</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, arr.</span><span style="color: #6F42C1">end</span><span style="color: #24292E">(), </span><span style="color: #005CC5">0</span><span style="color: #D73A49">ll</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (tot</span><span style="color: #D73A49">%</span><span style="color: #24292E">n)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  ll fin </span><span style="color: #D73A49">=</span><span style="color: #24292E"> tot</span><span style="color: #D73A49">/</span><span style="color: #24292E">n;</span></span>
+<span class="line"><span style="color: #24292E">  ll ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, preo </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">, pree </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (ll i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    pre</span><span style="color: #D73A49">+=</span><span style="color: #24292E">arr[i];</span></span>
+<span class="line"><span style="color: #24292E">    ll t </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i</span><span style="color: #D73A49">*</span><span style="color: #24292E">fin</span><span style="color: #D73A49">-</span><span style="color: #24292E">pre;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (t</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i</span><span style="color: #D73A49">&amp;</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      ans </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #D73A49">ll</span><span style="color: #24292E">, t</span><span style="color: #D73A49">-</span><span style="color: #24292E">preo);</span></span>
+<span class="line"><span style="color: #24292E">      preo </span><span style="color: #D73A49">=</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      ans </span><span style="color: #D73A49">+=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #D73A49">ll</span><span style="color: #24292E">, t</span><span style="color: #D73A49">-</span><span style="color: #24292E">pree);</span></span>
+<span class="line"><span style="color: #24292E">      pree </span><span style="color: #D73A49">=</span><span style="color: #24292E"> t;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> ans </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="b.-operating-robot">B. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17343">Operating
+Robot</a></h1>
+<p>题意是给定一个操作串，0代表向右，1代表向上，2可以自己改，机器人会一直按照操作串循环前进，直到到达<span
+class="math inline">\((x,y)\)</span>，或指明无法到达</p>
+<p>机器人为了到达<span class="math inline">\((x,y)\)</span>，要走<span
+class="math inline">\(x+y\)</span>步，这些步中，可以分为按照操作串走<span
+class="math inline">\(\frac{(x+y)}{n}\)</span>轮，再加上走操作串前缀<span
+class="math inline">\((x+y)\bmod n\)</span>步，我们设为<span
+class="math inline">\(rnd\)</span>和<span
+class="math inline">\(left\)</span></p>
+<p>我们首先扣去固定的操作，只看数位2</p>
+<p>用前缀和记录操作串中0，1，2的个数，则<span
+class="math inline">\(pre_i[n]\times
+rnd+pre_i[left]\)</span>就是总固定要走的步数，把这些分别从<span
+class="math inline">\(x,y\)</span>里减去，剩下的<span
+class="math inline">\(x,y\)</span>就是我们要通过操作2来实现的移动，若减完了<span
+class="math inline">\(x,y\)</span>已经是负数，就直接返回无解</p>
+<p>接下来操作2，我们可以简单的将所有的2分为四段，分别为<span
+class="math inline">\(a\)</span>:前缀2变0，<span
+class="math inline">\(b\)</span>:前缀2变1，<span
+class="math inline">\(c\)</span>:后缀2变0，<span
+class="math inline">\(d\)</span>:后缀2变1，后缀的意思是最后走不完一整轮操作时，剩下没有操作的后缀串，此时的<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>可以由以下公式拼凑： <span
+class="math display">\[
+x = (rnd+1)\times a+left\times c \\
+y = (rnd+1)\times b+left\times d
+\]</span>
+枚举前缀2变0，从大到小，因为要让字典序尽可能小，其余段数可以计算而得。首先要满足够减，即若<span
+class="math inline">\(x\)</span>或<span
+class="math inline">\(y\)</span>小于<span
+class="math inline">\(rnd\)</span>数，说明不符合，其次，若算出来的后缀数与前缀数拼不成最终的<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>，也不符合</p>
+<p>另外，当<span
+class="math inline">\(rnd=0\)</span>，也就是不需要一轮就可以结束的情况需要特判，此时需要满足前缀要完全符合<span
+class="math inline">\(x\)</span>与<span
+class="math inline">\(y\)</span>，且后缀尽可能的放0</p>
+<p>发现一种情况满足直接跳出即可，此时一定是最优解，按照此时的01数量构造字符串</p>
+<blockquote>
+<p>队友一眼出的题，但是没写出来有点可惜</p>
+<p>这个代码好想不好写，补题的时候想了两种思路写了快200行的史山最后推倒重构，借鉴了队里其他人的码</p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  ll n, x, y;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> x </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> y;  </span></span>
+<span class="line"><span style="color: #24292E">  string s;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">pre0</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">), </span><span style="color: #6F42C1">pre1</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">), </span><span style="color: #6F42C1">pre2</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    pre0[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre0[i]</span><span style="color: #D73A49">+</span><span style="color: #24292E">(s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;0&#39;</span><span style="color: #D73A49">?</span><span style="color: #005CC5">1</span><span style="color: #D73A49">:</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    pre1[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre1[i]</span><span style="color: #D73A49">+</span><span style="color: #24292E">(s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;1&#39;</span><span style="color: #D73A49">?</span><span style="color: #005CC5">1</span><span style="color: #D73A49">:</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">    pre2[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre2[i]</span><span style="color: #D73A49">+</span><span style="color: #24292E">(s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;2&#39;</span><span style="color: #D73A49">?</span><span style="color: #005CC5">1</span><span style="color: #D73A49">:</span><span style="color: #005CC5">0</span><span style="color: #24292E">);</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  ll rnd </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">+</span><span style="color: #24292E">y)</span><span style="color: #D73A49">/</span><span style="color: #24292E">n;</span></span>
+<span class="line"><span style="color: #24292E">  ll left </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">+</span><span style="color: #24292E">y)</span><span style="color: #D73A49">%</span><span style="color: #24292E">n;</span></span>
+<span class="line"><span style="color: #24292E">  x</span><span style="color: #D73A49">-=</span><span style="color: #24292E">(pre0[n]</span><span style="color: #D73A49">*</span><span style="color: #24292E">rnd</span><span style="color: #D73A49">+</span><span style="color: #24292E">pre0[left]);</span></span>
+<span class="line"><span style="color: #24292E">  y</span><span style="color: #D73A49">-=</span><span style="color: #24292E">(pre1[n]</span><span style="color: #D73A49">*</span><span style="color: #24292E">rnd</span><span style="color: #D73A49">+</span><span style="color: #24292E">pre1[left]);</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #D73A49">||</span><span style="color: #24292E">y</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">  // 前缀/后缀+从2变为几</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">bool</span><span style="color: #24292E"> flag </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  ll pre20, pre21, suf20, suf21;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (pre20 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre2[left]; pre20</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">0</span><span style="color: #24292E">; pre20</span><span style="color: #D73A49">--</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    pre21 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre2[left] </span><span style="color: #D73A49">-</span><span style="color: #24292E"> pre20;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (rnd</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (pre20</span><span style="color: #D73A49">!=</span><span style="color: #24292E">x</span><span style="color: #D73A49">||</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">!=</span><span style="color: #24292E">y)</span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      suf20 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> pre2[n]</span><span style="color: #D73A49">-</span><span style="color: #24292E">pre2[left];</span></span>
+<span class="line"><span style="color: #24292E">      suf21 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      flag </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">*</span><span style="color: #24292E">(rnd</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">||</span><span style="color: #24292E">y</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">*</span><span style="color: #24292E">(rnd</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)) </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      suf20 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">-</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">*</span><span style="color: #24292E">(rnd</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">))</span><span style="color: #D73A49">/</span><span style="color: #24292E">rnd;</span></span>
+<span class="line"><span style="color: #24292E">      suf21 </span><span style="color: #D73A49">=</span><span style="color: #24292E"> (y</span><span style="color: #D73A49">-</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">*</span><span style="color: #24292E">(rnd</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">))</span><span style="color: #D73A49">/</span><span style="color: #24292E">rnd;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (suf20</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #D73A49">||</span><span style="color: #24292E">suf21</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">) </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (x</span><span style="color: #D73A49">!=</span><span style="color: #24292E">(rnd</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">*</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">+</span><span style="color: #24292E">rnd</span><span style="color: #D73A49">*</span><span style="color: #24292E">suf20</span><span style="color: #D73A49">||</span><span style="color: #24292E">y</span><span style="color: #D73A49">!=</span><span style="color: #24292E">(rnd</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span><span style="color: #D73A49">*</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">+</span><span style="color: #24292E">rnd</span><span style="color: #D73A49">*</span><span style="color: #24292E">suf21) </span><span style="color: #D73A49">continue</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      flag </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">flag)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> idx </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;2&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      idx</span><span style="color: #D73A49">++</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (idx</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">1</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">idx</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">pre20) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;0&#39;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (idx</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">idx</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">+</span><span style="color: #24292E">pre21) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;1&#39;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (idx</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">idx</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">+</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">+</span><span style="color: #24292E">suf20) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;0&#39;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">else</span><span style="color: #24292E"> </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (idx</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">suf20</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">idx</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">pre20</span><span style="color: #D73A49">+</span><span style="color: #24292E">pre21</span><span style="color: #D73A49">+</span><span style="color: #24292E">suf20</span><span style="color: #D73A49">+</span><span style="color: #24292E">suf21) cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;1&#39;</span><span style="color: #24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> s[i];</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="lm.-yesterday-once-more">L/M. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17353">Yesterday Once
+More</a></h1>
+<p>Ad-hoc/构造</p>
+<p>很奇妙的构造，具体意思是在<span
+class="math inline">\(n+1\)</span>行与<span
+class="math inline">\(n\)</span>列的网格中，除了第一行与第n＋1行无障碍，其余的满足</p>
+<ul>
+<li>第i行恰有一个障碍</li>
+<li>第j列至多有一个障碍</li>
+</ul>
+<p>从<span
+class="math inline">\((1,1)\)</span>开始，构造一种移动串能到达n＋1行，若某次移动碰到障碍，则这次移动无效，直接到下一个移动</p>
+<p>Easy版要求移动次数不超过<span
+class="math inline">\(30n\)</span>，Hard版不超过<span
+class="math inline">\(10n\)</span></p>
+<p>这道题其实上只要把所有可能的情况都移动一遍就行，首先考虑如下形状：</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">0000</span></span>
+<span class="line"><span style="color: #24292e">1000</span></span>
+<span class="line"><span style="color: #24292e">0100</span></span>
+<span class="line"><span style="color: #24292e">0001</span></span>
+<span class="line"><span style="color: #24292e">0000</span></span></code></pre></div></div></figure>
+<p>由于第一行和最后一行无障碍，则行障碍肯定比列少一个，一定有一列是空的</p>
+<p>我们可以尽可能的贴着障碍向右移动，直到碰到一个洞可以钻下去，可以构造<strong>RDLD</strong>，这里往左移动是为了避免正下方有障碍，如：</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">0000</span></span>
+<span class="line"><span style="color: #24292e">1000</span></span>
+<span class="line"><span style="color: #24292e">0010</span></span>
+<span class="line"><span style="color: #24292e">0100</span></span>
+<span class="line"><span style="color: #24292e">0000</span></span></code></pre></div></div></figure>
+<p>接下来考虑第二种形状：</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">0000</span></span>
+<span class="line"><span style="color: #24292e">0001</span></span>
+<span class="line"><span style="color: #24292e">0100</span></span>
+<span class="line"><span style="color: #24292e">1000</span></span>
+<span class="line"><span style="color: #24292e">0000</span></span></code></pre></div></div></figure>
+<p>这种情况下，从<span
+class="math inline">\((1,1)\)</span>直接捅下去会被两面障碍夹击，RDLD会完全卡住，需要向上走，</p>
+<p>依旧贴着障碍向右移动，直到碰到一个洞可以钻下去，可以构造<strong>URRD</strong>，这种构造可以保证找到一个洞钻下去，钻下去以后需要继续移动，我们考虑继续贴着障碍移动，首先下去以后尽可能向左走L直到碰到障碍，接下来构造<strong>DL</strong>贴着障碍下侧向左移动，一次即可，因为障碍在上面，下面不会再有障碍了，可以一直D移动到<span
+class="math inline">\(n+1\)</span>行</p>
+<p>综上，移动方案为<code>RDLD*n+URRD*n+n*L+DL+nD</code>，这是<span
+class="math inline">\(10n+2\)</span>次移动，多了两次</p>
+<p>另外发现，对于n列，我们发现只需要进行URRD<span
+class="math inline">\(n-1\)</span>次就可以到达结尾，这样可以减少四次，一共移动<span
+class="math inline">\(10n-2\)</span>次</p>
+<blockquote>
+<p>后面上课补题一节课想出了easy并压到了<span
+class="math inline">\(10n+2\)</span></p>
+</blockquote>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">10</span><span style="color: #D73A49">*</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">2</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">  </span></span>
+<span class="line"><span style="color: #24292E">  string ans;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    ans</span><span style="color: #D73A49">+=</span><span style="color: #032F62">&quot;RDLD&quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    ans</span><span style="color: #D73A49">+=</span><span style="color: #032F62">&quot;URRD&quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    ans</span><span style="color: #D73A49">+=</span><span style="color: #032F62">&quot;L&quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  ans</span><span style="color: #D73A49">+=</span><span style="color: #032F62">&quot;DL&quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    ans</span><span style="color: #D73A49">+=</span><span style="color: #032F62">&quot;D&quot;</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> ans </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="c.-palindromic-and-balanced">C. <a
+target="_blank" rel="noopener" href="https://qoj.ac/contest/3729/problem/17344">Palindromic and
+Balanced</a></h1>
+<p>首先理解平衡括号串和回文括号串：</p>
+<ul>
+<li>平衡括号串：由一对括号括起来的括号串</li>
+<li>回文括号串：满足回文的括号串，即类似于<code>(S(</code>
+和<code>)S)</code>的串</li>
+</ul>
+<p>显然一个括号串不能同时满足这两个性质，所以题目的平衡回文括号串定义为平衡括号串内部是回文括号串</p>
+<p>即满足<span class="math inline">\(s_1=(, s_k=)\)</span>且<span
+class="math inline">\(s_{2～k}\)</span>满足回文，如<code>(())()</code>，被两个括号括起来的是一个回文括号串</p>
+<p>我们考虑同时向头尾插入相同长度的括号串，为了满足回文与平衡，只有下面两种情况：头插<code>()</code>尾插<code>)(</code>或头插<code>)(</code>尾插<code>()</code></p>
+<p>因为如果插入<code>((</code>那尾部也得插入<code>((</code>，不满足平衡性质，右括号同理</p>
+<p>考虑区间DP，<code>dp[l][r]</code>表示区间<span
+class="math inline">\(l\)</span>到<span
+class="math inline">\(r\)</span>之间最长合法子串的长度，则有如下转移：
+<span class="math display">\[
+dp_{i,j}=
+\left\{\begin{array}{ll}
+\max\{dp_{i,j},dp_{i＋1,j},dp_{i,j-1}\} &amp; 删除左右端点\\
+dp_{i+2,r-2}+4 &amp; 头尾子串
+\end{array}\right.
+\]</span> 因此基本思路是：</p>
+<ul>
+<li>寻找最大的平衡串：找最靠外的一对<code>()</code></li>
+<li>若该串长度小于4，则只能是<code>())</code>或<code>(()</code>，特判输出2</li>
+<li>否则区间DP转移</li>
+</ul>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">{ </span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> n;</span></span>
+<span class="line"><span style="color: #24292E">  string s;</span></span>
+<span class="line"><span style="color: #24292E">  cin </span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> s;</span></span>
+<span class="line"><span style="color: #24292E">  s </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot; &quot;</span><span style="color: #D73A49">+</span><span style="color: #24292E">s;</span></span>
+<span class="line"><span style="color: #24292E">  vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">ll</span><span style="color: #D73A49">&gt;&gt;</span><span style="color: #24292E"> </span><span style="color: #6F42C1">dp</span><span style="color: #24292E">(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">, </span><span style="color: #6F42C1">vector</span><span style="color: #24292E">&lt;</span><span style="color: #6F42C1">ll</span><span style="color: #24292E">&gt;(n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">));</span></span>
+<span class="line"><span style="color: #6A737D">  // 寻找满足平衡串的起点与终点</span></span>
+<span class="line"><span style="color: #24292E">  ll l </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">, r </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;(&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">l</span><span style="color: #D73A49">==-</span><span style="color: #005CC5">1</span><span style="color: #24292E">) l </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> n; i</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">--</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;)&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">r</span><span style="color: #D73A49">==-</span><span style="color: #005CC5">1</span><span style="color: #24292E">) r </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (l</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E">r</span><span style="color: #D73A49">||</span><span style="color: #24292E">l</span><span style="color: #D73A49">==-</span><span style="color: #005CC5">1</span><span style="color: #D73A49">||</span><span style="color: #24292E">r</span><span style="color: #D73A49">==-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #6A737D">  // (()和())</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (r</span><span style="color: #D73A49">-</span><span style="color: #24292E">l</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #D73A49">&lt;</span><span style="color: #005CC5">4</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E">endl;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #6A737D">  // l ? ? ? ? r</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> len </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">4</span><span style="color: #24292E">; len</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n; len</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> l</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">r</span><span style="color: #D73A49">-</span><span style="color: #24292E">len</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i</span><span style="color: #D73A49">+</span><span style="color: #24292E">len</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">; </span></span>
+<span class="line"><span style="color: #24292E">      dp[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">max</span><span style="color: #24292E">({dp[i][j], dp[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">][j], dp[i][j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;(&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">s[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;)&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">s[j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;)&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">s[j]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;(&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">      {</span></span>
+<span class="line"><span style="color: #24292E">        dp[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dp[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">2</span><span style="color: #24292E">][j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span><span style="color: #D73A49">+</span><span style="color: #005CC5">4</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (s[i]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;)&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">s[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;(&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">s[j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;(&#39;</span><span style="color: #D73A49">&amp;&amp;</span><span style="color: #24292E">s[j]</span><span style="color: #D73A49">==</span><span style="color: #032F62">&#39;)&#39;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">      {</span></span>
+<span class="line"><span style="color: #24292E">        dp[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> dp[i</span><span style="color: #D73A49">+</span><span style="color: #005CC5">2</span><span style="color: #24292E">][j</span><span style="color: #D73A49">-</span><span style="color: #005CC5">2</span><span style="color: #24292E">]</span><span style="color: #D73A49">+</span><span style="color: #005CC5">4</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">      }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">  cout </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> dp[l</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">][r</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">]</span><span style="color: #D73A49">+</span><span style="color: #005CC5">2</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> endl;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag"># 题解</a>
+              <a href="/tags/ICPC/" rel="tag"># ICPC</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/pb_ds%E5%BA%93/" rel="prev" title="【数据结构】pb_ds库">
+      <i class="fa fa-chevron-left"></i> 【数据结构】pb_ds库
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E5%B0%8F%E7%9A%84%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">小小的总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#e.-registration"><span class="nav-number">2.</span> <span class="nav-text">E. Registration</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#j.-would-you-make-a-convex"><span class="nav-number">3.</span> <span class="nav-text">J. Would You Make a
+Convex?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#d.-qenerals"><span class="nav-number">4.</span> <span class="nav-text">D. Qenerals</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a.-north-and-south"><span class="nav-number">5.</span> <span class="nav-text">A. North and
+South</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#b.-operating-robot"><span class="nav-number">6.</span> <span class="nav-text">B. Operating
+Robot</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lm.-yesterday-once-more"><span class="nav-number">7.</span> <span class="nav-text">L&#x2F;M. Yesterday Once
+More</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#c.-palindromic-and-balanced"><span class="nav-number">8.</span> <span class="nav-text">C. Palindromic and
+Balanced</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">148</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">520k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">15:45</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

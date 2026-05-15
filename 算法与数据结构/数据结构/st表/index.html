@@ -24,13 +24,13 @@
 
   <meta name="description" content="介绍了st表的原理，适用于离线寻找区间最值&#x2F;gcd等">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【数据结构】BFS">
+<meta property="og:title" content="【数据结构】ST表">
 <meta property="og:url" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/st%E8%A1%A8/index.html">
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="介绍了st表的原理，适用于离线寻找区间最值&#x2F;gcd等">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-01-28T03:05:06.159Z">
-<meta property="article:modified_time" content="2025-12-17T14:00:37.349Z">
+<meta property="article:modified_time" content="2026-04-09T13:30:21.533Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="数据结构">
 <meta name="twitter:card" content="summary">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>【数据结构】BFS | 红魔咖啡馆</title>
+  <title>【数据结构】ST表 | 红魔咖啡馆</title>
   
 
 
@@ -202,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          【数据结构】BFS
+          【数据结构】ST表
         </h1>
 
         <div class="post-meta">
@@ -219,7 +219,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-17 22:00:37" itemprop="dateModified" datetime="2025-12-17T22:00:37+08:00">2025-12-17</time>
+                <time title="修改时间：2026-04-09 21:30:21" itemprop="dateModified" datetime="2026-04-09T21:30:21+08:00">2026-04-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -268,11 +268,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="st表">ST表</h1>
-<blockquote>
+        <blockquote>
 <p>给n个数，进行m次询问，每次寻找区间[l,r]中的最大值</p>
 </blockquote>
-<h2 id="dp打表">DP打表</h2>
+<h1 id="dp打表">DP打表</h1>
 <figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">#include</span><span style="color: #24292E"> </span><span style="color: #032F62">&lt;bits/stdc++.h&gt;</span></span>
 <span class="line"><span style="color: #D73A49">using</span><span style="color: #24292E"> </span><span style="color: #D73A49">namespace</span><span style="color: #24292E"> </span><span style="color: #6F42C1">std</span><span style="color: #24292E">;</span></span>
 <span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> arr[N];</span></span>
@@ -297,13 +296,13 @@
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
 <p>时间复杂度：<span class="math inline">\(O(n^2+m)\)</span></p>
 <p>这种打表方式会很紧凑，用到了许多不用的空间</p>
-<h2 id="st表-1">ST表</h2>
+<h1 id="st表">ST表</h1>
 <p>基于动态规划与倍增思想，是一种更稀疏的表</p>
-<h3 id="定义">定义</h3>
+<h2 id="定义">定义</h2>
 <p><code>dp[i][j]</code>为一个从<span
 class="math inline">\(i\)</span>开始，长度为<span
 class="math inline">\(2^j\)</span>的区间最值</p>
-<h3 id="询问">询问</h3>
+<h2 id="询问">询问</h2>
 <p>e.g.询问[0,5]</p>
 <p>使用<code>max(dp[0][2],dp[4][1])</code>，即询问区间从0开始，长度为<span
 class="math inline">\(2^2=4\)</span>，即[0,3]，与区间从4开始，长度为<span
@@ -323,14 +322,14 @@ class="math inline">\(\log_2len\)</span>不相交的区间并多次求max</p>
 <li>计算最值<span
 class="math inline">\(ans=max(dp[l][j],dp[r-2^j-1][j])\)</span></li>
 </ol>
-<h3 id="预处理">预处理</h3>
+<h2 id="预处理">预处理</h2>
 <p>将一个区间分成两半，则每一半的长度均为<span
 class="math inline">\(2^{j-1}\)</span>，后半第一个元素下标即为<span
 class="math inline">\(i+2^{j-1}\)</span></p>
 <ol type="1">
 <li>处理第一个<span class="math inline">\(dp[i][0]=arr[i]\)</span></li>
 <li>处理后面的<span
-class="math inline">\(dp[i][j]=max(dp[i][j-1],dp[i+2^{i-1}][j-1])\)</span></li>
+class="math inline">\(dp[i][j]=max(dp[i][j-1],dp[i+2^{j-1}][j-1])\)</span></li>
 </ol>
 <p>时间复杂度：<span class="math inline">\(O(n\log n)\)</span></p>
 <p><strong>注意：st表是一个静态表，适用于离线处理</strong></p>
@@ -445,7 +444,7 @@ class="math inline">\(dp[i][j]=max(dp[i][j-1],dp[i+2^{i-1}][j-1])\)</span></li>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#st%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">ST表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dp%E6%89%93%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">DP打表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#st%E8%A1%A8-1"><span class="nav-number">1.2.</span> <span class="nav-text">ST表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%A2%E9%97%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">询问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.3.</span> <span class="nav-text">预处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%BF%E5%AD%90"><span class="nav-number">1.3.</span> <span class="nav-text">板子</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dp%E6%89%93%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">DP打表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#st%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">ST表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A2%E9%97%AE"><span class="nav-number">2.2.</span> <span class="nav-text">询问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">预处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%BF%E5%AD%90"><span class="nav-number">2.4.</span> <span class="nav-text">板子</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -460,20 +459,20 @@ class="math inline">\(dp[i][j]=max(dp[i][j-1],dp[i+2^{i-1}][j-1])\)</span></li>
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-count">148</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -514,12 +513,12 @@ class="math inline">\(dp[i][j]=max(dp[i][j-1],dp[i+2^{i-1}][j-1])\)</span></li>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">509k</span>
+    <span title="站点总字数">520k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:25</span>
+    <span title="站点阅读时长">15:45</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>

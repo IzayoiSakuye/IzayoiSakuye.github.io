@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%80%8D%E5%A2%9E/image-20250430100833228.png">
 <meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%80%8D%E5%A2%9E/image-20250430113318806.png">
 <meta property="article:published_time" content="2025-05-18T13:45:21.571Z">
-<meta property="article:modified_time" content="2025-12-17T14:08:05.244Z">
+<meta property="article:modified_time" content="2026-04-09T12:43:54.659Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
@@ -222,7 +222,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-17 22:08:05" itemprop="dateModified" datetime="2025-12-17T22:08:05+08:00">2025-12-17</time>
+                <time title="修改时间：2026-04-09 20:43:54" itemprop="dateModified" datetime="2026-04-09T20:43:54+08:00">2026-04-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -271,8 +271,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="倍增">倍增</h1>
-<h2 id="问题引入">问题引入</h2>
+        <h1 id="问题引入">问题引入</h1>
 <blockquote>
 <p>Q1:
 给定一个正数x，已知x一定可用m个二进制位表示，从高位到低位打印x每一位的状态</p>
@@ -303,7 +302,7 @@ class="math inline">\(2^{p-1}\leq x\leq2^p\)</span>时很有可能溢出</p>
 <span class="line"><span style="color: #24292E">    }</span></span>
 <span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> power;</span></span>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="倍增算法">倍增算法</h2>
+<h1 id="倍增算法">倍增算法</h1>
 <blockquote>
 <p>线段上有n个点，给定每个点i往右边跳1步能最远覆盖的点jump[i]</p>
 <p>已知从任意点出发都能到达最后的点，并且在i&lt;j时，必定有jump[i]&lt;=jump[j]</p>
@@ -314,26 +313,23 @@ class="math inline">\(2^p\)</span>步，最远能到达的点</li>
 </ol>
 </blockquote>
 <img src="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E5%80%8D%E5%A2%9E/image-20250430100833228.png" class="" title="图解">
-<ol type="1">
-<li></li>
-</ol>
+<h2 id="构建st表">构建st表</h2>
 <p>如该表，行代表p，表示<span
 class="math inline">\(2^p\)</span>次方内对应点是否能到达，列代表点i</p>
 <p>初始jump[i]填入第一列，即<code>st[i][0]=jump[i]</code>，后面列的填充满足转移方程<code>st[i][p]=st[st[i][p-1]][p-1]</code>，即跳<span
 class="math inline">\(2^p\)</span>内能到达的可以转化为从<span
 class="math inline">\(2^{p-1}\)</span>跳<span
 class="math inline">\(2^{p-1}\)</span>内能到达</p>
+<p>即当前格状态转移只依赖于前一格的状态</p>
 <p>该表列最多<span class="math inline">\(\log_2n\)</span>列</p>
 <p>这就是<strong>ST表</strong>，我们利用ST表从x到y跳跃的过程中，先从最大步长开始，每次减少一半尝试，最后得到答案</p>
-<ol start="2" type="1">
-<li></li>
-</ol>
+<h2 id="利用st表进行查询">利用st表进行查询</h2>
 <p>假设计算17到77至少要多少步</p>
 <p>我们知道至多需要60步，而60可以用六个二进制位表示</p>
 <p>从左往右，让17往右跳<span
 class="math inline">\(2^i\)</span>步，看对应数值大于还是小于77，大于则该位标0，小于则标1，且将步数转为49</p>
 <p>最后需要的是逼近77的结果，如最后到达了73，再加一步就能到达77</p>
-<h2 id="例-倍增跳跃">例-倍增跳跃</h2>
+<h1 id="例-倍增跳跃">例-倍增跳跃</h1>
 <blockquote>
 <p><strong>P4155 [SCOI2015] 国旗计划</strong></p>
 </blockquote>
@@ -449,7 +445,7 @@ class="math inline">\(2^i\)</span>步，看对应数值大于还是小于77，�
 <span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (tomorin</span><span style="color: #D73A49">--</span><span style="color: #24292E">) </span><span style="color: #6F42C1">solve</span><span style="color: #24292E">();</span></span>
 <span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="例-rmq问题">例-RMQ问题</h2>
+<h1 id="例-rmq问题">例-RMQ问题</h1>
 <blockquote>
 <p><strong>P2880 [USACO07JAN] Balanced Lineup G</strong></p>
 </blockquote>
@@ -510,14 +506,14 @@ class="math inline">\(2^p\)</span>长度两者最大值的最大值</p>
 <span class="line"><span style="color: #24292E">  }</span></span>
 <span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
 <span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
-<h2 id="树上倍增">树上倍增</h2>
+<h1 id="树上倍增">树上倍增</h1>
 <p>在树结构中也可以实现倍增查找某节点任意层祖先</p>
 <p>建立每个节点的深度表</p>
 <p>使用<code>st[i][p]</code>指代节点i往上走<span
 class="math inline">\(2^p\)</span>步来到哪个祖先，其中<code>st[i][0]</code>是i的父节点</p>
 <p>则倍增思想可得<code>st[i][p]=st[st[i][p-1]][p-1]</code></p>
 <p>此时给定任意节点，就可以快速查询i节点的祖先中位于第s层的祖先节点编号</p>
-<h2 id="适用范围">适用范围</h2>
+<h1 id="适用范围">适用范围</h1>
 <p>适用于<strong>可重复贡献问题</strong></p>
 <p>即若A与B区间有可能重叠的部分，但不影响A+B区间的答案</p>
 <p>如RMQ，gcd，按位与，按位或等都可以使用st表高效解决</p>
@@ -607,7 +603,7 @@ n)\)</span>，单次查询<span class="math inline">\(O(1)\)</span></p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%80%8D%E5%A2%9E"><span class="nav-number">1.</span> <span class="nav-text">倍增</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BC%95%E5%85%A5"><span class="nav-number">1.1.</span> <span class="nav-text">问题引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%8D%E5%A2%9E%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">倍增算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B-%E5%80%8D%E5%A2%9E%E8%B7%B3%E8%B7%83"><span class="nav-number">1.3.</span> <span class="nav-text">例-倍增跳跃</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B-rmq%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">例-RMQ问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E4%B8%8A%E5%80%8D%E5%A2%9E"><span class="nav-number">1.5.</span> <span class="nav-text">树上倍增</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="nav-number">1.6.</span> <span class="nav-text">适用范围</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BC%95%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">问题引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%80%8D%E5%A2%9E%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">倍增算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAst%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">构建st表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8st%E8%A1%A8%E8%BF%9B%E8%A1%8C%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.2.</span> <span class="nav-text">利用st表进行查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%8B-%E5%80%8D%E5%A2%9E%E8%B7%B3%E8%B7%83"><span class="nav-number">3.</span> <span class="nav-text">例-倍增跳跃</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%8B-rmq%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">例-RMQ问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91%E4%B8%8A%E5%80%8D%E5%A2%9E"><span class="nav-number">5.</span> <span class="nav-text">树上倍增</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="nav-number">6.</span> <span class="nav-text">适用范围</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -622,20 +618,20 @@ n)\)</span>，单次查询<span class="math inline">\(O(1)\)</span></p>
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-count">148</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -676,12 +672,12 @@ n)\)</span>，单次查询<span class="math inline">\(O(1)\)</span></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">509k</span>
+    <span title="站点总字数">520k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">15:25</span>
+    <span title="站点阅读时长">15:45</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
