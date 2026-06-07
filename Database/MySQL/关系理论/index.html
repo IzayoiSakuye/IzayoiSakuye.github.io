@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="数据库存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL】关系理论">
+<meta property="og:url" content="https://izayoisakuye.github.io/Database/MySQL/%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="数据库存储">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA/image-20260605145419980.png">
+<meta property="article:published_time" content="2026-06-07T00:32:09.370Z">
+<meta property="article:modified_time" content="2026-06-07T00:36:38.623Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/Database/MySQL/%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA/image-20260605145419980.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/Database/MySQL/%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MySQL】关系理论 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Database/MySQL/%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MySQL】关系理论
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-06-07 08:32:09 / 修改时间：08:36:38" itemprop="dateCreated datePublished" datetime="2026-06-07T08:32:09+08:00">2026-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+            <div class="post-description">数据库存储</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>本篇内容是https://www.bilibili.com/video/BV1Bq4y1Y7GC的笔记</p>
+</blockquote>
+<h1 id="关系理论">关系理论</h1>
+<h2 id="函数依赖">函数依赖</h2>
+<ul>
+<li>非平凡的函数依赖：X推出Y，但Y不是X的子集</li>
+<li>平凡的函数依赖：X推出Y，且Y是X的子集</li>
+<li>完全函数依赖：X推出Y，且对于X的任意真子集X‘，都有X’不能推出Y</li>
+<li>部分函数依赖：Y不完全函数依赖于X，如有A推出C，又有AB推出C，则C是部分函数依赖AB的，会造成数据冗余</li>
+</ul>
+<h2 id="码">码</h2>
+<h3 id="候选码">候选码</h3>
+<p>一个属性组，通过该属性组推出所有属性，且该属性组的任意子集都不能再推出所有属性，即满足完全函数依赖的前提下的最小属性组</p>
+<p>例：集合<span
+class="math inline">\(U=\{A,B,C,D,E,G\}\)</span>，函数依赖集<span
+class="math inline">\(F=\{AB\rarr C, CD \rarr E , E\rarr A, A\rarr
+G\}\)</span></p>
+<p><strong>方法：</strong></p>
+<p>找出一定属于、可能属于与不属于后续码的属性：</p>
+<ul>
+<li>一定属于：属性只出现在左边，或者左右都没出现</li>
+<li>可能属于：属性左右都出现</li>
+<li>不属于：属性只出现在右边</li>
+</ul>
+<p>上面B和D只出现在左边，没有同时出现的属性，因此和D一定属于候选码</p>
+<p>A、C和E左右都有，则这三个是可能属于候选码的属性</p>
+<p>G只在右边出现，则G不属于候选码</p>
+<p>对确定的属性求闭包，若不能构成候选码，则将确定的属性和待定的属性组合，求闭包，直到得到的属性组可以推出全部属性</p>
+<p>如对上面的属性组求闭包</p>
+<p>首先对确定的属性BD求闭包：<span class="math inline">\((BD)^0=BD，
+(BD)^1=BD\)</span>，此时BD的闭包等于BD，而非全部属性，因此考虑添加待定属性</p>
+<p>对属性BDA求闭包：<span class="math inline">\((BDA)^0=BDA,
+(BDA)^1=BDACG,
+(BDA)^2=BDACGE\)</span>，此时已经可以推出全部属性，则是候选码</p>
+<p>以此类推，<span class="math inline">\(\{(BDA), (BDC),
+(BDE)\}\)</span>都是U在F下的候选码</p>
+<p>注意：闭包还可以判断X推出Y是否成立，当Y属于X的闭包时，有X推出Y</p>
+<h3 id="超码">超码</h3>
+<p>能推出所有属性的属性组和集合，候选码是超码的子集</p>
+<h3 id="主码">主码</h3>
+<p>当有多个候选码时，可以挑出一个作为主码，简称码</p>
+<h3 id="主非主属性">主/非主属性</h3>
+<ul>
+<li>主属性：包含在任何一个候选码中的属性</li>
+<li>非主属性：不包含在任何一个候选码中的属性</li>
+</ul>
+<h3 id="外码">外码</h3>
+<p>关系模式R中，若有一个属性或属性组X，他不是R的码，但X是另一个关系模式S中的码，则X是R的外码</p>
+<h3 id="全码">全码</h3>
+<p>整个属性组中都是码</p>
+<h2 id="范式">范式</h2>
+<h3 id="nf">1NF</h3>
+<p>所有属性都是不可分割的数据项，即表中每个单元格都只能包含单一的数据，不能有重复组或嵌套结构，这是满足关系数据库的<strong>最低要求</strong></p>
+<h3 id="nf-1">2NF</h3>
+<p>在满足1NF的前提下，不包含非主属性对码的部分函数依赖，即每一个非主属性都完全函数依赖于码</p>
+<h3 id="nf-2">3NF</h3>
+<p>在满足2NF的前提下，不包含非主属性对码的传递函数依赖，传递函数依赖指若存在<span
+class="math inline">\(A\rarr B\)</span>和<span
+class="math inline">\(B\rarr C\)</span>，则C传递依赖于A</p>
+<h3 id="bcnf">BCNF</h3>
+<p>每一个非平凡的函数依赖<span class="math inline">\(X\rarr
+Y\)</span>，X都必须是一个候选码</p>
+<p>表现在函数依赖集中，左边的部分都要包含整个候选码</p>
+<h3 id="判断与分解方法">判断与分解方法</h3>
+<p>设关系<span class="math inline">\(R\{A,B,C,D\}\)</span></p>
+<p><strong>2NF：</strong></p>
+<p>若码是AB，F中为<span class="math inline">\(\{A\rarr C, AB\rarr
+D\}\)</span>，C只需要A就能推出，则C部分函数依赖于AB，不是2NF</p>
+<p>若要分解为2NF，只需将不符合要求的拿出来，分为<span
+class="math inline">\(R\{A,B,D\}\)</span>和<span
+class="math inline">\(R\{A,C\}\)</span></p>
+<p><strong>3NF：</strong></p>
+<p>若码是AB，F中为<span class="math inline">\(\{AB\rarr C, C\rarr
+D\}\)</span>，不存在部分函数依赖，但是对于D需要AB推出C后间接推出D，则D传递函数依赖于AB，不满足3NF</p>
+<p>若要分解为3NF，同样将不符合要求的拿出来，分为<span
+class="math inline">\(R\{A,B,C\}\)</span>和<span
+class="math inline">\(R\{C,D\}\)</span></p>
+<p><strong>BCNF：</strong></p>
+<p>若R是<span class="math inline">\((A,B,C)\)</span>，F是<span
+class="math inline">\(\{AC\rarr B, AB\rarr C, B\rarr
+C\}\)</span>，候选码则是AC和AB，对于<span class="math inline">\(B\rarr
+C\)</span>决定因素B不包含码，则不是BCNF</p>
+<h2 id="最小函数依赖集">最小函数依赖集</h2>
+<p>求最小函数依赖集的方法：</p>
+<ul>
+<li><p>拆分右侧：类似把<span class="math inline">\(A\rarr
+BC\)</span>拆为<span class="math inline">\(A\rarr B\)</span>和<span
+class="math inline">\(A\rarr C\)</span></p></li>
+<li><p>去除自身求闭包：将当前关系去掉，求该关系的闭包，若可以通过其他关系得到右侧，则直接删除当前依赖关系</p></li>
+<li><p>左侧最小化：对于目前保留下来的关系，观察左侧是否有能相互推出的，若有可以直接删除被推出的那个</p>
+<p>如<span class="math inline">\(ACD\rarr B, C\rarr
+A\)</span>，就可以删除ACD中的A</p></li>
+</ul>
+<h2 id="模式分解">模式分解</h2>
+<p>准则：无损连接，保持函数依赖</p>
+<p>无损连接：分解后再次自然连接，与分解前相同</p>
+<p>判断无损连接的方法：</p>
+<ul>
+<li>画表格，列出所有的属性，有多少个属性就画多少属性列，行表示分解后的关系，有几个关系就画几个关系行</li>
+<li>根据每一行的关系判断，找出关系中的每个属性对应第几列，在相应位置标上<span
+class="math inline">\(a_j\)</span>，j为列数，其余关系中不存在的属性标为<span
+class="math inline">\(b_{ij}\)</span></li>
+<li>依次对函数依赖集中的各个依赖关系进行考察，如有<span
+class="math inline">\(XY\rarr
+Z\)</span>，在属性列中找到X和Y，观察X和Y的行列上是否有相同的标记（b下标相同），若有则查看他们对应在属性列Z上的各个标记，其中若有<span
+class="math inline">\(a_j\)</span>则将属性列上的这些标记全改为<span
+class="math inline">\(a_j\)</span>，若没有则找到i值最小的<span
+class="math inline">\(b_{ij}\)</span>，将这些标记全改为它</li>
+<li>反复执行以上操作，直到某一行全变为a，表明具有无损连接性，否则不具有无损连接性</li>
+</ul>
+<h1 id="关系语言">关系语言</h1>
+<h2 id="关系代数语言">关系代数语言</h2>
+<p>设有关系R或S</p>
+<h3 id="集合运算符">集合运算符</h3>
+<ul>
+<li>并：R∪S，属于R或S的元组构成</li>
+<li>差：R-S，属于R但不属于S的元组构成</li>
+<li>交：R∩S，既属于R又属于S的元组构成</li>
+<li>笛卡尔积：R×S，由R中每个元素与S中所有元素组合</li>
+</ul>
+<h3 id="关系运算符">关系运算符</h3>
+<p>假设有一个成绩表score，列分别为<code>sno</code>, <code>sname</code>,
+<code>sscore</code></p>
+<ul>
+<li><p>选择：得到表中的指定行，写作<span
+class="math inline">\(\sigma_{条件}(表名)\)</span></p>
+<p>如获取学号为1的行：<span
+class="math inline">\(\sigma_{sno=1}(score)\)</span></p></li>
+<li><p>投影：得到表中的指定列，写作<strong><span
+class="math inline">\(\pi_{条件}(表名)\)</span></strong></p>
+<p>如获取成绩这一列的信息：<span
+class="math inline">\(\pi_{sscore}(score)\)</span></p></li>
+<li><p>连接：将两个表根据指定条件连接在一起，写作<span
+class="math inline">\(表名\Join_{条件}表名\)</span></p>
+<ul>
+<li>等值连接：条件为属性R.A=S.B</li>
+<li>自然连接：条件为属性R.A=S.A，且去除重复列，写作<span
+class="math inline">\(R\Join S\)</span></li>
+<li>悬浮元组：自然连接时由于S中不匹配而在R中被舍弃的</li>
+<li>外连接：保留悬浮元组的连接，不匹配的位置填NULL，写作⟗</li>
+<li>左外连接：只保留R中悬浮元组的连接，写作⟕</li>
+<li>右外连接：只保留S中悬浮元组的连接，写作⟖</li>
+</ul></li>
+<li><p>除：设R和S除运算结果为T，则T包含所有在R中但不在S中的属性和值，且T的元组与S的元组经过组合均能出现在R中（题中描述为全部
+）</p>
+<p>例：A中包含属性x和y，B中包含属性y，且B中属性y的值为全集且无重复，则求全部y的x写作：<span
+class="math inline">\(\pi_{x,y}(A)÷\pi_{y}(B)\)</span></p></li>
+</ul>
+<p>​ 如下student表：</p>
+<table>
+<thead>
+<tr>
+<th>sno</th>
+<th>sname</th>
+<th>age</th>
+<th>sdept</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>张三</td>
+<td>18</td>
+<td>计算机</td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>19</td>
+<td>计算机</td>
+</tr>
+<tr>
+<td>3</td>
+<td>王五</td>
+<td>19</td>
+<td>计算机</td>
+</tr>
+<tr>
+<td>4</td>
+<td>赵六</td>
+<td>19</td>
+<td>通信</td>
+</tr>
+</tbody>
+</table>
+<p>​ S2表：</p>
+<table>
+<thead>
+<tr>
+<th>age</th>
+<th>sdept</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>19</td>
+<td>计算机</td>
+</tr>
+</tbody>
+</table>
+<p>则student表除以S2表的结果是</p>
+<table>
+<thead>
+<tr>
+<th>sno</th>
+<th>sname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>李四</td>
+</tr>
+<tr>
+<td>3</td>
+<td>王五</td>
+</tr>
+</tbody>
+</table>
+<p>即除法的意思是满足S2中所有条件的信息，但不包含S2中的字段的其他字段组成的新表</p>
+<h1 id="er图">ER图</h1>
+<blockquote>
+<p>以下说的都是Chen‘s ER图</p>
+</blockquote>
+<h2 id="格式">格式</h2>
+<ul>
+<li><p>实体：方框</p></li>
+<li><p>关系：菱形</p></li>
+<li><p>属性：圆形</p></li>
+<li><p>联系：</p></li>
+</ul>
+<img src="/Database/MySQL/%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA/image-20260605145419980.png" class="" title="联系">
+<h2 id="转换关系模型">转换关系模型</h2>
+<ul>
+<li><p>将各个实体的名字转换为各个关系模型的名字</p></li>
+<li><p>实体属性就是关系属性，实体的码就是关系的码</p>
+<p>用实体名(属性…)表示，主码用下划线指定</p></li>
+<li><p>实体间联系转换</p>
+<ul>
+<li>一对一：在任意一方加入对方的主码并设为其外码，并加入联系本身的属性</li>
+<li>一对n：将一方的主码加入n方作为外码，同时将联系的属性加入n方</li>
+<li>n对m：将联系本身转换为一个关系模式，将双方的主码加入其中并设为外码，并将联系属性放入其中</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Database/MySQL/%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/" rel="prev" title="【MySQL】多表查询">
+      <i class="fa fa-chevron-left"></i> 【MySQL】多表查询
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Database/MySQL/%E5%87%BD%E6%95%B0/" rel="next" title="【MySQL】函数">
+      【MySQL】函数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E7%90%86%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">关系理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%BE%9D%E8%B5%96"><span class="nav-number">1.1.</span> <span class="nav-text">函数依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%99%E9%80%89%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">候选码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">超码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E7%A0%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">主码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E9%9D%9E%E4%B8%BB%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.4.</span> <span class="nav-text">主&#x2F;非主属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E7%A0%81"><span class="nav-number">1.2.5.</span> <span class="nav-text">外码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E7%A0%81"><span class="nav-number">1.2.6.</span> <span class="nav-text">全码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8C%83%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">范式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nf"><span class="nav-number">1.3.1.</span> <span class="nav-text">1NF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nf-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">2NF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nf-2"><span class="nav-number">1.3.3.</span> <span class="nav-text">3NF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bcnf"><span class="nav-number">1.3.4.</span> <span class="nav-text">BCNF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E4%B8%8E%E5%88%86%E8%A7%A3%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.5.</span> <span class="nav-text">判断与分解方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E5%87%BD%E6%95%B0%E4%BE%9D%E8%B5%96%E9%9B%86"><span class="nav-number">1.4.</span> <span class="nav-text">最小函数依赖集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E5%88%86%E8%A7%A3"><span class="nav-number">1.5.</span> <span class="nav-text">模式分解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%AF%AD%E8%A8%80"><span class="nav-number">2.</span> <span class="nav-text">关系语言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E8%AF%AD%E8%A8%80"><span class="nav-number">2.1.</span> <span class="nav-text">关系代数语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">2.1.1.</span> <span class="nav-text">集合运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">2.1.2.</span> <span class="nav-text">关系运算符</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#er%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">ER图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">转换关系模型</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">159</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">540k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">16:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

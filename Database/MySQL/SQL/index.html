@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="SQL的通用语法，包括DML、DDL、DQL、DCL等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL】SQL">
+<meta property="og:url" content="https://izayoisakuye.github.io/Database/MySQL/SQL/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="SQL的通用语法，包括DML、DDL、DQL、DCL等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602152848535.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602153404005.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602153807468.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602161638662.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602162402107.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602170526038.png">
+<meta property="article:published_time" content="2026-06-07T00:32:09.359Z">
+<meta property="article:modified_time" content="2026-06-07T00:33:28.594Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/Database/MySQL/SQL/image-20260602152848535.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/Database/MySQL/SQL/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MySQL】SQL | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Database/MySQL/SQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MySQL】SQL
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-06-07 08:32:09 / 修改时间：08:33:28" itemprop="dateCreated datePublished" datetime="2026-06-07T08:32:09+08:00">2026-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description">SQL的通用语法，包括DML、DDL、DQL、DCL等</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这里讲的是SQL的通用语法，DML、DDL、DQL、DCL等语法</p>
+<h1 id="通用语法">通用语法</h1>
+<ul>
+<li>以分号结尾，可以单行或多行写</li>
+<li>语句不区分大小写，但关键字规范是大写</li>
+<li>单行注释：<code>--</code>或<code>#</code>；多行注释：<code>/**/</code></li>
+</ul>
+<h1 id="ddl">DDL</h1>
+<p>DDL为数据定义语言，涉及定义操作：</p>
+<h2 id="数据库操作">数据库操作</h2>
+<ul>
+<li>查询所有数据库：<code>SHOW DATABASES;</code></li>
+<li>查询当前数据库：<code>SELECT DATABASE();</code></li>
+<li>创建数据库：<code>CREATE DATABASE [IF NOT EXIST] 数据库名 [DEFAULT CARSET 字符集] [COLLATE 排序规则];</code>
+<ul>
+<li>若创建已有的数据库，且不添加<code>IF NOT EXIST</code>，会报错</li>
+<li>可以自选字符集，建议使用支持四字节长的<code>utf8mb4</code></li>
+</ul></li>
+<li>删除数据库：<code>DROP DATABASE [IF EXISTS] 数据库名;</code>
+<ul>
+<li>若删除没有的数据库，且不添加<code>IF EXISTS</code>，会报错</li>
+</ul></li>
+<li>使用数据库：<code>USE 数据库名;</code></li>
+</ul>
+<h2 id="数据类型">数据类型</h2>
+<h3 id="数值类型">数值类型</h3>
+<img src="/Database/MySQL/SQL/image-20260602152848535.png" class="" title="数值类型">
+<ul>
+<li>指定有无符号在类型后添加SIGNED/UNSIGNED</li>
+<li>FLOAT与DOUBLE后面要用括号定义总位数与精度，如<code>DOUBLE(4,1)</code></li>
+<li>这里的精度指的是某实数有效数字位数，标度为小数位数</li>
+</ul>
+<h3 id="字符串类型">字符串类型</h3>
+<img src="/Database/MySQL/SQL/image-20260602153404005.png" class="" title="字符串类型">
+<ul>
+<li>CHAR与VARCHAR后面要用括号定义字符最大长度
+<ul>
+<li>VARCHAR占用大小是数据实际长度，CHAR是定长，多出来的用空格填充</li>
+<li>VARCHAR性能较差</li>
+</ul></li>
+</ul>
+<h3 id="日期时间类型">日期时间类型</h3>
+<img src="/Database/MySQL/SQL/image-20260602153807468.png" class="" title="日期时间类型">
+<h2 id="表操作">表操作</h2>
+<p>查询：</p>
+<ul>
+<li>查询当前数据库所有表：<code>SHOW TABLES;</code>
+<ul>
+<li>需要使用USE先进入该数据库</li>
+</ul></li>
+<li>查询表结构：<code>DESC 表名;</code></li>
+<li>查询指定表的建表语句：<code>SHOW CREATE TABLE 表名;</code></li>
+</ul>
+<p>创建：</p>
+<ul>
+<li><p>创建表：</p>
+<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">TABLE</span><span style="color: #24292E"> </span><span style="color: #6F42C1">表名</span><span style="color: #24292E">(</span></span>
+<span class="line"><span style="color: #24292E">	字段1 字段1类型 [COMMENT 字段1注释],</span></span>
+<span class="line"><span style="color: #24292E">    字段2 字段2类型 [COMMENT 字段2注释],</span></span>
+<span class="line"><span style="color: #24292E">    字段3 字段3类型 [COMMENT 字段3注释],</span></span>
+<span class="line"><span style="color: #24292E">    ...</span></span>
+<span class="line"><span style="color: #24292E">    字段n 字段n类型 [COMMENT 字段n注释]</span></span>
+<span class="line"><span style="color: #24292E">) [ENGINE=存储引擎] [DEFAULT CHARSET=字符集] [COLLATE=排序规则] [COMMENT 表注释];</span></span></code></pre></div></div></figure></li>
+</ul>
+<p>修改：</p>
+<ul>
+<li><p>添加字段：<code>ALTER TABLE 表名 ADD 字段名 类型(长度) [COMMENT 注释] [约束];</code></p></li>
+<li><p>修改数据类型：<code>ALTER TABLE 表名 MODIFY 字段名 新类型(长度);</code></p></li>
+<li><p>修改字段名和类型：<code>ALTER TABLE 表名 CHANGE 旧字段名 新字段名 类型(长度) [COMMENT 注释] [约束];</code></p></li>
+<li><p>删除字段：<code>ALTER TABLE 表名 DROP 字段名;</code></p></li>
+<li><p>修改表名：<code>ALTER TABLE 表名 RENAME TO 新表名;</code></p></li>
+</ul>
+<p>删除：</p>
+<ul>
+<li>删除表：<code>DROP TABLE [IF EXISTS] 表名;</code></li>
+<li>删除指定表并重新创建：<code>TRUNCATE TABLE 表名;</code></li>
+</ul>
+<h1 id="dml">DML</h1>
+<p>DML是数据操作语言，对表中的记录进行增删改操作</p>
+<h2 id="添加数据">添加数据</h2>
+<ul>
+<li>指定字段添加数据：<code>INSERT INTO 表名(字段1,...) VALUES(值1,...);</code></li>
+<li>全部字段添加数据：<code>INSERT INTO 表名 VALUES(值1,...);</code></li>
+<li>批量添加数据：
+<ul>
+<li><code>INSERT INTO 表名(字段1,...) VALUES(值1,...), (值1,...), (值1,...)...;</code></li>
+<li><code>INSERT INTO 表名 VALUES(值1,...), (值1,...), (值1,...)...;</code></li>
+</ul></li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>插入数据时字段顺序与之顺序一一对应</li>
+<li>字符串和日期数据要在引号中</li>
+</ul>
+<h2 id="修改数据">修改数据</h2>
+<p><code>UPDATE 表名 SET 字段名1=值1, 字段名2=值2,... [WHERE 条件];</code></p>
+<p>如果没有条件，则会修改整张表的所有数据</p>
+<h2 id="删除数据">删除数据</h2>
+<p><code>DELETE FROM 表名 [WHERE 条件];</code></p>
+<ul>
+<li>如果没有条件，则会删除整张表的所有数据</li>
+<li>DELETE语句不能删除某一个字段的值，可以用UPDATE</li>
+</ul>
+<h1 id="dql">DQL</h1>
+<p>DQL是数据查询语言，用来查询数据</p>
+<h2 id="语法">语法</h2>
+<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">SELECT</span><span style="color: #24292E"> 字段列表</span></span>
+<span class="line"><span style="color: #D73A49">FROM</span><span style="color: #24292E"> 表名列表</span></span>
+<span class="line"><span style="color: #D73A49">WHERE</span><span style="color: #24292E"> 条件列表</span></span>
+<span class="line"><span style="color: #D73A49">GROUP BY</span><span style="color: #24292E"> 分组字段列表</span></span>
+<span class="line"><span style="color: #D73A49">HAVING</span><span style="color: #24292E"> 分组后条件列表</span></span>
+<span class="line"><span style="color: #D73A49">ORDER BY</span><span style="color: #24292E"> 排序字段列表</span></span>
+<span class="line"><span style="color: #D73A49">LIMIT</span><span style="color: #24292E"> 分页参数;</span></span></code></pre></div></div></figure>
+<h2 id="基本查询">基本查询</h2>
+<ul>
+<li><p>查询多个字段：<code>SELECT 字段1, 字段2,... FROM 表名;</code></p>
+<p>​ <code>SELECT * FROM 表名;</code></p></li>
+<li><p>设置别名：<code>SELECT 字段1 [AS 别名], 字段2 [AS 别名],... FROM 表名;</code></p>
+<ul>
+<li>AS可以省略</li>
+</ul></li>
+<li><p>去除重复记录：<code>SELECT DISTINCT 字段列表 FROM 表名;</code></p></li>
+</ul>
+<h2 id="条件查询">条件查询</h2>
+<p>语法：<code>SELECT 字段列表 FROM 表名 WHERE 条件列表</code></p>
+<p>条件：</p>
+<img src="/Database/MySQL/SQL/image-20260602161638662.png" class="" title="条件运算符">
+<ul>
+<li><p>IN列表内的值只需要满足一个即可</p></li>
+<li><p>LIKE举例：查询最后一位是X的信息：</p>
+<p><code>SELECT * FROM table WHERE id LIKE '%X';</code></p></li>
+</ul>
+<h2 id="聚合函数">聚合函数</h2>
+<p>将<strong>某一列</strong>作为一个整体，纵向计算</p>
+<p>常见聚合函数：</p>
+<img src="/Database/MySQL/SQL/image-20260602162402107.png" class="" title="聚合函数">
+<p>语法：<code>SELECT 聚合函数(字段列表) FROM 表名;</code></p>
+<p>注意：NULL值不参与聚合函数运算</p>
+<h2 id="分组查询">分组查询</h2>
+<p>语法：<code>SELECT 字段列表 FROM 表名 [WHERE 条件] GROUP BY 分组字段名 [HAVING 分组后过滤条件];</code></p>
+<p>例：查询男性和女性的数量：<code>SELECT gender, COUNT(*) FROM table GROUP BY gender</code></p>
+<p>注意：</p>
+<ul>
+<li>WHERE用于分组前过滤，不满足WHERE条件的不参与分组；HAVING用于分组后对结果过滤；WHERE不能对聚合函数判断，而HAVING可以</li>
+<li>执行顺序：WHERE&gt;聚合&gt;HAVING</li>
+<li>分组后查询字段一般为聚合函数和分组字段</li>
+</ul>
+<h2 id="排序查询">排序查询</h2>
+<p>语法：<code>SELECT 字段列表 FROM 表名 ORDER BY 字段1 排序方式1, 字段2 排序方式2,...;</code></p>
+<p>排序方式：</p>
+<ul>
+<li>ASC：升序（默认）</li>
+<li>DESC：降序</li>
+</ul>
+<p>首先按照第一个，然后第二个，以此类推</p>
+<h2 id="分页查询">分页查询</h2>
+<p>语法：<code>SELECT 字段列表 FROM 表名 LIMIT 起始索引, 查询记录数;</code></p>
+<ul>
+<li>起始索引从0开始，计算方式：<span
+class="math inline">\((查询页码-1)\times 每页显示记录数\)</span></li>
+<li>分页查询是数据库的方言，不同数据库有不同实现</li>
+<li>若查询第一页数据，起始索引可以省略，简写为LIMIT 10</li>
+<li>LIMIT要放在所有查询最后</li>
+</ul>
+<h2 id="执行顺序">执行顺序</h2>
+<p>编写顺序：SELECT-&gt;FROM-&gt;WHERE-&gt;GROUP BY-&gt;
+HAVING-&gt;ORDER BY-&gt;LIMIT</p>
+<p>执行顺序：FROM-&gt;WHERE-&gt;GROUP BY-&gt;HAVING
+-&gt;SELECT-&gt;ORDER BY-&gt;LIMIT</p>
+<h1 id="dcl">DCL</h1>
+<p>DCL是数据控制语言，管理数据库用户和访问权限</p>
+<h2 id="用户管理">用户管理</h2>
+<ul>
+<li><p>查询用户：用户信息存放在系统数据库mysql中</p>
+<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">USE</span><span style="color: #24292E"> mysql;</span></span>
+<span class="line"><span style="color: #D73A49">SELECT</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E"> </span><span style="color: #D73A49">FROM</span><span style="color: #24292E"> user;</span></span></code></pre></div></div></figure></li>
+<li><p>创建用户：<code>CREATE USER '用户名'@'主机名' IDENTIFIED BY '密码';</code></p>
+<ul>
+<li>任意主机只需要将主机名改为<code>%</code></li>
+</ul></li>
+<li><p>修改密码：<code>ALTER USER '用户名'@'主机名' IDENTIFIED WITH 密码处理方式(一般mysql_native_password) BY '新密码'</code>;</p></li>
+<li><p>删除用户：<code>DROP USER '用户名'@'主机名';</code></p></li>
+</ul>
+<h2 id="权限控制">权限控制</h2>
+<ul>
+<li>常用权限：</li>
+</ul>
+<img src="/Database/MySQL/SQL/image-20260602170526038.png" class="" title="常用权限">
+<ul>
+<li><p>查询权限：<code>SHOW GRANTS FOR '用户名'@'主机名';</code></p></li>
+<li><p>授予权限：<code>GRANT 权限列表 ON 数据库名.表名 TO '用户名'@'主机名';</code></p></li>
+<li><p>撤销取消：<code>REVOKE 权限列表 ON 数据库名.表名 FROM '用户名'@'主机名';</code></p></li>
+<li><p>可以用<code>*</code>来指定所有</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E9%A2%98%E8%A7%A3/%E3%80%90%E9%A2%98%E8%A7%A3%E3%80%912026%E8%A5%BF%E5%AE%89ICPC%E9%82%80%E8%AF%B7%E8%B5%9B/" rel="prev" title="【题解】2026西安ICPC邀请赛">
+      <i class="fa fa-chevron-left"></i> 【题解】2026西安ICPC邀请赛
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Database/MySQL/SQL%E4%BC%98%E5%8C%96/" rel="next" title="【MySQL】SQL优化">
+      【MySQL】SQL优化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AF%AD%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">通用语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ddl"><span class="nav-number">2.</span> <span class="nav-text">DDL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">数据库操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">数值类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.2.</span> <span class="nav-text">字符串类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">日期时间类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">表操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dml"><span class="nav-number">3.</span> <span class="nav-text">DML</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE"><span class="nav-number">3.1.</span> <span class="nav-text">添加数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.</span> <span class="nav-text">修改数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.</span> <span class="nav-text">删除数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dql"><span class="nav-number">4.</span> <span class="nav-text">DQL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.2.</span> <span class="nav-text">基本查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.3.</span> <span class="nav-text">条件查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="nav-number">4.4.</span> <span class="nav-text">聚合函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.5.</span> <span class="nav-text">分组查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.6.</span> <span class="nav-text">排序查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.7.</span> <span class="nav-text">分页查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">4.8.</span> <span class="nav-text">执行顺序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dcl"><span class="nav-number">5.</span> <span class="nav-text">DCL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="nav-number">5.1.</span> <span class="nav-text">用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="nav-number">5.2.</span> <span class="nav-text">权限控制</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">159</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">540k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">16:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
