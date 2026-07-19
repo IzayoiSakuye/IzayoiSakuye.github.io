@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="protocol buffers简单入门，可以用于快速生成结构化数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【gRPC】Protocol Buffers">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/gRPC/Protobuf/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="protocol buffers简单入门，可以用于快速生成结构化数据">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-16T07:13:17.825Z">
+<meta property="article:modified_time" content="2026-07-16T07:34:00.020Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="gRPC">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/Golang/gRPC/Protobuf/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【gRPC】Protocol Buffers | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/gRPC/Protobuf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【gRPC】Protocol Buffers
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-07-16 15:13:17 / 修改时间：15:34:00" itemprop="dateCreated datePublished" datetime="2026-07-16T15:13:17+08:00">2026-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/gRPC/" itemprop="url" rel="index"><span itemprop="name">gRPC</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+            <div class="post-description">protocol buffers简单入门，可以用于快速生成结构化数据</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="用处">用处</h1>
+<p>Protocol
+Buffers用于序列化结构化数据，它类似于JSON，但是更小更快，和语言、平台无关</p>
+<p>在一个微服务中，若有不同语言想要使用该服务，调用对应API接口，但是由于语言不同，为了支持其他语言，我们需要开发第三方library才能支持</p>
+<p>Protobuf解决了这种问题，只需要一个<code>.proto</code>文件定义数据类型与结构或API接口，自带的编译器就可以根据该文件自动生成对应语言的代码</p>
+<h1 id="快速上手">快速上手</h1>
+<h2 id="编写">编写</h2>
+<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></div><div class="code"><pre><code>// 声明版本和命名空间
+syntax = "proto3";
+package user;
+
+// 导入包
+import "google/protobuf/timestamp.proto";
+// 声明包名
+option go_package = "./user;user"; 
+
+// 声明一个结构体
+message User {
+  enum Status {
+    Unknown = 0;
+    Active = 1;
+    Inactive = 2;
+  }
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  string password = 4;
+  google.protobuf.Timestamp created_at = 5;
+  Status UserStatus = 6;
+  repeated string phone = 7;
+}</code></pre></div></div></figure>
+<ul>
+<li>首先声明使用的proto版本以及该文件下的命名空间</li>
+<li>使用import导入外部包</li>
+<li>通过<code>option go_package</code>声明生成的<code>.pb.go</code>文件声明在哪个go包下，导入路径是什么</li>
+<li>接下来定义自己的消息（message），除了基本类型，还可以在message中定义message，或定义枚举</li>
+<li>若一个字段是<code>repeated</code>，则该字段可以重复任意次数，可以看作动态大小的数组</li>
+<li>若一个字段是<code>map</code>，则该字段是一个键值对类型</li>
+<li>每个元素的<code>=1</code>等标记标识了该字段在二进制编码中使用的<strong>唯一标签</strong>，不可以重复使用，从1开始，1-15比其他数字少用一个字节编码，因此可以作为常用或repeated类型的字段，16以上用于不常用的字段</li>
+<li>字段编号 <code>19,000</code> 到 <code>19,999</code> 为 Protocol
+Buffers 实现保留。</li>
+</ul>
+<h2 id="编译">编译</h2>
+<p>使用命令：</p>
+<figure class="shiki bash"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">protoc</span><span style="color: #24292E"> </span><span style="color: #005CC5">-I=</span><span style="color: #24292E">$SRC_DIR</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go_out=</span><span style="color: #24292E">$DST_DIR</span><span style="color: #24292E"> $SRC_DIR</span><span style="color: #032F62">/addressbook.proto</span></span></code></pre></div></div></figure>
+<p>其中：</p>
+<ul>
+<li><code>-I</code>表示源目录，包括应用程序源代码所在位置和导入protobuf文件的位置</li>
+<li><code>--go_out</code>表示生成代码存放的位置，通常和源代码位置相同</li>
+<li>第三个参数是自己的protobuf文件路径</li>
+</ul>
+<h2 id="protocol-buffer-api">Protocol Buffer API</h2>
+<p>成功生成<code>.pb.go</code>文件后，我们可以像使用任何普通结构体一样使用文件中的类型来构造和读写protobuf数据</p>
+<h3 id="生成的结构">生成的结构</h3>
+<p>假设proto定义如下：</p>
+<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre><code>message Person {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+  repeated PhoneNumber phones = 4;
+
+  message PhoneNumber {
+    string number = 1;
+    PhoneType type = 2;
+  }
+  enum PhoneType {
+    PHONE_TYPE_UNSPECIFIED = 0;
+    PHONE_TYPE_MOBILE = 1;
+    PHONE_TYPE_HOME = 2;
+    PHONE_TYPE_WORK = 3;
+  }
+}
+
+message AddressBook {
+  repeated Person people = 1;
+}</code></pre></div></div></figure>
+<p>经过编译后，生成的<code>.pb.go</code>文件中会包含如下类型：</p>
+<ul>
+<li>AddressBook结构体，表示整个通讯录，包含一个<code>People []*Person</code>字段</li>
+<li>Person结构体，表示一个人，包含他的各种信息字段</li>
+<li>Person_PhoneNumber结构体，由于是嵌套message，所以生成的名字是<code>父消息_子消息</code>格式，包含Number和Type字段</li>
+<li><code>Person_PhoneType</code>类型和他的常量值，对应proto中的枚举</li>
+</ul>
+<h3 id="创建一个protobuf对象">创建一个protobuf对象</h3>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">p </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> pb.Person{</span></span>
+<span class="line"><span style="color: #24292E">    Id:    </span><span style="color: #005CC5">1234</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    Name:  </span><span style="color: #032F62">&quot;John Doe&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    Email: </span><span style="color: #032F62">&quot;jdoe@example.com&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    Phones: []</span><span style="color: #D73A49">*</span><span style="color: #24292E">pb.Person_PhoneNumber{</span></span>
+<span class="line"><span style="color: #24292E">        {Number: </span><span style="color: #032F62">&quot;555-4321&quot;</span><span style="color: #24292E">, Type: pb.PhoneType_PHONE_TYPE_HOME},</span></span>
+<span class="line"><span style="color: #24292E">    },</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<ul>
+<li><p>对象名前要加包名，这里是将导入的<code>.pb.go</code>文件起了别名</p></li>
+<li><p>Phone是切片，存放的是指针类型，所以要写<code>&amp;pb.Person_PhoneNumber&#123;...&#125;</code>或直接字面量初始化<code>[]*pb.Person_PhoneNumber&#123;&#125;</code></p></li>
+<li><p>枚举值会自动添加枚举名前缀</p></li>
+<li></li>
+</ul>
+<h2 id="扩展protocal-buffer">扩展protocal buffer</h2>
+<p>如果想要更新或扩展proto文件，且让新旧缓冲区前后兼容，需要遵循如下规则：</p>
+<ul>
+<li><strong>绝对不可以</strong>更改现有字段的标签号</li>
+<li><strong>可以</strong>删除字段</li>
+<li><strong>可以</strong>添加新字段，但<strong>必须</strong>使用新的标签号（被删除字段用过的也不行）</li>
+<li>新字段在旧消息中是不存在的，需要处理默认值，默认的默认值为：对于字符串，默认值是空字符串。对于布尔值，默认值是
+false。对于数字类型，默认值是零</li>
+</ul>
+<h1 id="语法">语法</h1>
+<h2 id="字段默认值">字段默认值</h2>
+<p>当解析消息时，如果编码的消息字节中不包含某个特定字段，那么在解析的对象中访问该字段将返回该字段的默认值。默认值是类型特定的：</p>
+<ul>
+<li><p>对于字符串，默认值是空字符串</p></li>
+<li><p>对于字节，默认值是空字节</p></li>
+<li><p>对于布尔值，默认值是 false</p></li>
+<li><p>对于数值类型，默认值是零。</p></li>
+<li><p>对于消息字段，该字段未设置。其确切值取决于语言</p>
+<p>对于枚举，默认值是<strong>第一个定义的枚举值</strong>，它必须为
+0</p></li>
+</ul>
+<p>对于 repeated 字段，默认值是空的（通常是相应语言中的空列表）</p>
+<p>对于 map 字段，默认值是空的（通常是相应语言中的空 map）</p>
+<h2 id="枚举">枚举</h2>
+<p>在protobuf文件中使用<code>enum</code>定义枚举</p>
+<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre><code>enum Corpus {
+  CORPUS_UNSPECIFIED = 0;
+  CORPUS_UNIVERSAL = 1;
+  CORPUS_WEB = 2;
+  CORPUS_IMAGES = 3;
+  CORPUS_LOCAL = 4;
+  CORPUS_NEWS = 5;
+  CORPUS_PRODUCTS = 6;
+  CORPUS_VIDEO = 7;
+}
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+  Corpus corpus = 4;
+}</code></pre></div></div></figure>
+<h3 id="枚举值前缀">枚举值前缀</h3>
+<p>枚举值添加前缀时，剥离前缀后的其余名称仍应该是合法且符合样式的枚举名，如<code>DEVICE_TIER_1</code>是不对的，应该使用类似<code>DEVICE_TIER_TIER1</code>，因为前缀部分会被视为对枚举值进行作用域限定，而不是作为单个枚举值名称的一部分</p>
+<h3 id="枚举默认值">枚举默认值</h3>
+<p>proto3中，枚举定义中定义的第一个值必须为0，且不具有语义含义</p>
+<p>如<code>CORPUS_UNSPECIFIED = 0;</code></p>
+<p>这样方便我们将0作为数字默认值</p>
+<h2 id="序列化与反序列化">序列化与反序列化</h2>
+<p>Go中可以使用proto库中的函数来序列化和反序列化protocol buffer数据</p>
+<p>proto的结构体均默认实现了<code>proto.Message</code>接口，需要传递操作指针</p>
+<h3 id="序列化">序列化</h3>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">book </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">pb.AddressBook{}</span></span>
+<span class="line"><span style="color: #6A737D">// ... 填充 book 数据</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">out, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> proto.</span><span style="color: #005CC5">Marshal</span><span style="color: #24292E">(book)</span></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    log.</span><span style="color: #005CC5">Fatalln</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Failed to encode address book:&quot;</span><span style="color: #24292E">, err)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> ioutil.</span><span style="color: #005CC5">WriteFile</span><span style="color: #24292E">(fname, out, </span><span style="color: #005CC5">0644</span><span style="color: #24292E">); err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    log.</span><span style="color: #005CC5">Fatalln</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Failed to write address book:&quot;</span><span style="color: #24292E">, err)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<ul>
+<li>首先创建指针类型的变量，添加数据</li>
+<li><code>proto.Marshal(book)</code>会将这个结构体按照protobuf的二进制格式编码为一串字节</li>
+<li>这样out里就算可以保存的二进制数据</li>
+<li>这样就可以使用<code>WriteFile()</code>写入文件</li>
+</ul>
+<h3 id="反序列化">反序列化</h3>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">in, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> ioutil.</span><span style="color: #005CC5">ReadFile</span><span style="color: #24292E">(fname)</span></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    log.</span><span style="color: #005CC5">Fatalln</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Error reading file:&quot;</span><span style="color: #24292E">, err)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #24292E">book </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">pb.AddressBook{}</span></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> proto.</span><span style="color: #005CC5">Unmarshal</span><span style="color: #24292E">(in, book); err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    log.</span><span style="color: #005CC5">Fatalln</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Failed to parse address book:&quot;</span><span style="color: #24292E">, err)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<ul>
+<li>首先通过<code>ReadFile()</code>读取文件</li>
+<li>准备一个空的结构体指针，用来接收数据</li>
+<li>使用<code>proto.Unmarshal()</code>将字节反解成protobuf数据，填充到结构体中</li>
+</ul>
+<h2 id="保留字段">保留字段</h2>
+<p>对于删除或注释掉的字段，更好的方法是使用<code>reserved</code>，<code>reserved</code>之后的字段编号会被标记为保留，若使用这些编号会报错</p>
+<p>同理字段名也可以被保留</p>
+<p>注意：不能在同一个语句中混合字段名和字段编号</p>
+<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre><code>message Foo {
+  reserved 2, 15, 9 to 11;
+  reserved "foo", "bar";
+}</code></pre></div></div></figure>
+<h2 id="映射">映射</h2>
+<p>定义映射的语法：<code>map&lt;key_type, value_type&gt; map_field = N;</code></p>
+<p>其中<code>key_type</code>可以是任何整数或字符串类型，<code>value_type</code>可以是除另一个map之外的任何类型</p>
+<p>注意：</p>
+<ul>
+<li>map字段不能是repeated</li>
+<li>映射值的线路格式顺序和映射迭代顺序是未定义的，所以你不能依赖你的映射项会以特定的顺序排列</li>
+<li>proto生成文本格式时，映射按键排序，数字键按值排序</li>
+</ul>
+<h2 id="服务">服务</h2>
+<p>若想将消息类型和rpc系统一起调用，可以在<code>.proto</code>文件中定义一个RPC服务接口，例如，如果你想定义一个RPC服务，方法接收<code>SearchRequest</code>并返回一个<code>SearchResponse</code>，可以按如下定义：</p>
+<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre><code>service SearchService {
+  rpc Search(SearchRequest) returns (SearchResponse);
+}</code></pre></div></div></figure>
+<p>定义时建议添加req和resp参数，并实现message</p>
+<p>编译时需要加入一个参数<code>--go-grpc_out</code>指定生成的grpc文件的位置</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+              <a href="/tags/gRPC/" rel="tag"># gRPC</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Golang/http%E6%A0%87%E5%87%86%E5%BA%93/" rel="prev" title="【Golang】Http标准库">
+      <i class="fa fa-chevron-left"></i> 【Golang】Http标准库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/" rel="next" title="【gRPC】服务端与客户端搭建">
+      【gRPC】服务端与客户端搭建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E5%A4%84"><span class="nav-number">1.</span> <span class="nav-text">用处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B"><span class="nav-number">2.</span> <span class="nav-text">快速上手</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99"><span class="nav-number">2.1.</span> <span class="nav-text">编写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">2.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protocol-buffer-api"><span class="nav-number">2.3.</span> <span class="nav-text">Protocol Buffer API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.3.1.</span> <span class="nav-text">生成的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAprotobuf%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.3.2.</span> <span class="nav-text">创建一个protobuf对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95protocal-buffer"><span class="nav-number">2.4.</span> <span class="nav-text">扩展protocal buffer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">3.1.</span> <span class="nav-text">字段默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE"><span class="nav-number">3.2.</span> <span class="nav-text">枚举</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E5%80%BC%E5%89%8D%E7%BC%80"><span class="nav-number">3.2.1.</span> <span class="nav-text">枚举值前缀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">3.2.2.</span> <span class="nav-text">枚举默认值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">序列化与反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">3.3.1.</span> <span class="nav-text">序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">3.3.2.</span> <span class="nav-text">反序列化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E7%95%99%E5%AD%97%E6%AE%B5"><span class="nav-number">3.4.</span> <span class="nav-text">保留字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%A0%E5%B0%84"><span class="nav-number">3.5.</span> <span class="nav-text">映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.6.</span> <span class="nav-text">服务</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

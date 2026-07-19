@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一个gRPC下实现客户端和服务端服务的示例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【gRPC】服务端与客户端搭建">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="一个gRPC下实现客户端和服务端服务的示例">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-16T07:34:50.100Z">
+<meta property="article:modified_time" content="2026-07-19T07:44:06.846Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="gRPC">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【gRPC】服务端与客户端搭建 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【gRPC】服务端与客户端搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-07-16 15:34:50" itemprop="dateCreated datePublished" datetime="2026-07-16T15:34:50+08:00">2026-07-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-07-19 15:44:06" itemprop="dateModified" datetime="2026-07-19T15:44:06+08:00">2026-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/gRPC/" itemprop="url" rel="index"><span itemprop="name">gRPC</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+            <div class="post-description">一个gRPC下实现客户端和服务端服务的示例</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="protobuf文件实现">Protobuf文件实现</h1>
+<p>若需要采用grpc相关，需要在proto文件中以service定义，例：</p>
+<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre><code>syntax = "proto3";
+package auth;
+
+import "user.proto";
+option go_package = "./auth;auth";
+
+// 定义服务
+service AuthService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  user.User user = 2;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+}
+
+message registerresponse {}</code></pre></div></div></figure>
+<p>使用编译命令编译后，除了普通的<code>.pb.go</code>文件，还会生成<code>xx_grpc.pb.go</code>文件，里面实现了客户端和服务端需要的一些方法</p>
+<figure class="shiki bash"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">protoc</span><span style="color: #24292E"> </span><span style="color: #005CC5">-I.</span><span style="color: #24292E"> </span><span style="color: #005CC5">-I/usr/include</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go_out=.</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go_opt=module=grpc-study</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go-grpc_out=.</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go-grpc_opt=module=grpc-study</span><span style="color: #24292E"> </span><span style="color: #032F62">./au</span></span>
+<span class="line"><span style="color: #6F42C1">th.proto</span></span></code></pre></div></div></figure>
+<h1 id="实现一个server">实现一个server</h1>
+<p>首先在<code>/internal/grpc</code>下创建一个server.go</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">grpc</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">net</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">google.golang.org/grpc</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">StartGrpcServer</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	ln, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> net.</span><span style="color: #005CC5">Listen</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;tc p&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;:8000&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	s </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> grpc.</span><span style="color: #005CC5">NewServer</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">	err </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s.</span><span style="color: #005CC5">Serve</span><span style="color: #24292E">(ln)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>接下来需要实现方法，在<code>service</code>文件夹下创建<code>auth.go</code>，实现一个登录方法</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">service</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/auth</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/model</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">AuthService</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NewAuthService</span><span style="color: #24292E">() </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthService {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">AuthService{}</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (s </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthService) </span><span style="color: #6F42C1">Login</span><span style="color: #24292E">(ctx context.Context, req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginRequest) (</span><span style="color: #D73A49">*</span><span style="color: #24292E">model.UserModel, </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">model.UserModel{</span></span>
+<span class="line"><span style="color: #24292E">		Id:       </span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">		Username: req.Username,</span></span>
+<span class="line"><span style="color: #24292E">		Password: req.Password,</span></span>
+<span class="line"><span style="color: #24292E">		Email:    </span><span style="color: #032F62">&quot;&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">	},</span><span style="color: #005CC5">nil</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>Model层实现如下：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">model</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">UserModel</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">	Id			 </span><span style="color: #D73A49">int64</span></span>
+<span class="line"><span style="color: #24292E">	Username	 </span><span style="color: #D73A49">string</span></span>
+<span class="line"><span style="color: #24292E">	Password	 </span><span style="color: #D73A49">string</span></span>
+<span class="line"><span style="color: #24292E">	Email		 </span><span style="color: #D73A49">string</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>接下来需要将业务的注册到服务端，需要实现注册方法，<code>ctrl</code>建立文件<code>auth.go</code></p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ctrl</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/auth</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/service</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userModelProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/user</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">log</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">AuthController</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">	userProto.UnimplementedAuthServiceServer</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">validateLoginRequest</span><span style="color: #24292E">(req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginRequest) </span><span style="color: #D73A49">error</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (c </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthController) </span><span style="color: #6F42C1">Login</span><span style="color: #24292E">(ctx context.Context, req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginRequest) (</span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginResponse, </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 验证参数</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">validateLoginRequest</span><span style="color: #24292E">(req); err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E">, err</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 业务逻辑</span></span>
+<span class="line"><span style="color: #24292E">	log.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Login request received:&quot;</span><span style="color: #24292E">, req.Username, req.Password)</span></span>
+<span class="line"><span style="color: #24292E">	userModel, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> service.</span><span style="color: #005CC5">NewAuthService</span><span style="color: #24292E">().</span><span style="color: #005CC5">Login</span><span style="color: #24292E">(ctx, req)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E">, err</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 组装响应数据</span></span>
+<span class="line"><span style="color: #24292E">	resp </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userProto.LoginResponse{</span></span>
+<span class="line"><span style="color: #24292E">		Token: </span><span style="color: #032F62">&quot;123&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">		User: </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userModelProto.User{</span></span>
+<span class="line"><span style="color: #24292E">			Id:       userModel.Id,</span></span>
+<span class="line"><span style="color: #24292E">		},</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 返回参数</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> resp, </span><span style="color: #005CC5">nil</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (c </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthController) </span><span style="color: #6F42C1">Register</span><span style="color: #24292E">(ctx context.Context, req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.RegisterRequest) (</span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.RegisterResponse, </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userProto.RegisterResponse{}, </span><span style="color: #005CC5">nil</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p><code>RegisterAuthServiceServer</code>用于方法的内部注册，即将我们自己定义的<code>AuthController</code>交给gRPC服务器，让将来发入的auth服务请求交给这个实例处理，其中<code>AuthController</code>是我们自己定义的，实现了<code>AuthServiceServer</code>接口要求的方法的实例</p>
+<p>最后在server端添加注册：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 注册服务到服务端中</span></span>
+<span class="line"><span style="color: #24292E">authCtrl </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">ctrl.AuthController{}</span></span>
+<span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> grpc.</span><span style="color: #005CC5">NewServer</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">userProto.</span><span style="color: #005CC5">RegisterAuthServiceServer</span><span style="color: #24292E">(s, authCtrl)</span></span></code></pre></div></div></figure>
+<h1 id="实现一个client">实现一个Client</h1>
+<p>开一个文件夹放客户端，<code>/authclient</code>下的<code>main.go</code>文件</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/auth</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">log</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">sync</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">sync/atomic</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">google.golang.org/grpc</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">) </span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	cc </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NewUserClientPool</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;localhost:8000&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	resp,err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> cc.</span><span style="color: #005CC5">GetClient</span><span style="color: #24292E">().</span><span style="color: #005CC5">Login</span><span style="color: #24292E">(context.</span><span style="color: #005CC5">Background</span><span style="color: #24292E">(), </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userProto.LoginRequest{</span></span>
+<span class="line"><span style="color: #24292E">		Username: </span><span style="color: #032F62">&quot;admin&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">		Password: </span><span style="color: #032F62">&quot;admin&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">	})</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		log.</span><span style="color: #005CC5">Fatal</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Login response received:&quot;</span><span style="color: #24292E">, resp.Token, resp.User.Id)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 多路复用</span></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">userClientPool</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">	clients []userProto.AuthServiceClient</span></span>
+<span class="line"><span style="color: #24292E">	mu 		sync.Mutex</span></span>
+<span class="line"><span style="color: #24292E">	index 	</span><span style="color: #D73A49">int64</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NewUserClientPool</span><span style="color: #24292E">(addr </span><span style="color: #D73A49">string</span><span style="color: #24292E">, size </span><span style="color: #D73A49">int</span><span style="color: #24292E">) </span><span style="color: #D73A49">*</span><span style="color: #24292E">userClientPool {</span></span>
+<span class="line"><span style="color: #24292E">	cc, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> grpc.</span><span style="color: #005CC5">Dial</span><span style="color: #24292E">(addr, grpc.</span><span style="color: #005CC5">WithInsecure</span><span style="color: #24292E">())</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">var</span><span style="color: #24292E"> clients []userProto.AuthServiceClient</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> size; i</span><span style="color: #D73A49">++</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		clients </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">append</span><span style="color: #24292E">(clients, userProto.</span><span style="color: #005CC5">NewAuthServiceClient</span><span style="color: #24292E">(cc))</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userClientPool{</span></span>
+<span class="line"><span style="color: #24292E">		clients: clients,</span></span>
+<span class="line"><span style="color: #24292E">		index:   </span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (p </span><span style="color: #D73A49">*</span><span style="color: #24292E">userClientPool) </span><span style="color: #6F42C1">GetClient</span><span style="color: #24292E">() userProto.AuthServiceClient {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 新增index</span></span>
+<span class="line"><span style="color: #24292E">	index </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> atomic.</span><span style="color: #005CC5">AddInt64</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">p.index, </span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> p.clients[</span><span style="color: #005CC5">int</span><span style="color: #24292E">(index)</span><span style="color: #D73A49">%</span><span style="color: #005CC5">len</span><span style="color: #24292E">(p.clients)]</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<ul>
+<li>这里采用了多路复用技术，即开一个用户池，可以开启多个连接</li>
+<li>这里实现了负载均衡，每次调用后悔从池里挑一个client发送请求</li>
+<li>请求再发送给服务端，服务端执行业务逻辑，返回响应</li>
+</ul>
+<h2 id="整体链路">整体链路</h2>
+<p>上面实现的是一个标准的gRPC调用闭环：</p>
+<p>客户端生成stub发起RPC→</p>
+<p>服务端启动时把controller注册到gRPC的服务端→</p>
+<p>收到请求后由controller调用业务层→</p>
+<p>把业务结果组装为proto响应返回</p>
+<h3 id="入口">入口</h3>
+<p>服务端主程序仅仅调用了<code>server.go</code>的开启服务端函数，这个函数通过<code>net.Listen()</code>监听tcp，创建gRPCserver，再把<code>AuthController</code>通过通过<code>RegisterAuthServiceServer</code>注册进去</p>
+<p>这样，proto里定义的auth服务就和本地实现的auth业务逻辑绑定起来了，服务器知道如何处理rpc请求</p>
+<h3 id="controller">controller</h3>
+<p>请求进来以后，会落到<code>ctrl/auth.go</code>，进入controller层</p>
+<p>先进行参数校验，再调用方法<code>AuthService.Login</code>，实现后返回内部模型<code>model.UserModel</code>，ctrl再把返回的数据转换成proto的数据类型并组装成响应返回</p>
+<p>因此service层只管业务数据，ctrl层负责把内部模型翻译为对外rpc协议</p>
+<h3 id="客户端">客户端</h3>
+<p>客户端在<code>main.go</code>中先使用<code>grpc.Dial()</code>建立连接，通过<code>NewUserClientPool</code>创建用户池，并从中<code>GetClient()</code>获取一个用户创建客户端stub</p>
+<p>后面调用方法<code>Login()</code>会直接把你的<code>LoginRequest</code>序列化后发送到服务端，服务端处理后再把<code>LoginResponse</code>反序列化后返回客户端，拿到想要的东西</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+              <a href="/tags/gRPC/" rel="tag"># gRPC</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Golang/gRPC/Protobuf/" rel="prev" title="【gRPC】Protocol Buffers">
+      <i class="fa fa-chevron-left"></i> 【gRPC】Protocol Buffers
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Golang/gRPC/%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%9E%E7%8E%B0/" rel="next" title="【gRPC】中间件">
+      【gRPC】中间件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">Protobuf文件实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAserver"><span class="nav-number">2.</span> <span class="nav-text">实现一个server</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAclient"><span class="nav-number">3.</span> <span class="nav-text">实现一个Client</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E9%93%BE%E8%B7%AF"><span class="nav-number">3.1.</span> <span class="nav-text">整体链路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A5%E5%8F%A3"><span class="nav-number">3.1.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#controller"><span class="nav-number">3.1.2.</span> <span class="nav-text">controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.1.3.</span> <span class="nav-text">客户端</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

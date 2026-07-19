@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="包括控制并发的三种方式，WaitGroup，channel和context">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Golang】控制并发的三种方式">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/context/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="包括控制并发的三种方式，WaitGroup，channel和context">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-14T12:35:29.377Z">
+<meta property="article:modified_time" content="2026-07-14T12:37:27.835Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/Golang/context/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Golang】控制并发的三种方式 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/context/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Golang】控制并发的三种方式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-07-14 20:35:29 / 修改时间：20:37:27" itemprop="dateCreated datePublished" datetime="2026-07-14T20:35:29+08:00">2026-07-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+            <div class="post-description">包括控制并发的三种方式，WaitGroup，channel和context</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>参考视频：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17K411H7iw">【用 10
+分鐘了解 Go 語言 context package 使用場景及介紹】</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Uc411J7EL">【Go语言中对Context的一些见解，不了解Context的同学可以进来看一看。】</a></p>
+</blockquote>
+<h1 id="控制并发">控制并发</h1>
+<p>控制并发常用的有三种方式</p>
+<h2 id="waitgroup">WaitGroup</h2>
+<p>go中的<code>WaitGroup</code>位于sync库内，用来等待一组并发任务完成</p>
+<p>可以理解为一个计数器+阻塞等待器，主要方法有三种：</p>
+<ul>
+<li><code>Add(delta int)</code>：用于增加/减少计数器的值，delta可正可负</li>
+<li><code>Done()</code>：等价于<code>Add(-1)</code>，表示一个任务已经完成</li>
+<li><code>Wait()</code>：阻塞直到计数器变为0</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>计数器不能小于0，否则会panic</li>
+<li>Wait要放在所有Goroutine启动后，否则会死锁</li>
+<li>Add一定要在启动Goroutine的Goroutine中调用</li>
+</ul>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">sync</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">time</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">var</span><span style="color: #24292E"> wg sync.WaitGroup</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	wg.</span><span style="color: #005CC5">Add</span><span style="color: #24292E">(</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">defer</span><span style="color: #24292E"> wg.</span><span style="color: #005CC5">Done</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">		time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">2</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Hello1&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">defer</span><span style="color: #24292E"> wg.</span><span style="color: #005CC5">Done</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">		time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Hello2&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"><span style="color: #24292E">	wg.</span><span style="color: #005CC5">Wait</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">	fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;All goroutines finished executing&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>原理：</p>
+<ul>
+<li>WaitGroup内部主要由两个字段构成：
+<ul>
+<li>表示当前计数器的state（原子操作）</li>
+<li>信号量sema用于唤醒Wait阻塞的Goroutine</li>
+</ul></li>
+<li>首先Add使用原子操作修改计数器</li>
+<li>Done使<code>Add(-1)</code>，若修改后计数器为0，则通过sema唤醒所有被Wait阻塞的Goroutine</li>
+<li>Wait内部判断计数器若大于0，就通过sema睡眠，被唤醒后返回</li>
+</ul>
+<h2 id="channel">Channel</h2>
+<p>如果需要主动通知停止，可以使用Channel+Select</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">time</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	stop </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">make</span><span style="color: #24292E">(</span><span style="color: #D73A49">chan</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E">{})</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">for</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">select</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">case</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;-</span><span style="color: #24292E">stop:</span></span>
+<span class="line"><span style="color: #24292E">				fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;stop channel&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #D73A49">return</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">default</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">				fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;working&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">				time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">			}</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #005CC5">close</span><span style="color: #24292E">(stop)</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="context">context</h2>
+<p>若有多个Goroutine或Groutine中又有Goroutine，这时就适合用context</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">time</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	ctx, cancel </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> context.</span><span style="color: #005CC5">WithCancel</span><span style="color: #24292E">(context.</span><span style="color: #005CC5">Background</span><span style="color: #24292E">())</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #005CC5">worker</span><span style="color: #24292E">(ctx, </span><span style="color: #032F62">&quot;worker1&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #005CC5">worker</span><span style="color: #24292E">(ctx, </span><span style="color: #032F62">&quot;worker2&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #005CC5">worker</span><span style="color: #24292E">(ctx, </span><span style="color: #032F62">&quot;worker3&quot;</span><span style="color: #24292E">)	</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #005CC5">cancel</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">worker</span><span style="color: #24292E">(ctx context.Context, name </span><span style="color: #D73A49">string</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">for</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">select</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">case</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;-</span><span style="color: #24292E">ctx.</span><span style="color: #005CC5">Done</span><span style="color: #24292E">():</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #005CC5">println</span><span style="color: #24292E">(name, </span><span style="color: #032F62">&quot;done&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #D73A49">return</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">default</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #005CC5">println</span><span style="color: #24292E">(name, </span><span style="color: #032F62">&quot;working&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">				time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">			}</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="实例">实例</h1>
+<p>下面创建了一个客户端和一个服务端，并从客户端向服务端发送了一条消息</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">log</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">net</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">time</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// server</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		ln, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> net.</span><span style="color: #005CC5">Listen</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;tcp&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;:1234&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">for</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			conn, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> ln.</span><span style="color: #005CC5">Accept</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">			}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">				b </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">make</span><span style="color: #24292E">([]</span><span style="color: #D73A49">byte</span><span style="color: #24292E">, </span><span style="color: #005CC5">1234</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">				n, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> conn.</span><span style="color: #005CC5">Read</span><span style="color: #24292E">(b)</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">					log.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">					</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span></span>
+<span class="line"><span style="color: #24292E">				}</span></span>
+<span class="line"><span style="color: #24292E">				log.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #005CC5">string</span><span style="color: #24292E">(b[:n]))</span></span>
+<span class="line"><span style="color: #24292E">			}()</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Millisecond)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// client</span></span>
+<span class="line"><span style="color: #24292E">	cc, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> net.</span><span style="color: #005CC5">Dial</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;tcp&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;localhost:1234&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"><span style="color: #24292E">	cc.</span><span style="color: #005CC5">Write</span><span style="color: #24292E">([]</span><span style="color: #005CC5">byte</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;hello world&quot;</span><span style="color: #24292E">))</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>可以将客户端和服务端的连接看作一个管道，永远不会关闭</p>
+<p>若我们想向服务端写入1g数据，若在1s内没有写完就返回</p>
+<p>这个要求需要我们在写入数据的时候同时监测时间，但是有一个问题：我们无法通过在函数外部检测函数内的某个状态来决定何时跳出函数，只能在函数内主动跳出，因此我们可以开一个channel和线程，用AfterFunc计时，1s后关闭channel，当写入数据的线程检测channel关闭，就返回超时</p>
+<p>这里检测channel是否关闭就是在函数内设置的一个<strong>关键点位</strong>，用于检测是否跳出函数</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">log</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">net</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">strings</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">time</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// server</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		ln, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> net.</span><span style="color: #005CC5">Listen</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;tcp&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;:1234&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">for</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			conn, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> ln.</span><span style="color: #005CC5">Accept</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">			}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">				b </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">make</span><span style="color: #24292E">([]</span><span style="color: #D73A49">byte</span><span style="color: #24292E">, </span><span style="color: #005CC5">1234</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">				n, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> conn.</span><span style="color: #005CC5">Read</span><span style="color: #24292E">(b)</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">					log.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">					</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span></span>
+<span class="line"><span style="color: #24292E">				}</span></span>
+<span class="line"><span style="color: #24292E">				log.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #005CC5">string</span><span style="color: #24292E">(b[:n]))</span></span>
+<span class="line"><span style="color: #24292E">			}()</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Millisecond)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// client</span></span>
+<span class="line"><span style="color: #24292E">	cc, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> net.</span><span style="color: #005CC5">Dial</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;tcp&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;localhost:1234&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
+<span class="line"><span style="color: #24292E">	}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 记录超时线程</span></span>
+<span class="line"><span style="color: #24292E">	ch </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">make</span><span style="color: #24292E">(</span><span style="color: #D73A49">chan</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E">{})</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">go</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">() {</span></span>
+<span class="line"><span style="color: #24292E">		time.</span><span style="color: #005CC5">AfterFunc</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second, </span><span style="color: #D73A49">func</span><span style="color: #24292E"> ()  {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #005CC5">close</span><span style="color: #24292E">(ch)</span></span>
+<span class="line"><span style="color: #24292E">		})</span></span>
+<span class="line"><span style="color: #24292E">	}()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 写入数据线程</span></span>
+<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">1024</span><span style="color: #24292E">; i</span><span style="color: #D73A49">++</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">		time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #D73A49">*</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Millisecond)</span></span>
+<span class="line"><span style="color: #24292E">		cc.</span><span style="color: #005CC5">Write</span><span style="color: #24292E">([]</span><span style="color: #005CC5">byte</span><span style="color: #24292E">(strings.</span><span style="color: #005CC5">Repeat</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;a&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">1024</span><span style="color: #D73A49">*</span><span style="color: #005CC5">1024</span><span style="color: #24292E">)))</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">select</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">case</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;-</span><span style="color: #24292E">ch:</span></span>
+<span class="line"><span style="color: #24292E">				fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;time exceeded&quot;</span><span style="color: #24292E">, i)</span></span>
+<span class="line"><span style="color: #24292E">				</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span></span>
+<span class="line"><span style="color: #24292E">			</span><span style="color: #D73A49">default</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">			}</span></span>
+<span class="line"><span style="color: #24292E">			</span></span>
+<span class="line"><span style="color: #24292E">		}</span></span>
+<span class="line"><span style="color: #24292E">	time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>这个channel的思路可以用context实现</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 使用上下文</span></span>
+<span class="line"><span style="color: #24292E">ctx, cancel </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> context.</span><span style="color: #005CC5">WithTimeout</span><span style="color: #24292E">(context.</span><span style="color: #005CC5">Background</span><span style="color: #24292E">(), </span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Second)</span></span>
+<span class="line"><span style="color: #D73A49">defer</span><span style="color: #24292E"> </span><span style="color: #005CC5">cancel</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #6A737D">// // 记录超时线程</span></span>
+<span class="line"><span style="color: #6A737D">// ch := make(chan struct{})</span></span>
+<span class="line"><span style="color: #6A737D">// go func() {</span></span>
+<span class="line"><span style="color: #6A737D">// 	time.AfterFunc(1*time.Second, func ()  {</span></span>
+<span class="line"><span style="color: #6A737D">// 		close(ch)</span></span>
+<span class="line"><span style="color: #6A737D">// 	})</span></span>
+<span class="line"><span style="color: #6A737D">// }()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 写入数据线程</span></span>
+<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">1024</span><span style="color: #24292E">; i</span><span style="color: #D73A49">++</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #D73A49">*</span><span style="color: #005CC5">1</span><span style="color: #D73A49">*</span><span style="color: #24292E">time.Millisecond)</span></span>
+<span class="line"><span style="color: #24292E">    cc.</span><span style="color: #005CC5">Write</span><span style="color: #24292E">([]</span><span style="color: #005CC5">byte</span><span style="color: #24292E">(strings.</span><span style="color: #005CC5">Repeat</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;a&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">1024</span><span style="color: #D73A49">*</span><span style="color: #005CC5">1024</span><span style="color: #24292E">)))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">select</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">case</span><span style="color: #24292E"> </span><span style="color: #D73A49">&lt;-</span><span style="color: #24292E">ctx.</span><span style="color: #005CC5">Done</span><span style="color: #24292E">():</span></span>
+<span class="line"><span style="color: #24292E">            fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;time exceeded&quot;</span><span style="color: #24292E">, i)</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">default</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>或者使用<code>ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1*time.Second))</code>或者<code>ctx, cancel := context.WithCancel(context.Background())</code>，但后者不要直接defer，而是需要自己实现cancel，即再开一个routine，休眠一秒后<code>cancel()</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%9D%82%E9%A1%B9/API/" rel="prev" title="【杂项】API与RESTful API">
+      <i class="fa fa-chevron-left"></i> 【杂项】API与RESTful API
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Golang/http%E6%A0%87%E5%87%86%E5%BA%93/" rel="next" title="【Golang】Http标准库">
+      【Golang】Http标准库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%B9%B6%E5%8F%91"><span class="nav-number">1.</span> <span class="nav-text">控制并发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#waitgroup"><span class="nav-number">1.1.</span> <span class="nav-text">WaitGroup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#channel"><span class="nav-number">1.2.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#context"><span class="nav-number">1.3.</span> <span class="nav-text">context</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">实例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

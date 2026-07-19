@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="简单梳理了一下API相关概念，以及RESTful的设计原则">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【杂项】API与RESTful API">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/API/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="简单梳理了一下API相关概念，以及RESTful的设计原则">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-13T14:00:16.527Z">
+<meta property="article:modified_time" content="2026-07-13T14:01:09.086Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="API">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/API/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【杂项】API与RESTful API | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【杂项】API与RESTful API
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-07-13 22:00:16 / 修改时间：22:01:09" itemprop="dateCreated datePublished" datetime="2026-07-13T22:00:16+08:00">2026-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description">简单梳理了一下API相关概念，以及RESTful的设计原则</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="curl">curl</h1>
+<p>终端命令curl用于在终端内向网站发送请求并获取响应</p>
+<p>适合访问、测试API</p>
+<p>匿名调用：</p>
+<figure class="shiki bash"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">curl</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;http://example.com&#39;</span></span></code></pre></div></div></figure>
+<p>非匿名调用：</p>
+<p>如调用大模型API，需要获取API key，根据官方文档的样例调用API</p>
+<h1 id="api">API</h1>
+<p>API即应用程序编程接口，用于将自己的能力通过一个固定的入口持续对外提供，让别的程序来调用</p>
+<h2 id="interface接口">Interface（接口）</h2>
+<p>接口用于抽象实现，是后端设计的一套供给第三方使用的方法</p>
+<p>定义一个接口时，需要写好<strong>接口路径和接口方法名</strong>的映射，前端通过接口路径来调用方法，进而和后端通信</p>
+<p>注意：像HTTP请求这种通信方式是单向的，比如只能前端主动发起请求，而后端不可以主动和前端通信；若后端想主动和前端通信，需要通过双向通信协议如websocket</p>
+<p>例：</p>
+<p>一个获取商品列表的接口，路径设置为<code>/api/getItemList</code>，接口方法名为：<code>getItemList</code>，这样前端就可以通过请求上述路径来调用上述方法名的方法，进而后端会做相关逻辑处理</p>
+<h3 id="接口组成">接口组成</h3>
+<ul>
+<li>接口路径</li>
+<li>接口描述</li>
+<li>请求类型：协议的请求方法，如HTTP协议常用GET/POST</li>
+<li>请求参数：后台规定好前端需要传的参数结构</li>
+<li>返回结构：后台规定好返回给前端的数据结构，一般返回结构包括三个部分：返回码、错误信息和正确数据</li>
+</ul>
+<h3 id="定义接口">定义接口</h3>
+<p>以Golang为例，interface定义在service块的前面，在service块中通过<code>@service</code>注解来引用</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 定义 interface</span></span>
+<span class="line"><span style="color: #D73A49">interface</span><span style="color: #24292E"> 接口名 {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 这里可以放一些公共的注解，如 @doc、@handler 的前缀等</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6A737D">// 在 service 中应用</span></span>
+<span class="line"><span style="color: #24292E">service 服务名 {</span></span>
+<span class="line"><span style="color: #24292E">    @</span><span style="color: #005CC5">server</span><span style="color: #24292E">(</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #6A737D">// 引用 interface，通常写 interface: 接口名</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">interface</span><span style="color: #24292E">: 接口名</span></span>
+<span class="line"><span style="color: #24292E">    )</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 这个@server下面的所有handler都会受该interface的控制</span></span>
+<span class="line"><span style="color: #24292E">    @handler 处理器名</span></span>
+<span class="line"><span style="color: #24292E">    post </span><span style="color: #D73A49">/</span><span style="color: #24292E">api</span><span style="color: #D73A49">/</span><span style="color: #24292E">user</span><span style="color: #D73A49">/</span><span style="color: #24292E">login (LoginReq) returns (LoginResp)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="rest-api">REST API</h2>
+<p>REST，即Representational State
+Transfer，是一种设计网络程序API的风格，而REST
+API是基于REST原则构建的Web服务接口，又称RESTful</p>
+<h3 id="restful">RESTful</h3>
+<p>如何满足RESTful？</p>
+<p>例如现在需要从client端发送请求到server端，我们常用HTTP协议发送请求，而HTTP是无状态的，如果你想要维护某些状态，你需要使用Header将这些状态和每个请求一起发送，这就是REST约束之一：<strong>无状态性（Stateless）</strong></p>
+<p>所有的数据都会被视作资源（resource），满足CRUD，可以通过URI标识，向服务器发送一个GET请求，服务器返回响应，Body部分一般用JSON表示，这被称为<strong>资源导向（Resource-based）</strong></p>
+<p>REST API延续使用HTTP方法（GET, POST, PUT, PATCH,
+DELETE）来明确说明请求意图，即<strong>统一接口（Uniform
+Interface）</strong></p>
+<p>另外，我们可以用HTTP缓存机制，如最后修改和电子标签，我们可以标记响应为可缓存或不可缓存，由用户决定，避免提出不必要的请求，这是<strong>可缓存性（Cacheable）</strong></p>
+<h3 id="设计原则">设计原则</h3>
+<p><strong>URI设计原则：</strong></p>
+<ul>
+<li>使用名词而非动词表示资源</li>
+<li>使用小写字母和连字符</li>
+<li>避免文件扩展名</li>
+<li>分层次表示关系，如<code>/users/&#123;id&#125;/orders</code></li>
+</ul>
+<p><strong>HTTP方法使用：</strong></p>
+<ul>
+<li>正确使用HTTP标准方法</li>
+<li>注意GET、PUT、DELETE是幂等操作，多次调用产生相同结果</li>
+<li>对于批量操作，考虑使用POST而非PUT，PUT通常期望客户端明确资源标识符</li>
+</ul>
+<p><strong>版本控制：</strong></p>
+<p>在URL或请求头中包含API版本信息</p>
+<ul>
+<li>URL路径版本：<code>/v1/users</code></li>
+<li>查询参数版本：<code>/api/users?version=1</code></li>
+<li>请求头：<code>Accept: application/vnd.myapi.v1+json</code></li>
+<li>URL路径版本直观但URI不稳定，请求头版本保持URI稳定，但对客户端来说不够直观</li>
+<li>版本迭代中遵循语义化版本控制原则
+<ul>
+<li>向后兼容的变更使用次要版本号</li>
+<li>不兼容的变更使用主要版本号</li>
+</ul></li>
+<li>新旧版本之间提供迁移期，允许客户端平滑过渡</li>
+<li>文档中明确标注每个API版本的生命周期状态</li>
+</ul>
+<p><strong>有效分页：</strong></p>
+<ul>
+<li>使用limit，offset或page，size参数</li>
+<li>在响应中包含分页元数据</li>
+<li>在处理大型数据或频繁更新的数据时考虑使用基于游标的分页</li>
+<li>设置合理分页值</li>
+<li>在分页响应中提供HATEOAS链接，如下例中的next和prev</li>
+</ul>
+<p>例如：</p>
+<figure class="shiki json"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">GET /products?limit=</span><span style="color: #005CC5">20</span><span style="color: #24292E">&amp;offset=</span><span style="color: #005CC5">40</span></span>
+<span class="line"><span style="color: #24292E">GET /products?page=</span><span style="color: #005CC5">3</span><span style="color: #24292E">&amp;size=</span><span style="color: #005CC5">20</span></span></code></pre></div></div></figure>
+<figure class="shiki json"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #005CC5">&quot;data&quot;</span><span style="color: #24292E">: [</span><span style="color: #B31D28; font-style: italic">...</span><span style="color: #24292E">],</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #005CC5">&quot;pagination&quot;</span><span style="color: #24292E">: {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;total&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">523</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;pages&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">27</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;current_page&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">3</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;per_page&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">20</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;next&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/products?page=4&amp;size=20&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;prev&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/products?page=2&amp;size=20&quot;</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<blockquote>
+<p>游标分页是基于游标的分页方式，使用上一页最后一条记录的标识来确定下一页的起始数据</p>
+<p>如靠自增主键id来确定起始位置：</p>
+<figure class="shiki SQL"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre><code>select * from table_name where id>100 order by id limit 10;</code></pre></div></div></figure>
+<p>这样可以实现从上一页最后一条记录的主键id=100之后开始查询10条记录</p>
+</blockquote>
+<p><strong>过滤、排序与搜索：</strong></p>
+<p>对集合资源提供查询参数：</p>
+<ul>
+<li>过滤：<code>/user?role=admin</code></li>
+<li>排序：<code>/user?order=-created_at</code></li>
+<li>搜索：<code>/user?search=john</code></li>
+<li>支持部分匹配和模糊搜索：<code>?name=like:john</code></li>
+<li>支持字段选择：<code>?fields=id,name,email</code></li>
+<li>提供预定义的过滤器：<code>?filter=recent</code></li>
+</ul>
+<p><strong>设计一致的相应结构：</strong></p>
+<ul>
+<li>使用包装对象，区分数据与元数据</li>
+<li>保持错误相应格式一致</li>
+</ul>
+<p><strong>实现HATEOAS原则：</strong></p>
+<p>在响应中包含相关资源链接，使API具有自描述性</p>
+<ul>
+<li>使用标准化的链接关系名称</li>
+<li>包含链接上下文信息，如HTTP方法</li>
+<li>根据用户权限动态生成链接，只显示当前用户可用操作</li>
+</ul>
+<figure class="shiki json"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #005CC5">&quot;data&quot;</span><span style="color: #24292E">: {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;id&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">123</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;name&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;John Doe&quot;</span></span>
+<span class="line"><span style="color: #24292E">  },</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #005CC5">&quot;links&quot;</span><span style="color: #24292E">: {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;self&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/users/123&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;orders&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/users/123/orders&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;update&quot;</span><span style="color: #24292E">: {</span><span style="color: #005CC5">&quot;href&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/users/123&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">&quot;method&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;PUT&quot;</span><span style="color: #24292E">},</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;delete&quot;</span><span style="color: #24292E">: {</span><span style="color: #005CC5">&quot;href&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/users/123&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">&quot;method&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;DELETE&quot;</span><span style="color: #24292E">}</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p><strong>安全性：</strong></p>
+<ul>
+<li>API Key：服务器间通信</li>
+<li>OAuth2.0：第三方授权</li>
+<li>JWT：无状态认证</li>
+<li>需要为不同API的使用场景选择合适的授权流程
+<ul>
+<li>C to S：授权码流程</li>
+<li>S to S：客户端凭证流程</li>
+</ul></li>
+<li>实现细粒度的权限控制，遵循最小权限原则</li>
+</ul>
+<blockquote>
+<p>最小权限原则：每个程序和系统用户都应该具有完成任务所必须的最小权限集合，即赋予每一个合法动作最小的权限，来保护数据和功能</p>
+<p>即分配他能满足需求所需要的最小的权限</p>
+</blockquote>
+<p><strong>实现速率限制和节流：</strong></p>
+<ul>
+<li>使用请求速率限制保护API</li>
+<li>在响应头中提供限制信息</li>
+</ul>
+<figure class="shiki json"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">X-RateLimit-Limit: </span><span style="color: #005CC5">100</span></span>
+<span class="line"><span style="color: #24292E">X-RateLimit-Remaining: </span><span style="color: #005CC5">95</span></span>
+<span class="line"><span style="color: #24292E">X-RateLimit-Reset: </span><span style="color: #005CC5">1623760800</span></span></code></pre></div></div></figure>
+<ul>
+<li>实现多层级限制：按IP地址、用户/API、资源端点</li>
+<li>使用令牌桶或漏桶算法处理突发流量</li>
+<li>实现自适应节流，根据系统负载动态调整限制</li>
+</ul>
+<p><strong>适当使用缓存：</strong></p>
+<ul>
+<li>使用ETags和If-None-Match头</li>
+<li>设置适当的Cache-Control指令</li>
+</ul>
+<figure class="shiki json"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">Cache-Control: max-age=</span><span style="color: #005CC5">3600</span><span style="color: #24292E">, must-revalidate</span></span>
+<span class="line"><span style="color: #24292E">ETag: </span><span style="color: #032F62">&quot;33a64df551425fcc55e4d42a148795d9f25f89d4&quot;</span></span></code></pre></div></div></figure>
+<ul>
+<li>根据资源类型设置不同缓存策略：
+<ul>
+<li>静态内容：较长的<code>max-age</code></li>
+<li>个人资料：较短的<code>max-age</code>或private指令</li>
+<li>频繁变化的数据：使用ETag</li>
+</ul></li>
+<li>实现条件请求减少带宽使用（If-Modified-Since, If-None-Match）</li>
+<li>考虑在API网关或CDN层面实现缓存</li>
+<li>提供缓存失效机制</li>
+<li>使用缓存标签进行细粒度缓存管理</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/API/" rel="tag"># API</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%80%BB%E7%BA%BF/" rel="prev" title="【计算机组成原理】总线">
+      <i class="fa fa-chevron-left"></i> 【计算机组成原理】总线
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Golang/context/" rel="next" title="【Golang】控制并发的三种方式">
+      【Golang】控制并发的三种方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#curl"><span class="nav-number">1.</span> <span class="nav-text">curl</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#api"><span class="nav-number">2.</span> <span class="nav-text">API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#interface%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.1.</span> <span class="nav-text">Interface（接口）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E7%BB%84%E6%88%90"><span class="nav-number">2.1.1.</span> <span class="nav-text">接口组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.1.2.</span> <span class="nav-text">定义接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rest-api"><span class="nav-number">2.2.</span> <span class="nav-text">REST API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#restful"><span class="nav-number">2.2.1.</span> <span class="nav-text">RESTful</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-number">2.2.2.</span> <span class="nav-text">设计原则</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

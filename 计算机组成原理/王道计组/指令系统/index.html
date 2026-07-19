@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了计算机执行指令的原理，包括指令格式、寻址、x86汇编语法等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机组成原理】指令系统">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了计算机执行指令的原理，包括指令格式、寻址、x86汇编语法等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625214519844.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625214701114.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625215156379.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625223924851.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626192856602.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626193229121.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626193435945.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626193544549.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626194447959.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626195631325.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626200128369.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626200443876.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626200714948.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626201022893.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626205617992.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626212036478.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626212219724.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626213320614.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626215124634.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626221031817.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626221651634.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626222825618.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260627144702731.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260627145531396.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260627153657800.png">
+<meta property="article:published_time" content="2026-07-02T08:11:12.101Z">
+<meta property="article:modified_time" content="2026-07-02T08:18:16.895Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625214519844.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【计算机组成原理】指令系统 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【计算机组成原理】指令系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-07-02 16:11:12 / 修改时间：16:18:16" itemprop="dateCreated datePublished" datetime="2026-07-02T16:11:12+08:00">2026-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/" itemprop="url" rel="index"><span itemprop="name">王道计组</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+            <div class="post-description">介绍了计算机执行指令的原理，包括指令格式、寻址、x86汇编语法等</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="指令基本格式">指令基本格式</h1>
+<p>通常包括操作码字段和地址码字段两个部分</p>
+<h2 id="分类">分类</h2>
+<h3 id="按操作数">按操作数</h3>
+<p>零地址指令：</p>
+<ul>
+<li>不需要操作数，如空操作，停机和关中断等</li>
+<li>堆栈计算机，两个操作数隐含在栈顶和次栈顶，计算结果压入栈顶</li>
+</ul>
+<p>一地址指令：</p>
+<ul>
+<li><p>只要单操作数，如++，–，取反，求补等</p>
+<p>格式：<span class="math inline">\(OP(A_1)\rarr
+A_1\)</span>，即取<span
+class="math inline">\(A_1\)</span>中的内容操作后放回<span
+class="math inline">\(A_1\)</span></p>
+<p>三次访存：取指、读A1、写A1</p></li>
+<li><p>需要俩操作数，但其中一个隐含在某个寄存器中（如ACC）</p>
+<p>格式：<span class="math inline">\((ACC)OP(A_1)\rarr
+ACC\)</span></p></li>
+</ul>
+<p>​ 两次访存：取指、读A1</p>
+<p>二地址指令：</p>
+<ul>
+<li><p>用于两个操作数的算术运算和逻辑运算等</p>
+<p>格式：<span class="math inline">\((A_1)OP(A_2)\rarr A_1\)</span></p>
+<p>四次访存：取指、读A1、读A2、写A1</p></li>
+</ul>
+<p>三地址指令：</p>
+<ul>
+<li><p>用于两个操作数的算术和逻辑运算等</p>
+<p>格式：<span class="math inline">\((A_1)OP(A_2)\rarr A_3\)</span></p>
+<p>四次访存：取指、读A1、读A2、写A3</p></li>
+</ul>
+<p>四地址指令：</p>
+<ul>
+<li><p>格式：<span class="math inline">\((A_1)OP(A_2)\rarr A_3,
+A_4\)</span>是吓一跳将要执行指令的地址</p>
+<p>四次访存：取指、读A1、读A2、写A3</p></li>
+</ul>
+<p>也就是执行指令后，PC的值修改为A4所指地址</p>
+<h3 id="按指令长度">按指令长度</h3>
+<p>指令字长：指令的总长度</p>
+<ul>
+<li>定长指令字结构：指令系统中所有指令长度都相等</li>
+<li>变长指令字结构：指令系统中所有指令长度不等</li>
+</ul>
+<p>机器字长：CPU一次整数运算所能处理的二进制数据的位数（和ALU相关）</p>
+<p>存储字长：一个存储单元中的二进制代码位数（和MDR位数相同）</p>
+<p>分为半字长、单字长、双字长指令，会影响取指令所需时间</p>
+<h3 id="按操作码长度">按操作码长度</h3>
+<p>定长操作码：所有操作码长度都相同（若有n为则最多<span
+class="math inline">\(2^n\)</span>条指令）</p>
+<p>可变长操作码：各指令操作码长度可变</p>
+<h3 id="按操作类型">按操作类型</h3>
+<p>数据传送：如LOAD，STORE</p>
+<p>算术逻辑操作</p>
+<p>移位操作</p>
+<p>转移操作：如JMP，JZ1</p>
+<p>输入输出操作</p>
+<h2 id="扩展操作码">扩展操作码</h2>
+<p>定长指令字结构+可变长操作码即为扩展操作码</p>
+<p>设计扩展操作码时，要注意：</p>
+<ul>
+<li>不允许短码是长码的前缀</li>
+<li>各指令操作码一定不能重复</li>
+</ul>
+<p>对使用频率较高的指令分配较短的操作码，较低的分配较长的</p>
+<p>例：指令字长固定16位，地址码需要四位，需要满足</p>
+<ul>
+<li>15条三地址指令</li>
+<li>12条二地址指令</li>
+<li>62条一地址指令</li>
+<li>32条零地址指令</li>
+</ul>
+<p>则三地址指令的指令码设为0000-1110</p>
+<p>二地址开头4bit为1111，后四位设为0000-1011，剩余的开头11xx的留给下一位地址</p>
+<p>所以一地址开头设为111111，后六位设为1地址指令，范围是110000-111101，剩余开头11111x的留给下一位地址</p>
+<p>所以零地址开头设为11111111111，后五位正好0-31装32条，00000-11111</p>
+<p>总结一下：若地址长度为n，上一层留出m种状态，下一层可以扩展出<span
+class="math inline">\(m\times 2^n\)</span>种状态</p>
+<h1 id="寻址">寻址</h1>
+<h2 id="指令寻址">指令寻址</h2>
+<p>PC始终用于指向下一条要执行的指令的地址</p>
+<p>若对一条2字节的指令寻址，但是如果是按字节编址，一条指令需要+2才能得到下一条，或者按变长指令字，PC不知道一条指令多长，无法按指定值递增，会出现问题</p>
+<p>看两个例子：</p>
+<h3 id="按字编址">按字编址</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625214519844.png" class="" title="按字">
+<h3 id="按字节编址">按字节编址</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625214701114.png" class="" title="按字节">
+<h3 id="变长指令字结构">变长指令字结构</h3>
+<p>图中相同颜色的是一条指令，可以看出每条指令占的字节数都不同</p>
+<p><img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625215156379.png" class="" title="变长指令字"></p>
+<h3 id="跳跃寻址">跳跃寻址</h3>
+<p>可以由转移指令JMP给出指定地址码，将PC的值修改为对应地址，实现无条件转移</p>
+<h2 id="数据寻址">数据寻址</h2>
+<p>确定本条指令的地址码指明的真实地址</p>
+<p>数据寻址有十种寻址方式，为了指定每次寻址的寻址特征，可以在每个形式地址前添加一个四位的寻址方式位，称为寻址特征</p>
+<p>寻址特征+形式地址才是操作数的真实地址，称为有效地址（EA）</p>
+<h3 id="直接寻址">直接寻址</h3>
+<p>指令字中的形式地址A就是操作数的真实地址EA，即EA=A</p>
+<p><img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260625223924851.png" class="" title="直接寻址"></p>
+<p>需要访存两次：取指令、执行指令</p>
+<p>优点：执行指令仅访问一次主存，不需要专门计算操作数地址</p>
+<p>缺点：A的位数决定指令操作数的寻址范围，操作数地址不易修改</p>
+<h3 id="间接寻址">间接寻址</h3>
+<p>指令地址字段给出的是操作数有效地址所在的存储单元的地址，即地址的地址，EA=(A)</p>
+<p>间接寻址可以间接若干次</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626192856602.png" class="" title="间接寻址">
+<p>访存三次：取指令一次，执行指令两次</p>
+<p>优点：可以扩大寻址范围（有效地址EA的位数大于形式地址A的位数），便于编制程序</p>
+<p>缺点：多次访存</p>
+<h3 id="寄存器寻址">寄存器寻址</h3>
+<p>指令字中直接给出操作数所在寄存器编号，即<span
+class="math inline">\(EA=R_i\)</span>，操作数位于<span
+class="math inline">\(R_i\)</span>所指的寄存器内</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626193229121.png" class="" title="寄存器寻址">
+<p>访存一次：取指令一次</p>
+<p>优点：执行阶段不访问主存，只访问寄存器，指令字短且速度快</p>
+<p>缺点：价格昂贵，寄存器个数有限</p>
+<h3 id="寄存器间接寻址">寄存器间接寻址</h3>
+<p>寄存器给出的是操作数所在主存单元地址<span
+class="math inline">\(EA=(R_i)\)</span></p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626193435945.png" class="" title="寄存器间接寻址">
+<p>访存两次：取指令一次，执行指令一次</p>
+<p>特点：比一般间接寻址快</p>
+<h3 id="隐含寻址">隐含寻址</h3>
+<p>指令中隐含着操作数的地址</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626193544549.png" class="" title="隐含寻址">
+<p>优点：有利于缩短指令字长</p>
+<p>缺点：需要增加存储操作数或硬件</p>
+<h3 id="立即寻址">立即寻址</h3>
+<p>形式地址A就是操作数本身，又称为立即数，一般采用补码，地址前用#表示</p>
+<p>访存一次：取指令</p>
+<h3 id="偏移寻址">偏移寻址</h3>
+<h4 id="基址寻址">基址寻址</h4>
+<p>将CPU中基址寄存器（BR）的内容加上指令格式中的形式地址A，形成操作数的有效地址，即EA=(BR)+A</p>
+<style>.fkkegmowxnso{zoom:50%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626194447959.png" class="fkkegmowxnso" alt="基址寻址">
+<p>有的设备中会使用若干通用寄存器代替基址寄存器的功能，需要花<span
+class="math inline">\(\log_2n\)</span>个bit位指明用哪个寄存器作为基址寄存器</p>
+<p>优点：便于程序浮动，方便多道程序并发运行</p>
+<p>注意：基址寄存器是面向操作系统的，内容由操作系统或管理程序决定，程序执行时基址寄存器内容不变</p>
+<p>采用通用寄存器作为基址寄存器时，用户只可以决定用哪个寄存器作为基址寄存器</p>
+<h4 id="变址寻址">变址寻址</h4>
+<p>有效地址EA等于指令字中的形式地址A与变址寄存器IX的内容相加之和，即EX=(IX)+A</p>
+<p>同样可以用通用寄存器作为变址寄存器</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626195631325.png" class="" title="变址寻址">
+<p>注：变址寄存器是面向用户的，程序执行过程中，变址寄存器的内容可以由用户改变</p>
+<p>例：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626200128369.png" class="" title="变址例">
+<h4 id="相对寻址">相对寻址</h4>
+<p>把程序计数器PC的内容加上指令格式中的形式地址A而形成操作数的有效地址，即EA=(PC)+A，A是相对于PC所指地址的偏移量，补码表示</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626200443876.png" class="" title="相对寻址">
+<p>例：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626200714948.png" class="" title="相对寻址">
+<p>优点：代码在程序内浮动时不用更改跳转指令的地址码</p>
+<h3 id="堆栈寻址">堆栈寻址</h3>
+<p>指操作数放在堆栈中，隐含使用堆栈指针SP作为操作数地址</p>
+<p>堆栈是存储器内一块特定按LIFO管理的存储区，该存储区中被读写单元的地址是用一个特定的寄存器给出的，称为堆栈指针SP</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626201022893.png" class="" title="堆栈寻址">
+<h1 id="汇编语言">汇编语言</h1>
+<h2 id="指令格式">指令格式</h2>
+<p>以mov为例，格式为<code>mov d,s</code></p>
+<p>作用为将源操作数s复制到目的操作数d所指位置</p>
+<ul>
+<li><code>mov eax, ebx</code>：将寄存器ebx的值复制到eax</li>
+<li><code>mov eax, 5</code>：将立即数5复制到寄存器eax</li>
+<li><code>mov eax, dword ptr [地址]</code>：将指定内存地址所指的双字值复制到寄存器eax</li>
+<li><code>mov byte ptr [地址], 5</code>：将立即数5复制到指定内存地址所指的一字节中</li>
+</ul>
+<p>其中内存的读写长度：</p>
+<ul>
+<li><code>dword ptr：双字，32bit</code></li>
+<li><code>word ptr：单字，16bit</code></li>
+<li><code>byte ptr：字节，8bit</code></li>
+</ul>
+<h2 id="x86的常用寄存器">x86的常用寄存器</h2>
+<style>.omqmshkphoxf{zoom:50%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626205617992.png" class="omqmshkphoxf" alt="寄存器">
+<ul>
+<li>以E开头的寄存器长为32bit</li>
+<li>前四个寄存器存储未知数据，结尾为X，称为通用寄存器</li>
+<li>下面两个寄存器 处理字符串等，结尾为I，称为变址寄存器</li>
+<li>EBP为堆栈基指针</li>
+<li>ESP为堆栈顶指针</li>
+<li>前四个若只想使用16bit，可以去掉前面的E</li>
+<li>前四个若只想使用8bit，对应的寄存器为AH, AL，BCD同理</li>
+</ul>
+<h2 id="常用x86汇编指令">常用x86汇编指令</h2>
+<h3 id="算术运算">算术运算</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626212036478.png" class="" title="算术运算">
+<p>除法这里，s为除数，被除数被隐含寻址于<code>edx:eax</code>中</p>
+<p>这里的意思是两个寄存器拼接，因为在进行除法操作时，被除数会扩展其位数到原来的两倍</p>
+<h3 id="逻辑运算">逻辑运算</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626212219724.png" class="" title="逻辑运算">
+<h2 id="att与intel格式">AT&amp;T与Intel格式</h2>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626213320614.png" class="" title="AT&amp;T">
+<h2 id="选择语句">选择语句</h2>
+<h3 id="无条件转移指令">无条件转移指令</h3>
+<p><code>jmp 地址</code>
+将PC无条件的转移到对应地址，或寄存器指向的地址</p>
+<p><code>jmp 标号</code>无条件转移到对应标号指明位置，标号的格式<code>名字:</code></p>
+<h3 id="条件转移指令">条件转移指令</h3>
+<style>.ergpghjblssh{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626215124634.png" class="ergpghjblssh" alt="条件转移指令">
+<p>一般要和<code>cmp a,b</code>一起使用，先比较，若上面的比较成立则执行下面的跳转指令</p>
+<h2 id="循环语句">循环语句</h2>
+<h3 id="条件转移指令实现">条件转移指令实现</h3>
+<p>由四个部分组成：</p>
+<ul>
+<li>循环前初始化</li>
+<li>是否直接跳过循环</li>
+<li>循环主体</li>
+<li>是否继续循环</li>
+</ul>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626221031817.png" class="" title="循环语句">
+<h3 id="loop指令实现">loop指令实现</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626221651634.png" class="" title="loop">
+<p>loop默认用ecx作循环计数器</p>
+<p>loop对应的还有某些loopx指令，如loopnz表示当ecx!=0且ZF==0时继续循环</p>
+<h2 id="函数调用">函数调用</h2>
+<h3 id="call与ret">call与ret</h3>
+<p>函数调用：<code>call 函数名</code></p>
+<p>函数返回：<code>ret</code></p>
+<p>通常用函数名作为函数起始地址的标号</p>
+<p>注：Intel里PC被叫做IP</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260626222825618.png" class="" title="函数调用">
+<ul>
+<li>执行call后，会将IP内的值（call的下一条）压入栈顶</li>
+<li>然后进入调用的函数，将IP新值设为被调用函数第一条指令</li>
+<li>调用函数栈帧出栈，ret后将IP旧值写回</li>
+</ul>
+<h3 id="访问栈帧">访问栈帧</h3>
+<p>在虚拟内存用户区中，用户栈的栈底位于高地址，栈顶位于低地址，所以一般表示栈是倒着画的，且x86系统中，默认以四字节为栈的操作单位</p>
+<p>寄存器ebp指向当前栈帧的底部</p>
+<p>寄存器esp指向当前栈帧的顶部</p>
+<p>指令：</p>
+<ul>
+<li>push：入栈操作，先让esp减4，再将数据压入</li>
+<li>pop：出栈操作，栈顶元素出栈，写入指定寄存器，再让esp加4</li>
+<li>mov：访问栈其他位置
+，结合ebp和esp指针访问数据，可以用sub/add指令修改栈顶指针esp的值</li>
+</ul>
+<h3 id="切换栈帧">切换栈帧</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260627144702731.png" class="" title="切换栈帧-进入">
+<p>当call一个新函数时，我们进入对应栈帧：</p>
+<ul>
+<li>首先<code>call</code>指令会将IP旧值（call的下一句）压栈保存，并设置IP新值为被调用函数的第一条指令</li>
+<li><code>push ebp</code>把上一层函数的ebp旧值压入栈，这个地址就是返回地址</li>
+<li>然后<code>move ebp, esp</code>，把ebp寄存器指向到esp的位置（新函数地址）</li>
+<li>接下来用mov等压入数据，执行操作</li>
+<li>前两个操作可以用一个<code>enter</code>指令代替</li>
+<li>函数返回后，新的栈帧消失，栈顶此时就是原来的ebp旧值和IP旧值</li>
+</ul>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260627145531396.png" class="" title="切换栈帧-退出">
+<ul>
+<li><p>首先执行<code>mov esp, ebp</code>，将esp指向当前栈帧底部</p></li>
+<li><p>然后执行<code>pop ebp</code>，将esp所指元素出栈，写入寄存器ebp，实现让ebp重新指回上一层函数栈帧基址</p></li>
+<li><p>上面两个命令等价于leave指令，即从函数栈帧顶部找到IP旧值，出栈并恢复IP寄存器</p></li>
+</ul>
+<h3 id="传参与返回值">传参与返回值</h3>
+<p>一个栈帧内可能包含的内容：</p>
+<ul>
+<li>最底部：上一层栈帧基址（ebp、旧值）</li>
+<li>最顶部：返回地址（当前函数栈帧除外）</li>
+<li>靠近底部：用于存储局部变量，越靠前定义的越靠近栈顶</li>
+<li>靠近顶部：用于存储形式变量，参数列表中越靠前的参数越靠近栈顶</li>
+<li>中间：可能有未使用区域没因为栈帧大小要求16字节整数倍</li>
+</ul>
+<h1 id="cisc和risc">CISC和RISC</h1>
+<p>CISC：复杂指令集，一条指令完成一个复杂的基本功能，用于x86架构</p>
+<p>如果有复杂指令用纯硬件实现困难，可以采用存储程序的设计思想，由一个比较通用的电路配合存储部件完成一条指令，即形成微程序</p>
+<p>RISC：精简指令集，一条指令完成一个基本动作，多条指令组合完成一个复杂的基本功能
+，用于arm架构</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/image-20260627153657800.png" class="" title="CISC和RISC">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/" rel="prev" title="【计算机组成原理】数据的表示和运算">
+      <i class="fa fa-chevron-left"></i> 【计算机组成原理】数据的表示和运算
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/" rel="next" title="【计算机组成原理】中央处理器">
+      【计算机组成原理】中央处理器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E5%9F%BA%E6%9C%AC%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">指令基本格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E6%93%8D%E4%BD%9C%E6%95%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">按操作数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E6%8C%87%E4%BB%A4%E9%95%BF%E5%BA%A6"><span class="nav-number">1.1.2.</span> <span class="nav-text">按指令长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E6%93%8D%E4%BD%9C%E7%A0%81%E9%95%BF%E5%BA%A6"><span class="nav-number">1.1.3.</span> <span class="nav-text">按操作码长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E6%93%8D%E4%BD%9C%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">按操作类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%93%8D%E4%BD%9C%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">扩展操作码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BB%E5%9D%80"><span class="nav-number">2.</span> <span class="nav-text">寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E5%AF%BB%E5%9D%80"><span class="nav-number">2.1.</span> <span class="nav-text">指令寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E5%AD%97%E7%BC%96%E5%9D%80"><span class="nav-number">2.1.1.</span> <span class="nav-text">按字编址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E5%AD%97%E8%8A%82%E7%BC%96%E5%9D%80"><span class="nav-number">2.1.2.</span> <span class="nav-text">按字节编址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%95%BF%E6%8C%87%E4%BB%A4%E5%AD%97%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.3.</span> <span class="nav-text">变长指令字结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%B7%83%E5%AF%BB%E5%9D%80"><span class="nav-number">2.1.4.</span> <span class="nav-text">跳跃寻址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.</span> <span class="nav-text">数据寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.1.</span> <span class="nav-text">直接寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%B4%E6%8E%A5%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.2.</span> <span class="nav-text">间接寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.3.</span> <span class="nav-text">寄存器寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E9%97%B4%E6%8E%A5%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.4.</span> <span class="nav-text">寄存器间接寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E5%90%AB%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.5.</span> <span class="nav-text">隐含寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.6.</span> <span class="nav-text">立即寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%8F%E7%A7%BB%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.7.</span> <span class="nav-text">偏移寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E5%9D%80%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.7.1.</span> <span class="nav-text">基址寻址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E5%9D%80%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.7.2.</span> <span class="nav-text">变址寻址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%B8%E5%AF%B9%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.7.3.</span> <span class="nav-text">相对寻址</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E5%AF%BB%E5%9D%80"><span class="nav-number">2.2.8.</span> <span class="nav-text">堆栈寻址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80"><span class="nav-number">3.</span> <span class="nav-text">汇编语言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">指令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#x86%E7%9A%84%E5%B8%B8%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">3.2.</span> <span class="nav-text">x86的常用寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8x86%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4"><span class="nav-number">3.3.</span> <span class="nav-text">常用x86汇编指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97"><span class="nav-number">3.3.1.</span> <span class="nav-text">算术运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="nav-number">3.3.2.</span> <span class="nav-text">逻辑运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#att%E4%B8%8Eintel%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.4.</span> <span class="nav-text">AT&amp;T与Intel格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.5.</span> <span class="nav-text">选择语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E6%9D%A1%E4%BB%B6%E8%BD%AC%E7%A7%BB%E6%8C%87%E4%BB%A4"><span class="nav-number">3.5.1.</span> <span class="nav-text">无条件转移指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E8%BD%AC%E7%A7%BB%E6%8C%87%E4%BB%A4"><span class="nav-number">3.5.2.</span> <span class="nav-text">条件转移指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.6.</span> <span class="nav-text">循环语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E8%BD%AC%E7%A7%BB%E6%8C%87%E4%BB%A4%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.6.1.</span> <span class="nav-text">条件转移指令实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loop%E6%8C%87%E4%BB%A4%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.6.2.</span> <span class="nav-text">loop指令实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="nav-number">3.7.</span> <span class="nav-text">函数调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#call%E4%B8%8Eret"><span class="nav-number">3.7.1.</span> <span class="nav-text">call与ret</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E6%A0%88%E5%B8%A7"><span class="nav-number">3.7.2.</span> <span class="nav-text">访问栈帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E6%A0%88%E5%B8%A7"><span class="nav-number">3.7.3.</span> <span class="nav-text">切换栈帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E5%8F%82%E4%B8%8E%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">3.7.4.</span> <span class="nav-text">传参与返回值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cisc%E5%92%8Crisc"><span class="nav-number">4.</span> <span class="nav-text">CISC和RISC</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了存储系统的特征和运作方式，包括存储芯片、提升主存速度、与CPU的连接和Cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机组成原理】存储系统">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了存储系统的特征和运作方式，包括存储芯片、提升主存速度、与CPU的连接和Cache">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260623214142807.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260623215722781.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782224231548.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782224543516.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782225197272.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782225834424.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112048868.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112104589.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112342234.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112414663.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112456067.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624140626196.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624141553737.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624141903906.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624142611960.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624144456726.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624145512279.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624155744318.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624163559268.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624194832207.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624202611801.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624202924250.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624203448085.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624204750590.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624205954660.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624210437326.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624211230131.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624212821067.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624213315833.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624214146418.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624214345362.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624214516027.png">
+<meta property="article:published_time" content="2026-07-02T08:11:12.095Z">
+<meta property="article:modified_time" content="2026-07-02T08:16:39.601Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260623214142807.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【计算机组成原理】存储系统 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【计算机组成原理】存储系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-07-02 16:11:12 / 修改时间：16:16:39" itemprop="dateCreated datePublished" datetime="2026-07-02T16:11:12+08:00">2026-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/" itemprop="url" rel="index"><span itemprop="name">王道计组</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+            <div class="post-description">介绍了存储系统的特征和运作方式，包括存储芯片、提升主存速度、与CPU的连接和Cache</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基本概念">基本概念</h1>
+<h2 id="层次化结构">层次化结构</h2>
+<figure>
+<img
+src="C:\Users\ROG\AppData\Roaming\Typora\typora-user-images\image-20260623213718124.png"
+alt="层次结构" />
+<figcaption aria-hidden="true">层次结构</figcaption>
+</figure>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260623214142807.png" class="" title="关系">
+<ul>
+<li>辅存中的数据调入主存才能被CPU访问</li>
+<li>cache用于缓解主存和CPU的速度不一致问题</li>
+</ul>
+<h2 id="分类">分类</h2>
+<p>按层次：</p>
+<ul>
+<li>高速储存</li>
+<li>主存储器</li>
+<li>辅助存储器</li>
+</ul>
+<p>按介质：</p>
+<ul>
+<li>半导体存储器：主存，cache</li>
+<li>磁表面存储器：软盘，磁盘，磁带</li>
+<li>光存储器：光盘</li>
+</ul>
+<p>按存取方式：</p>
+<ul>
+<li>RAM：随机存取存储器，读写任何一个存储单元的时间都相同</li>
+<li>SAM：顺序存取存储器，读写一个存储单元所需要时间取决于所在物理位置</li>
+<li>DAM：直接存取存储器：有随机存取和顺序存取特性，先直接选取所在区域，然后按顺序方式存取</li>
+</ul>
+<p>后面两个统称串行访问存储器</p>
+<ul>
+<li>CAM：相联存储器，可以按照内容检索到存储位置进行读写</li>
+</ul>
+<p>按信息可更改性：</p>
+<ul>
+<li>读写存储器：可读可写</li>
+<li>只读存储器ROM：只能读不能写</li>
+</ul>
+<p>按信息可保存性：</p>
+<ul>
+<li>易失性存储器：断电后信息消失的存储器</li>
+<li>非易失性存储器：断电后信息仍然保持</li>
+<li>破坏性读出：读出后原信息被破坏</li>
+<li>非破坏性读出：读出后原信息不被破坏</li>
+</ul>
+<h2 id="性能指标">性能指标</h2>
+<ul>
+<li>存储容量：存储字书×字长</li>
+<li>单位成本：每位价格=总成本/总容量</li>
+<li>存储速度：数据传输率（主存带宽）=数据宽度/存储周期，表示每秒从主存进出信息的最大数量
+<ul>
+<li>数据宽度即为存储字长</li>
+<li>存储周期指存储器进行一次完整读写所需的全部时间，即连续两次独立访问存储器操作之间所需最小时间间隔，它分为存取时间和恢复时间</li>
+</ul></li>
+</ul>
+<style>.neucyfzdmmrr{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260623215722781.png" class="neucyfzdmmrr" alt="存取周期">
+<h1 id="基本组成">基本组成</h1>
+<h2 id="基本半导体元件">基本半导体元件</h2>
+<p>存储体内由存储元组成，存储元内含有两种半导体元件：电容和MOS管</p>
+<ul>
+<li>读出：MOS管接入高电平导通，若电容内存储对应电荷，可以顺着MOS管输出电压，视为1，若电容内没有存储，则视为0</li>
+<li>写入：MOS管接入高电平导通，输入一个高电压，电容可以保存电压，而另一边接地，可以实现存储电荷，再让MOS管断开，就可以存储1</li>
+</ul>
+<p>将多个存储元的MOS管以导线连接，可以得到一整行的信息，形成存储单元，进而形成存储体</p>
+<style>.osklgsxiawwf{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782224231548.png" class="osklgsxiawwf" alt="存储体">
+<h2 id="存储器芯片的基本原理">存储器芯片的基本原理</h2>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782224543516.png" class="" title="存储芯片">
+<p>一个存储芯片由若干存储体，译码器，控制电路，MAR，MDR等</p>
+<ul>
+<li>MAR给出地址总线送来的n位地址，这n位对应<span
+class="math inline">\(2^n\)</span>个存储单元</li>
+<li>译码器根据MAR给出的地址，选择对应的第几根字选线，输出高电平读取到对应存储单元的信息，通过数据线将信息传送到MDR中，CPU通过数据总线取走数据</li>
+<li>存储体的总容量=<span class="math inline">\(存储单元个数\times
+存储字长\)</span></li>
+<li>控制电路用于控制MAR和MDR，当MAR稳定时才会打开译码器，MDR稳定时才会通过MDR给数据总线送出数据</li>
+<li>控制电路对外提供了片选线（<span
+class="math inline">\(\overline{CS}\)</span>（芯片选择信号）或<span
+class="math inline">\(\overline{CE}\)</span>（芯片使能信号）），低电平有效，还有读控制线和写控制线，控制读操作或写操作</li>
+<li>读写控制线可能为两根，<span
+class="math inline">\(\overline{WE}\)</span>表示允许写，<span
+class="math inline">\(\overline{OE}\)</span>表示允许读，均为低电平有效；也有的设置为一根，低电平写，高电平读</li>
+</ul>
+<p>整体看， 存储器芯片可以抽象成这种结构</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782225197272.png" class="" title="芯片结构">
+<ul>
+<li><p>译码器后面可能会接驱动器来维持电信号</p></li>
+<li><p>片选线用于读取指定的存储芯片，给要读的芯片低电平，其余高电平</p></li>
+<li><p>上图中的每一根线都会对应实物中的每个金属引脚</p></li>
+<li><p>总容量=存储单元个数×存储字长</p>
+<p>如8k×8位，前面为存储单元个数（地址线个数），后面为每个单元的存储字长（数据线个数）</p>
+<p>共有<span class="math inline">\(2^{13}\times
+8bit\)</span>的容量</p></li>
+</ul>
+<h2 id="寻址">寻址</h2>
+<style>.xzlybpsvugib{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/QQ_1782225834424.png" class="xzlybpsvugib" alt="寻址">
+<p>存储矩阵中，每一格表示一个字节，而每一行表示一个存储字（4B）</p>
+<p>若总容量为1k，则存储矩阵包含256行</p>
+<ul>
+<li>若按字节寻址，共有1k个单元，每个单元1B，需要10根地址线（<span
+class="math inline">\(2^{10}=1024\)</span>）</li>
+<li>若按字寻址，共有256个单元，每个单元4B，需要8根地址线（<span
+class="math inline">\(2^{8}=256\)</span>）</li>
+</ul>
+<h1 id="sram和dram">SRAM和DRAM</h1>
+<h2 id="dram">DRAM</h2>
+<p>DRAM：使用栅极电容
+电容放电时信息被破坏，属于破坏性读出，读后有重写操作</p>
+<style>.ppixjhrymklr{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112048868.png" class="ppixjhrymklr" alt="SRAM">
+<h3 id="刷新">刷新</h3>
+<p>电容内的电荷只能维持2ms，需要时常刷新（给电容充电） -
+一般每2ms刷新一次 -
+每次刷新一行存储单元，这里的行指使用行列地址的存储单元，可以减少选通线的数量
+给一个八位地址，前四位指向行地址译码器，后四位指向列地址译码器，快速找到对应存储单元
+- 刷新时对应硬件读出一行的信息并重新写入，占用一个读写周期 -
+刷新时刻：假设结构为128×128,存取周期0.5us，则2ms共有4000周期 -
+每次读写完都刷新一次（分散刷新）：系统存取周期变为1us，前半用于正常读写，后半用于刷新某行
+-
+2ms内集中安排时间全部刷新（集中刷新）：存取周期0.5ms，有一段时间专门刷新，此时无法访问存储器，称为访问死区
+-
+2ms内每行刷新一次即可（异步刷新）：2ms内产生128次刷新请求，每隔2ms/128一次，每15.6us有0.5us的死区
+刷新由存储器独立完成，不使用CPU ## SRAM
+SRAM：使用双稳态触发器，由六个MOS管构成 实现双稳态：</p>
+<ul>
+<li>输出1：A高B低</li>
+<li>输出2：A低B高 读出数据时触发器状态保持稳定，属于非破坏性读出</li>
+</ul>
+<style>.oeiipozpnzly{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112104589.png" class="oeiipozpnzly" alt="DRAM">
+<h3 id="地址线复用">地址线复用</h3>
+<p>将行列地址分为前后两次输出，只需要<span
+class="math inline">\(\frac{n}{2}\)</span>条地址线
+可以让地址线，芯片引脚更少</p>
+<h1 id="rom">ROM</h1>
+<p>MROM：掩模式只读存储器 芯片生产过程中直接写入信息，之后任何人不可重写
+PROM：可编程只读存储器
+用户可用专门的PROM写入器写入信息，写一次后不可更改
+EPROM：可擦除可编程只读存储器
+允许写入信息，之后用某种方式擦除数据，可多次重写</p>
+<ul>
+<li>UVEPROM：用紫外线擦除所有数据</li>
+<li>EEPROM：电擦除特定字</li>
+</ul>
+<p>闪存： 断电后可保存信息，可进行多次快速擦除重写，写比读慢</p>
+<p>开机时，CPU需要先从主板上的BIOS芯片的自举装入程序读入指令引导装入操作系统
+我们一般将这个芯片归属于主存，且统一编址</p>
+<h1 id="提升主存速度">提升主存速度</h1>
+<p>DRAM芯片存取周期中的恢复时间较长，多核CPU均要访存
+导致CPU的读写速度比主存快很多，这时我们要加速读写 ## 双端口RAM</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112342234.png" class="" title="双端口RAM">
+<p>用于优化多核CPU访问一根内存条的速度</p>
+<p>两个端口对于同一主存操作的情况： - 同时对不同地址单元存取数据：正常 -
+同时对同一地址单元读出数据：正常 - 同时对同一地址单元写入数据：写入错误
+- 同时对同一地址单元一个写入一个读出：读出错误
+解决方法：置忙信号为0,由判断逻辑决定暂时关闭一个端口，延长一小段时间后再访问</p>
+<h2 id="多体并行存储器">多体并行存储器</h2>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112414663.png" class="" title="多体并行">
+<p>分为高位交叉编址和低位交叉编址
+如有4个存储单元，每个单元8位，共需要<span
+class="math inline">\(2^5\)</span>个地址
+采用高位交叉编址可以用前两位编为体号，后三位编为体内地址，指向哪个存储体的哪一位，这样会连续访问同一个存储单元
+这样每次需要等待一整个读写周期：</p>
+<p>若采用低位交叉编址，得到的编码是相反的，这样可以依次访问不同的存储单元，每个存储单元都是读写周期结束的，因此可以在一个存储单元处于刷新时刻的时候直接读取下一个存储单元
+假设每个存储体存取周期为T，存取时间为r，则连续取n个存储字的耗时可以达到<span
+class="math inline">\(T+(n-1)r\)</span>，明显效率更高
+这种并行存取方式称为流水线方式
+宏观上，一个存储周期内，m体交叉存储器可以提供的数据量为单个模块的m倍
+为了使流水线不间断，应保证模块数<span class="math inline">\(m\geq
+\frac{T}{r}\)</span>，取等时是完美衔接的，效率最高成本最低</p>
+<p>多体并行存储器每个模块都是独立的</p>
+<style>.ksxwyiutymet{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624112456067.png" class="ksxwyiutymet" alt="单体多字">
+<p>采用单体多字存储器，只需要一套读写控制电路和寄存器，可以一次读写一行m个字，但不能单独区其中某个字</p>
+<h2 id="应用">应用</h2>
+<p>插入内存条时，若依次按槽插入，即为高位交叉的多体存储器，若隔一个插入（或按标识），可以实现低位交叉的多体存储器，组成双通道
+且推荐使用相同主频和相同容量组成，若主频不同，主频更高的会降频处理，若容量不同，低地址部分采用的是双通道，而高地址部分可能就是单通道</p>
+<h1 id="主存储器与cpu的连接">主存储器与CPU的连接</h1>
+<h2 id="结构">结构</h2>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624140626196.png" class="" title="结构">
+<p>现代计算机将MAR与MDR与CPU集成，而主存的存储芯片内只用普通寄存器暂存数据与地址，MDR通过数据总线与主存传输数据，MAR通过地址总线向主存发送地址</p>
+<h2 id="位扩展">位扩展</h2>
+<p>通过位扩展可以增加主存存储字长</p>
+<style>.gftqjovlpjwa{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624141553737.png" class="gftqjovlpjwa" alt="位扩展-1位">
+<ul>
+<li>接入一个8k×1位的芯片，则地址有13位分别是<span
+class="math inline">\(A_0\sim
+A_{12}\)</span>，接入CPU对应地址总线部位</li>
+<li>WE写使能端与CPU控制总线WE端相连，传入高电平表示可写</li>
+<li>由于芯片是1位的，所以每次只能通过数据总线传1bit，连接<span
+class="math inline">\(D_0\)</span></li>
+<li>片选信号CS可以直接接高电平（此时高电平有效）</li>
+<li>此时主存的存储字长只有1bit</li>
+</ul>
+<style>.pgjgvhbmunsm{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624141903906.png" class="pgjgvhbmunsm" alt="位扩展-8位">
+<p>连接8块1k芯片，组合成了一个8k×8位的处理器</p>
+<h2 id="字扩展">字扩展</h2>
+<p>通过字扩展可以增加主存的存储字数</p>
+<h3 id="线选法">线选法</h3>
+<style>.foiihoxmfxdu{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624142611960.png" class="foiihoxmfxdu" alt="字扩展-线选法">
+<ul>
+<li>接入两个8k×8位的芯片，<span class="math inline">\(A_0\sim
+A_{12}\)</span>同时连到两块芯片上，数据<span
+class="math inline">\(D_0\sim D_7\)</span>也同时连到两块芯片上</li>
+<li>若片选线全置1，则CPU发送地址时会同时传给两个芯片，两个芯片同时向数据总线传数据，导致冲突</li>
+<li>因此这里需要用多出来的高位接入片选线CS，如图中<span
+class="math inline">\(A_{13}\)</span>控制第一片，<span
+class="math inline">\(A_{14}\)</span>控制第二片，传入高电平的CS才是这次数据传输CPU指明的芯片</li>
+<li>这样有一个局限，这两位只能为10或01，有效地址段就被限制在10和01开头的地址了</li>
+<li>这种方法称为线选法，若CPU有多余n个地址线，我们就只能有n个片选信号，且地址空间不连续</li>
+</ul>
+<h3 id="译码片选法">译码片选法</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624144456726.png" class="" title="译码片选法">
+<ul>
+<li>为了更有效利用地址，我们可以在高位地址线处接入译码器（1-2，2-4，3-8）等，这样我们可以用<span
+class="math inline">\(n\)</span>个地址线表示<span
+class="math inline">\(2^n\)</span>个片选信号</li>
+<li>每一个高位地址对应一片存储芯片，其余的由全0到全1，且地址空间可以连续</li>
+</ul>
+<blockquote>
+<p>有的译码器（如74LS138）会有多个使能端，这样CPU可以使用译码器的使能端控制片选信号的生效时间（138要求三个选通端电平情况为100）</p>
+<p>CPU中有一个MREQ输出信号，表示主存储器请求，若CPU想访问主存，需要让该信号有效，让译码器选通</p>
+<p>步骤如下：</p>
+<ol type="1">
+<li>CPU送出地址信号，等待稳定</li>
+<li>电信号稳定后，MREQ发出信号，让译码器某选通线有效</li>
+<li>保证CS被激活时地址电信号是稳定的</li>
+</ol>
+</blockquote>
+<p>## 字位同时扩展</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624145512279.png" class="" title="字位扩展">
+<h1 id="外存储器">外存储器</h1>
+<h2 id="磁盘存储器">磁盘存储器</h2>
+<p>### 组成</p>
+<ol type="1">
+<li><p>存储区域</p>
+<p>一块硬盘含若干记录面，每个记录面划分为若干条磁道，每条磁道划分为若干扇区（块），扇区是磁盘读写的最小单位</p>
+<ul>
+<li>磁头数：记录面数，表示硬盘共有多少个磁头，磁头用于读写盘片上记录面的信息，一个记录面对应一个磁头</li>
+<li>柱面数：表示硬盘每一面盘片上有多少条磁道，在一个盘组中，不同记录面的相同编号的诸磁道构成一个圆柱面</li>
+<li>扇区数：每一条磁道上有多少扇区</li>
+</ul></li>
+<li><p>硬盘存储器</p>
+<ul>
+<li>磁盘驱动器：包括磁头组件和盘片组件</li>
+<li>磁盘控制器：硬盘存储器和主机的接口，主流标准有IDE、SATA等</li>
+</ul></li>
+</ol>
+<h3 id="性能指标-1">性能指标</h3>
+<ul>
+<li><p>容量：一个磁盘所能存储的字节总数，有格式化和非格式化容量之分</p>
+<ul>
+<li><p>非格式化容量指磁记录表面可以利用的磁化单元总数</p></li>
+<li><p>格式化容量是按照某种特定记录格式所能存储信息的总量</p></li>
+</ul></li>
+<li><p>记录密度：盘片单位面积上记录的二进制信息量，以道、位和面密度表示</p>
+<ul>
+<li><p>道密度：沿磁盘半径方向单位长度上的磁道数</p></li>
+<li><p>位密度：磁道单位长度上能记录的二进制代码</p>
+<p>注意，磁盘所有磁道记录信息量是相等的，故每个
+磁道的位密度不同</p></li>
+<li><p>面密度：位密度×道密度</p></li>
+</ul></li>
+<li><p>平均存取时间=寻道时间（磁头移到目的磁道）+
+旋转延迟时间（磁头定位到所在扇区，默认半圈）+传输时间（传输数据所花费时间）</p></li>
+<li><p>数据传输率：磁盘驱动器在单位时间向主机传送数据的字节数</p>
+<p>设磁盘转速r，每条磁道容量N字节，则数据传输率为<span
+class="math inline">\(D_\tau = rN\)</span></p></li>
+</ul>
+<h3 id="地址">地址</h3>
+<p>主机向磁盘控制器发送寻址信息，地址如下：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624155744318.png" class="" title="地址">
+<p>若系统中有四个驱动器，每个磁盘256磁道，16盘面，每个盘面16个扇区，则需要一个18位二进制码</p>
+<h3 id="工作过程">工作过程</h3>
+<p>主要操作：寻址、读盘、写盘</p>
+<ul>
+<li>每个操作对应有一个控制字，硬盘工作时，第一步是取控制字，第二部是执行控制字</li>
+<li>硬盘的读写是串行的，不可以同时又读又写</li>
+</ul>
+<h2 id="磁盘阵列">磁盘阵列</h2>
+<p>RAID是将多个独立的物理磁盘组成一个独立的逻辑盘，数据在多个物理盘上交叉存储，并行访问，有更好的存储性能、可靠和安全性</p>
+<p>RAID分级如下，在RAID1-RAID5中，无论何时有磁盘损坏，都可以随时拔出受损的磁盘再插入好的磁盘，而数据不会损坏</p>
+<ul>
+<li><p>RAID0:无冗余和无校验的磁盘阵列。</p>
+<p>即相邻的两个扇区存到两个磁盘，但这样扇区损坏或比特位变化时，没有冗余和校验导致无法恢复数据</p></li>
+<li><p>RAID1:镜像磁盘阵列。</p>
+<p>存两份数据，存储空间会浪费一半</p></li>
+<li><p>RAID2:采用纠错的海明码的磁盘阵列。</p>
+<p>逻辑相邻的连续几个bit物理上分散存储在各个磁盘中</p>
+<p>另外多出几个磁盘存储海明校验位，4bit信息位+3bit海明校验位可纠正一位错</p></li>
+<li><p>RAID3:位交叉奇偶校验的磁盘阵列。</p></li>
+<li><p>RAID4:块交叉奇偶校验的磁盘阵列。</p></li>
+<li><p>RAID5:无独立校验的奇偶校验磁盘阵列。</p></li>
+</ul>
+<h2 id="ssd">SSD</h2>
+<p>固态硬盘基于闪存技术，即EEPROM</p>
+<h3 id="结构-1">结构</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624163559268.png" class="" title="结构">
+<ul>
+<li>每个页大小为512B到4KB</li>
+<li>闪存翻译层用于翻译逻辑块号，找到对应的页</li>
+<li>存储介质为闪存芯片，每个芯片包含多个块，每个块包含多个页</li>
+<li>以页为单位读写，若要写的页中有数据，则需要将块内其他页复制到一个新的块中，再写入新的页</li>
+<li>以块为单位擦除，擦除时，会提前把其他页的数据复制到另一个块中，擦除后通过闪存翻译层重新把移动到新位置的页重新映射，若一个块被擦除次数过多，这个块可能会坏掉</li>
+<li>支持随机访问，系统给定一个逻辑地址，闪存翻译层可以通过电路迅速定位到物理地址</li>
+<li>磨损均衡技术：将擦除平均分布在各个块上，以提升使用寿命
+<ul>
+<li>静态磨损均衡：后台自动检测，进行数据分配和迁移，让旧闪存块承担读为主的任务，让新闪存块承担更多写任务</li>
+<li>动态磨损均衡：写入数据时，优先选择累计擦除次数少的新闪存块</li>
+</ul></li>
+</ul>
+<h1 id="cache">Cache</h1>
+<h2 id="工作原理">工作原理</h2>
+<p>CPU读写速度和内存的读写速度差距很大，因此为了缓和这个速度矛盾，我们在两者之间添加一个Cache，用于暂时存储需要用到的数据，由于它的容量小，所以能做到速度很快</p>
+<p>实际上，现在的Cache被集成在CPU内部，用SRAM实现，速度很快</p>
+<h3 id="局部性原理">局部性原理</h3>
+<p>如一段程序：</p>
+<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">[N][M])</span></span>
+<span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> sum </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">N; i</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    {</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; j</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">M; j</span><span style="color: #D73A49">++</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        {</span></span>
+<span class="line"><span style="color: #24292E">            sum</span><span style="color: #D73A49">+=</span><span style="color: #24292E">a[i][j];</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> sum;</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>这段程序访问一个二维数组并把数据加到sum中，但在内存中，这个二维数组是被一维展开的</p>
+<style>.ehkyuxurnnfe{zoom:50%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624194832207.png" class="ehkyuxurnnfe" alt="二维数组存储">
+<p>可以发现，当我们访问其中一个数组元素时，相邻的其他数组元素也很有可能将来被访问，这就是空间局部性</p>
+<p><strong>空间局部性：</strong>在最近的未来要用到的信息，很可能与现在正在使用的信息在存储空间上是邻近的</p>
+<p>又因为存在循环结构，加法指令，变量ij等在使用一次后在将来很有可能会再次被使用，这就说时间局部性</p>
+<p><strong>时间局部性：</strong>在最近的未来要用到的信息，很可能是现在正在用的信息</p>
+<p>基于局部性原理，目前访问的地址周围的部分数据很可能将来还会被用到，因此我们可以把这周围的部分数据放到Cache中</p>
+<p>若我们将上述程序改为先按列遍历，再按行遍历，则在内存中访问数据是跳跃式的，它的空间局部性更差，访问速度要慢</p>
+<h2 id="性能分析">性能分析</h2>
+<p>设<span
+class="math inline">\(t_c\)</span>为访问一次cache的时间，<span
+class="math inline">\(t_m\)</span>为访问一次主存的时间</p>
+<p>命中：CPU想要的访问的信息能在Cache中直接找到</p>
+<p>命中率H：CPU想要访问的信息在Cache中的比率</p>
+<p>缺失（未命中）率：1-H</p>
+<p>平均访问时间</p>
+<p><span
+class="math inline">\(t=Ht_c+(1-H)(t_c+t_m)\)</span>：先访问cache，再访问主存</p>
+<p><span class="math inline">\(t=Ht_c+(1-H)t_m\)</span>：同时访问</p>
+<h2 id="局部的界定">局部的界定</h2>
+<p>如何界定CPU周围的数据？</p>
+<p>将主存的存储空间分块，每1kb一块，主存和Cache之间以块为单位数据交换</p>
+<p>操作系统中，通常把主存中一个块称为一个页/页面</p>
+<h2 id="主存与cache的映射方式">主存与Cache的映射方式</h2>
+<h3 id="全相联映射">全相联映射</h3>
+<p>也就是随便放</p>
+<p>假设某个计算机的主存地址空间大小为256mb，按字节编址，Cache有8个Cache行，行长64B</p>
+<p>则256mb=<span
+class="math inline">\(2^{28}\)</span>，主存地址共28位，每个块长64B=<span
+class="math inline">\(2^6\)</span>，则块内地址有6位，主存块号有<span
+class="math inline">\(\frac{2^{28}}{2^6}=22\)</span>位</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624202611801.png" class="" title="全相联结构">
+<p>随意放置数据，并设置有效位表示是否有数据，设置标记为当前cache块的数据是主存哪个块号的数据</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624202924250.png" class="" title="映射">
+<p>若CPU想要访问某主存地址：</p>
+<ul>
+<li>首先对比主存地址前22位与Cache所有块中有无匹配</li>
+<li>若有匹配且有效位为1，则Cache命中，访问块内地址为后六位的单元</li>
+<li>若未命中或有效位为0，则正常访问主存</li>
+</ul>
+<h3 id="直接映射">直接映射</h3>
+<p>固定主存块在Cache中的位置=主存块号%Cache总块数</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624203448085.png" class="" title="直接映射">
+<p>放置位置只能固定，如将主存块号为0的放到Cache中，只能放到位置0，设置有效位与标记</p>
+<p>其中这里标记只需要标记前19位即可，因为这里Cache只有8行，相当于对主存块号模<span
+class="math inline">\(2^3\)</span>，后三位直接反映了它在Cache中的位置。即若Cache总块数为<span
+class="math inline">\(2^n\)</span>时，主存块号末尾n位可以直接反应它在Cache中的位置</p>
+<p>若又想放置主存块号为8的数据，它也只能放到位置0，此时只能将原块号0的数据覆盖，并修改标记</p>
+<p>这种有一个显然的缺点：其他地方有空闲cache块时也不能使用</p>
+<p>若CPU想要访问主存地址：</p>
+<ul>
+<li>首先根据主存块号后三位确定Cache行</li>
+<li>若主存块号前19位于Cache标记匹配且有效位为1，可以直接访问块内地址对应的单元</li>
+<li>若未命中或有效位为0，则正常访问主存</li>
+</ul>
+<h3 id="组相联映射">组相联映射</h3>
+<p>主存块在Cache中的分组=主存块号%分组数</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624204750590.png" class="" title="组相联映射">
+<p>放置组需要固定，假如这里使用两路组相联映射，分四组</p>
+<p>块号为1和<span
+class="math inline">\(2^{22}-3\)</span>这两块取余都为1，放在第一组，并找组内空位填充</p>
+<p>由于只有四组，即<span
+class="math inline">\(2^2\)</span>，因此后两位可以直接反映它在Cache组内的位置，所以这里标记只需要标记前20位即可</p>
+<p>若CPU想要访问主存地址：</p>
+<ul>
+<li>根据主存块号的后2位确定分组号</li>
+<li>若主存块号的前20位和分组内的某个标记匹配且有效位为1，则Cache命中，访问对应块内地址的单元</li>
+<li>若未命中或有效位为0，则正常访问主存</li>
+</ul>
+<h2 id="cache替换算法">Cache替换算法</h2>
+<p>解决Cache装满后的问题</p>
+<h3 id="随机算法">随机算法</h3>
+<p>若Cache已满，随机选择一块替换</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624205954660.png" class="" title="随机算法">
+<p>可以发现没有考虑局部性原理，命中率很低，效果不稳定</p>
+<h3 id="fifo算法">FIFO算法</h3>
+<p>若Cache已满，替换最先调入Cache的块</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624210437326.png" class="" title="FIFO">
+<p>也没考虑局部性原理，最先调入Cache块的也有可能被频繁访问</p>
+<p>会产生抖动现象：频繁的换入换出现象</p>
+<h3 id="lru算法">LRU算法</h3>
+<p>近期最少使用算法，为每一个Cache块设置一个计数器，用于记录每个Cache块有多久没被访问，当Cache满后替换计数器最大的</p>
+<p>步骤：</p>
+<ul>
+<li>命中时，所命中1计数器清零，比其低的计数器+1，其余不变</li>
+<li>未命中且有空闲行时，新装入行计数器置0，其余非空闲行+1</li>
+<li>未命中且无空闲行时，计数值最大的行的信息块被淘汰，新装行的块的计数器置0，其余+1</li>
+</ul>
+<p>Cache块总数为<span
+class="math inline">\(2^n\)</span>，则计数器只需要n位，且装满后所有计数器值一定不重复</p>
+<p>若被频繁访问的主存块数量大于Cache行的数量，则有可能发生抖动</p>
+<p>做题方法：</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624211230131.png" class="" title="做题方法">
+<p>从左往右看，到要替换的时候从当前位置往前看，一直找到最久没访问过的，也就是最后一个出现的，就是需要替换的主存块</p>
+<h3 id="lfu算法">LFU算法</h3>
+<p>最不经常使用算法，为每个Cache块设置一个计数器，用于记录每个Cache被访问过几次，当Cache满后替换计数器最小的</p>
+<p>步骤：</p>
+<ul>
+<li>新调入的块计数器=0，之后每访问一次计数器+1，需要替换时，选择计数器最小的一行</li>
+<li>若有多个计数器最小的行，则可以按照行号递增、或FIFO策略选择</li>
+</ul>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624212821067.png" class="" title="LFU">
+<p>曾经被经常访问的主存块未来不一定被用到，并没有很好遵循局部性原理，效果不如LRU</p>
+<h2 id="cache写策略">Cache写策略</h2>
+<p>若CPU修改了Cache中的数据副本，如何保存主存中数据母本的一致性？</p>
+<h3 id="写命中">写命中</h3>
+<p>写回法：当CPU对Cache写命中时，只修改Cache内容，而不立即写入主存，只有当此块被换出时才写回主存</p>
+<p>修改过的Cache将脏位设置为1</p>
+<p>这样减少了访存次数，但存在数据不一致的隐患</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624213315833.png" class="" title="写命中">
+<p>全写法：当CPU对Cache写命中时，必须把数据同时写入Cache和主存，一般使用写缓冲</p>
+<p>这样访存次数增加，速度变慢</p>
+<p>写缓冲是一个SRAM实现的FIFO队列，命中时将数据同时写入Cache和队列，当CPU干其他事情时，有专门的控制电路将队列中的数据逐一写回</p>
+<p>若写操作很频繁，可能会因为写缓冲饱和而阻塞</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624214146418.png" class="" title="全写法">
+<h3 id="写不命中">写不命中</h3>
+<p>写分配法：</p>
+<p>当CPU对Cache写不命中时，把主存中的块调入Cache，在Cache中修改，通常搭配写回法使用</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624214345362.png" class="" title="写分配法">
+<p>非写分配法：</p>
+<p>当CPU对Cache写不命中时，只写入主存，不掉入Cache，搭配全写法使用</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F/image-20260624214516027.png" class="" title="非写分配法">
+<h2 id="多级cache">多级Cache</h2>
+<p>现代计算机通常采用多级Cache，离CPU越近速度越快，容量越小，越远越慢越大</p>
+<p>高级Cache储存的一般是低级Cache的副本</p>
+<p>为保证数据一致性，各级Cache之间常用全写法+非写分配法，而Cache和主存之间常用写回法+写分配法</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/IO%E7%B3%BB%E7%BB%9F/" rel="prev" title="【计算机组成原理】IO系统">
+      <i class="fa fa-chevron-left"></i> 【计算机组成原理】IO系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="next" title="【计算机组成原理】计算机系统">
+      【计算机组成原理】计算机系统 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%82%E6%AC%A1%E5%8C%96%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">层次化结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="nav-number">1.3.</span> <span class="nav-text">性能指标</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">基本组成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8D%8A%E5%AF%BC%E4%BD%93%E5%85%83%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">基本半导体元件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E8%8A%AF%E7%89%87%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">存储器芯片的基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BB%E5%9D%80"><span class="nav-number">2.3.</span> <span class="nav-text">寻址</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sram%E5%92%8Cdram"><span class="nav-number">3.</span> <span class="nav-text">SRAM和DRAM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dram"><span class="nav-number">3.1.</span> <span class="nav-text">DRAM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B7%E6%96%B0"><span class="nav-number">3.1.1.</span> <span class="nav-text">刷新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E7%BA%BF%E5%A4%8D%E7%94%A8"><span class="nav-number">3.1.2.</span> <span class="nav-text">地址线复用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rom"><span class="nav-number">4.</span> <span class="nav-text">ROM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E5%8D%87%E4%B8%BB%E5%AD%98%E9%80%9F%E5%BA%A6"><span class="nav-number">5.</span> <span class="nav-text">提升主存速度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%BD%93%E5%B9%B6%E8%A1%8C%E5%AD%98%E5%82%A8%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text">多体并行存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E5%AD%98%E5%82%A8%E5%99%A8%E4%B8%8Ecpu%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">主存储器与CPU的连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">6.1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E6%89%A9%E5%B1%95"><span class="nav-number">6.2.</span> <span class="nav-text">位扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%89%A9%E5%B1%95"><span class="nav-number">6.3.</span> <span class="nav-text">字扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E9%80%89%E6%B3%95"><span class="nav-number">6.3.1.</span> <span class="nav-text">线选法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%91%E7%A0%81%E7%89%87%E9%80%89%E6%B3%95"><span class="nav-number">6.3.2.</span> <span class="nav-text">译码片选法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%96%E5%AD%98%E5%82%A8%E5%99%A8"><span class="nav-number">7.</span> <span class="nav-text">外存储器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%AD%98%E5%82%A8%E5%99%A8"><span class="nav-number">7.1.</span> <span class="nav-text">磁盘存储器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87-1"><span class="nav-number">7.1.1.</span> <span class="nav-text">性能指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80"><span class="nav-number">7.1.2.</span> <span class="nav-text">地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">7.1.3.</span> <span class="nav-text">工作过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97"><span class="nav-number">7.2.</span> <span class="nav-text">磁盘阵列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssd"><span class="nav-number">7.3.</span> <span class="nav-text">SSD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84-1"><span class="nav-number">7.3.1.</span> <span class="nav-text">结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cache"><span class="nav-number">8.</span> <span class="nav-text">Cache</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">8.1.</span> <span class="nav-text">工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E6%80%A7%E5%8E%9F%E7%90%86"><span class="nav-number">8.1.1.</span> <span class="nav-text">局部性原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="nav-number">8.2.</span> <span class="nav-text">性能分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E7%9A%84%E7%95%8C%E5%AE%9A"><span class="nav-number">8.3.</span> <span class="nav-text">局部的界定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%AD%98%E4%B8%8Ecache%E7%9A%84%E6%98%A0%E5%B0%84%E6%96%B9%E5%BC%8F"><span class="nav-number">8.4.</span> <span class="nav-text">主存与Cache的映射方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E7%9B%B8%E8%81%94%E6%98%A0%E5%B0%84"><span class="nav-number">8.4.1.</span> <span class="nav-text">全相联映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E6%98%A0%E5%B0%84"><span class="nav-number">8.4.2.</span> <span class="nav-text">直接映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E7%9B%B8%E8%81%94%E6%98%A0%E5%B0%84"><span class="nav-number">8.4.3.</span> <span class="nav-text">组相联映射</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache%E6%9B%BF%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">8.5.</span> <span class="nav-text">Cache替换算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E7%AE%97%E6%B3%95"><span class="nav-number">8.5.1.</span> <span class="nav-text">随机算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fifo%E7%AE%97%E6%B3%95"><span class="nav-number">8.5.2.</span> <span class="nav-text">FIFO算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lru%E7%AE%97%E6%B3%95"><span class="nav-number">8.5.3.</span> <span class="nav-text">LRU算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lfu%E7%AE%97%E6%B3%95"><span class="nav-number">8.5.4.</span> <span class="nav-text">LFU算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache%E5%86%99%E7%AD%96%E7%95%A5"><span class="nav-number">8.6.</span> <span class="nav-text">Cache写策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%91%BD%E4%B8%AD"><span class="nav-number">8.6.1.</span> <span class="nav-text">写命中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E4%B8%8D%E5%91%BD%E4%B8%AD"><span class="nav-number">8.6.2.</span> <span class="nav-text">写不命中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7cache"><span class="nav-number">8.7.</span> <span class="nav-text">多级Cache</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

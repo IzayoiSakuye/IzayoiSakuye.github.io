@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了计算机系统中数据是如何表示的，包括原码反码补码移码，有无符号整数和IEEE754浮点数表示，以及他们在计算机中的运算逻辑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机组成原理】数据的表示和运算">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了计算机系统中数据是如何表示的，包括原码反码补码移码，有无符号整数和IEEE754浮点数表示，以及他们在计算机中的运算逻辑">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/QQ_1782119768293.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622174950467.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622205428983.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622205814476.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622210011001.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622212102126.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622211940137.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623105529983.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623110648237.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623110954714.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623111123574.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623145557787.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623150810175.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623152925690.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623153539143.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623155001606.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623164950515.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623173302874.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623173315151.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623174205755.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623174414875.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623200315212.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623200643393.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623201617059.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623201647404.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623195907578.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623213359062.png">
+<meta property="article:published_time" content="2026-07-02T08:11:12.099Z">
+<meta property="article:modified_time" content="2026-07-02T08:17:30.070Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/QQ_1782119768293.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【计算机组成原理】数据的表示和运算 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【计算机组成原理】数据的表示和运算
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-07-02 16:11:12 / 修改时间：16:17:30" itemprop="dateCreated datePublished" datetime="2026-07-02T16:11:12+08:00">2026-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/" itemprop="url" rel="index"><span itemprop="name">王道计组</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+            <div class="post-description">介绍了计算机系统中数据是如何表示的，包括原码反码补码移码，有无符号整数和IEEE754浮点数表示，以及他们在计算机中的运算逻辑</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="进位计数法">进位计数法</h1>
+<h2 id="任意进制转十进制">任意进制转十进制</h2>
+<ul>
+<li>基数：每个数码位用到的不同符号的个数，r进制的基数为r</li>
+<li>位权：某位数码在对应位置的权重，任意进制转十进制时r为对应进制数</li>
+</ul>
+<p>计算公式： <span class="math display">\[
+K_nK_{n-1}\dots K_1K_0K_{-1}\dots K_{-m}=\\
+K_n\times r^n+K_{n-1}\times r^{n-1}+\dots +K_1\times r^1+K_0\times
+r^0+K_{-1}\times r^{-1}+\dots +K_{-m}\times r^{-m}
+\]</span></p>
+<h2 id="二进制和八十六进制转换">二进制和八、十六进制转换</h2>
+<ul>
+<li><p>二转八：每三位一组转换对应八进制符号</p></li>
+<li><p>二转十六：每四位一组转换对应十六进制符号</p></li>
+<li><p>八转二：每位八进制转换对应三位二进制</p></li>
+<li><p>十六转二：每位十六进制转换对应四位二进制</p></li>
+</ul>
+<h2 id="十进制转任意进制">十进制转任意进制</h2>
+<p>整数：</p>
+<p>短除法除，除数为r进制的r，余数是对应数码位</p>
+<p>最后结果从下往上是高到低位</p>
+<p>小数：</p>
+<p>每次乘2，得到的小数取整数部分</p>
+<p>最后结果从上到下是高到低位</p>
+<h1 id="定点数的表示">定点数的表示</h1>
+<ul>
+<li>定点数：小数点位置固定</li>
+<li>浮点数：小数点位置不固定（科学计数法）</li>
+</ul>
+<h2 id="无符号数">无符号数</h2>
+<p>整个机器字长全部二进制位都是数值位，没有符号位</p>
+<ul>
+<li>表示范围：n位无符号数为<span
+class="math inline">\(0\sim2^n-1\)</span></li>
+</ul>
+<h2 id="有符号数">有符号数</h2>
+<h3 id="原码">原码</h3>
+<p>最高位符号位0/1表示正/负，尾数表示真值的绝对值</p>
+<ul>
+<li><p>若字长n+1位，原码整数表示范围为<span
+class="math inline">\(-(2^n-1)\leq x\leq 2^n-1\)</span></p></li>
+<li><p>若字长n+1位，原码小数表示范围为<span
+class="math inline">\(-(1-2^{-n})\leq x \leq 1-2^{-n}\)</span></p></li>
+<li><p>真值0有+0和-0两种形式</p></li>
+</ul>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/QQ_1782119768293.png" class="" title="原码">
+<h3 id="反码">反码</h3>
+<p>正数的反码和原码相同</p>
+<p>负数的反码数值位全部取反</p>
+<p>表示范围相同，真值0也有两种形式</p>
+<h3 id="补码">补码</h3>
+<p>正数的补码和原码相同</p>
+<p>负数的补码=反码尾数取反+1</p>
+<p>负数补码转原码：尾数取反+1，或找最右边的1及其右侧同原码，左边同反码</p>
+<p>速记方法：由x补码求-x补码：符号位和数值位全部取反，然后+1</p>
+<style>.sqzywrstmrbt{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622174950467.png" class="sqzywrstmrbt" alt="补码">
+<p>补码表示0只有一种表示方式</p>
+<p>则定点整数补码<code>10000000</code>就可以表示<span
+class="math inline">\(-2^7\)</span>，定点小数补码<code>10000000</code>可以表示-1</p>
+<p>因此n+1位字长的补码整数的表示范围：<span
+class="math inline">\(-2^n\leq x\leq 2^n-1\)</span></p>
+<p>因此n+1位字长的补码小数的表示范围：<span class="math inline">\(-1\leq
+x\leq 1-2^{-n}\)</span></p>
+<h3 id="移码">移码</h3>
+<p>补码基础上将符号位取反</p>
+<p><strong>注意移码只能用于表示整数</strong></p>
+<p>补码的真值0只有一种形式，表示范围与补码相同</p>
+<p>应用：方便比较大小</p>
+<h2 id="应用">应用</h2>
+<h3 id="加减运算">加减运算</h3>
+<p>让减法变成加法：</p>
+<p>为了让结果能保持在可表示的范围内，我们需要在模<span
+class="math inline">\(2^n\)</span>的意义下进行加法操作</p>
+<p>在模12的意义下，我们要将需要减的负数找到它等价的一个整数</p>
+<p>对于一个负数，它一定能找到一个正数让他俩的绝对值相加等于模数12</p>
+<p>如-3和+9在模12的情况下是相同的，他们绝对值相加为12，称互为补数</p>
+<p>因此负数需要通过模运算转换，只需要用模数-减数绝对值就可以得到它的补数，其实就是补码，这样就可以让减法操作变为加法</p>
+<p><strong>加法操作时，符号位一块参与运算</strong></p>
+<h2 id="零扩展与符号扩展">零扩展与符号扩展</h2>
+<p>将一个数据拉长bit，多出来的位怎么处理？</p>
+<p>对于无符号整数，使用零扩展，多的位补0</p>
+<p>对于有符号整数，需要使用符号扩展，多的位与符号位保持一致</p>
+<h1 id="运算">运算</h1>
+<h2 id="加法器">加法器</h2>
+<p>进行加法时，每一位加法都有若干数据：</p>
+<ul>
+<li>被加数的本位<span
+class="math inline">\(A_i\)</span>与加数的本位<span
+class="math inline">\(B_i\)</span></li>
+<li>来自低位的进位<span class="math inline">\(C_{i-1}\)</span></li>
+<li>本位和<span class="math inline">\(S_i\)</span></li>
+<li>向高位的进位<span class="math inline">\(C_i\)</span></li>
+</ul>
+<p>我们发现，当<span class="math inline">\(A_i\)</span>、 <span
+class="math inline">\(B_i\)</span>和<span
+class="math inline">\(C_{i-1}\)</span>三个中有奇数个1时，<span
+class="math inline">\(S_i\)</span>才为1，否则为0</p>
+<p>因此<span class="math inline">\(S_i=A_i\oplus B_i \oplus
+C_{i-1}\)</span></p>
+<p>产生进位要求两个本位都是1或两个本位中有一个1且来自低位的进位是1</p>
+<p>因此<span class="math inline">\(C_i=A_iB_i+(A_i\oplus
+B_i)C_{i-1}\)</span></p>
+<p>用门电路表示如下：</p>
+<style>.wgqcoznmqngu{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622205428983.png" class="wgqcoznmqngu" alt="FA">
+<p>将这个电路封装，得到一位全加器（FA）</p>
+<p>把n个FA串联起来，就可以进行两个nbits数的相加’</p>
+<p>把这n个FA封装，即为加法器</p>
+<p>由于两个输入端允许并行输入nbits，又称并行加法器</p>
+<p>缺点：由于进位信息是串行的，位数越多，运算速度越慢，又称串行进位加法器</p>
+<style>.qhifbufcdflp{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622205814476.png" class="qhifbufcdflp" alt="并行进位加法器">
+<p>修改一下，加入n位CLA部件，同时传输进位信息，可以弥补缺点</p>
+<p>给加法器加入一些标志位，可以判断一些特殊情况</p>
+<style>.gcermoeebfsh{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622210011001.png" class="gcermoeebfsh" alt="标志位加法器">
+<ul>
+<li><p>OF：溢出标志，判断带符号数加减运算，1为溢出，0为未溢出</p>
+<p>使用<span class="math inline">\(C_n\oplus
+C_{n-1}\)</span>计算是否溢出</p></li>
+<li><p>SF：符号标志，判断带符号数加减运算，1为负，0为正</p>
+<p>取最高位<span class="math inline">\(S_n\)</span>判断</p></li>
+<li><p>ZF：零标志，1表示结果为0，0表示结果不为0</p>
+<p>取所有bit位取或非，全为0是即为1</p></li>
+<li><p>CF：进位/借位标志，判断无符号数加减运算，1为溢出，0为未溢出</p>
+<p>取<span class="math inline">\(C_{out}\oplus C_{in}\)</span>即<span
+class="math inline">\(C_n\oplus C_0\)</span>判断</p></li>
+</ul>
+<h2 id="alu">ALU</h2>
+<p>ALU是运算器的核心，其中加法器是ALU的核心</p>
+<p>ALU负责算术运算、逻辑运算、求补码、直送等</p>
+<style>.uoqwlkfnfwqk{zoom:50%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622212102126.png" class="uoqwlkfnfwqk" alt="ALU">
+<ul>
+<li>由控制器传输mbit控制信号，表示功能</li>
+<li>标志信息通常送入PSW状态字寄存器（有的称为标志寄存器FR）</li>
+</ul>
+<p><strong>若ALU支持k种功能，则控制信号位数<span
+class="math inline">\(m\geq \lceil \log_2 k \rceil\)</span></strong></p>
+<style>.ksonkcjrjlej{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260622211940137.png" class="ksonkcjrjlej" alt="原理">
+<p>内部靠一个多路选择器接入k个功能电路实现，传入mbit控制信号分别对应使用某个电路</p>
+<h2 id="定点数的移位运算">定点数的移位运算</h2>
+<p>移位运算即改变各个数码位和小数点的相对位置，改变位权</p>
+<p>可以快速实现特殊值的乘除法</p>
+<h3 id="逻辑移位">逻辑移位</h3>
+<p>逻辑左移：高位移出丢弃，低位补0</p>
+<p>对于无符号整数，每左移一位，相当于乘2</p>
+<p>注意：若左移丢弃的位为1，发生溢出</p>
+<p>逻辑右移：低位移除丢弃，高位补0</p>
+<p>对于无符号整数，每右移一位，相当于除2</p>
+<p>注意：若右移丢弃的位为1，丢失精度</p>
+<h3 id="算术移位">算术移位</h3>
+<p>算术左移：高位移出丢弃，低位补0</p>
+<p>对有符号整数，每左移一位，相当于乘2</p>
+<p>注意：若<strong>算术左移前后符号位不同</strong>，则发生溢出</p>
+<p>算术右移：低位移出丢弃，高位补符号位</p>
+<p>对有符号整数，每右移一位，相当于除2</p>
+<p>注意：若右移丢弃的位为1，丢失精度</p>
+<h2 id="定点数的加减运算">定点数的加减运算</h2>
+<h3 id="原码的加减">原码的加减</h3>
+<ul>
+<li>正+正：绝对值做加法，结果为正</li>
+<li>负+负：绝对值做加法，结果为负</li>
+<li>正+负/负+正：绝对值大的-小的，符号同绝对值大的</li>
+</ul>
+<p>减法运算将减数符号取反，转为加法</p>
+<h3 id="补码的加减">补码的加减</h3>
+<p>带着符号位加减即可，算完后计算原码</p>
+<p>对于溢出问题，分为下溢与上溢</p>
+<ul>
+<li>正+正会发生上溢，得到负数</li>
+<li>负+负会发生下溢，得到正数</li>
+</ul>
+<p>法一：采用一位符号位</p>
+<p>若A的符号是<span class="math inline">\(A_s\)</span>，B的符号是<span
+class="math inline">\(B_s\)</span>，运算结果符号是<span
+class="math inline">\(S_s\)</span>，则溢出逻辑表达式为<span
+class="math inline">\(V=A_sB_s\overline{S_s}+\overline{A_s}\overline{B_s}S_s\)</span></p>
+<p>若V=0表示无溢出，若V=1时表示有溢出</p>
+<p>法二：采用一位符号位，根据数据位进位状况判断</p>
+<ul>
+<li>符号位进位<span
+class="math inline">\(C_s=0\)</span>，最高数值位<span
+class="math inline">\(C_1=1\)</span>，发生上溢</li>
+<li>符号位进位<span
+class="math inline">\(C_s=1\)</span>，最高数值位<span
+class="math inline">\(C_1=0\)</span>，发生下溢</li>
+</ul>
+<p>即<span class="math inline">\(V=C_s\oplus
+C_1\)</span>，若V=0表示无溢出，若V=1时表示有溢出</p>
+<p>法三：采用双符号位</p>
+<p>双符号位第一位表示本应得到的符号，第二位表示实际得到的符号</p>
+<p>正数符号为00，负数符号位为11</p>
+<p>即<span class="math inline">\(V=C_{s1}\oplus
+C_{s2}\)</span>，若V=0表示无溢出，若V=1时表示有溢出</p>
+<p>实际存储时还是一个符号位，运算时会复制一个</p>
+<h3 id="运算电路">运算电路</h3>
+<style>.dootevdmholf{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623105529983.png" class="dootevdmholf" alt="image-20260623105529983">
+<h2 id="无符号数的加减运算">无符号数的加减运算</h2>
+<h3 id="加法">加法</h3>
+<p>从最低位开始，按位相加，并往更高位进位</p>
+<h3 id="减法">减法</h3>
+<p>被减数不变，减数全部按位取反、末位+1，减法变加法</p>
+<p>从最低位开始按位相加，并往更高位进位</p>
+<h3 id="溢出">溢出</h3>
+<p>超出<span class="math inline">\(0\sim 2^n-1\)</span>即溢出</p>
+<ul>
+<li>无符号加法：最高位产生进位为1时，发生溢出</li>
+<li>无符号减法：减法变加法，最高位产生进位为0时，发生溢出</li>
+</ul>
+<h2 id="无符号整数的乘法">无符号整数的乘法</h2>
+<h3 id="原理">原理</h3>
+<p>和十进制类似，逐位相乘，错位相加</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623110648237.png" class="" title="无符号乘">
+<p>定义部分积为逐位相乘到当前位的积的结果</p>
+<ul>
+<li>两个nbit无符号数乘，可以拆为n轮加法运算</li>
+<li>根据乘数的各个bit，决定每轮加法运算是加被乘数还是加全0</li>
+<li>注意要错位相加</li>
+</ul>
+<style>.qgxtfiepiejf{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623110954714.png" class="qgxtfiepiejf" alt="无符号乘细">
+<h3 id="电路">电路</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623111123574.png" class="" title="乘电路">
+<ul>
+<li>首先将被乘数和乘数放入寄存器X Y，乘积寄存器P置0，计数器<span
+class="math inline">\(C_n\)</span>初始值置为n（乘数位数）</li>
+<li>当乘数和被乘数其中一个为全0，则返回全0</li>
+<li>重复n轮加法移位计算，直到<span
+class="math inline">\(C_n=0\)</span></li>
+<li>将Y的最低位送人控制逻辑判断
+<ul>
+<li>若Y最低位为1，则执行加法，运算结果写回P，进位保存至进位触发器C</li>
+<li>若Y最低位为0，则什么也不做</li>
+</ul></li>
+<li>将C P Y 视为整体，逻辑右移一位</li>
+<li><span class="math inline">\(C_n\)</span>减一</li>
+<li>结束时，乘法运算结果用<span
+class="math inline">\(2n\)</span>位保存</li>
+<li>很多架构中，通常仅保留低n位作为乘积结果，可能溢出</li>
+</ul>
+<h3 id="溢出-1">溢出</h3>
+<p>若高n位不全为0，表示发生溢出，将OF位置为1</p>
+<p>（CF标志位只用于无符号加减法溢出，乘法溢出都用OF位标志）</p>
+<p>解决方法：</p>
+<ul>
+<li>不管</li>
+<li>在乘法指令后执行一条溢出自陷指令（如x86的INTO指令），该指令会检查OF位，若为1就执行操作系统的异常处理程序</li>
+</ul>
+<h2 id="有符号整数的乘法">有符号整数的乘法</h2>
+<h3 id="电路-1">电路</h3>
+<style>.otvscisvpccd{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623145557787.png" class="otvscisvpccd" alt="有符号乘法电路">
+<p><strong>注：符号位参与运算</strong></p>
+<ul>
+<li><p>首先将被乘数和乘数放入寄存器X
+Y，乘积寄存器P置0，辅助位置为0，计数器<span
+class="math inline">\(C_n\)</span>初始值置为n（乘数位数）</p></li>
+<li><p>当乘数和被乘数其中一个为全0，则返回全0</p></li>
+<li><p>重复n轮加减移位运算，直到<span
+class="math inline">\(C_n=0\)</span></p>
+<ul>
+<li><p>将Y的最低位和辅助位2bit送入控制逻辑判断</p></li>
+<li><p>根据Y的最低位和辅助位判断操作：</p>
+<style>.ssfcmkqvodxi{zoom:50%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623150810175.png" class="ssfcmkqvodxi" alt="辅助操作"></li>
+<li><p>将P Y 和辅助位视为整体，<strong>算术右移</strong>一位</p></li>
+<li><p><span class="math inline">\(C_n\)</span>减一</p></li>
+</ul></li>
+<li><p>结束时，乘法运算结果用<span
+class="math inline">\(2n\)</span>位保存</p></li>
+<li><p>很多架构中，通常仅保留低n位作为乘积结果，可能溢出</p></li>
+</ul>
+<h3 id="溢出-2">溢出</h3>
+<p>若高n+1位不全为0，表示发生溢出，将OF位置为1</p>
+<p>解决方法：</p>
+<ul>
+<li>不管</li>
+<li>在乘法指令后执行一条溢出自陷指令（如x86的INTO指令），该指令会检查OF位，若为1就执行操作系统的异常处理程序</li>
+</ul>
+<h2 id="计算机实现乘法的方式">计算机实现乘法的方式</h2>
+<h3 id="一种改进">一种改进</h3>
+<p>之前提到的无符号乘法电路，若实现nbit无符号数相乘，至少需要n个时钟</p>
+<p>若改为每轮处理寄存器Y的末尾2bit，仅需n/2个时钟就可以完成运算</p>
+<h3 id="阵列乘法器">阵列乘法器</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623152925690.png" class="" title="阵列乘法">
+<p>快速乘法器的一种，可以在一个时钟内完成乘法运算</p>
+<h3 id="没有乘法运算电路">没有乘法运算电路</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623153539143.png" class="" title="无乘法运算电路">
+<p>可以手动模拟加法和移位操作实现乘法，但是运算速度非常慢</p>
+<p>如对于32位，里面有k条指令，所以需要32k个时钟才能实现</p>
+<h2 id="无符号整数的除法">无符号整数的除法</h2>
+<p>中间余数：竖式除法时中间产生的余数</p>
+<p>十进制除法上商规则：商×除数的值要尽可能接近但不超过中间余数</p>
+<p>二进制除法上商规则：商×除数的值要尽可能接近但不超过中间余数，即如果中间余数&gt;=除数，则商1，否则商0</p>
+<h3 id="电路-2">电路</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623155001606.png" class="" title="无符号除法电路">
+<p>支持双精度2nbit÷nbit和单精度nbit÷nbit，得到nbit商和nbit余数</p>
+<p>若被除数不足2nbit，需要将被除数扩展为2nbit</p>
+<ul>
+<li>上商规则：若<span
+class="math inline">\(R-Y\geq0\)</span>则商1，否则商0</li>
+<li>首先将数据放入寄存器，除数放入Y，被除数放入R Q，完成零扩展</li>
+<li>计数器初始值<span class="math inline">\(C_n=n\)</span></li>
+<li>特殊情况检查：
+<ul>
+<li>若除数为0，发生异常，停止除法运算并调用异常处理程序</li>
+<li>若|被除数|&lt;|除数|，则商=0，余数=被除数，除法器不再执行</li>
+</ul></li>
+<li>进行n+1轮处理</li>
+<li>第1轮特殊处理：
+<ul>
+<li>直接上商，若第一位商1，发生商溢出，停止除法运算</li>
+<li>直接上商，肉第一位商0，不会商溢出，不必保存这位商，也不<span
+class="math inline">\(C_n--\)</span>，继续</li>
+</ul></li>
+<li>其余n轮处理：
+<ul>
+<li>先左移，空出的位用于上商</li>
+<li>上商，背后可能会进行加法/减法</li>
+<li>计数器<span
+class="math inline">\(C_n--\)</span>，当计数器为0时结束运算</li>
+</ul></li>
+<li>寄存器R保存余数，寄存器Q保存商</li>
+</ul>
+<h3 id="溢出-3">溢出</h3>
+<p>只有双精度除法可能发生商溢出</p>
+<h2 id="有符号整数的除法">有符号整数的除法</h2>
+<h3 id="电路-3">电路</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623164950515.png" class="" title="有符号除法">
+<ul>
+<li><p>初始化</p>
+<ul>
+<li>nbit被除数符号扩展为2nbit，放入寄存器R Q</li>
+<li>nbit除数放入寄存器Y</li>
+<li>计数器重置为<span
+class="math inline">\(C_n=n\)</span>，表示剩余n轮</li>
+</ul></li>
+<li><p>进行n轮处理，先左移，空出的位置上商</p>
+<ul>
+<li>由控制逻辑根据中间余数与除数的符号组合来决定加减法（同号减，异号加）</li>
+<li>再根据ALU运算结果（新余数）的符号位决定商1还是0</li>
+<li>新老余数相比，符号不变：商1，符号变：商0，新余数写入</li>
+<li>若符号位发生变化，余数计数器R会将余数恢复成老余数</li>
+</ul></li>
+<li><p>计数器<span class="math inline">\(C_n--\)</span>，<span
+class="math inline">\(C_n=0\)</span>时除法运算结束</p></li>
+<li><p>当<span
+class="math inline">\(C_n=0\)</span>时，除法运算结束，R保存余数，Q保存商</p>
+<ul>
+<li>若原被除数和除数异号，商Q还需要取补</li>
+</ul></li>
+</ul>
+<p>特殊情况：</p>
+<ul>
+<li>如果|被除数|&lt;|除数|，则商为0，余数=被除数，除法器不必再执行</li>
+<li>如果除数为0，发生除数为零异常，停止运算并调用异常处理程序</li>
+<li>对于补码的单精度除法，仅绝对值最大的负数÷-1才有可能发生商溢出</li>
+</ul>
+<h1 id="ieee-754浮点数">IEEE 754浮点数</h1>
+<p>规格化：确保尾数最高位非零数位刚好在小数点前</p>
+<p>如二进制小数<span
+class="math inline">\(-110.11\)</span>，规格化后为<span
+class="math inline">\(-1.1011\times 2^2\)</span></p>
+<p>其中：</p>
+<ul>
+<li>符号决定正负性</li>
+<li>尾数1.1011影响数值精度，位数越多精度越高</li>
+<li>阶码2反应小数点的实际位置</li>
+<li>基数2表示2进制，k进制默认基数为k</li>
+</ul>
+<h2 id="格式">格式</h2>
+<p>float：</p>
+<style>.rdndggcscdsk{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623173302874.png" class="rdndggcscdsk" alt="float">
+<p>double：</p>
+<style>.gvkvmsfsowuf{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623173315151.png" class="gvkvmsfsowuf" alt="double">
+<ul>
+<li>阶码越大，表示范围越大</li>
+<li>尾数越大，表示精度越大</li>
+</ul>
+<h2 id="单精度浮点存储">单精度浮点存储</h2>
+<ul>
+<li>符号：0正1负</li>
+<li>尾数：规定小数点位置在23bit前，默认存储规格化尾数，小数点前的1省略</li>
+<li>阶码：用移码表示，规定偏置值为127（<span
+class="math inline">\(2^{阶码-1}-1\)</span>）</li>
+<li>基数：不用专门存储，规定为2即可</li>
+</ul>
+<p>如何将十进制真值转为偏置值为M的移码：</p>
+<ol type="1">
+<li>将十进制真值+偏置值M</li>
+<li>按无符号整数规则转换为指定位数</li>
+</ol>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623174205755.png" class="" title="单精度存储例">
+<h2 id="双精度浮点存储">双精度浮点存储</h2>
+<ul>
+<li>符号：0正1负</li>
+<li>尾数：规定小数点位置在52bit前，默认存储规格化尾数，小数点前的1省略</li>
+<li>阶码：用移码表示，规定偏置值为1023（<span
+class="math inline">\(2^{阶码-1}-1\)</span>）</li>
+<li>基数：不用专门存储，规定为2即可</li>
+</ul>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623174414875.png" class="" title="双精度存储例">
+<h2 id="表示范围">表示范围</h2>
+<h3 id="规格化浮点">规格化浮点</h3>
+<p>规格化浮点数：阶码部分不全为0且不全为1的浮点数</p>
+<ul>
+<li><p>阶码：真值取值范围<span class="math inline">\(-126\sim
+127\)</span></p></li>
+<li><img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623200315212.png" class="" title="规格化范围"></li>
+<li><p>上溢：运算结果大于最大规格化正数称为正上溢，小于绝对值最大的规格化负数时称为负上溢</p>
+<p>正上溢的结果设置为+∞，负上溢为-∞，并设置溢出异常标志位（x86中为OE）</p>
+<p>IEEE 754规定默认不响应浮点数溢出异常，不中断程序</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623200643393.png" class="" title="上溢"></li>
+<li><p>下溢：运算结果在0至绝对值最小的规格化正数之间时称为正下溢，在0至绝对值最小的规格化负数之间时称为负下溢</p>
+<p>下溢时若结果落入非规格化区间，用非规格化浮点数存储，若结果太小，按机器零存储</p>
+<p>若下溢至机器0，设置浮点数下溢异常标志位（x86中为UE）</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623201617059.png" class="" title="下溢"></li>
+</ul>
+<h3 id="真值0">真值0</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623201647404.png" class="" title="真值0">
+<h3 id="非规格化浮点">非规格化浮点</h3>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623195907578.png" class="" title="非规格化">
+<ul>
+<li><p>非规格化正数的阶码要固定解读为最小真值-126</p></li>
+<li><p>尾数小数点前隐含0而不是1</p></li>
+<li><p>0除0、负数开根号、∞-∞结果均为NaN</p></li>
+<li><p>非零数值除以0，结果为±∞</p></li>
+</ul>
+<h2 id="加减运算-1">加减运算</h2>
+<h3 id="步骤">步骤</h3>
+<ol type="1">
+<li><p>对阶：对齐为相同数阶码，小阶向大阶对齐</p>
+<p>IEEE规定右移移出的bit至少额外保留三位</p></li>
+<li><p>尾数加减：尾数相加减，更可能得到规格化的尾数</p></li>
+<li><p>尾数规格化：若未规格化，需要左右规格化</p></li>
+<li><p>尾数舍入处理：若规定只保留n位有效尾数，多余的尾数：</p>
+<ul>
+<li>直接舍弃</li>
+<li>若舍弃部分非0，则入1</li>
+<li>四舍五入</li>
+</ul></li>
+<li><p>溢出判断：若规定阶码不能超过x，且运算后阶码超出范围则发生溢出</p></li>
+</ol>
+<h3 id="舍入问题">舍入问题</h3>
+<p>默认就近舍入：</p>
+<p>类似零舍一入，即更高位为0舍去，1进位</p>
+<p>若三个舍弃位刚好为100，则看前一位，若1+23bit的末位为0，则直接截取多余位，否则进位1</p>
+<h3 id="溢出问题">溢出问题</h3>
+<p>上溢：</p>
+<p>浮点数溢出不以尾数溢出判断，尾数溢出可以通过右规纠正</p>
+<p><strong>是否溢出主要看指数是否上溢</strong></p>
+<p>如：</p>
+<p>X=0 11111110 0000000000000000000000</p>
+<p>Y=0 11111110 1000000000000000000000</p>
+<p>求X+Y</p>
+<p>对阶，尾数加减后得到尾数原码为+10.1000000000000000000000</p>
+<p>进行规格化，尾数原码变为1.01000000000000000000000，阶码+1变为11111111，此时阶码全1发生上溢，尾数强制置为0</p>
+<p>结果为正无穷</p>
+<p>下溢：</p>
+<p>如：</p>
+<p>X=0 00000001 00000000000000000000001</p>
+<p>Y=1 00000001 00000000000000000000000</p>
+<p>求X+Y</p>
+<p>对阶，尾数加减后得到尾数原码为+0.00000000000000000000001</p>
+<p>进行规格化，如果尾数继续左移，阶码需要-1，变为00000000，此时变为非规格化浮点数</p>
+<p><strong>若当前阶码已经为00000001但尾数需要左规，直接把阶码置为全0，尾数不移位</strong></p>
+<p>结果为0 00000000 00000000000000000000001</p>
+<p>阶码全0，发生下溢，进入非规格化浮点数区间，则结果为<span
+class="math inline">\(2^{-149}\)</span></p>
+<h1 id="数据的存储和排列">数据的存储和排列</h1>
+<h2 id="大小端">大小端</h2>
+<p>多字节数据在内存里一定是占连续的几个字节，其中最左边为最高有效字节MSB，最右边为最低有效字节LSB</p>
+<ul>
+<li>大端法：把MSB存到更低地址部分，LSB存到更高地址部分</li>
+<li>小端法：把MSB存到更高地址部分，LSB存到更低地址部分</li>
+</ul>
+<p>机器更适于读小端法</p>
+<h2 id="边界对齐">边界对齐</h2>
+<p>现代计算机通常按字节寻址，每个字节对应一个地址</p>
+<p>也可以按照字、半字寻址</p>
+<p>若存储字长为32位，则一个字=32bit，半字=16bit，每次访存只能读写一个字</p>
+<p>按字寻址时，将字的编号左移2就是对应字的地址，按半字是左移1</p>
+<p>因此，结构体中如果有多个变量，他们的排布有边界对齐和不对齐两种方式，边界对齐时多出的空间放不下下一个数据类型时，会空出来，这样可以空间换时间，访问一个字和半字时都只需要一次访存</p>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%95%B0%E6%8D%AE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E8%BF%90%E7%AE%97/image-20260623213359062.png" class="" title="边界对齐">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="prev" title="【计算机组成原理】计算机系统">
+      <i class="fa fa-chevron-left"></i> 【计算机组成原理】计算机系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/" rel="next" title="【计算机组成原理】指令系统">
+      【计算机组成原理】指令系统 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E4%BD%8D%E8%AE%A1%E6%95%B0%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">进位计数法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E6%84%8F%E8%BF%9B%E5%88%B6%E8%BD%AC%E5%8D%81%E8%BF%9B%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">任意进制转十进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%92%8C%E5%85%AB%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">二进制和八、十六进制转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%81%E8%BF%9B%E5%88%B6%E8%BD%AC%E4%BB%BB%E6%84%8F%E8%BF%9B%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">十进制转任意进制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E7%82%B9%E6%95%B0%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">定点数的表示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">无符号数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">有符号数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81"><span class="nav-number">2.2.1.</span> <span class="nav-text">原码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E7%A0%81"><span class="nav-number">2.2.2.</span> <span class="nav-text">反码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81"><span class="nav-number">2.2.3.</span> <span class="nav-text">补码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E7%A0%81"><span class="nav-number">2.2.4.</span> <span class="nav-text">移码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%87%8F%E8%BF%90%E7%AE%97"><span class="nav-number">2.3.1.</span> <span class="nav-text">加减运算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6%E6%89%A9%E5%B1%95%E4%B8%8E%E7%AC%A6%E5%8F%B7%E6%89%A9%E5%B1%95"><span class="nav-number">2.4.</span> <span class="nav-text">零扩展与符号扩展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">加法器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#alu"><span class="nav-number">3.2.</span> <span class="nav-text">ALU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E7%82%B9%E6%95%B0%E7%9A%84%E7%A7%BB%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">3.3.</span> <span class="nav-text">定点数的移位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E7%A7%BB%E4%BD%8D"><span class="nav-number">3.3.1.</span> <span class="nav-text">逻辑移位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E7%A7%BB%E4%BD%8D"><span class="nav-number">3.3.2.</span> <span class="nav-text">算术移位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E7%82%B9%E6%95%B0%E7%9A%84%E5%8A%A0%E5%87%8F%E8%BF%90%E7%AE%97"><span class="nav-number">3.4.</span> <span class="nav-text">定点数的加减运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E7%9A%84%E5%8A%A0%E5%87%8F"><span class="nav-number">3.4.1.</span> <span class="nav-text">原码的加减</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81%E7%9A%84%E5%8A%A0%E5%87%8F"><span class="nav-number">3.4.2.</span> <span class="nav-text">补码的加减</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%94%B5%E8%B7%AF"><span class="nav-number">3.4.3.</span> <span class="nav-text">运算电路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E7%9A%84%E5%8A%A0%E5%87%8F%E8%BF%90%E7%AE%97"><span class="nav-number">3.5.</span> <span class="nav-text">无符号数的加减运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95"><span class="nav-number">3.5.1.</span> <span class="nav-text">加法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%8F%E6%B3%95"><span class="nav-number">3.5.2.</span> <span class="nav-text">减法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA"><span class="nav-number">3.5.3.</span> <span class="nav-text">溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%E7%9A%84%E4%B9%98%E6%B3%95"><span class="nav-number">3.6.</span> <span class="nav-text">无符号整数的乘法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">3.6.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF"><span class="nav-number">3.6.2.</span> <span class="nav-text">电路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA-1"><span class="nav-number">3.6.3.</span> <span class="nav-text">溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%E7%9A%84%E4%B9%98%E6%B3%95"><span class="nav-number">3.7.</span> <span class="nav-text">有符号整数的乘法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF-1"><span class="nav-number">3.7.1.</span> <span class="nav-text">电路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA-2"><span class="nav-number">3.7.2.</span> <span class="nav-text">溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AE%9E%E7%8E%B0%E4%B9%98%E6%B3%95%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">3.8.</span> <span class="nav-text">计算机实现乘法的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E7%A7%8D%E6%94%B9%E8%BF%9B"><span class="nav-number">3.8.1.</span> <span class="nav-text">一种改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B5%E5%88%97%E4%B9%98%E6%B3%95%E5%99%A8"><span class="nav-number">3.8.2.</span> <span class="nav-text">阵列乘法器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E4%B9%98%E6%B3%95%E8%BF%90%E7%AE%97%E7%94%B5%E8%B7%AF"><span class="nav-number">3.8.3.</span> <span class="nav-text">没有乘法运算电路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%E7%9A%84%E9%99%A4%E6%B3%95"><span class="nav-number">3.9.</span> <span class="nav-text">无符号整数的除法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF-2"><span class="nav-number">3.9.1.</span> <span class="nav-text">电路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA-3"><span class="nav-number">3.9.2.</span> <span class="nav-text">溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%E7%9A%84%E9%99%A4%E6%B3%95"><span class="nav-number">3.10.</span> <span class="nav-text">有符号整数的除法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF-3"><span class="nav-number">3.10.1.</span> <span class="nav-text">电路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ieee-754%E6%B5%AE%E7%82%B9%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">IEEE 754浮点数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E7%B2%BE%E5%BA%A6%E6%B5%AE%E7%82%B9%E5%AD%98%E5%82%A8"><span class="nav-number">4.2.</span> <span class="nav-text">单精度浮点存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E7%B2%BE%E5%BA%A6%E6%B5%AE%E7%82%B9%E5%AD%98%E5%82%A8"><span class="nav-number">4.3.</span> <span class="nav-text">双精度浮点存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E8%8C%83%E5%9B%B4"><span class="nav-number">4.4.</span> <span class="nav-text">表示范围</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E6%A0%BC%E5%8C%96%E6%B5%AE%E7%82%B9"><span class="nav-number">4.4.1.</span> <span class="nav-text">规格化浮点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%9F%E5%80%BC0"><span class="nav-number">4.4.2.</span> <span class="nav-text">真值0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E8%A7%84%E6%A0%BC%E5%8C%96%E6%B5%AE%E7%82%B9"><span class="nav-number">4.4.3.</span> <span class="nav-text">非规格化浮点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%87%8F%E8%BF%90%E7%AE%97-1"><span class="nav-number">4.5.</span> <span class="nav-text">加减运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.5.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%88%8D%E5%85%A5%E9%97%AE%E9%A2%98"><span class="nav-number">4.5.2.</span> <span class="nav-text">舍入问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%A2%E5%87%BA%E9%97%AE%E9%A2%98"><span class="nav-number">4.5.3.</span> <span class="nav-text">溢出问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E5%82%A8%E5%92%8C%E6%8E%92%E5%88%97"><span class="nav-number">5.</span> <span class="nav-text">数据的存储和排列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%B0%8F%E7%AB%AF"><span class="nav-number">5.1.</span> <span class="nav-text">大小端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E5%AF%B9%E9%BD%90"><span class="nav-number">5.2.</span> <span class="nav-text">边界对齐</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">746k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">22:36</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
