@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍了计算机网络的基本概念与框架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机网络】网络概述">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="介绍了计算机网络的基本概念与框架">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-23T08:17:18.716Z">
+<meta property="article:modified_time" content="2026-07-27T14:41:04.349Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【计算机网络】网络概述 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【计算机网络】网络概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-07-23 16:17:18" itemprop="dateCreated datePublished" datetime="2026-07-23T16:17:18+08:00">2026-07-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-07-27 22:41:04" itemprop="dateModified" datetime="2026-07-27T22:41:04+08:00">2026-07-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+            <div class="post-description">介绍了计算机网络的基本概念与框架</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="网络概念">网络概念</h1>
+<ul>
+<li><p>网络：由点和边构成的，与大小和形状无关的拓扑</p></li>
+<li><p>计算机网络：</p>
+<ul>
+<li><p>计算机网络中的点包括主机节点（各种设备）、数据交换节点（中继器、交换机、路由器等）</p></li>
+<li><p>边称为通信链路，包括接入链路（access）：主机连接到互联网的链路；主干链路（backbone）：路由器间的链路</p></li>
+<li><p>还包括协议，即计算机网络中的标准</p></li>
+</ul></li>
+<li><p>互联网：以TCP/IP为主的一簇协议支撑的，应用最 的一种网络</p>
+<ul>
+<li>端系统/主机：设备本身，操作系统，网络应用程序</li>
+<li>分组交换设备：不同层次由不同设备负责（路由器-网络层，交换机-通信层）</li>
+<li>通信链路</li>
+<li>协议：对等层的实体进行通信时遵守的一系列规则（即控制发送接收消息的标准）</li>
+<li>互联网是网络的网络：不同网络通过一系列网络交换节点相连</li>
+<li>Internet标准：以IETF（互联网工程任务组）发布的RFC（请求评述）文档形式</li>
+<li>互联网还是为分布式应用提供通信接口的基础设施，将发送和接收数据的apps和互联网连接起来，并为app应用提供服务选择（TCP，UDP等）</li>
+</ul></li>
+</ul>
+<h1 id="网络结构">网络结构</h1>
+<ul>
+<li>网络边缘：包括主机和应用程序</li>
+<li>网络核心：由数据交换节点构成的网络，网络的网络</li>
+<li>接入网：边缘接入核心的路径</li>
+</ul>
+<h2 id="网络边缘">网络边缘</h2>
+<p>网络边缘包括分布式应用以及为其提供通信服务的基础设施</p>
+<p>可以将应用层下的所有部分看作基础设施</p>
+<h3 id="模式">模式</h3>
+<p><strong>客户端/服务器模式（C/S模式）：</strong></p>
+<p>​
+客户端向服务器主动请求、接受服务，因此要求服务器先启动，客户端后启动</p>
+<p>​
+缺点：可扩展性、可靠性较差，随着请求负载增加，能力下降，当达到一定阈值时，会断崖式下降</p>
+<p><strong>对等模式（Peer2Peer模式）：</strong></p>
+<p>​
+每个分布式应用进程从某些会话来看是客户端，从另一些会话来看是服务器，即分布式应用可以是客户端也可以是服务器</p>
+<p>​ 这样的去中心化使得当请求资源的节点变多时，提供资源的节点也在变多</p>
+<p>​ 如BitTorrent的原理，可以多片段同时下载，使得加载速度变快</p>
+<h3 id="提供通信服务的方式">提供通信服务的方式</h3>
+<p><strong>面向连接的通信方式（TCP）：</strong></p>
+<p>两个通信主机在连接前要<strong>握手</strong>，即建立连接状态，做好准备</p>
+<p>特性：</p>
+<ul>
+<li>可靠的，按顺序的传送数据：包括确认和重传</li>
+<li>流量控制：发送方不会淹没接收方</li>
+<li>拥塞控制：网络拥塞时，发送方可以降低发送速率</li>
+</ul>
+<p>应用：HTTP，FTP，SMTP等</p>
+<p><strong>无连接的通信方式（UDP）：</strong></p>
+<p>无连接服务，不需要确认，因此不可靠数据传输、无流量和拥塞控制</p>
+<p>但是速度快，实时性强</p>
+<p>应用：实时流媒体，远程会议，DNS等</p>
+<h2 id="网络核心">网络核心</h2>
+<p>网络核心是实现数据交换的网状网络</p>
+<h3 id="电路交换">电路交换</h3>
+
+<p>端到端的资源被分配给从源端到目标端的呼叫</p>
+<p>实现通信需要通过<strong>信令系统</strong>，在网络中为两者分配一条独享线路</p>
+<p>通过各种方式可将节点间的线路分成若干<strong>小片</strong>（piece），信令系统从两者间挑出空闲的若干片连接起来，分配方式包括频分、时分、波分、码分等</p>
+<p>这样分配的线路可以保障性能</p>
+<p>如果这样的通信没有数据发送，被分配的资源就会被浪费</p>
+<p>注意：传输时需要时间，所以接受到的时间应该是发送时间+传输时间（发送的同时也可以接受，不需要算两遍）</p>
+<p>通常被电话网络采用</p>
+<p>缺点：不适合计算机之间的通信，建立连接时间长，浪费片会很多</p>
+<h3 id="分组交换">分组交换</h3>
+<style>.cqybbuxcsmcq{zoom: 50%;}</style>
+
+<p><strong>转发方式：</strong></p>
+<p>以<strong>分组</strong>（packet）为单位存储，网络带宽资源不再分为一片，传输时使用全部带宽；通过存储→转发的方式在每个交换节点之间进行数据交换，这一个过程称为<strong>一跳</strong>（hop）</p>
+<p>转发之前，每个交换节点需要将分组完全存储下来，在空闲的时候转发到下一个节点，这样可以避免交换过程占用整条链路</p>
+<p>但这种方法延迟要比电路交换更大，而且会有排队延迟（多个分组排队传输），例如在一个速率为R
+bps的链路中，一个长度L bits分组的存储转发延时为<span
+class="math inline">\(\frac{L}{R}s\)</span></p>
+<p><strong>分类：</strong></p>
+<p>数据报回路</p>
+<ul>
+<li>分组携带的目标地址决定下一跳</li>
+<li>无需建立连接，有数据就可以传输</li>
+<li>每个分组都独立路由</li>
+<li>在不同阶段，路由可以改变</li>
+</ul>
+<p>虚电路回路</p>
+<ul>
+<li>每个分组带有标签</li>
+<li>呼叫建立时通过信令决定路径（类似握手），整个呼叫中路径保持不变</li>
+<li>路由器维持每个呼叫的状态信息</li>
+</ul>
+<p><strong>排队延迟：</strong></p>
+<p>如果到达速率大于链路的输出速率，分组就会开始排队传输</p>
+<p>当排队的分组将路由器的缓存用完了，分组就会被丢弃</p>
+<p><strong>统计多路复用：</strong></p>
+<p>分组交换对多个输入采用的分配模式类似于TDM（时分），但分组交换的时间片划分方式不少固定的，是一种按需分配，
+称为统计多路复用（Statistical TDM）</p>
+<p><strong>缺点：</strong>滥用可能导致网络拥塞</p>
+<h2 id="网络核心的功能">网络核心的功能</h2>
+<ul>
+<li>路由：查询路由表决定分组采用的源到目标的路径，使用了路由算法</li>
+<li>转发： 将分组从路由器的输入链路转移到输出链路</li>
+</ul>
+<h1 id="接入网和物理媒体">接入网和物理媒体</h1>
+<p>接入网将边缘设备接入网络核心</p>
+<h2 id="接入网络方式">接入网络方式</h2>
+<h3 id="modem调制解调器">modem（调制解调器）</h3>
+<p>调制解调器可以将信号通过调频、调幅、调相等使得数据以音频载波等形式来传输，一侧调制后另一侧接受到可以解调</p>
+<p>这样我们可以通过已有的电话线并接上猫就可以传输数据</p>
+<p>缺点是带宽比较窄，且不能同时打电话和上网</p>
+<h3 id="dsl">DSL</h3>
+<p>仍然采用已有电话线，将频率分开，0-4kHz用于语音通讯传入电话网，4kHz以上，以非对称模式，一部分用于上行，另一部分用于下行（占比更多）传入互联网，这两部分仍然使用调制解调方式</p>
+<p>若上行和下行带宽不对称，称为ADSL</p>
+<h3 id="线缆网络">线缆网络</h3>
+<p>将有线电视信号线缆双向改造，使用FDM（频分复用）技术在不同频段传输不同信道数据，如数字电视信号和上下行上网数据，用户通过Cable
+Modem接入互联网</p>
+<p>采用HFC接入方式接入，也是非对称的，各个用户共享到线缆头端的接入网络，上网用户越多，每个用户实际带宽越窄</p>
+<h3 id="无线接入方式">无线接入方式</h3>
+<p>将端系统通过基站（接入点）连接到路由器</p>
+<ul>
+<li>WLANs：一般在建筑物内部使用</li>
+<li>广域无线接入：由移动蜂窝网络运营商提供，范围大</li>
+</ul>
+<h2 id="物理媒体">物理媒体</h2>
+<p>处于第零层，在发送-接受对之间传输bit用</p>
+<p>分为</p>
+<ul>
+<li>导引型介质：信号在有形的介质上传播</li>
+<li>非导引型介质：信号在开放空间自由传播</li>
+</ul>
+<h3 id="导引型介质">导引型介质</h3>
+<ul>
+<li>双绞线：两根绝缘铜线拧在一起</li>
+<li>同轴电缆：两根同心的铜导线，双向，宽带电缆上有多个信道，基带电缆上是单一信道</li>
+<li>光纤/光缆：使用玻璃纤维传递光脉冲，每个脉冲传递1bit，高速点到点的传输带宽，有低误码率和安全性</li>
+</ul>
+<h3 id="非导引型介质">非导引型介质</h3>
+<ul>
+<li>地面微波</li>
+<li>LAN（如WIFI）</li>
+<li>wide-area（如移动数据）</li>
+<li>卫星</li>
+</ul>
+<h1 id="互联网结构和isp">互联网结构和ISP</h1>
+<h2 id="互联网结构">互联网结构</h2>
+<p>端系统是通过接入ISP（互联网服务提供商）连接到互联网，而接入ISP相应的必须是互联的，任何两个端系统可以相互发送分组到对方，这导致网络的网络变得复杂</p>
+<p>若将每两个ISP相连，则可以达到<span
+class="math inline">\(O(n^2)\)</span>的规模，不可扩展</p>
+<p>若将每个ISP接入全局ISP，则因为经济关系肯定会有竞争，产生多个全局ISP；多个ISP也可以产生合作，完成业务扩展；业务也可以细分，产生全球接入与区域接入</p>
+<p>对于ICP（互联网内容提供商），若它依赖的ISP收费过高、质量不好等原因，它自己也可以实现通过全球建立DC（数据中心），铺设专门的线缆；且DC建立在ISP周围，用户可以通过ISP快速访问数据</p>
+<style>.fiukonrjgfam{zoom:67%;}</style>
+
+<p>因此互联网结构可以概括为：</p>
+<ul>
+<li>以第一层ISP为中心，实现国家或国际覆盖，他们通过peer2peer或IXP直接与其他第一层ISP相连，向下与大量第二层ISP和其他客户网络相连</li>
+<li>第二层ISP通常是区域性的，他们与一个或多个第一层ISP，也可能与其他第二层ISP互联</li>
+<li>第三层ISP或Local ISP将终端接入网</li>
+</ul>
+<h2 id="isp的连接">ISP的连接</h2>
+<ul>
+<li>POP：高层ISP面向客户网络的接入点，如一个底层ISP接入多个高层ISP，涉及费用结算</li>
+<li>对等接入：两个ISP对等互联，不涉及费用结算</li>
+<li>IXP：多个对等ISP互联互通之处，不涉及费用结算</li>
+<li>ICP专网，同时和各级ISP互联</li>
+</ul>
+<h1 id="分组延时丢失和吞吐量">分组延时、丢失和吞吐量</h1>
+<h2 id="产生原因">产生原因</h2>
+<p>路由器缓冲区存在一个分组队列，当有其他分组正在传输，当前分组需要排在这个分组队列中，等待它前面的释放完毕再输出</p>
+<p>队列容量是有限的，若队列溢出，当前分组就会被丢弃掉，这就是分组延迟和丢失的原理</p>
+<h2 id="延迟类型">延迟类型</h2>
+<ul>
+<li><p>节点处理延时：</p>
+<ul>
+<li>检查bit级差错</li>
+<li>检查分组首部和决定将分组导向何处</li>
+</ul></li>
+<li><p>排队延时：</p>
+<ul>
+<li>输出链路上等待传输的时间</li>
+<li>依赖于流量强度<span
+class="math inline">\(I=\frac{La}{R}\)</span>，其中分组长度为L
+bits，传输带宽为R bps，分组到达队列的平均速率a</li>
+<li>流量强度I处于0到1之间，趋近于1时，排队延迟趋近于无穷大，因此设计系统时<strong>流量强度不能大于等于1</strong></li>
+</ul></li>
+<li><p>传输延时：</p>
+<p>若分组长度为L bits，传输带宽为R bps，则传输需要的时间为<span
+class="math inline">\(\frac{L}{R}\)</span></p></li>
+<li><p>传播延时：</p>
+<p>若物理链路长度为d，在媒体上的传播速度为s，则传播延时为<span
+class="math inline">\(\frac{d}{s}\)</span></p></li>
+</ul>
+<style>.fnfklkmtibdr{zoom:50%;}</style>
+
+<p>总的节点延时是上面的数据之和</p>
+<h2 id="traceroute">Traceroute</h2>
+<p>互联网的延时和路由可以通过Traceroute诊断程序测试，它提供从源端经过路由器到目的的延时测量</p>
+<ul>
+<li>对于从源到目标的第i个路由器，发送三个测量分组</li>
+<li>路由器将数据包返回给发送者</li>
+<li>发送者测量从传输和回复之间的时间间隔</li>
+</ul>
+<p>原理：利用了ICMP（互联网控制报文）协议，每个IP的header中有一个TTL（生存时间）字段，当到达一个路由器时，TTL-1，若到某个路由器，TTL减为0，则该分组抛掉，并通过ICMP告诉源主机</p>
+<p>执行Traceroute的时候，将第i个分组的TTL字段设置为i，当分组被第i个路由器抛掉后，会向源主机通知其IP，这样源主机就可以知道分组来回的时间（称为RTT）；当分组达到目标主机，让分组对应的上传的端口没有应用守护，使得目标端口不可达，通知源主机，这样源主机就能知道结束</p>
+<h2 id="吞吐量">吞吐量</h2>
+<p>在源和目标端之间传输的速率（数据量除以单位时间）</p>
+<p>分为：</p>
+<ul>
+<li>瞬间吞吐量：在一个时间点的速率</li>
+<li>平均吞吐量：在一个长时间内的平均值</li>
+</ul>
+<p>多个链路不同吞吐量遵循短板效应，其中限制端到端吞吐量的路径上的某条链路称为瓶颈链路</p>
+<p>若第i跳通过的链路中，有n个连接在使用，则每个连接占用的带宽是<span
+class="math inline">\(\frac{1}{n}\)</span>，<strong>因此每个连接的端到端吞吐量其实是每段连接上当前连接占用带宽的最小值</strong></p>
+<h1 id="协议层次和服务模型">协议层次和服务模型</h1>
+<h2 id="协议层次">协议层次</h2>
+<p>网络是一个很复杂的系统，由各种元素和设备组成，这么复杂的网络功能是通过层次化来实现的：</p>
+<ul>
+<li>将网络复杂的功能，分成一层层功能明确的层次，每一层实现一种一个或一组功能，功能中有其上层可以使用的服务</li>
+<li>对等层通过协议实体相互交互，为了实现本层功能，通过接口更好为上层提供服务</li>
+<li>实现本层协议时直接利用了下层的服务</li>
+</ul>
+<h2 id="服务">服务</h2>
+<p>服务是底层实体向上层实体提供它们之间的通信的能力：分为服务用户和服务提供者</p>
+<h3 id="原语">原语</h3>
+<p>是上层使用下层服务的形式，高层使用底层的服务，底层向高层提供服务都是通过服务访问原语来交互的</p>
+<h3 id="服务访问点sap">服务访问点（SAP）</h3>
+<p>接口上的具体位置，用于区分不同上层用户，如传输层的SAP端口</p>
+<h3 id="类型">类型</h3>
+<ul>
+<li><p>面向连接的服务：</p>
+<p>两个通信实体为了进行通信而建立一种结合，为通信做好准备，表现在资源准备和控制变量置位，服务过程包括建立连接，通信，拆除。这种服务通常是可靠的</p></li>
+<li><p>无连接的服务：</p>
+<p>两个对等层实体通信前不需要建立一个连接，不预留资源，通信发起时不知道对方是否活跃，是不可靠的服务</p></li>
+</ul>
+<h3 id="服务与协议">服务与协议</h3>
+<ul>
+<li>服务是低层实体向上层实体提供它们之间的通信能力，是通过原语操作的，传输方向是垂直的</li>
+<li>协议是对等层实体之间再相互通信的过程中，需要遵循的规则集合，传输方向是水平的</li>
+<li>本层协议的实现要靠下层提供的服务来实现</li>
+<li>本层实体通过协议为上层提供更高级的服务</li>
+</ul>
+<h3 id="数据单元">数据单元</h3>
+<style>.rwqiqrjlqarv{zoom:50%;}</style>
+
+<p>数据单元用于层间传输数据：</p>
+<ul>
+<li>上层传来SDU（服务器数据单元），SDU加入一些接口信息，形成IDU以便穿过接口</li>
+<li>本层拿到SDU后，会加上本层需要的附加信息（Header），形成本层的PDU（协议数据单元）</li>
+<li>对等层协议实体之间交换都是通过本层的PDU实现交换的</li>
+</ul>
+<p>当SDU过大时，会将SDU分为多块，每块都会加上Header作为PDU</p>
+<p>当SDU过小时，会把若干SDU合在一起，加上Header作为PDU</p>
+<h2 id="internet协议栈">Internet协议栈</h2>
+<p>互联网分为五个层次，自下而上分别是：</p>
+<h3 id="物理层">物理层</h3>
+<p>负责传输比特数据</p>
+<p>发送端负责将上层传下来的帧以比特换为物理信号，通过介质传输给对方</p>
+<p>接收端负责将介质中的物理信号还原为原来的数据</p>
+<h3 id="链路层">链路层</h3>
+<p>在物理层提供的服务的基础上，在相邻两点之间传输以帧为单位的数据</p>
+<p>负责的是将若干比特按一定规律组合为一帧，实现的是点到点之间的传输</p>
+<p>包括PPP，以太网，WLAN协议</p>
+<h3 id="网络层">网络层</h3>
+<p>实现源主机到目标主机之间的数据报传输</p>
+<p>实现的是端到端之间的传输，且传输不可靠</p>
+<p>包括IP和路由协议</p>
+<h3 id="传输层">传输层</h3>
+<p>实现主机之间的数据传输，在网络层提供的端到端通信基础上细分为进程到进程</p>
+<p>通过TCP/UDP将不可靠的通信变为可靠的通信</p>
+<h3 id="应用层">应用层</h3>
+<p>为用户或其他应用进程提供网络应用服务</p>
+<p>包括很多协议，如FTP，SMTP，HTTP，DNS等</p>
+<h3 id="isoosi参考模型">ISO/OSI参考模型</h3>
+<p>这种模型多了两层：</p>
+<ul>
+<li>表示层：允许应用解释传输的数据</li>
+<li>会话层：数据交换的同步，检查点，恢复</li>
+</ul>
+<p>互联网协议栈这两层靠应用层自己实现</p>
+<h3 id="各个层次的协议数据单元">各个层次的协议数据单元</h3>
+<ul>
+<li>应用层：报文</li>
+<li>传输层：报文段：TCP段、UDP数据报</li>
+<li>网络层：分组packet（若无连接方式：数据报datagram）</li>
+<li>数据链路层：帧</li>
+<li>物理层：位</li>
+</ul>
+<h2 id="封装与解封装">封装与解封装</h2>
+<ul>
+<li>传输层：使用传输层报头<code>Ht</code>封装应用层报文M，以创建报文段，<code>Ht</code>用于传输层协议实现其服务</li>
+<li>网络层：用网络层报头<code>Hn</code>封装传输层报文段，以创建数据报，<code>Hn</code>用于网络层协议实现其服务</li>
+<li>链路层：使用链路层报头<code>Hl</code>创建链路层帧，封装网络数据报</li>
+</ul>
+<style>.bbejgvmxlvyt{zoom: 67%;}</style>
+
+<p>其中，中间经过交换机还需要两层封装解封装，经过路由器需要三层封装解封装</p>
+<style>.qgyoxkpxkjnj{zoom:67%;}</style>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Golang/GoZero/API%20DSL/" rel="prev" title="【go-zero】API DSL">
+      <i class="fa fa-chevron-left"></i> 【go-zero】API DSL
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">网络概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">网络结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BE%B9%E7%BC%98"><span class="nav-number">2.1.</span> <span class="nav-text">网络边缘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.1.</span> <span class="nav-text">模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E9%80%9A%E4%BF%A1%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.2.</span> <span class="nav-text">提供通信服务的方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A0%B8%E5%BF%83"><span class="nav-number">2.2.</span> <span class="nav-text">网络核心</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2"><span class="nav-number">2.2.1.</span> <span class="nav-text">电路交换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2"><span class="nav-number">2.2.2.</span> <span class="nav-text">分组交换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A0%B8%E5%BF%83%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">2.3.</span> <span class="nav-text">网络核心的功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A5%E5%85%A5%E7%BD%91%E5%92%8C%E7%89%A9%E7%90%86%E5%AA%92%E4%BD%93"><span class="nav-number">3.</span> <span class="nav-text">接入网和物理媒体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%9C%E6%96%B9%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">接入网络方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#modem%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8"><span class="nav-number">3.1.1.</span> <span class="nav-text">modem（调制解调器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dsl"><span class="nav-number">3.1.2.</span> <span class="nav-text">DSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%BC%86%E7%BD%91%E7%BB%9C"><span class="nav-number">3.1.3.</span> <span class="nav-text">线缆网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%BA%BF%E6%8E%A5%E5%85%A5%E6%96%B9%E5%BC%8F"><span class="nav-number">3.1.4.</span> <span class="nav-text">无线接入方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%AA%92%E4%BD%93"><span class="nav-number">3.2.</span> <span class="nav-text">物理媒体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%BC%95%E5%9E%8B%E4%BB%8B%E8%B4%A8"><span class="nav-number">3.2.1.</span> <span class="nav-text">导引型介质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%AF%BC%E5%BC%95%E5%9E%8B%E4%BB%8B%E8%B4%A8"><span class="nav-number">3.2.2.</span> <span class="nav-text">非导引型介质</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E7%BB%93%E6%9E%84%E5%92%8Cisp"><span class="nav-number">4.</span> <span class="nav-text">互联网结构和ISP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E7%BB%93%E6%9E%84"><span class="nav-number">4.1.</span> <span class="nav-text">互联网结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#isp%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="nav-number">4.2.</span> <span class="nav-text">ISP的连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E5%BB%B6%E6%97%B6%E4%B8%A2%E5%A4%B1%E5%92%8C%E5%90%9E%E5%90%90%E9%87%8F"><span class="nav-number">5.</span> <span class="nav-text">分组延时、丢失和吞吐量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0"><span class="nav-number">5.1.</span> <span class="nav-text">产生原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">延迟类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#traceroute"><span class="nav-number">5.3.</span> <span class="nav-text">Traceroute</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%9E%E5%90%90%E9%87%8F"><span class="nav-number">5.4.</span> <span class="nav-text">吞吐量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%B1%82%E6%AC%A1%E5%92%8C%E6%9C%8D%E5%8A%A1%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.</span> <span class="nav-text">协议层次和服务模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%B1%82%E6%AC%A1"><span class="nav-number">6.1.</span> <span class="nav-text">协议层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1"><span class="nav-number">6.2.</span> <span class="nav-text">服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E8%AF%AD"><span class="nav-number">6.2.1.</span> <span class="nav-text">原语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E8%AE%BF%E9%97%AE%E7%82%B9sap"><span class="nav-number">6.2.2.</span> <span class="nav-text">服务访问点（SAP）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.2.3.</span> <span class="nav-text">类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E4%B8%8E%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.2.4.</span> <span class="nav-text">服务与协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%95%E5%85%83"><span class="nav-number">6.2.5.</span> <span class="nav-text">数据单元</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#internet%E5%8D%8F%E8%AE%AE%E6%A0%88"><span class="nav-number">6.3.</span> <span class="nav-text">Internet协议栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="nav-number">6.3.1.</span> <span class="nav-text">物理层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">6.3.2.</span> <span class="nav-text">链路层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="nav-number">6.3.3.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="nav-number">6.3.4.</span> <span class="nav-text">传输层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-number">6.3.5.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isoosi%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.3.6.</span> <span class="nav-text">ISO&#x2F;OSI参考模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E4%B8%AA%E5%B1%82%E6%AC%A1%E7%9A%84%E5%8D%8F%E8%AE%AE%E6%95%B0%E6%8D%AE%E5%8D%95%E5%85%83"><span class="nav-number">6.3.7.</span> <span class="nav-text">各个层次的协议数据单元</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E4%B8%8E%E8%A7%A3%E5%B0%81%E8%A3%85"><span class="nav-number">6.4.</span> <span class="nav-text">封装与解封装</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">191</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">794k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">24:05</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

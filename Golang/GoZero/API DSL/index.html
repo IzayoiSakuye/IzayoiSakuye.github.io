@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="goctl使用的API定义语言，用于描述HTTP服务，进而通过goctl自动生成对应handler和路由">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【go-zero】API DSL">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/GoZero/API%20DSL/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="goctl使用的API定义语言，用于描述HTTP服务，进而通过goctl自动生成对应handler和路由">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-21T04:45:06.123Z">
+<meta property="article:modified_time" content="2026-07-27T14:31:22.070Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Gozero">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/Golang/GoZero/API%20DSL/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【go-zero】API DSL | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/GoZero/API%20DSL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【go-zero】API DSL
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-07-21 12:45:06" itemprop="dateCreated datePublished" datetime="2026-07-21T12:45:06+08:00">2026-07-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-07-27 22:31:22" itemprop="dateModified" datetime="2026-07-27T22:31:22+08:00">2026-07-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/go-zero/" itemprop="url" rel="index"><span itemprop="name">go-zero</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+            <div class="post-description">goctl使用的API定义语言，用于描述HTTP服务，进而通过goctl自动生成对应handler和路由</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="api-dsl">API DSL</h1>
+<p>goctl API
+DSL是一种描述HTTP服务的简洁语言，来源于<code>.api</code>文件</p>
+<h2 id="文件结构">文件结构</h2>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">syntax </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;v1&quot;</span><span style="color: #24292E">         </span><span style="color: #6A737D">// 必须的版本声明</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">info (                </span><span style="color: #6A737D">// 可选元数据块</span></span>
+<span class="line"><span style="color: #24292E">    title: </span><span style="color: #032F62">&quot;用户 API&quot;</span></span>
+<span class="line"><span style="color: #24292E">    version: </span><span style="color: #032F62">&quot;1.0&quot;</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">shared.api</span><span style="color: #032F62">&quot;</span><span style="color: #24292E">   </span><span style="color: #6A737D">// 导入其他 .api 文件</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> (</span><span style="color: #D73A49">...</span><span style="color: #24292E">)             </span><span style="color: #6A737D">// 类型定义</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">service name</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {     </span><span style="color: #6A737D">// 服务块</span></span>
+<span class="line"><span style="color: #24292E">    @server (</span><span style="color: #D73A49">...</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">    @handler HandlerName</span></span>
+<span class="line"><span style="color: #24292E">    method </span><span style="color: #D73A49">/</span><span style="color: #24292E">path (RequestType) returns (ResponseType)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h2 id="服务块">服务块</h2>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">service user</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E">    @server (</span></span>
+<span class="line"><span style="color: #24292E">        jwt:         Auth             </span><span style="color: #6A737D">// 启用 JWT 中间件</span></span>
+<span class="line"><span style="color: #24292E">        middleware:  AccessLog,Cors   </span><span style="color: #6A737D">// 应用命名中间件</span></span>
+<span class="line"><span style="color: #24292E">        prefix:      </span><span style="color: #D73A49">/</span><span style="color: #24292E">v1              </span><span style="color: #6A737D">// URL 前缀</span></span>
+<span class="line"><span style="color: #24292E">        timeout:     </span><span style="color: #B31D28; font-style: italic">3s</span><span style="color: #24292E">               </span><span style="color: #6A737D">// 超时时间</span></span>
+<span class="line"><span style="color: #24292E">    )</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    @handler Login</span></span>
+<span class="line"><span style="color: #24292E">    post </span><span style="color: #D73A49">/</span><span style="color: #24292E">user</span><span style="color: #D73A49">/</span><span style="color: #24292E">login (LoginReq) returns (LoginResp)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    @handler GetUser</span></span>
+<span class="line"><span style="color: #24292E">    get </span><span style="color: #D73A49">/</span><span style="color: #24292E">user</span><span style="color: #D73A49">/</span><span style="color: #24292E">:id (UserReq) returns (UserResp)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="api-类型">API 类型</h1>
+<p>类型声明要满足如下规则：</p>
+<ul>
+<li>以<code>type</code>开头</li>
+<li>不需要声明<code>struct</code>关键字</li>
+<li>不支持泛型和弱类型</li>
+</ul>
+<h2 id="参数">参数</h2>
+<h3 id="参数接收规则">参数接收规则</h3>
+<p>可以在类型中用tag声明参数接收规则</p>
+<table>
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 38%" />
+<col style="width: 8%" />
+<col style="width: 14%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr>
+<th>接收规则</th>
+<th>说明</th>
+<th>生效范围</th>
+<th>接收tag示例</th>
+<th>请求示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>json</td>
+<td>json 序列化</td>
+<td>请求体&amp;响应体</td>
+<td>json:“foo”</td>
+<td>{“key”:“value”}</td>
+</tr>
+<tr>
+<td>path</td>
+<td>路由参数</td>
+<td>请求体</td>
+<td>path:“id”</td>
+<td>/foo/:id</td>
+</tr>
+<tr>
+<td>form</td>
+<td>post 请求的表单参数请求接收标识，get 请求的 query 参数接收标识</td>
+<td>请求体</td>
+<td>form:“name”</td>
+<td>GET /search?key=value</td>
+</tr>
+<tr>
+<td>header</td>
+<td>http 请求体接收标识</td>
+<td>请求体</td>
+<td>header:“Content-Length”</td>
+<td>origin: <a target="_blank" rel="noopener" href="https://go-zero.dev/">https://go-zero.dev</a></td>
+</tr>
+</tbody>
+</table>
+<p>其中POST支持 content-type 为 <code>form-data</code> 和
+<code>x-www-form-urlencoded</code></p>
+<p>注意：gozero中不支持多tag接收参数，即一个字段只能有一个tag</p>
+<h3 id="参数校验规则">参数校验规则</h3>
+<p>还可以在tag中添加参数校验，只对请求体有效，支持的规则如下：</p>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 51%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th>接收规则</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>optional</td>
+<td>当前字段是可选参数，允许为零值(zero value)</td>
+<td><code>json:“foo,optional”</code></td>
+</tr>
+<tr>
+<td>options</td>
+<td>当前参数仅可接收的枚举值</td>
+<td><code>json:“gender,options=foo|bar”</code></td>
+</tr>
+<tr>
+<td>default</td>
+<td>当前参数默认值</td>
+<td><code>json:“gender,default=male”</code></td>
+</tr>
+<tr>
+<td>range</td>
+<td>当前参数数值有效范围，仅对数值有效</td>
+<td><code>json:“age,range=[0:120]”</code></td>
+</tr>
+</tbody>
+</table>
+<p>注意，range表达式用小括号表示开区间，中括号表示闭区间，当min值缺省时，min代表0，max值缺省时，mnax代表无穷，两者不能同时缺省</p>
+<h1 id="路由规则">路由规则</h1>
+<p>API描述语言中，路由需要满足如下规则：</p>
+<ul>
+<li>以<code>/</code>开头</li>
+<li>路由节点以<code>/</code>分隔</li>
+<li>路由节点中可以包含<code>:</code>，但<code>:</code>必须是路由节点的第一个字符，它后面的节点值必须在请求体中有<code>path</code>tag声明，用于接收路由参数</li>
+<li>路由节点可以包含数字、字母、下划线和中划线</li>
+</ul>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">service Demo {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// 示例路由 /foo</span></span>
+<span class="line"><span style="color: #24292E">  @handler demoPath1</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">foo (DemoReq) returns (DemoResp)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// 示例路由 /foo/bar</span></span>
+<span class="line"><span style="color: #24292E">  @handler demoPath2</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">foo</span><span style="color: #D73A49">/</span><span style="color: #24292E">bar (DemoReq) returns (DemoResp)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// 示例路由 /foo/bar/:id，其中 id 为请求体中的字段</span></span>
+<span class="line"><span style="color: #24292E">  @handler demoPath3</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">foo</span><span style="color: #D73A49">/</span><span style="color: #24292E">bar</span><span style="color: #D73A49">/</span><span style="color: #24292E">:id (DemoPath3Req) returns (DemoResp)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// 示例路由 /foo/bar/:id/:name，其中 id，name 为请求体中的字段</span></span>
+<span class="line"><span style="color: #24292E">  @handler demoPath4</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">foo</span><span style="color: #D73A49">/</span><span style="color: #24292E">bar</span><span style="color: #D73A49">/</span><span style="color: #24292E">:id</span><span style="color: #D73A49">/</span><span style="color: #24292E">:name (DemoPath4Req) returns (DemoResp)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// 示例路由 /foo/bar/baz-qux</span></span>
+<span class="line"><span style="color: #24292E">  @handler demoPath6</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">foo</span><span style="color: #D73A49">/</span><span style="color: #24292E">bar</span><span style="color: #D73A49">/</span><span style="color: #24292E">baz</span><span style="color: #D73A49">-</span><span style="color: #24292E">qux (DemoReq) returns (DemoResp)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// 示例路由 /foo/bar_baz/123(goctl 1.5.1 支持)</span></span>
+<span class="line"><span style="color: #24292E">  @handler demoPath7</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">foo</span><span style="color: #D73A49">/</span><span style="color: #24292E">bar_baz</span><span style="color: #D73A49">/</span><span style="color: #005CC5">123</span><span style="color: #24292E"> (DemoReq) returns (DemoResp)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="路由分组">路由分组</h1>
+<p>随着业务扩展，服务接口也会变多，生成代码文件也会变多，我们需要将生成的代码文件按照维度聚合，便于开发和维护</p>
+<p>没有分组的情况，生成的代码handler和logic下的目录都是混在一起的，不方便管理和阅读</p>
+<p>API语言中，我们可以通过在<code>@server</code>语句块中使用<code>group</code>关键字分组</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@server (</span></span>
+<span class="line"><span style="color: #24292E">  prefix: </span><span style="color: #D73A49">/</span><span style="color: #24292E">v1</span></span>
+<span class="line"><span style="color: #24292E">  group:  user</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">service user</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E"> </span><span style="color: #6A737D">//...</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">@server (</span></span>
+<span class="line"><span style="color: #24292E">  prefix: </span><span style="color: #D73A49">/</span><span style="color: #24292E">v1</span></span>
+<span class="line"><span style="color: #24292E">  group:  role</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">service user</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">//...</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">@server (</span></span>
+<span class="line"><span style="color: #24292E">  prefix: </span><span style="color: #D73A49">/</span><span style="color: #24292E">v1</span></span>
+<span class="line"><span style="color: #24292E">  group:  class</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">service user</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">//...</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>这样可以将不同的业务逻辑分到不同的目录下</p>
+<h1 id="路由前缀">路由前缀</h1>
+<p>假设我们有一个用户服务，需要通过路由来区分不同版本，可以通过api语言声明路由前缀</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">https://example.com/v1/users</span></span>
+<span class="line"><span style="color: #24292e">https://example.com/v2/users</span></span></code></pre></div></div></figure>
+<p>可以通过在<code>@server</code>语句块中使用<code>prefix</code>关键字声明路由前缀：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@server (</span></span>
+<span class="line"><span style="color: #24292E">  prefix: </span><span style="color: #D73A49">/</span><span style="color: #24292E">v1</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">service user</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E">  @handler usersv1</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">users returns ([]UserV1)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">@server (</span></span>
+<span class="line"><span style="color: #24292E">  prefix: </span><span style="color: #D73A49">/</span><span style="color: #24292E">v2</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">service user</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E">  @handler usersv2</span></span>
+<span class="line"><span style="color: #24292E">  get </span><span style="color: #D73A49">/</span><span style="color: #24292E">users returns ([]UserV2)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>生成的代码会通过<code>rest.WithPrfix</code>来声明路由前缀</p>
+<h1 id="中间件声明">中间件声明</h1>
+<p>API语言中，在<code>@server</code>语句块中使用<code>middleware</code>关键字声明中间件的，多个中间件以英文逗号分割，这样生成的代码会单独开一个<code>middleware</code>文件夹</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@</span><span style="color: #005CC5">server</span><span style="color: #24292E">(</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 通过 middileware 关键字声明中间件，多个中间件以英文逗号分割，如 UserAgentMiddleware,LogMiddleware</span></span>
+<span class="line"><span style="color: #24292E">    middleware: UserAgentMiddleware</span></span>
+<span class="line"><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>中间件代码由goctl自动生成，是一个结构体，存在一个Handle方法，接收一个<code>http.HandlerFunc</code>参数并返回一个<code>http.HandlerFunc</code>参数，用于对请求处理并传递给下一个中间件或handler</p>
+<p>例：我们在中间件中将header的<code>User-Agent</code>信息存到context中</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">UserAgentMiddleware</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NewUserAgentMiddleware</span><span style="color: #24292E">() </span><span style="color: #D73A49">*</span><span style="color: #24292E">UserAgentMiddleware {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">UserAgentMiddleware{}</span></span>
+<span class="line"><span style="color: #24292E">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (m </span><span style="color: #D73A49">*</span><span style="color: #24292E">UserAgentMiddleware) </span><span style="color: #6F42C1">Handle</span><span style="color: #24292E">(next http.HandlerFunc) http.HandlerFunc {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">func</span><span style="color: #24292E">(w http.ResponseWriter, r </span><span style="color: #D73A49">*</span><span style="color: #24292E">http.Request) {</span></span>
+<span class="line"><span style="color: #24292E">        val </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> r.Header.</span><span style="color: #005CC5">Get</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;User-Agent&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        reqCtx </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> r.</span><span style="color: #005CC5">Context</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #24292E">        ctx </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> context.</span><span style="color: #005CC5">WithValue</span><span style="color: #24292E">(reqCtx, </span><span style="color: #032F62">&quot;User-Agent&quot;</span><span style="color: #24292E">, val)</span></span>
+<span class="line"><span style="color: #24292E">        newReq </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> r.</span><span style="color: #005CC5">WithContext</span><span style="color: #24292E">(ctx)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">next</span><span style="color: #24292E">(w, newReq)</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>context的传递：</p>
+<ul>
+<li>在一个新中间件中间件中，使用<code>r.Context()</code>获取传入请求的context</li>
+<li>使用<code>context.WithValue()</code>新建带值的ctx</li>
+<li>使用<code>r.WithContext()</code>得到新的request，传到下游</li>
+<li>下游代码可以通过<code>r.Context()</code>获取值</li>
+</ul>
+<h1 id="jwt鉴权">JWT鉴权</h1>
+<p>JWT是一种开放标准，用于在网络应用间传递声明式信息，是一种基于JSON的轻量级身份验证和授权机制，用于在客户端和服务端之间安全传输信息</p>
+<p>在API文件中，在<code>@server</code>语句块中使用<code>jwt:Auth</code>开启jwt认证，它仅对下面对应的路由有效，使用<code>Auth</code>作为jwt的值，经过goctl代码生成后会转成对应的jwt配置：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">config</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">github.com/zeromicro/go-zero/rest</span><span style="color: #032F62">&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Config</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">  rest.RestConf</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #6A737D">// Auth 配置 JWT 认证需要的密钥和过期时间。</span></span>
+<span class="line"><span style="color: #24292E">  Auth </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    AccessSecret </span><span style="color: #D73A49">string</span></span>
+<span class="line"><span style="color: #24292E">    AccessExpire </span><span style="color: #D73A49">int64</span></span>
+<span class="line"><span style="color: #24292E">  }</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p><code>route.go</code>中生成了通过<code>rest.WithJwt</code>来声明jwt认证</p>
+<p>注意：对于jwt token的生成和refresh token仍需开发者自行实现</p>
+<p>jwt通常也可以携带一些自定义信息，比如server端生成jwt
+key时添加了<code>custom-key</code>值，go-zero解析后会将所有载体放到context中，获取载体信息示例如下：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (l </span><span style="color: #D73A49">*</span><span style="color: #24292E">UserInfoLogic) </span><span style="color: #6F42C1">UserInfo</span><span style="color: #24292E">(req </span><span style="color: #D73A49">*</span><span style="color: #24292E">types.UserInfoReq) (resp </span><span style="color: #D73A49">*</span><span style="color: #24292E">types.UserInfoResp, err </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 获取 jwt 载体信息</span></span>
+<span class="line"><span style="color: #24292E">  value </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> l.ctx.</span><span style="color: #005CC5">Value</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;custom-key&quot;</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<h1 id="请求签名">请求签名</h1>
+<p>gozero中内置了签名功能，可以通过api语言开启，并生成签名代码</p>
+<p>在<code>@server</code>代码块中使用<code>signature</code>关键字开启签名功能</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">@server (</span></span>
+<span class="line"><span style="color: #24292E">  signature: </span><span style="color: #005CC5">true</span><span style="color: #24292E"> </span><span style="color: #6A737D">// 通过 signature 关键字开启签名功能</span></span>
+<span class="line"><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">service sign</span><span style="color: #D73A49">-</span><span style="color: #24292E">api {</span></span>
+<span class="line"><span style="color: #24292E">  @handler SignDemo</span></span>
+<span class="line"><span style="color: #24292E">  post </span><span style="color: #D73A49">/</span><span style="color: #24292E">sign</span><span style="color: #D73A49">/</span><span style="color: #24292E">demo (SignDemoReq) returns (SignDemoResp)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>生成的路由代码会自动携带<code>rest.WithSignature</code></p>
+<h1 id="api导入">API导入</h1>
+<p>随着业务量增大，API文件也会越来越大，写在同一个api文件中api文件也会变得巨大，不易阅读和维护，所以可以通过api
+import引入其他api文件</p>
+<p>假设HTTP服务响应统一为如下json格式：</p>
+<figure class="shiki json"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">{</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;code&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;msg&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;success&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">&quot;data&quot;</span><span style="color: #24292E">: {}</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>前两个是固定的，data可变，所以我们可以将前两个字段抽象出来，定义一个公共结构体，在其他api文件中引入该结构体，例如抽象在<code>bash.api</code>中：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">syntax </span><span style="color: #D73A49">=</span><span style="color: #24292E">  </span><span style="color: #032F62">&quot;v1&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Base</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    Code </span><span style="color: #D73A49">int</span><span style="color: #24292E">    </span><span style="color: #032F62">`json:&quot;code&quot;`</span></span>
+<span class="line"><span style="color: #24292E">    Msg  </span><span style="color: #D73A49">string</span><span style="color: #24292E"> </span><span style="color: #032F62">`json:&quot;msg&quot;`</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>这样其他api文件可以通过<code>import "base.api"</code>引入</p>
+<p>由于api描述语言中没有package的概念，所以引入时需要用相对路径</p>
+<h1 id="sse路由">SSE路由</h1>
+<p>SSE是服务器推送事件，一种服务器向浏览器单向推送实时数据的轻量协议</p>
+<h2 id="工作原理">工作原理</h2>
+<ul>
+<li>客户端发起一个普通HTTP请求，且header中告诉服务器自己支持SSE</li>
+<li>服务器保持该连接不关闭，并持续推送文本消息（以<code>text/event-stream</code>
+格式）</li>
+<li>每条消息都是一个事件，浏览器通过js的<code>EventSource</code>对象自动接收，不用反复轮询</li>
+</ul>
+<h2 id="sse支持">SSE支持</h2>
+<p>gozero中可以通过在<code>@server</code>语句块中开启<code>sse:true</code>注解来支持SSE</p>
+<p>指定开启后，goctl会带有<code>rest.WithSSE()</code>选项的路由，该选项会自动：</p>
+<ul>
+<li>设置适当的SSE头部</li>
+<li>移除写入超时以允许长时间运行的连接</li>
+<li>启用连接保持活动</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>SSE路由通常应该使用GET方法</li>
+<li>连接将保持打开，知道客户端断开连接或处理程序完成</li>
+<li>SSE可与JWT认证和中间件良好配合使用</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+              <a href="/tags/Gozero/" rel="tag"># Gozero</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Golang/GoZero/HTTP%E6%9C%8D%E5%8A%A1/" rel="prev" title="【go-zero】HTTP服务">
+      <i class="fa fa-chevron-left"></i> 【go-zero】HTTP服务
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/" rel="next" title="【计算机网络】网络概述">
+      【计算机网络】网络概述 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#api-dsl"><span class="nav-number">1.</span> <span class="nav-text">API DSL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">文件结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%9D%97"><span class="nav-number">1.2.</span> <span class="nav-text">服务块</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#api-%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">API 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E6%8E%A5%E6%94%B6%E8%A7%84%E5%88%99"><span class="nav-number">2.1.1.</span> <span class="nav-text">参数接收规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99"><span class="nav-number">2.1.2.</span> <span class="nav-text">参数校验规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A7%84%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">路由规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%88%86%E7%BB%84"><span class="nav-number">4.</span> <span class="nav-text">路由分组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%89%8D%E7%BC%80"><span class="nav-number">5.</span> <span class="nav-text">路由前缀</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%A3%B0%E6%98%8E"><span class="nav-number">6.</span> <span class="nav-text">中间件声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jwt%E9%89%B4%E6%9D%83"><span class="nav-number">7.</span> <span class="nav-text">JWT鉴权</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E7%AD%BE%E5%90%8D"><span class="nav-number">8.</span> <span class="nav-text">请求签名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#api%E5%AF%BC%E5%85%A5"><span class="nav-number">9.</span> <span class="nav-text">API导入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sse%E8%B7%AF%E7%94%B1"><span class="nav-number">10.</span> <span class="nav-text">SSE路由</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">10.1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sse%E6%94%AF%E6%8C%81"><span class="nav-number">10.2.</span> <span class="nav-text">SSE支持</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">191</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">794k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">24:05</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>
