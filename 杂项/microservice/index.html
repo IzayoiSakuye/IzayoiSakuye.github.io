@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="梳理了一下微服务的基本思想以及用到的相关技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【杂项】微服务">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="梳理了一下微服务的基本思想以及用到的相关技术">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260702202419978.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260702203457104.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260702205719763.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260702215539973.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260712193507256.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260712211550697.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260712212401560.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260712213558717.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260712213656409.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E5%BE%AE%E6%9C%8D%E5%8A%A1/image-20260805145648312.png">
+<meta property="article:published_time" content="2026-08-12T05:59:23.306Z">
+<meta property="article:modified_time" content="2026-08-12T06:02:01.971Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/image-20260702202419978.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【杂项】微服务 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/microservice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【杂项】微服务
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-08-12 13:59:23 / 修改时间：14:02:01" itemprop="dateCreated datePublished" datetime="2026-08-12T13:59:23+08:00">2026-08-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>16 分钟</span>
+            </span>
+            <div class="post-description">梳理了一下微服务的基本思想以及用到的相关技术</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>来自于视频<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1tk4y1W7e7">点此</a>的学习笔记</p>
+</blockquote>
+<h1 id="单体架构与微服务架构">单体架构与微服务架构</h1>
+<h2 id="单体">单体</h2>
+<p>单体架构将所有功能模块集中在一个应用框架中，共享代码库、进程和数据库，各个模块紧密耦合</p>
+<p>通常由传统三层架构构成：数据库、UI和服务器端应用程序</p>
+<p>服务端应用程序处理所有HTTP请求并执行业务逻辑，单体应用中，服务器端逻辑、UI逻辑和批处理作业捆绑在一个EAR（企业存档）、WAR（Web存档）或者JAR（Java存档）中</p>
+<p>单体并非落后，它有着自己的优点：开发快、部署简单、调试方便、高性能</p>
+<p>它的缺点也很明显：紧耦合、构建周期长等</p>
+<h2 id="微服务">微服务</h2>
+<p>微服务表示完成业务逻辑的小服务的集合</p>
+<p>旨在创建小型服务套件，组合成更大的应用程序，所有微服务都运行他们的进程来完成这项工作，且他们独立构建，具有完全独立的部署机制</p>
+<p>微服务具有轻量级的通信机制，HTTP资源API</p>
+<p>微服务有着更好的组织，且敏捷性更高</p>
+<h1 id="rpc">RPC</h1>
+<p>RPC即远程过程调用（Remote Procedure Call）</p>
+<blockquote>
+<p>本地调用：</p>
+<p>运行在同一个进程内的调用，即A方法调用B方法，不涉及网络传输</p>
+</blockquote>
+<h2 id="常规http调用">常规HTTP调用</h2>
+<p>假设有两个单体服务order和payment，从order注册一个client，并向payment发送http请求</p>
+<p>以go语言为例，这里比较麻烦的一点是我们都是通过域名去调用的，两个服务要注册两个域名，才能发送http请求</p>
+<h2 id="rpc调用">RPC调用</h2>
+<p>RPC让你调用远程服务时，看上去像在调用本地方法</p>
+<p>假如payment中有对应的<code>pay()</code>方法，还是在order里注册一个payment的client，RPC可以直接用<code>client.pay()</code>建立一个请求RPC连接，实现远程调用，代码中完全屏蔽掉了网络传输方面的代码</p>
+<p><img src="软件架构/image-20260702202419978.png" alt="RPC" style="zoom:50%;" /></p>
+<h2 id="一个完整的rpc请求">一个完整的RPC请求</h2>
+<figure>
+<img src="软件架构/image-20260702203457104.png" alt="RPC请求" />
+<figcaption aria-hidden="true">RPC请求</figcaption>
+</figure>
+<p>RPC需要解决两个问题：函数怎么映射到调用远程服务的，网络传输是怎么实现的</p>
+<p>函数映射：</p>
+<ul>
+<li>首先定义一个IDL文件，告诉service侧哪些方法可以被调用，使用某些编译工具生成stub桩文件（如protobuf，对应的pb文件里定义好了每个接口、请求参数、返回值等）</li>
+<li>本地将桩文件返回，相当于生成静态库。桩文件中就定义了哪些方法该如何被调用</li>
+</ul>
+<p>网络传输：</p>
+<ul>
+<li>将请求参数、返回结果等进行加密/解密序列化成二进制数据（如protobuf的序列化协议）</li>
+<li>通过<code>gRPC Runtime</code>层来使符合协议，类似于协议层</li>
+<li>最后根据现有网络库进行TCP/UDP的传输</li>
+<li>传到server侧后进行一个相反的操作</li>
+</ul>
+<h2 id="rpc和http">RPC和HTTP</h2>
+<blockquote>
+<p>以下基于HTTP 1/1.1比较</p>
+</blockquote>
+<h3 id="概念">概念</h3>
+<p>HTTP是应用层协议</p>
+<p>但RPC是一种调用方式，对应的是本地调用</p>
+<p>RPC协议指的是基于TCP/UDP甚至HTTP2改造后的自定义协议</p>
+<h3 id="编解码层">编/解码层</h3>
+<p>首先将结构体转为二进制数据，即序列化</p>
+<ul>
+<li><p>HTTP1.1的序列化协议使用JSON来传输数据，JSON易读，但占用空间比较大且没有类型，需要通过反射等手段统一解决</p></li>
+<li><p>RPC中，如gRPC，我们通常使用protobuf来序列化，它的体积比JSON小很多，传输效率高；序列化和反序列化的速度快，开发时不需要反射</p>
+<p>以下是protobuf序列化的例子：</p></li>
+</ul>
+<p><img src="软件架构/image-20260702205719763.png" alt="protobuf" style="zoom:67%;" /></p>
+<h3 id="协议层">协议层</h3>
+<p>最终要基于TCP传输，都会有请求头和请求体，两者区别于消息头</p>
+<ul>
+<li>HTTP中请求头有很多字段，也可以自定义很多字段，但这些字段很多是为了适应浏览器的冗余，内部服务用不到</li>
+<li>RPC中可以自定义必要字段，从而把一些HTTP头上各种用不到的字段去掉，因为RPC是方法之间调用，不需要适应浏览器</li>
+</ul>
+<h3 id="网络传输层">网络传输层</h3>
+<p>底层本质都是基于Socket的通信</p>
+<p>HTTP：</p>
+<ul>
+<li>HTTP通过建立TCP长链接，设置keepalive来长时间复用这个连接</li>
+<li>框架中会引入成熟网络库，且需要给HTTP加连接池来保障不要只有一个TCP连接可用</li>
+</ul>
+<p>RPC：</p>
+<ul>
+<li>RPC建立TCP连接池，框架也会引入成熟的网络库</li>
+<li>gRPC基于HTTP2，有多路复用，优先级控制等优势</li>
+</ul>
+<h3 id="优势和不足">优势和不足</h3>
+<p>优势：数据包更小，序列化更快，传输效率更高；自定义RPC协议网络传输性能更快；适用于微服务架构</p>
+<p>不足：协议本身无法解决微服务集群的问题；调用方对服务端的RPC接口有强依赖关系，需要自动化工具和版本管理工具来保证代码级别的强依赖关系</p>
+<h3 id="适用场景">适用场景</h3>
+<ul>
+<li>RPC：微服务架构下</li>
+<li>HTTP：对外服务、单体服务、给前端提供的服务</li>
+</ul>
+<h2 id="rpc框架">RPC框架</h2>
+<h3 id="编解码层-1">编解码层</h3>
+<ul>
+<li>目标：
+<ul>
+<li>生成代码：代码生成工具将IDL文件转换成不同语言可以依赖的lib代码</li>
+<li>序列化/反序列化：对象和二进制之间转换</li>
+</ul></li>
+<li>选型：
+<ul>
+<li>安全性</li>
+<li>通用性：跨语言和平台</li>
+<li>兼容性：序列化协议升级后，保证原服务的稳定</li>
+<li>性能：序列化反序列化的速度和数据体积大小</li>
+</ul></li>
+</ul>
+<h3 id="协议层-1">协议层</h3>
+<ul>
+<li>目标：支持解析多种协议，包括HTTP 自定义RPC协议等</li>
+</ul>
+<h4 id="rpc通信协议的设计">RPC通信协议的设计</h4>
+<p>作用：TCP通道中的二进制包会被拆分合并，需要应用层协议确定消息边界（即哪几个二进制包是一个请求或一个请求内有多少二进制包）</p>
+<p>构成：</p>
+<ul>
+<li>协议头（固定部分）：整体长度、协议头长度、消息类型、序列化方式、消息ID等</li>
+<li>协议头（扩展部分）：不固定的扩展字段和各种协议DIY的字段</li>
+<li>协议体：业务数据</li>
+</ul>
+<h3 id="网络传输层-1">网络传输层</h3>
+<ul>
+<li>目标：IO多路复用高并发、可靠传输（快）</li>
+<li>选型指标：
+<ul>
+<li>易用：封装原生socket API</li>
+<li>性能：零拷贝、建立连接池、减少GC等</li>
+</ul></li>
+</ul>
+<h3 id="服务治理型框架">服务治理型框架</h3>
+<h4 id="分层设计">分层设计</h4>
+<p>以kitex为例，一个服务治理型的RPC框架</p>
+<p><img src="软件架构/image-20260702215539973.png" alt="kitex" style="zoom:50%;" /></p>
+<ul>
+<li>调用层：封装服务，提供RPC调用接口</li>
+<li>服务治理层：服务发现、负载均衡、熔断限流等</li>
+<li>通信层：多网络通信协议、多消息传输协议（编解码、序列化、压缩）</li>
+</ul>
+<h4 id="服务治理层">服务治理层</h4>
+<ul>
+<li>服务端：
+<ul>
+<li>服务注册：上报服务名和服务的IP，端口到注册中心</li>
+<li>健康检测：第一时间让调用方知道服务出现问题，也是送到注册中心</li>
+<li>限流：当请求量过大时，启动过载保护，抛出限流异常</li>
+</ul></li>
+<li>客户端：
+<ul>
+<li>服务发现：根据服务名找到服务的IP和端口</li>
+<li>路由策略：实现了流量隔离，用于灰度发布、隔离联调环境；即同一个服务名称下，根据不同参数能到不同ip上面</li>
+<li>负载均衡：把请求分发到服务集群的每个服务节点</li>
+<li>重试机制：捕获异常，根据负载均衡策略再次选择节点重发请求</li>
+<li>故障熔断：确定下游异常，直接截断请求，快速执行失败</li>
+</ul></li>
+</ul>
+<h1 id="服务注册与服务发现">服务注册与服务发现</h1>
+<h2 id="作用">作用</h2>
+<p>解决的问题：服务名称→服务地址（节点）</p>
+<p>在RPC框架下发起调用时，和调用本地方法类似，意味着client代码中写的是server的服务名和方法名，所以我们需要一个机制，让client根据服务名查询到server的ip和端口</p>
+<blockquote>
+<p>我们知道，DNS实现了一个域名→IP的映射，但这里是不能用DNS来代替的</p>
+<ul>
+<li>DNS有多级缓存机制，client无法及时感知server节点变化</li>
+<li>DNS不能注册端口，只能用来注册HTTP服务</li>
+</ul>
+</blockquote>
+<h2 id="client-registry-server">Client-Registry-Server</h2>
+<p><img src="软件架构/image-20260712193507256.png" alt="三角模型" style="zoom:50%;" /></p>
+<h3 id="服务上线">服务上线</h3>
+<ul>
+<li>server启动后，向registry注册自身信息
+<ul>
+<li>registry保存着所有服务的节点信息</li>
+<li>server和registry保持心跳，即registry需要感知server是否可用</li>
+</ul></li>
+<li>client第一次发起RPC调用前，向registry请求服务节点列表，并把这个列表缓存在本地
+<ul>
+<li>client和registry保持数据同步，当服务节点有变化时，registry通知client，client更新本地缓存</li>
+</ul></li>
+<li>client发起RPC请求，server返回响应</li>
+</ul>
+<h3 id="服务下线">服务下线</h3>
+<ul>
+<li>server通知registry当前节点即将下线</li>
+<li>registry通知client，server的某个节点下线</li>
+<li>client收到通知后，更新本地缓存的节点列表，选择server的其他节点发请求</li>
+<li>server等待一段时间后，暂停服务并下线，防止网络延迟</li>
+</ul>
+<h2 id="注册中心选型-cap理论">注册中心选型-CAP理论</h2>
+<ul>
+<li><p>C：一致性，所有节点同时看到的数据相同</p></li>
+<li><p>A：可用性，任何时候都能被读写，至少有一个服务节点可以用</p></li>
+<li><p>P：分区容错性，部分节点出现网络故障时，整个系统对外还能正常提供服务</p></li>
+<li><p>其中P是必须项，CA难以同时满足，需要在CP下尽量保证A，在AP下尽量保证C</p></li>
+<li><p>选型：</p>
+<ul>
+<li>体量小：集群规模不大时，CP可以满足需求</li>
+<li>体量大：有大批量服务节点同时上下限，需要选择AP，此时注册中心负载可能过高，有大量节点更改请求，且若要满足强一致性，则需要同步大量节点之间的数据，服务可能长时间不可用</li>
+</ul></li>
+</ul>
+<h2 id="心跳机制">心跳机制</h2>
+<p>为了避免给不可用节点发送请求，client需要实时感知server节点变化</p>
+<p><strong>正常流程：</strong></p>
+<p>server每隔几秒向registry发送心跳包，收到响应则表示服务节点正常，在指定时间内没收到响应，则判定失败</p>
+<p>注册中心发现某个节点不可用时，会通知client，client更新本地缓存的服务节点列表</p>
+<p><strong>特殊情况：</strong></p>
+<ul>
+<li>若发现心跳断了，registry立即通知client某节点不可用，避免真正宕机时还有请求</li>
+<li>registry继续向server连续发送心跳，若心跳恢复，则再告知client可用，过一定时间间隔后再次连续发几次心跳，若都失败，才认为服务节点不可用</li>
+</ul>
+<h2 id="框架中的服务注册">框架中的服务注册</h2>
+<p>以kitex框架中的源码为例</p>
+<h3 id="注册etcd实例">注册etcd实例</h3>
+<p>这里使用的是etcd中间件，首先注册一个etcd实例：</p>
+<p>注册实例方法中主要new了一个etcd的client，这里的client是server和registry交互时充当server中etcd的client，对应registry中就有etcd的server</p>
+<h3 id="注册注册中心实例">注册注册中心实例</h3>
+<p>在newServer方法中传入上文注册的注册中心实例，将registry赋值为传入的实例，相当于把外面的中间件保存下来，保存在了当前server的option里面</p>
+<h3 id="执行服务">执行服务</h3>
+<p>run函数内从<code>svr.start()</code>开始，首先执行了<code>buildRegistryInfo()</code>函数，即上文中服务器启动后向registry注册自身信息，包括名字、地址、权重等</p>
+<p>在<code>s.stop()</code>上面有<code>waitExit()</code>方法，用于etcdClient发送请求</p>
+<p>首先定义了一个channel，让服务启动一秒钟，防止刚启动时服务可能不可用，后面调用了<code>Register()</code>方法，并传入了之前注册的信息，用于发起注册</p>
+<p>这个方法中将用到的信息打包JSON，通过上下文传给etcdClient，通过put方法传给注册中心</p>
+<h1 id="负载均衡">负载均衡</h1>
+<h2 id="作用-1">作用</h2>
+<p>为了保证服务的可用性，一个应用会部署到多个节点，他们构成了服务集群，这也是分布式/微服务架构的显著特点置一</p>
+<p>如何把请求分发给集群下的每个节点，是负载均衡要解决的问题</p>
+<ul>
+<li>请求尽量均匀打在各个节点上，每个节点都能接受请求</li>
+<li>提高请求性能，哪个节点响应最快，就优先调用哪个节点</li>
+</ul>
+<h2 id="算法">算法</h2>
+<h3 id="随机加权随机">随机/加权随机</h3>
+<p>通过随机算法生成随机数，当节点足够多、访问量足够大时，每个节点被访问的概率基本相同</p>
+<p>适用于请求量大，各个节点的性能差异不大的场景</p>
+<h3 id="轮询加权轮询">轮询/加权轮询</h3>
+<p>按照固定顺序，挨个访问可用的服务节点</p>
+<p>可以给节点赋权重，权重越大，被访问的概率越高（成功加权，失败减权）</p>
+<p>适用于存在新老机器，节点性能不同的情况下，优先发挥新节点的优势</p>
+<h3 id="哈希一致性哈希">哈希/一致性哈希</h3>
+<p>通过哈希函数算出哈希值，将服务节点放到一个哈希环上</p>
+<p>当一个请求过来的时候，计算他的哈希值，并放到哈希环上，将这个请求分配到顺时针离它最近的机器上</p>
+<p>和本地缓存相结合，因为<strong>同一来源的请求出的哈希值相同，同一来源的请求都映射到同一节点</strong>，提高了缓存的命中率</p>
+<h3 id="指标类">指标类</h3>
+<ul>
+<li>最少连接法：用C/S间的连接数代表节点负载，用于场景性能差异大，不好提前做好权重定义</li>
+<li>最少活跃数：用活跃请求数（已经接收但没有返回的请求）代表负载，但每个请求耗时不同，请求数不能代表实际负载</li>
+<li>最快响应时间：指标包括平均耗时，TP99，TP999，选择响应时间最短的</li>
+</ul>
+<h2 id="源码中的负载请求">源码中的负载请求</h2>
+<p>以kitex框架为例</p>
+<p>首先new了一个一致性哈希算法和balancer实例</p>
+<p>同时new了一个ectdClient，把若干端口和balancer实例传入，因为是客户端通过某些机制挑选节点</p>
+<p><code>newClient()</code>方法中，调用了kitex的newClient方法，一路追踪到中间件中的源码，找到BalancerFactory相关</p>
+<p>对应函数中的是通过函数<code>GetPicker()</code>和<code>picker.Next()</code>实现选择节点的</p>
+<h1 id="熔断限流降级">熔断、限流、降级</h1>
+<h2 id="熔断">熔断</h2>
+<h3 id="发生场景">发生场景</h3>
+<p>服务端出现了问题</p>
+<ul>
+<li>服务指标：响应时间、错误率、连续错误数等，设置一个阈值，若持续超过阈值则触发熔断</li>
+<li>硬件指标：CPU，内存，网络IO</li>
+</ul>
+<h3 id="目的">目的</h3>
+<ul>
+<li>服务端需要时间恢复</li>
+<li>避免全调用链路崩溃，不能再把请求发给server</li>
+</ul>
+<h3 id="手段">手段</h3>
+<p><img src="软件架构/image-20260712211550697.png" alt="熔断" style="zoom:67%;" /></p>
+<p>通过熔断器判断，它放置在client和server中间</p>
+<p>熔断器有三个状态，互相切换来决定是否处于熔断状态</p>
+<h3 id="流程">流程</h3>
+<ul>
+<li>server监控到异常，触发熔断，熔断器抛出熔断的异常响应</li>
+<li>client收到异常，利用负载均衡重新选择节点，后续请求不再打到被熔断的节点</li>
+<li>一段时间后，client再对这个节点重新请求，若正常响应，则缓慢对这个节点放开流量，如果还是熔断状态，则继续循环上述流程</li>
+</ul>
+<h2 id="限流">限流</h2>
+<h3 id="发生场景-1">发生场景</h3>
+<p>突发的流量增大，使系统崩溃</p>
+<p>判断指标：节点当前连接数，QPS（每秒请求数）等</p>
+<h3 id="手段-1">手段</h3>
+<ul>
+<li>令牌桶算法：系统以恒定速率产生令牌，并将令牌放到桶里，每个请求从桶里拿到令牌才能被执行，反之被限流</li>
+</ul>
+<p><img src="软件架构/image-20260712212401560.png" alt="令牌桶" style="zoom:50%;" /></p>
+<ul>
+<li><p>漏桶算法：令牌桶的特殊情况，当令牌桶的容量为0的时候就是漏桶，系统均匀产生令牌，没被取走也不会积攒</p>
+<p>令牌桶允许积攒令牌，可以解决偶发的流量突变，而且令牌桶的容量不能设置太大，否则达到不了限流效果</p></li>
+<li><p>固定窗口：固定时间段只执行固定数量的请求</p></li>
+</ul>
+<p><img src="软件架构/image-20260712213558717.png" alt="固定窗口" style="zoom:67%;" /></p>
+<ul>
+<li>滑动窗口：会随着时间线挪动窗口
+<ul>
+<li>注意：窗口时间以秒为单位更合适</li>
+</ul></li>
+</ul>
+<p><img src="软件架构/image-20260712213656409.png" alt="滑动窗口" style="zoom:67%;" /></p>
+<ul>
+<li>动态算法BBR：根据一系列指标来判断是否需要触发限流</li>
+</ul>
+<h3 id="流程-1">流程</h3>
+<ul>
+<li>在中间件记录流量和阈值，在中间件中实现限流算法</li>
+<li>对于偶发性的触发限流，只要在超时范围内，可以同步阻塞等待请求被处理</li>
+<li>server的某个节点触发了非偶发性限流，client利用负载均衡调低该节点的权重，尽量少往这个节点发请求</li>
+</ul>
+<h2 id="降级">降级</h2>
+<h3 id="发生场景-2">发生场景</h3>
+<p>系统出现故障后的补救措施，或可预见故障前的应对措施，来保证整体的可用性</p>
+<h3 id="手段-2">手段</h3>
+<ul>
+<li>考虑停用部分监控埋点，日志上报等观测类中间件</li>
+<li>根据业务场景判断，停用边缘服务，返回服务繁忙之类的响应</li>
+<li>对于有缓存的接口，降级只查缓存，不查DB，没命中缓存则返回错误响应</li>
+</ul>
+<h1 id="超时重试和幂等性">超时、重试和幂等性</h1>
+<h2 id="超时和重试">超时和重试</h2>
+<h3 id="应用场景">应用场景</h3>
+<p>只要涉及网络调用、服务器宕机等问题，就要设置超时和重试</p>
+<h3 id="超时机制">超时机制</h3>
+<p>当请求超过设置时间还没被处理，则直接被取消，抛出超时异常</p>
+<p>目的是尽量不在服务端堆积请求连接</p>
+<h3 id="设置超时时间">设置超时时间</h3>
+<p>根据响应时间调整：TP99（或TP999）都在x时间范围内，则超时时间可以设置为这个时间，称为99线或39线</p>
+<p>可以通过接入可观测工具，或做压力测试来确定TP99值</p>
+<p>只要和第三方打交道，针对不同的调用下游来设置不同的超时时间</p>
+<h3 id="重试机制">重试机制</h3>
+<p>调用第三方接口时搭配超时使用，多次发送相同请求，避免网络抖动和偶然故障，目的是为了尽可能让请求被成功处理</p>
+<p>由于偶然故障发生频率小，重试对服务器资源消耗可以忽略不计</p>
+<h3 id="设置重试次数">设置重试次数</h3>
+<p>重试次数不宜过多，否则给系统负载带来压力</p>
+<p>大部分情况下不会设置重试，但一定要设置超时</p>
+<h2 id="幂等">幂等</h2>
+<h3 id="基本概念">基本概念</h3>
+<p>幂等为了保证同一个请求不被多次执行</p>
+<p>发生场景：请求的响应结果是超时，并不能确定是服<strong>务端没处理</strong>（请求堆积）还是服务端处理了发送响应时，碰到<strong>网络抖动</strong>导致超时</p>
+<p>这时执行重试，可能会出现请求多次执行的情况，不重试，可能会出现请求一次都没被执行的情况</p>
+<h3 id="幂等去重">幂等去重</h3>
+<p>为了解决上述情况，可以设置幂等接口</p>
+<p>针对写请求的接口，对请求进行去重，确保同一个请求处理一次和多次的结果是相同的</p>
+<p>逻辑：</p>
+<ul>
+<li>请求方每次请求生成唯一ID，在首次调用和重试时，唯一ID保持不变</li>
+<li>服务端收到请求时，查询ID是否被处理过，处理过则直接返回结果，不再重复执行业务逻辑</li>
+</ul>
+<h1 id="微服务网关与api网关">微服务网关与API网关</h1>
+<blockquote>
+<p>这部分是<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1MP411p7fA">该视频</a>的笔记</p>
+</blockquote>
+<p>微服务之间的调用是去中心化调用的模式，通过服务注册和服务发现中心实现</p>
+<h2 id="微服务网关">微服务网关</h2>
+<p>多个微服务都有自己的接口，它们都需要注册到注册中心里。在<strong>去中心化</strong>模式下，某个微服务若想查询其他微服务系统中的某个接口，就需要通过注册中心查询，从注册中心拿到微服务接口地址，再发起具体调用</p>
+<p>但当我们建立了前端app和应用的场景时，微服务接口需要暴露给前端使用，这时就引入了<strong>微服务网关</strong></p>
+<p>一般前端只能调用标准http的接口地址，我们不能用注册中心了，所以前端需要调用微服务网关中的接口，它间接起了一个内部微服务的作用</p>
+<p>微服务网关中会对相应微服务进行注册接入，把地址朝上暴露，进一步结合Nginx反向代理</p>
+<p>app送来具体的微服务地址连接请求，微服务网关收到后可以直接从注册中心中寻址，找到具体调用地址后，去调用对应微服务</p>
+<p>有的情况下，若只需要地址的路由或流量转发，可以不用微服务网关，直接Nginx反向代理，但Nginx无法实现服务发现，底层微服务更新后需要手动配置和重启</p>
+<h2 id="api网关">API网关</h2>
+<p>若需要实现跨应用之间的协同，需要把不同应用的API接口注册到更上层的平台，称为<strong>API网关</strong></p>
+<p>可以从微服务网关暴露地址，也可以直接从微服务模块暴露地址，但是一定要保证API网关要管理到每一个API接口，细粒度控制到每个API接口</p>
+<p>又因为API网关是一个集中化管理的模式，我们可以在其中做各种拦截</p>
+<h1 id="outbox发件箱模式">Outbox发件箱模式</h1>
+<p>微服务架构中，服务之间通常需要通过异步消息传递来解耦，如一个订单服务创建订单后，需要通知库存服务减库存；我们需要保证不同服务间传递事件时保持数据的一致性（避免双写问题），outbox模式就是一种经典的一致性设计模式</p>
+<blockquote>
+<p>双写问题指的是在分布式系统中，一个业务操作需要更新两个不同的数据源，但是无法保证原子性导致了数据的不一致</p>
+<p>outbox可以将消息的实际发送被推迟到事务之外，因此只要事务内部保证业务+消息存储的原子性就可以了</p>
+</blockquote>
+<h2 id="应用场景-1">应用场景</h2>
+<p>假设一个创建订单的业务：订单先写入数据库，再发送创建订单事件到消息队列</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Begin</span><span style="color: #24292E">()</span></span>
+<span class="line"><span style="color: #6A737D">// 1. 插入订单表</span></span>
+<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Insert</span><span style="color: #24292E">(order)</span></span>
+<span class="line"><span style="color: #6A737D">// 2. 发送订单创建事件到 Kafka/RabbitMQ</span></span>
+<span class="line"><span style="color: #24292E">mq.</span><span style="color: #005CC5">Publish</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;order.created&quot;</span><span style="color: #24292E">, order)</span></span>
+<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Commit</span><span style="color: #24292E">()</span></span></code></pre></div></div></figure>
+<p>若publish成功，但commit失败，导致消费者处理了消息但数据库没有订单</p>
+<p>若commit成功，但publish失败，导致数据库有数据但事件没发出去</p>
+<p>这两种情况都会破坏原子性，我们可以使用outbox</p>
+<h2 id="设计思想">设计思想</h2>
+<p>outbox的核心思想如下：</p>
+<ul>
+<li>在本地数据库中新增一个outbox表，用于保存待发送的事件</li>
+<li>在本地事务中，同时写入业务数据和outbox事件</li>
+<li>通过一个后台进程异步读取这张表中的事件，找到待发送的事件发送消息</li>
+</ul>
+<p><img src="微服务/image-20260805145648312.png" alt="outbox" style="zoom:67%;" /></p>
+<h2 id="工作原理">工作原理</h2>
+<p><strong>表结构：</strong></p>
+<figure class="shiki SQL"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre><code>CREATE TABLE outbox (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    aggregate_type VARCHAR(100),  -- 如 'Order'
+    aggregate_id   VARCHAR(100),  -- 订单ID
+    event_type     VARCHAR(100),  -- 'order.created'
+    payload        TEXT,          -- 事件内容，JSON
+    created_at     DATETIME,
+    published      TINYINT DEFAULT 0  -- 0=未发送，1=已发送
+);</code></pre></div></div></figure>
+<p><strong>事务内插入outbox：</strong></p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Transaction</span><span style="color: #24292E">(</span><span style="color: #D73A49">func</span><span style="color: #24292E">(tx </span><span style="color: #D73A49">*</span><span style="color: #24292E">gorm.DB) </span><span style="color: #D73A49">error</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 业务操作：创建订单</span></span>
+<span class="line"><span style="color: #24292E">    tx.</span><span style="color: #005CC5">Create</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">order)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 在同一事务内插入 outbox 记录</span></span>
+<span class="line"><span style="color: #24292E">    tx.</span><span style="color: #005CC5">Create</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">Outbox{</span></span>
+<span class="line"><span style="color: #24292E">        AggregateType: </span><span style="color: #032F62">&quot;Order&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">        AggregateID:   order.ID,</span></span>
+<span class="line"><span style="color: #24292E">        EventType:     </span><span style="color: #032F62">&quot;order.created&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">        Payload:       </span><span style="color: #005CC5">toJSON</span><span style="color: #24292E">(order),</span></span>
+<span class="line"><span style="color: #24292E">    })</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span></span>
+<span class="line"><span style="color: #24292E">})</span></span></code></pre></div></div></figure>
+<p>注意：业务数据和outbox记录放在同一个数据库事务中，保证原子性</p>
+<p><strong>扫描outbox并发送：</strong></p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">var</span><span style="color: #24292E"> events []Outbox</span></span>
+<span class="line"><span style="color: #24292E">    db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;published = 0&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Limit</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">events)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> _, e </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">range</span><span style="color: #24292E"> events {</span></span>
+<span class="line"><span style="color: #24292E">        err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> mq.</span><span style="color: #005CC5">Publish</span><span style="color: #24292E">(e.EventType, e.Payload)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
+<span class="line"><span style="color: #24292E">            db.</span><span style="color: #005CC5">Model</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">e).</span><span style="color: #005CC5">Update</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;published&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">true</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #24292E">        }</span></span>
+<span class="line"><span style="color: #24292E">    }</span></span>
+<span class="line"><span style="color: #24292E">    time.</span><span style="color: #005CC5">Sleep</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">*</span><span style="color: #24292E"> time.Second)</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>存在一个后台线程不断查询所有
+<code>published=0</code>的记录，并逐条发送消息到消息队列，发送成功后在同一个事务中标记<code>published=1</code></p>
+<h2 id="发送保证">发送保证</h2>
+<p>outbox模式提供的是<strong>至少一次送达</strong>语义，若发生发送完消息但还没来得及标记时程序崩溃，服务重启后会再次拉取这条记录并重复发送</p>
+<p>因此消费者需要实现<strong>幂等处理</strong></p>
+<p>如果不想重复发送，可以采取下面的方法：</p>
+<ul>
+<li>使用乐观锁更新状态，根据受影响行数决定是否真正发送</li>
+<li>使用事务性发件箱</li>
+</ul>
+<h2 id="轮询方式">轮询方式</h2>
+<p>可以使用纯轮询方式，但是延迟较高，数据库也会有轮询压力，推荐使用CDC（Change
+Data Capture）方式，利用 MySQL binlog / PostgreSQL WAL，用 Debezium 或
+Maxwell 监听 <code>outbox</code>
+表的数据变化，一旦有新记录立即推送至消息队列</p>
+<p>这样可以保证零业务代码轮询，和极低的延迟</p>
+<blockquote>
+<p>CDC（Change Data
+Capture，变更数据捕获）是一种监听数据库变更日志并实时同步出去的机制。</p>
+<p>数据库在写数据的同时，会将每一次操作记录到一份顺序日志中（如MySQL的binlog和PostgreSQL的WAL）</p>
+<p>CDC工具会伪装为数据库的从库，持续监听日志，并解析出变更事件，推送到消息队列</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag"># 微服务</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/" rel="prev" title="【计算机网络】网络概述">
+      <i class="fa fa-chevron-left"></i> 【计算机网络】网络概述
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E6%9D%82%E9%A1%B9/how-a-microservice-works/" rel="next" title="【杂项】一个微服务是怎么跑起来的">
+      【杂项】一个微服务是怎么跑起来的 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">单体架构与微服务架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BD%93"><span class="nav-number">1.1.</span> <span class="nav-text">单体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.</span> <span class="nav-text">微服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rpc"><span class="nav-number">2.</span> <span class="nav-text">RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%84http%E8%B0%83%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">常规HTTP调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rpc%E8%B0%83%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">RPC调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84rpc%E8%AF%B7%E6%B1%82"><span class="nav-number">2.3.</span> <span class="nav-text">一个完整的RPC请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rpc%E5%92%8Chttp"><span class="nav-number">2.4.</span> <span class="nav-text">RPC和HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">2.4.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%A7%A3%E7%A0%81%E5%B1%82"><span class="nav-number">2.4.2.</span> <span class="nav-text">编&#x2F;解码层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%B1%82"><span class="nav-number">2.4.3.</span> <span class="nav-text">协议层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="nav-number">2.4.4.</span> <span class="nav-text">网络传输层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8A%BF%E5%92%8C%E4%B8%8D%E8%B6%B3"><span class="nav-number">2.4.5.</span> <span class="nav-text">优势和不足</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.4.6.</span> <span class="nav-text">适用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rpc%E6%A1%86%E6%9E%B6"><span class="nav-number">2.5.</span> <span class="nav-text">RPC框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%A7%A3%E7%A0%81%E5%B1%82-1"><span class="nav-number">2.5.1.</span> <span class="nav-text">编解码层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%B1%82-1"><span class="nav-number">2.5.2.</span> <span class="nav-text">协议层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rpc%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.5.2.1.</span> <span class="nav-text">RPC通信协议的设计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E5%B1%82-1"><span class="nav-number">2.5.3.</span> <span class="nav-text">网络传输层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E5%9E%8B%E6%A1%86%E6%9E%B6"><span class="nav-number">2.5.4.</span> <span class="nav-text">服务治理型框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.5.4.1.</span> <span class="nav-text">分层设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%E5%B1%82"><span class="nav-number">2.5.4.2.</span> <span class="nav-text">服务治理层</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">服务注册与服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#client-registry-server"><span class="nav-number">3.2.</span> <span class="nav-text">Client-Registry-Server</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%BA%BF"><span class="nav-number">3.2.1.</span> <span class="nav-text">服务上线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E4%B8%8B%E7%BA%BF"><span class="nav-number">3.2.2.</span> <span class="nav-text">服务下线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%80%89%E5%9E%8B-cap%E7%90%86%E8%AE%BA"><span class="nav-number">3.3.</span> <span class="nav-text">注册中心选型-CAP理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%83%E8%B7%B3%E6%9C%BA%E5%88%B6"><span class="nav-number">3.4.</span> <span class="nav-text">心跳机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C"><span class="nav-number">3.5.</span> <span class="nav-text">框架中的服务注册</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8Cetcd%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.5.1.</span> <span class="nav-text">注册etcd实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.5.2.</span> <span class="nav-text">注册注册中心实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.5.3.</span> <span class="nav-text">执行服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">4.</span> <span class="nav-text">负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8-1"><span class="nav-number">4.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E5%8A%A0%E6%9D%83%E9%9A%8F%E6%9C%BA"><span class="nav-number">4.2.1.</span> <span class="nav-text">随机&#x2F;加权随机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AE%E8%AF%A2%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2"><span class="nav-number">4.2.2.</span> <span class="nav-text">轮询&#x2F;加权轮询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C"><span class="nav-number">4.2.3.</span> <span class="nav-text">哈希&#x2F;一致性哈希</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E6%A0%87%E7%B1%BB"><span class="nav-number">4.2.4.</span> <span class="nav-text">指标类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84%E8%B4%9F%E8%BD%BD%E8%AF%B7%E6%B1%82"><span class="nav-number">4.3.</span> <span class="nav-text">源码中的负载请求</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%86%94%E6%96%AD%E9%99%90%E6%B5%81%E9%99%8D%E7%BA%A7"><span class="nav-number">5.</span> <span class="nav-text">熔断、限流、降级</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%86%94%E6%96%AD"><span class="nav-number">5.1.</span> <span class="nav-text">熔断</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E7%94%9F%E5%9C%BA%E6%99%AF"><span class="nav-number">5.1.1.</span> <span class="nav-text">发生场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E7%9A%84"><span class="nav-number">5.1.2.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E6%AE%B5"><span class="nav-number">5.1.3.</span> <span class="nav-text">手段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">5.1.4.</span> <span class="nav-text">流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E6%B5%81"><span class="nav-number">5.2.</span> <span class="nav-text">限流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E7%94%9F%E5%9C%BA%E6%99%AF-1"><span class="nav-number">5.2.1.</span> <span class="nav-text">发生场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E6%AE%B5-1"><span class="nav-number">5.2.2.</span> <span class="nav-text">手段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B-1"><span class="nav-number">5.2.3.</span> <span class="nav-text">流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%8D%E7%BA%A7"><span class="nav-number">5.3.</span> <span class="nav-text">降级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E7%94%9F%E5%9C%BA%E6%99%AF-2"><span class="nav-number">5.3.1.</span> <span class="nav-text">发生场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E6%AE%B5-2"><span class="nav-number">5.3.2.</span> <span class="nav-text">手段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E8%AF%95%E5%92%8C%E5%B9%82%E7%AD%89%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">超时、重试和幂等性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E5%92%8C%E9%87%8D%E8%AF%95"><span class="nav-number">6.1.</span> <span class="nav-text">超时和重试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">6.1.1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">6.1.2.</span> <span class="nav-text">超时机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4"><span class="nav-number">6.1.3.</span> <span class="nav-text">设置超时时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6"><span class="nav-number">6.1.4.</span> <span class="nav-text">重试机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%87%8D%E8%AF%95%E6%AC%A1%E6%95%B0"><span class="nav-number">6.1.5.</span> <span class="nav-text">设置重试次数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%82%E7%AD%89"><span class="nav-number">6.2.</span> <span class="nav-text">幂等</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">6.2.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%82%E7%AD%89%E5%8E%BB%E9%87%8D"><span class="nav-number">6.2.2.</span> <span class="nav-text">幂等去重</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%E4%B8%8Eapi%E7%BD%91%E5%85%B3"><span class="nav-number">7.</span> <span class="nav-text">微服务网关与API网关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3"><span class="nav-number">7.1.</span> <span class="nav-text">微服务网关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#api%E7%BD%91%E5%85%B3"><span class="nav-number">7.2.</span> <span class="nav-text">API网关</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#outbox%E5%8F%91%E4%BB%B6%E7%AE%B1%E6%A8%A1%E5%BC%8F"><span class="nav-number">8.</span> <span class="nav-text">Outbox发件箱模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">8.1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">8.2.</span> <span class="nav-text">设计思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">8.3.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E4%BF%9D%E8%AF%81"><span class="nav-number">8.4.</span> <span class="nav-text">发送保证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AE%E8%AF%A2%E6%96%B9%E5%BC%8F"><span class="nav-number">8.5.</span> <span class="nav-text">轮询方式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">194</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">813k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">24:38</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

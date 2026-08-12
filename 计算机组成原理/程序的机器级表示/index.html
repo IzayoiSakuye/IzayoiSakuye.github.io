@@ -345,8 +345,8 @@
 <p>在命令行上使用<code>-c</code>选项，gcc会编译并汇编该代码，产生目标代码文件<code>mstore.o</code>，是二进制格式</p>
 <p>因此我们可以知道：机器执行的程序只是一个字节序列，机器对产生这些指令的源代码几乎一无所知</p>
 <p>可以通过<strong>反汇编器</strong>查看机器代码的内容，这些程序根据机器代码产生一种类似汇编代码的格式，Linux中带<code>-d</code>命令行标志的程序objdump可以使用<code>dbjdump -d mstore.o</code>来进行反汇编</p>
-<style>.vpmjxhdrfpkc{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313103452110.png" class="vpmjxhdrfpkc" alt="反汇编">
+<style>.neskcutdvjpg{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313103452110.png" class="neskcutdvjpg" alt="反汇编">
 <p>机器码与其对应的反汇编码表示有一些特性：</p>
 <ul>
 <li>x86-64的指令长度由1－15字节不等，常用的指令以及操作数少的所需字节少，反之所需字节多</li>
@@ -463,8 +463,8 @@ s\)</span>，如引用数组元素时，会用到这种通用形式</p>
 <p>像x这样的局部变量通常存储在<strong>寄存器</strong>中，而非内存中，访问寄存器比访问内存快得多</p>
 <h3 id="压入与弹出栈数据">压入与弹出栈数据</h3>
 <p>最后两个数据传送操作可以将数据压入程序栈中，以及从程序栈中弹出数据，在处理过程调用中起到至关重要的作用，下面是一个程序栈：</p>
-<style>.ikbpvzmnghte{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313112748062.png" class="ikbpvzmnghte" alt="程序栈">
+<style>.thukltdbsmso{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260313112748062.png" class="thukltdbsmso" alt="程序栈">
 <p>在X86-64中，程序栈放在内存中某个区域，从高地址向低地址向下增长，因此栈顶元素的地址是所有栈中元素地址最低的（根据惯例，栈是倒过来画的）</p>
 <p>栈指针<code>%rsp</code>保存着栈顶元素的地址，下图为入栈与出栈指令：</p>
 <img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20250926162003250.png" class="" title="栈">
@@ -892,10 +892,10 @@ y\)</span>时，指令会将<code>%rdx</code>内的数据复制到<code>%rax</co
 <p>优点在于，执行语句的时间与case的数量无关</p>
 <p>下面是C语言的switch语句以及翻译为跳转表的版本及转为汇编的版本</p>
 <p>开关变量n可以是任意数，因此编译器首先将n-100，将值移到0-6之间，创建新的程序变量index，补码的负数会映射为无符号的大整数，因此看作无符号值，测试index是否在0-6的范围之外来跳转分支（不在的话跳转到loc_def）</p>
-<style>.ctcoymenpyqq{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111548339.png" class="ctcoymenpyqq" alt="c&amp;go">
-<style>.ncrtpxsbsyoz{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111939996.png" class="ncrtpxsbsyoz" alt="编译语句">
+<style>.bflycenwqcsm{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111548339.png" class="bflycenwqcsm" alt="c&amp;go">
+<style>.seecejlewsvw{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017111939996.png" class="seecejlewsvw" alt="编译语句">
 <p>执行switch语句的关键是通过跳转表来访问代码位置，上图C中的第16行与汇编第5行均实现了跳转表的访问</p>
 <p>其中<code>jmp</code>的操作数有前缀<code>*</code>，表明是一个间接跳转，操作数指定一个内存位置，索引由<code>%rsi</code>给出，保存着<code>index</code>的值</p>
 <p>处理重复case的方式是使用同样的代码编号(<code>loc_D</code>)，处理缺失case的方式是使用默认情况的编号<code>loc_def</code></p>
@@ -917,8 +917,8 @@ Data)的目标代码文件的段中，有一组7个四字，每个字的值都�
 <p>C语言过程调用的一个关键特性在于使用了栈数据结构提供的<strong>后进先出（LIFO）</strong>的内存管理原则，程序可以用栈来管理它的过程所需要的存储空间</p>
 <p>x86-64的栈向低地址方向增长，栈指针<code>%rsp</code>指向栈顶元素，将栈指针减少一个适当的量可以为没有指定初始值的数据在栈上分配空间，增加一个适当的量可以释放空间</p>
 <p>当过程的存储空间超过了寄存器能够存放的大小时，就会在栈上分配空间，这部分空间称为过程的<strong>栈帧</strong>，下图给出了运行时栈的通用结构，当前执行的过程的帧总是在栈顶，当过程P调用Q时，会把返回地址压入栈中，指明当Q返回时，要从P程序的哪个位置继续执行，是P的栈帧的一部分</p>
-<style>.gbknuwowhsbr{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017160828935.png" class="gbknuwowhsbr" alt="运行时栈">
+<style>.rcqwlsgnuuun{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20251017160828935.png" class="rcqwlsgnuuun" alt="运行时栈">
 <p>Q的代码会扩展当前栈顶边界，分配它的栈帧所需的空间，在这个空间中，它可以保存寄存器的值，分配局部变量空间，为调用过程设置参数。大多过程的栈帧是定长的，但有些过程需要变长的帧，通过寄存器，过程p可以传递最多6个整数值，但如果Q需要更多参数，P可以在调用Q之前在自己的栈帧里存储好这些参数</p>
 <p>X86-64过程只分配自己所需的栈帧部分，当所有局部变量都可以保存在寄存器中，且不调用其他函数，可以不需要栈帧</p>
 <h3 id="转移控制">转移控制</h3>
@@ -1098,8 +1098,8 @@ long，普通转换时肯定会出现问题，我们可以使用联合</p>
 <p>许多计算机系统对基本数据类型的合法地址作出了限制，要求某种类型的对象起始地址必须是某个值k（2、4或8）的倍数</p>
 <p>如假设一个处理器总是从内存中取8个字节，则地址必须是8的倍数，如果我们保证能讲所有double类型数据地址对齐成8的倍数，就可以用一个内存操作来读写值了，否则可能需要执行两次</p>
 <p>对齐原则为<strong>任何k字节的基本对象的地址必须是k的倍数</strong></p>
-<style>.xieeekmwlopk{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309101311150.png" class="xieeekmwlopk" alt="数据对齐">
+<style>.cysruudskhvk{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260309101311150.png" class="cysruudskhvk" alt="数据对齐">
 <p>确保每种数据类型的对象都要满足他的对齐限制，编译器在汇编代码中放入指令<code>.align</code>来指明全局数据所需的对齐，这样就保证了它后面的数据的起始地址是8的倍数</p>
 <p>对于包含结构的代码，编译器可能需要在字段的分配中插入间隙，以保证每个结构元素都满足对其要求，如</p>
 <figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">struct</span><span style="color: #24292E"> </span><span style="color: #6F42C1">s</span></span>
@@ -1159,13 +1159,13 @@ long，普通转换时肯定会出现问题，我们可以使用联合</p>
 <p>我们通常使用AVX（AVX2）浮点体系结构，它允许数据存储在16个寄存器中，名字分别为<code>%ymm0</code>～<code>%ymm15</code>，均为32字节</p>
 <p>当对标量数据操作时，这些寄存器只保存浮点数，且只使用低32或64位</p>
 <p>汇编代码用寄存器<code>%xmm0</code>～<code>%xmm15</code>来引用它们，都是对应ymm的低128位</p>
-<style>.iqfyfxeskvei{zoom:67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310084352343.png" class="iqfyfxeskvei" alt="浮点代码">
+<style>.wicwotoiieed{zoom:67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310084352343.png" class="wicwotoiieed" alt="浮点代码">
 <h3 id="浮点传送和转换操作">浮点传送和转换操作</h3>
 <p>下面是传送浮点数的指令，它们都是标量指令，移位置只对单个数据值进行操作</p>
 <p>数据要么保存在内存中（表中的M），要么保存在xmm寄存器中（表中的X），代码优化规则建议32位数据满足四字节对齐，64位数据满足八字节对齐，内存引用的指定方式与整数mov指令相同</p>
-<style>.dwmujobjqidw{zoom:80%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310090345394.png" class="dwmujobjqidw" alt="浮点数传送">
+<style>.vhcnzvlwepho{zoom:80%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310090345394.png" class="vhcnzvlwepho" alt="浮点数传送">
 <p>gcc只用标量传送操作从内存传送数据到xmm寄存器或相反，而对于在xmm寄存器之间传送数据，gcc会使用vmovaps或vmovapd</p>
 <p>对于这些情况，程序复制整个寄存器还是只复制低位值不会影响，针对标量数据的指令没有实质上的差别</p>
 <p>e.g.</p>
@@ -1183,8 +1183,8 @@ long，普通转换时肯定会出现问题，我们可以使用联合</p>
 	ret</code></pre></div></div></figure>
 <p>下面是在浮点数和整数类型以及不同浮点格式之间进行转换的指令集合</p>
 <p>把浮点数转换为整数时，指令会执行<strong>截断</strong>，向0舍入</p>
-<style>.nzolrhyytico{zoom:80%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310093658011.png" class="nzolrhyytico" alt="不同类型转换">
+<style>.gtmysilnurzu{zoom:80%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260310093658011.png" class="gtmysilnurzu" alt="不同类型转换">
 <p>以上指令使用的是三操作数格式，有两个源和一个目的</p>
 <p>第一个操作数读自内存或一个通用目的寄存器，第二个操作数的值只会影响结果的高位字节，目的必须是xmm寄存器</p>
 <p>在常用场景中，第二个源和目的操作数是一样的，如：</p>
@@ -1259,14 +1259,14 @@ cel2fahr:
 <p>浮点数比较指令会设置三个条件码：零标志位ZF，进位标志位CF和奇偶标志位PF</p>
 <p>对于整数操作，当最近的一次算术或逻辑运算产生的值最低位字节是偶校验的（字节中有偶数个1），那么就会设置这个标志位；不过对于浮点比较，当两个操作数中任意一个是NaN时，会设置该位，根据惯例，c语言中若有个参数为NaN，就认为比较失败了，这个标志位就用来发现这个条件。</p>
 <p>条件码的设置条件如下：</p>
-<style>.xwnytultmtor{zoom:80%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151008030.png" class="xwnytultmtor" alt="比较条件码">
+<style>.bpiynkhbpntd{zoom:80%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151008030.png" class="bpiynkhbpntd" alt="比较条件码">
 <p>当任意一个操作数为NaN时，就会出现7无序的情况，可以通过奇偶标志位发现这种情况</p>
 <p>通常jp指令是条件跳转，条件就是浮点比较得到一个无序的结果</p>
 <p>除了这种情况以外，进位和零标志位的值都和对应的无符号比较一样，当两个操作数相等时，设置ZF；当S2&lt;S1时，设置CF，像ja和jb这样的指令就可以根据标志位的各种组合进行条件跳转</p>
 <p>如下面的代码：</p>
-<style>.gmdgxgrrvkum{zoom: 67%;}</style>
-<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151637594.png" class="gmdgxgrrvkum" alt="比较例子">
+<style>.vuhmlynaaxvs{zoom: 67%;}</style>
+<img src="/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/image-20260312151637594.png" class="vuhmlynaaxvs" alt="比较例子">
 <p>这个函数会出现四种可能的比较结果：</p>
 <ul>
 <li><code>x&lt;0.0</code>：第四行的ja分支指令会选择跳转到结尾，返回值为0</li>
@@ -1373,7 +1373,7 @@ cel2fahr:
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">191</span>
+          <span class="site-state-item-count">194</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1386,7 +1386,7 @@ cel2fahr:
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1427,12 +1427,12 @@ cel2fahr:
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">794k</span>
+    <span title="站点总字数">813k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">24:05</span>
+    <span title="站点阅读时长">24:38</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
