@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="对本人负责的整个payment模块链路的梳理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【BudgetMatch】Payment模块">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/Payment/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="对本人负责的整个payment模块链路的梳理">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-13T14:20:34.379Z">
+<meta property="article:modified_time" content="2026-08-13T14:21:33.597Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/Payment/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【BudgetMatch】Payment模块 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/Payment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【BudgetMatch】Payment模块
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-08-13 22:20:34 / 修改时间：22:21:33" itemprop="dateCreated datePublished" datetime="2026-08-13T22:20:34+08:00">2026-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">项目开发记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/" itemprop="url" rel="index"><span itemprop="name">BudgetMatch</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description">对本人负责的整个payment模块链路的梳理</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="总览">总览</h1>
+<p>整个支付模块可以分为三部分：</p>
+<ul>
+<li>创建支付：系统生成支付流水和二维码</li>
+<li>确认到账：支付宝通知或主动查询确认交易成功</li>
+<li>确认任务完成：订单状态变为已支付，并可靠发布订单已支付事件</li>
+</ul>
+<p>链路：</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">用户</span></span>
+<span class="line"><span style="color: #24292e">  │</span></span>
+<span class="line"><span style="color: #24292e">  │ 1. 点击支付</span></span>
+<span class="line"><span style="color: #24292e">  ▼</span></span>
+<span class="line"><span style="color: #24292e"> App API 网关</span></span>
+<span class="line"><span style="color: #24292e">  │ 读取登录用户、查询订单、获取服务端金额</span></span>
+<span class="line"><span style="color: #24292e">  ▼</span></span>
+<span class="line"><span style="color: #24292e"> payment-rpc</span></span>
+<span class="line"><span style="color: #24292e">  │ 创建本地支付流水</span></span>
+<span class="line"><span style="color: #24292e">  │ 调支付宝预下单</span></span>
+<span class="line"><span style="color: #24292e">  ▼</span></span>
+<span class="line"><span style="color: #24292e"> 支付宝</span></span>
+<span class="line"><span style="color: #24292e">  │ 返回二维码</span></span>
+<span class="line"><span style="color: #24292e">  ▼</span></span>
+<span class="line"><span style="color: #24292e"> 用户扫码付款</span></span>
+<span class="line"><span style="color: #24292e">  │</span></span>
+<span class="line"><span style="color: #24292e">  ├──────── 异步通知 ────────┐</span></span>
+<span class="line"><span style="color: #24292e">  │                          ▼</span></span>
+<span class="line"><span style="color: #24292e">  │                    App API 回调入口</span></span>
+<span class="line"><span style="color: #24292e">  │                          │</span></span>
+<span class="line"><span style="color: #24292e">  │                          ▼</span></span>
+<span class="line"><span style="color: #24292e">  │                    payment-rpc 验签</span></span>
+<span class="line"><span style="color: #24292e">  │</span></span>
+<span class="line"><span style="color: #24292e">  └── 用户主动查询 ──&gt; payment-rpc 查询支付宝</span></span>
+<span class="line"><span style="color: #24292e">                             │</span></span>
+<span class="line"><span style="color: #24292e">                             ▼</span></span>
+<span class="line"><span style="color: #24292e">                    本地支付流水变成成功</span></span>
+<span class="line"><span style="color: #24292e">                             │</span></span>
+<span class="line"><span style="color: #24292e">                             ▼</span></span>
+<span class="line"><span style="color: #24292e">                   mall-rpc ConfirmPayment</span></span>
+<span class="line"><span style="color: #24292e">                             │</span></span>
+<span class="line"><span style="color: #24292e">                    事务更新订单为已支付</span></span>
+<span class="line"><span style="color: #24292e">                    同事务写入 Outbox</span></span>
+<span class="line"><span style="color: #24292e">                             │</span></span>
+<span class="line"><span style="color: #24292e">                             ▼</span></span>
+<span class="line"><span style="color: #24292e">                    Outbox Dispatcher</span></span>
+<span class="line"><span style="color: #24292e">                             │</span></span>
+<span class="line"><span style="color: #24292e">                             ▼</span></span>
+<span class="line"><span style="color: #24292e">                         RocketMQ</span></span></code></pre></div></div></figure>
+<h1 id="详细流程">详细流程</h1>
+<h2 id="订单创建">订单创建</h2>
+<p>用户下单后，mall-rpc中会存在一笔订单，金额单位为分，避免精度问题</p>
+<p>这里要区分两种状态：</p>
+<ul>
+<li>订单状态：待支付、已支付、已取消</li>
+<li>支付流水状态：待支付、支付成功、交易关闭</li>
+</ul>
+<p>它们不是一个概念，比如支付宝付款成功，但因为服务调用失败，商城订单可能暂时还是待支付状态</p>
+<h2 id="支付创建">支付创建</h2>
+<h3 id="订单校验">订单校验</h3>
+<p>当用户调用支付API：<code>POST /api/mall/orders/:id/pay</code>时，网关会依次完成如下操作：</p>
+<ul>
+<li>从登录上下文读取用户ID，这里不能让用户自己传userid，否则用户可以修改参数，尝试支付其他人的订单</li>
+<li>从mall-rpc查询订单，传入订单id和当前用户id，并检查订单对应的用户id是否和当前登录用户匹配，若不匹配统一返回订单不存在</li>
+<li>检查余额：系统会检查实付金额：原始金额-优惠金额，且实付金额必须大于0，注意<strong>支付金额必须来自服务端订单，而不能相信前端传入的金额</strong></li>
+<li>检查订单状态：只有待支付订单（PENDING）才能发起支付</li>
+</ul>
+<p>校验完成后，网关向payment-rpc发送<code>CreatePaymentReq</code>请求体，记录订单id，userid和支付金额等</p>
+<h3 id="支付流水">支付流水</h3>
+<p>req传入payment-rpc后，payment-rpc首先检查请求合法性：</p>
+<ul>
+<li>orderid不为空</li>
+<li>userid不为空</li>
+<li>amount大于00</li>
+<li>支付宝配置必须存在</li>
+<li>订单是否已存在支付流水</li>
+</ul>
+<p>若已经支付成功：</p>
+<p>直接返回原商户订单号和成功状态，不再调用支付宝，对应的场景是订单重复点击支付，则查询到success流水后直接返回success流水</p>
+<p>若已经存在待支付流水：</p>
+<p>复用原来的支付流水和订单号，实现幂等操作</p>
+<p>若没有流水或流水关闭：</p>
+<p>创建新的支付流水：</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">id            = pay-xxx</span></span>
+<span class="line"><span style="color: #24292e">out_trade_no  = 32位UUID</span></span>
+<span class="line"><span style="color: #24292e">order_id      = order-001</span></span>
+<span class="line"><span style="color: #24292e">user_id       = user-001</span></span>
+<span class="line"><span style="color: #24292e">amount         = 480000</span></span>
+<span class="line"><span style="color: #24292e">channel        = alipay</span></span>
+<span class="line"><span style="color: #24292e">status         = pending</span></span></code></pre></div></div></figure>
+<p>其中：</p>
+<ul>
+<li><code>order_id</code>是商城业务订单号</li>
+<li><code>out_trade_no</code>是系统提交给支付宝的商户订单号</li>
+<li><code>trade_no</code>是支付宝支付成功后生成的平台交易号</li>
+</ul>
+<h2 id="支付宝相关">支付宝相关</h2>
+<h3 id="预下单">预下单</h3>
+<p>支付宝相关位于<code>infra/alipay/alipay.go</code></p>
+<p>payment-rpc调用支付宝当面付预下单<code>PreCreate(outTradeNo, subject, amountFen,)</code></p>
+<p>将以分为单位的金额转换为元后，提交商户订单号、订单标题、支付金额和异步通知地址，支付宝返回qrcode是内容字符串，payment-rpc将二维码保存到支付流水，返回给前端，前端需要将其渲染为二维码</p>
+<blockquote>
+<p>为什么支付成功后，二维码保存失败还返回二维码：</p>
+<p>支付宝此时已经成功创建了支付单，如果因为本地数据库短暂失败就返回失败，用户重试后可能再次发起预下单</p>
+<p>链路：支付宝预下单成功→本地二维码保存失败→记录错误日志→把二维码返回给用户</p>
+<p>这是对外部成功，内部失败的处理</p>
+</blockquote>
+<h3 id="完成扣款">完成扣款</h3>
+<p>用户扫描二维码，资金交易通过支付宝完成，这一步之后前端页面显示的支付成功不能作为服务端依据，因为客户端结果可以伪造，服务端只能通过：<strong>支付宝异步通知和服务端主动查询支付宝</strong>确认支付结果</p>
+<h3 id="发送异步通知">发送异步通知</h3>
+<p>支付宝会向公网地址发送表单请求：</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e">POST /api/pay/notify/alipay</span></span>
+<span class="line"><span style="color: #24292e">Content-Type: application/x-www-form-urlencoded</span></span></code></pre></div></div></figure>
+<p>处理逻辑位于<code>alipay_notify_logic.go</code></p>
+<blockquote>
+<p>为什么回调接口不需要jwt鉴权：</p>
+<p>请求来自支付宝服务器，而不是用户，自然不会携带jwt</p>
+<p>所以回调路由必须允许匿名访问，真实性依靠的是支付宝签名验证</p>
+</blockquote>
+<p>网关的作用：</p>
+<ul>
+<li>限制请求体大小1mb</li>
+<li>解析支付宝表单参数</li>
+<li>将原始数据透传给payment-rpc</li>
+</ul>
+<p>网关不持有支付宝密钥，只存在支付服务中</p>
+<h2 id="rsa2验签与校验">RSA2验签与校验</h2>
+<p>验签入口在<code>handle_notify_logic.go</code>，支付宝使用支付宝私钥对通知内容签名，而系统使用支付宝公钥验证签名，若有人修改了金额等信息，签名就无法通过，它可以保证通知来自持有支付宝私钥的一方，且通知内容在传输过程中没有被修改</p>
+<p>但是验签只能证明这份数据是真的由支付宝签发，不代表这份交易一定属于当前应用和当前订单</p>
+<p>因此验签结束后，我们需要继续校验notify中的appid和sellerid与系统配置的是否相同，并继续查询本地支付流水，使用<code>out_trade_no</code>查询payment表，并校验金额和交易号冲突</p>
+<p>最后校验交易状态，只有success和finish才能确认交易成功</p>
+<h2 id="确认订单支付">确认订单支付</h2>
+<p>支付流水确认成功后，需要调用mall-rpc的<code>ConfirmPayment</code>，传入对应的request，订单侧实现位于<code>confirm_payment_logic.go</code></p>
+<p>注意：这里即使支付流水已经是成功态，也不能简单返回，因为商城订单可能还没有同步成功，即支付流水已经成功≠业务链路已经完成</p>
+<p>我们还需要检查或重试ConfirmPayment，每次收到重复通知时继续调用幂等的ConfirmPayment</p>
+<h2 id="事务和行锁">事务和行锁</h2>
+<p>ConfirmPayment会开启数据库事务，使用类似<code>SELECT ... FOR UPDATE</code>的行锁锁住当前订单行</p>
+<p>当异步通知和主动查询同时到达，若没有锁，A和B可能同时看到订单是待支付，然后都更新订单都生成支付成功事件</p>
+<p>若上了行锁：</p>
+<ul>
+<li>A先锁住订单并完成事务</li>
+<li>B等待A提交</li>
+<li>B再次读取时发现订单已经支付</li>
+<li>B通过幂等路径返回</li>
+</ul>
+<p>事务中检查：订单是否存在、用户是否一致、支付金额是否一致、是否已经由相同交易确认、是否存在不同交易号冲突、当前订单是否为待支付</p>
+<h2 id="订单更新和outbox">订单更新和outbox</h2>
+<p>订单确认事务中同时完成修改订单状态、写入<code>out_trade_no</code>、<code>trade_no</code>、<code>pay_time</code>、插入outbox事件</p>
+<p>这些要么同时成功，要么同时回滚，保证原子性</p>
+<p>当数据库订单更新成功，但服务进程突然宕机，还没来得及发送消息队列的情况下，如果不是原子性，下游将会永远收不到支付成功事件，反过来同理，下游认为订单已经支付，但数据库中还是待支付，出现<strong>幽灵信息</strong></p>
+<p>outbox通过设定的发送器dispatcher发送事件：</p>
+<ul>
+<li>从outbox表领取待发送事件</li>
+<li>将事件标记为处理中并设置锁定时间，同步发送到rocketmq</li>
+<li>失败后计算下一次重试时间</li>
+<li>超过最大次数后转为dead状态</li>
+</ul>
+<p>重试间隔使用指数退避，即第一次失败在1秒后，第二次失败在2秒后，第三次失败在4秒后…最大不超过5分钟</p>
+<p>注意：outbox不能保证消息绝对只发送一次，可能发生mq接收成功，服务器还没来得及把outbox标记为sent就宕机了，所以outbox提供的是<strong>至少一次</strong>投递，下游消费者必须根据event_id、idempotency_key和dedup_key幂等消费</p>
+<h2 id="主动查询">主动查询</h2>
+<p>用户还可以通过调用<code>GET /api/mall/orders/:id/pay/query</code>主动查询，它会查询本地支付流水：若尚未成功，主动查询支付宝，若支付宝显示成功，同步本地支付状态，并调用mall-rpc确认订单</p>
+<p>它解决了以下问题：</p>
+<ul>
+<li>本地开发没有公网地址，收不到支付宝回调</li>
+<li>支付宝回调暂时丢失，或到达时服务不可用</li>
+<li>payment-rpc执行成功，但是mall-rpc回写失败</li>
+<li>用户希望立即刷新支付结果</li>
+</ul>
+<p>因此异步通知和主动查询必须进入同一个确认方法<code>markPaid</code></p>
+<h2 id="常见异常">常见异常</h2>
+<p>用户重复点击支付 复用待支付流水和商户订单号</p>
+<p>支付宝重复通知 原子更新支付流水，重复请求幂等返回</p>
+<p>通知签名非法 不查询、不更新任何业务数据</p>
+<p>通知金额不一致 拒绝确认并记录安全日志</p>
+<p>payment成功、mall调用失败 保留支付成功，返回失败并等待重试/补偿</p>
+<p>mall成功但RPC响应超时 重试ConfirmPayment，mall幂等返回已确认</p>
+<p>订单事务成功、MQ不可用 Outbox保留事件并后台重试</p>
+<p>MQ成功但Outbox未标记 可能重复发送，消费者进行幂等去重</p>
+<p>订单已取消但支付宝成功 进入异常支付，后续退款或人工处理</p>
+<p>多次重试仍无法投递 转入dead状态并告警、人工处理</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-notify/" rel="prev" title="【BudgetMatch】增加支付宝异步通知网关路由">
+      <i class="fa fa-chevron-left"></i> 【BudgetMatch】增加支付宝异步通知网关路由
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-admininfo/" rel="next" title="【BudgetMatch】Admin后台展示支付状态和流水信息">
+      【BudgetMatch】Admin后台展示支付状态和流水信息 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E8%A7%88"><span class="nav-number">1.</span> <span class="nav-text">总览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">详细流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E5%8D%95%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">订单创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E4%BB%98%E5%88%9B%E5%BB%BA"><span class="nav-number">2.2.</span> <span class="nav-text">支付创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A2%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="nav-number">2.2.1.</span> <span class="nav-text">订单校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%AF%E4%BB%98%E6%B5%81%E6%B0%B4"><span class="nav-number">2.2.2.</span> <span class="nav-text">支付流水</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E4%BB%98%E5%AE%9D%E7%9B%B8%E5%85%B3"><span class="nav-number">2.3.</span> <span class="nav-text">支付宝相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E4%B8%8B%E5%8D%95"><span class="nav-number">2.3.1.</span> <span class="nav-text">预下单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E6%89%A3%E6%AC%BE"><span class="nav-number">2.3.2.</span> <span class="nav-text">完成扣款</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5"><span class="nav-number">2.3.3.</span> <span class="nav-text">发送异步通知</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rsa2%E9%AA%8C%E7%AD%BE%E4%B8%8E%E6%A0%A1%E9%AA%8C"><span class="nav-number">2.4.</span> <span class="nav-text">RSA2验签与校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E8%AE%A4%E8%AE%A2%E5%8D%95%E6%94%AF%E4%BB%98"><span class="nav-number">2.5.</span> <span class="nav-text">确认订单支付</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E5%92%8C%E8%A1%8C%E9%94%81"><span class="nav-number">2.6.</span> <span class="nav-text">事务和行锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E5%8D%95%E6%9B%B4%E6%96%B0%E5%92%8Coutbox"><span class="nav-number">2.7.</span> <span class="nav-text">订单更新和outbox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.8.</span> <span class="nav-text">主动查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8"><span class="nav-number">2.9.</span> <span class="nav-text">常见异常</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">201</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">838k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">25:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

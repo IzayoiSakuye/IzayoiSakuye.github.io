@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Redis这种NoSQL的用法与常见的缓存机制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【杂项】Redis">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="Redis这种NoSQL的用法与常见的缓存机制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260812224806332.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813165737199.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813200728835.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813201159620.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813201451884.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813202114112.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813202551195.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813211727310.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260813214252221.png">
+<meta property="article:published_time" content="2026-08-13T14:18:49.336Z">
+<meta property="article:modified_time" content="2026-08-13T14:28:24.675Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/image-20260812224806332.png">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【杂项】Redis | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E6%9D%82%E9%A1%B9/Redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【杂项】Redis
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-08-13 22:18:49 / 修改时间：22:28:24" itemprop="dateCreated datePublished" datetime="2026-08-13T22:18:49+08:00">2026-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index"><span itemprop="name">杂项</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+            <div class="post-description">Redis这种NoSQL的用法与常见的缓存机制</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="nosql">NoSQL</h1>
+<p>非关系型数据库，适合：</p>
+<ul>
+<li>超大规模数据</li>
+<li>高并发</li>
+</ul>
+<p>的场景</p>
+<p>它把关系型数据库的磁盘IO操作转换为内存操作，因此速度会大量提升</p>
+<p>NoSQL分为四类：</p>
+<ul>
+<li>KV（Redis）：查找速度很快</li>
+<li>列存储（HBase）：容易进行分布式扩展</li>
+<li>文档型（MongoDb）：操作非常灵活</li>
+<li>图形（Neo4J）：社交网络常用，以图结构为数据模型</li>
+</ul>
+<h1 id="redis简介">Redis简介</h1>
+<p>它是以KV对存储的NoSQL，不需要遵守传统数据库的基本要求</p>
+<p>优点：对数据<strong>高并发</strong>读写，对海量数据高效率存储访问，<strong>单线程</strong>操作，每个操作都是原子操作，没有并发问题</p>
+<blockquote>
+<p>为什么不是多线程：</p>
+<p>Redis大部分操作在内存中完成，且采用了高效数据结构</p>
+<p>这样可以避免多线程之间的竞争，省去了多线程切换带来的时间和性能开销，而且也不会导致死锁</p>
+</blockquote>
+<h2 id="定位">定位</h2>
+<p>Redis实现了将磁盘IO操作转换为内存操作，即作为<strong>缓存</strong>使用，最终把数据再存入数据库</p>
+<p>有利于提高数据读写速度，减轻对数据库的存储和访问压力</p>
+<p>当数据量和并发非常大的时候，我们一般会先操作内存，后续再存入库，称为<strong>最终一致性</strong></p>
+<p>注意：Redis不建议存储<strong>敏感数据</strong></p>
+<h1 id="数据类型">数据类型</h1>
+<p>Redis的命令格式类似于：<code>类型命令 key value</code></p>
+<p>操作类似map的kv存储，key大部分为string类型，value根据缓存数据结构可以使用下面讲到的多种类型</p>
+<h2 id="string">String</h2>
+<p>字符串类型是包含多种类型的特殊类型，并且是二进制安全的</p>
+<h3 id="常用命令">常用命令</h3>
+<p><code>set key value</code>：将kv对缓存在redis中，设置相同key会被覆盖</p>
+<p><code>get key</code>：获得key对应的值</p>
+<p><code>incr/decr key</code>：将key对应value值±1，只能针对数值类型</p>
+<p><code>setex key seconds value</code>：将kv对缓存到redis中，<code>seconds</code>秒后失效</p>
+<p><code>ttl key</code>：查看key的存活时间，当数值变为-2表示已经失效</p>
+<p><code>del key</code>：删除key</p>
+<p><code>setnx key value</code>：若key已存在，不操作；若key不存在，直接添加</p>
+<h3 id="应用场景">应用场景</h3>
+<ul>
+<li><p>计数器：如视频播放量计数使用<code>incr</code>计算播放量，若直接在数据库增加对数据库的压力很大</p></li>
+<li><p>共享<code>session</code>：</p>
+<p>出于负载均衡的考虑，分布式的服务会把用户的信息访问均衡到不同服务器上，这样用户每次刷新进入的服务器不同，session中可能没有之前的登录信息，需要重新登陆</p>
+<p>为避免这个问题，可以用redis将用户session集中管理，只需要保证redis的高可用和扩展性的，每次获取用户更新或查询登录信息都从redis集中获取</p></li>
+</ul>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260812224806332.png" class="" title="共享session">
+<h2 id="hash">Hash</h2>
+<p>可以看作String类型的field和value的映射表，或者说是一个String集合，适合存储对象，类似于<code>map&lt;string, map&lt;string, type&gt;&gt;</code></p>
+<h3 id="常用命令-1">常用命令</h3>
+<p><code>hset key field value</code>：将field value对缓存到对应key下</p>
+<p><code>hget key field</code>：就从key对应的hash表中获取对应field的value值</p>
+<p><code>hexists key field</code>：判断key对应hash表中有无field字段</p>
+<p><code>hdel key field</code>：删除key对应hash表中的field字段</p>
+<p><code>hincrby key field increment</code>：给key对应hash表中的field字段加1</p>
+<p><code>hlen key</code>：查看key对应hash表中的field个数</p>
+<p><code>hkeys key</code>：获取key对应的hash表中的所有fields</p>
+<p><code>hvals key</code>：获取key对应的hash表中的所有values</p>
+<p><code>hgetall key</code>：获取key对应的hash表中的所有kv对</p>
+<h3 id="应用场景-1">应用场景</h3>
+<ul>
+<li>共享session：</li>
+</ul>
+<p>接上面，若想要将用户信息通过redis存入缓存层，有两种方案：</p>
+<ol type="1">
+<li>将User对象转换为json字符串存入redis，侧重于查看，修改麻烦</li>
+<li>将User对象转换为hash对象存入redis，侧重于修改，查看麻烦</li>
+</ol>
+<h2 id="list">List</h2>
+<p>是一个双端链表结构的集合，可以作为栈或队列使用，类似于<code>map&lt;string, list&gt;</code></p>
+<h3 id="常用命令-2">常用命令</h3>
+<p><code>rpush key value</code>：从右边往key集合中添加value值</p>
+<p><code>lpush key value</code>：从左边往key集合中添加value值</p>
+<p><code>lrange key start stop</code>：从左边开始列表key的集合，从start开始，stop结束</p>
+<p><code>rpop key</code>：弹出key集合中最右边的数据</p>
+<p><code>lpop key</code>：弹出key集合中最左边的数据</p>
+<p><code>llen key</code>：获取列表长度</p>
+<h3 id="应用场景-2">应用场景</h3>
+<ul>
+<li>用户收藏列表：</li>
+</ul>
+<p>key：user→ value：aid1、aid2、…</p>
+<h2 id="set">Set</h2>
+<p>是String类型的无序集合，底层使用哈希表实现，类似于<code>map&lt;string, set&lt;int&gt;&gt;</code></p>
+<p>还可以对集合进行交集、并集和差集的集合运算操作</p>
+<h3 id="常用命令-3">常用命令</h3>
+<p><code>sadd key members[...]</code>：在key集合中添加member元素</p>
+<p><code>smembers key</code>：遍历key集合中所有元素</p>
+<p><code>srem key members [...]</code>：删除key中的members元素</p>
+<p><code>spop key count</code>：随机从key集合中弹出n个元素</p>
+<p><code>sdiff key1 key2</code>：返回两个集合的差集</p>
+<p><code>sinter key1 key2</code>：返回两个集合的交集</p>
+<p><code>sunion key 1, key2</code>：返回两个集合的并集</p>
+<h3 id="应用场景-3">应用场景</h3>
+<ul>
+<li>去重</li>
+<li>抽奖</li>
+</ul>
+<h2 id="sorted-setzset">Sorted set(zset)</h2>
+<p>有序的set类型</p>
+<h4 id="常用命令-4"><strong>常用命令</strong></h4>
+<p><code>zadd key score member</code>：往key集合中添加member元素，分数为score</p>
+<p><code>zincrby key increment member</code>：将key集合中的member元素+increment分</p>
+<p><code>zrange/zrevrange key start stop [withscores]</code>：将key集合中的元素按分数升序/降序排列，若携带withscore参数则会显示分数</p>
+<p><code>zrank/zrevrank key member</code>：返回member元素在key集合中的正序/倒序排名</p>
+<p><code>zcard key</code>：返回key集合元素个数</p>
+<p><code>zrem key member</code>：删除key集合中member元素和分数</p>
+<p><code>zrangebyscore/revrangebyscore key min max [withscore]</code>：按照<span
+class="math inline">\([min,max)\)</span>分数范围正序/倒序返回key集合中元素</p>
+<p><code>zremrangebyscore key min max withscores</code>：照<span
+class="math inline">\([min,max)\)</span>分数范围删除key集合中元素</p>
+<p><code>zremrangebyrank key start stop</code>：删除key集合正序排名落在<span
+class="math inline">\([start, stop)\)</span>范围元素</p>
+<h3 id="应用场景-4">应用场景</h3>
+<p>排行榜</p>
+<h2 id="value设计">value设计</h2>
+<p>考虑：</p>
+<ul>
+<li>是否需要排序：使用sorted set</li>
+<li>缓存数据是多个值还是单个值
+<ul>
+<li>多个值：重复-list，不重复-set</li>
+<li>单个值：简单值-string，对象值-hash</li>
+</ul></li>
+</ul>
+<p>也可以：</p>
+<p>需要排序的使用sorted
+set，剩下的将value转换为json字符串，使用string存储，这样可以减少泛型操作的麻烦</p>
+<h2 id="key设计">key设计</h2>
+<h3 id="唯一性">唯一性</h3>
+<p>redis的key必须保证唯一，缓存同一个key时，后者会覆盖前者</p>
+<p>最常用的命名方式：<strong>使用缓存数据的主键作为key</strong>，因为主键是保证UNIQUE的</p>
+<p>如员工表的主键是id，使用id作为key</p>
+<h3 id="可读性">可读性</h3>
+<p>redis的key需要保证见名知意，id虽然保证唯一，但可读性非常差，因此在保证key唯一的前提下，可以给key加上前缀，规范如下：</p>
+<ul>
+<li>普通单值，如<code>employee_info:id1</code></li>
+<li>类似关系型数据库设计：<strong>表名:主键名:主键值:列名</strong>，如<code>employee:id:1:info</code></li>
+<li>通用命名：<strong>业务模块名:业务逻辑含义:其他:value类型</strong>，如<code>employee:base.info:id1:hash</code>
+<ul>
+<li>模块名：表示该key属于哪个功能模块</li>
+<li>逻辑含义段：可以使用.分开，具体业务逻辑表示</li>
+<li>其他：设置唯一标识，如主键</li>
+</ul></li>
+</ul>
+<h3 id="灵活性">灵活性</h3>
+<p>key保证唯一的时候，可以用主键，有的用一个主键不能表达全部意思，可以使用联合主键</p>
+<h3 id="时效性">时效性</h3>
+<p>redis
+key一定要设置过期时间，要根据自己的业务场景给key设置合理的过期时间，一般在写入key时，就要追加过期时间，也可以按需动态设置</p>
+<ul>
+<li>若不设置过期时间，这种key就是永久key，会一直占用内存不释放，时间久数量多后容易达到服务器的内存上限，导致宕机；一般配合key过期策略使用</li>
+<li>key的时效性设置，必须根据业务场景评估，设置合理有效期</li>
+</ul>
+<h1 id="全局命令">全局命令</h1>
+<p>全局命令针对的是所有key，用于运维管理</p>
+<p><code>keys pattern</code>：按照pattern匹配规则列出所有keys</p>
+<p><code>exist key</code>：判断key是否存在</p>
+<p><code>expire key seconds</code> ：给key设置过期时间</p>
+<p><code>persist key</code>：取消key过期时间</p>
+<p><code>select index</code>：切换数据库，共有0-15共16个，默认第0个</p>
+<p><code>move key db</code>：移动key到其他数据库</p>
+<p><code>randomkey</code>：随机命名key</p>
+<p><code>rename key newkey</code>：重命名key</p>
+<h1 id="redis事务">Redis事务</h1>
+<p>一个事务从开始到执行会经历：开始事务、命令入队、执行事务的三个阶段</p>
+<p>单个Redis命令的执行是原子性的，但Redis没有在事务上增加任何维持原子性的机制，所以Redis事务的执行不是原子性的</p>
+<p>Redis的事务可以理解为一个<strong>打包的批量执行脚本</strong>，但不是原子化操作；中间某个指令执行失败不会导致前面已做指令的回滚，也不会导致后续的指令不做</p>
+<p>使用<code>multi</code>开启一个事务，这之后添加的命令都会标记为queued，当执行<code>exec</code>命令后才会统一执行，注意：</p>
+<ul>
+<li>事务中任意命令执行失败，其余命令依然被执行</li>
+<li>在事务执行过程中，其他客户端提交的命令请求不会插入到事务执行命令队列中</li>
+</ul>
+<h1 id="redis持久化">Redis持久化</h1>
+<p>Redis的持久化机制类似如下：</p>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813165737199.png" class="" title="持久化">
+<p>分为三种：</p>
+<ul>
+<li>快照方式（RDB）</li>
+<li>文件追加方式（AOF）</li>
+<li>混合持久化</li>
+</ul>
+<h2 id="rdb方式">RDB方式</h2>
+<p>默认方式，将内存数据以快照的方式写入到二进制文件中，默认为<code>dump.rdb</code>触发RDB持久化过程分为手动和自动触发</p>
+<ul>
+<li>手动触发
+<ul>
+<li>save命令：会阻塞当前Redis服务器，直到RDB过程完成为止，如果内存数据较多，会造成长时间阻塞，影响其他命令使用，不建议使用</li>
+<li>bgsave命令：Redis进程执行fork指令创建子进程，由于进程实现RDB持久化，建议使用该命令</li>
+</ul></li>
+<li>自动触发：使用<code>save m n</code>表示m秒内数据集存在n次修改时会自动触发bgsave命令</li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>RDB快照文件是一个压缩的二进制文件，适用于备份、全量复制登场景，开发中可以按照每六小时执行一次备份用于容灾备份</li>
+<li>Redis加载RDB回复数据远远快于AOF方式</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>无法做刀持久化/秒级持久化，执行fork有时间成本</li>
+<li>快照文件不同版本格式不同，有兼容问题</li>
+</ul>
+<h2 id="aof方式">AOF方式</h2>
+<p>AOF以独立日志方式记录每次<strong>写命令</strong>，重启时再重新执行AOF文件中命令达到恢复数据的目的，解决了数据持久化实时性的问题</p>
+<p>默认是不开启AOF的，需要配置<code>appendonly yes</code>的情况下才会开启</p>
+<p>AOF有三种文件同步策略：</p>
+<ul>
+<li><code>appendfsync always</code>：收到命令就立即写到磁盘，效率最慢，但是持久化最完全</li>
+<li><code>appendfsync everysec</code>：每秒写入磁盘一次，折中</li>
+<li><code>appendfsync no</code>：完全依赖os，一般周期是30s</li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>数据安全性更高，最多损失一秒数据量</li>
+<li>不小心执行了flushall指令，也可以通过AOF方式删除最后一个命令来恢复</li>
+<li>AOF是一个增量日志文件，不会存在断电时出现损坏问题，即使有问题也可以通过<code>redis-check-aof</code>恢复</li>
+<li>AOF变得太大时，Redis能够在后台重写AOF</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>AOF文件体积通常大于RDB文件</li>
+<li>持久化性能来说，AOF慢</li>
+</ul>
+<h2 id="混合持久化">混合持久化</h2>
+<p>在写入时，先把当前的数据以RDB形式写入开头，再将后续的操作命令以AOF格式存入文件，即以RDB为全量备份，AOF作为增量备份来提高备份效率，这样既能保证速度，又能防止数据丢失</p>
+<h2 id="机制选择">机制选择</h2>
+<ul>
+<li>若对数据安全性有非常高的要求：同时启用</li>
+<li>若能容忍数据丢失：单独使用RDB</li>
+<li>不建议单独使用AOF</li>
+<li>无特殊要求，可以使用混合方式</li>
+</ul>
+<h1 id="缓存机制">缓存机制</h1>
+<h2 id="内存淘汰机制">内存淘汰机制</h2>
+<p>Redis启动时会加载一个配置<code>maxmemory</code>，表示默认设置Redis内存上限，当内存达到上限后，会执行Redis内存淘汰机制</p>
+<p>常见的淘汰策略：</p>
+<ul>
+<li><p>LRU：最近最少使用</p>
+<p>使用双向链表+哈希表的方式存储，双向链表存储kv对，哈希表存储key与链表节点的指针关系，当某个key被访问到时，程序可以通过哈希表迅速定位到链表节点，并将该节点调整至链表的最开始位置</p></li>
+<li><p>LFU：最不经常使用</p>
+<p>元素数据会附加一个属性：使用次数，通过链表串起来，被访问次数最多的放在最前面，最少的放在最后面</p></li>
+<li><p>TTL：最靠近过期时间的</p></li>
+<li><p>随机淘汰</p></li>
+</ul>
+<h3 id="redis淘汰策略">Redis淘汰策略</h3>
+<p>Redis通过<code>maxmemory-policy</code>来配置指定具体淘汰机制</p>
+<ul>
+<li><p><code>volatile-lru</code>：对设置过期时间的数据集，执行lru淘汰策略</p></li>
+<li><p><code>volatile-lfu</code>：对设置过期时间的数据集，执行lfu淘汰策略</p></li>
+<li><p><code>volatile-ttl</code>：对设置过期时间的数据集，执行ttl淘汰策略</p></li>
+<li><p><code>volatile-random</code>：对设置过期时间的数据集，随机淘汰</p></li>
+<li><p><code>allkeys-lru</code>：对所有数据集，执行lru淘汰策略</p></li>
+<li><p><code>allkeys-lfu</code>：对所有数据集，执行lfu淘汰策略</p></li>
+<li><p><code>allkeys-random</code>：对所有数据集，随机淘汰</p></li>
+<li><p><code>no-enviction</code>：报错，告诉你内存不足</p></li>
+</ul>
+<p>默认是报错</p>
+<h2 id="过期key处理">过期key处理</h2>
+<p>key过期的清理问题：</p>
+<ul>
+<li>惰性删除：当访问key时，才判断是否过期，若过期就直接删掉，对CPU友好，但会浪费内存</li>
+<li>定时删除：设置key过期时间的同时创建定时器，当到达过期节点时立即执行删除key操作，对CPU不友好，需要额外让出CPU维护定时器</li>
+<li>定期删除：隔一段时间对数据进行一次检查，删除里面的过期key，删多少由算法决定</li>
+</ul>
+<p>Redis实际配合使用<strong>惰性删除和定期删除</strong>两种策略，当不主动删除时都是采用惰性删除</p>
+<h2 id="缓存一致">缓存一致</h2>
+<p>更新数据库和更新/删除缓存是两个独立操作，无法做到原子性，因此要尽量做到：</p>
+<ul>
+<li>缩短不一致时间</li>
+<li>保证最终一致性</li>
+<li>避免长时间的脏数据</li>
+</ul>
+<h3 id="cache-aside">Cache Aside</h3>
+<p>核心思想：应用自己控制缓存和数据库的读写，当缓存的数据有更新值了，采用删除缓存数据而不是更新缓存数据</p>
+<p><strong>模式1：先删后改</strong></p>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813200728835.png" class="" title="mod1">
+<p>此时写请求慢于读请求，修改数据库的操作一般晚于查询数据库更新缓存的操作，导致后面用户读缓存失败，读数据库读到旧值，并回填旧值缓存，最后导致数据库是新值而缓存是旧值</p>
+<p>可以使用<strong>延时双删</strong>策略：完成修改后，重新删除更新的一次老缓存数据，再查询时会把新的数据回填，这样即使有读请求抢先回填了旧值，第二次删除也会把旧值删掉</p>
+<p>缺点是延迟时间难以精确控制，太短删不掉，太长影响性能</p>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813201159620.png" class="" title="双删">
+<p><strong>模式2：先改后删</strong></p>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813201451884.png" class="" title="模式2">
+<p>问题：假设数据库更新成功但删除缓存失败，会导致缓存是旧值而数据库是新值</p>
+<p>解决方法：</p>
+<ul>
+<li>重试删除：若删除失败，放入重试队列异步重试删除</li>
+<li>订阅binlog删除缓存：使用工具监听MySQLbinlog，若数据变更，自动删除对应缓存</li>
+<li>设置缓存过期时间TTL：即使删除失败，缓存最后也会过期，可作为兜底</li>
+</ul>
+<p>一般第二种模式更常用，因为先改数据库后，缓存删除前的不一致窗口更小，且删除操作幂等</p>
+<h3 id="readwrite-through">Read/Write Through</h3>
+<p>应用不直接操作数据库，把缓存作为主要的数据读取方式</p>
+<style>.xugpbixbxigl{}</style>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813202114112.png" class="xugpbixbxigl" alt="RW Through">
+<p>特点点：</p>
+<ul>
+<li>对应用透明，应用代码简单</li>
+<li>一致性强，但写延迟高</li>
+<li>实现复杂，缓存层需要处理并发和双写等逻辑</li>
+</ul>
+<h3 id="write-behind">Write Behind</h3>
+<p>核心思想：写请求先更新缓存，立即返回成功；数据库由后台异步批量更新</p>
+<p>实现逻辑类似于：首先更新缓存，并标记该key为脏数据，立即返回成功，后台异步线程定期定量批量将脏数据刷到数据库，一般需要如下组件：</p>
+<ul>
+<li>缓存存储：Redis等保存最新数据</li>
+<li>脏数据队列/Map：记录哪些key已经修改但未持久化到数据库</li>
+<li>后台Flush线程：定时触发或达到阈值时触发批量写入</li>
+<li>版本号/时间戳：防止刷盘期间又有新写入导致旧值覆盖新值</li>
+<li>失败重试机制：刷盘失败后重新入队，保证最终一致</li>
+<li>持久化WAL：先将操作写入日志，若崩溃恢复后重放</li>
+</ul>
+<p><strong>方式1：将更新步骤放到消息队列中，异步执行</strong></p>
+<p>从缓存到数据库：用户更新缓存后，发送mq消息，消费者异步写数据库</p>
+<p><strong>方式2：模拟MySQL主从复制，让MySQL认为是从节点，从而把更新的binlog发出并解析，转为结构化数据给下游程序使用</strong></p>
+<p>这是数据库变更捕获（CDC）的方法，数据库先更新，通过binlog等异步通知缓存或其它系统进行更新，常用于解决删除缓存失败，多实例缓存同步等问题，通常用于删除缓存</p>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813202551195.png" class="" title="WB">
+<p>优点：</p>
+<ul>
+<li>写延迟低：不需要等待数据库</li>
+<li>吞吐高：后台批量写数据库，减少连接数和IO</li>
+<li>合并写：同一key的多次更新可以合并写一次操作，减轻数据库压力</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>数据可能丢失：若脏数据还没刷到数据库发生崩溃等，会丢失，需要WAL等持久化机制弥补</li>
+<li>一致性弱：只能保证最终一直性</li>
+<li>实现复杂</li>
+</ul>
+<h2 id="缓存击穿">缓存击穿</h2>
+<p>查询某个数据的值，缓存中没有，数据库中有，因此想查询只能直接打到数据库上查询</p>
+<p>一般缓存都会设置过期时间，所以缓存击穿比较常见</p>
+<p>带来的问题：若对某条数据的查询突然特别大，由于缓存中无该数据，所以大量请求会打到后端数据库中，导致数据库宕机</p>
+<p>解决方法：</p>
+<ul>
+<li>MySQL：通过加锁等方式减少击穿后的直接流量</li>
+<li>Redis：
+<ul>
+<li>设置热点数据不过期</li>
+<li>热点数据后台启动异步线程，重新把数据回填进缓存层</li>
+</ul></li>
+</ul>
+<h2 id="缓存穿透">缓存穿透</h2>
+<p>查询一个数据，缓存查不到数据库也查不到，导致穿透</p>
+<p>解决方法如下：</p>
+<ul>
+<li>拦截非法查询请求</li>
+<li>缓存空对象</li>
+<li>布隆过滤器：设计k个各不相同的哈希映射函数，把数据库的有效时间通过这个映射函数得到数组指定位置，并设置为1；查询时，输入查询数据，通过这一系列哈希函数判断对应位置是否全为1，若是，则很大概率是有效请求，如果有一个是0，则一定是无效查询</li>
+</ul>
+<h2 id="缓存雪崩">缓存雪崩</h2>
+<p>一大批被缓存的数据同时失效，对于这批数据请求全打到数据库上，导致数据库宕机</p>
+<p>和缓存击穿的区别是单点与全面，所以可以用缓存击穿的方式解决：</p>
+<ul>
+<li><p>MySQL：通过加锁减少并发量</p></li>
+<li><p>Redis：</p>
+<ul>
+<li>设置热点数据永不过期</li>
+<li>在上线前根据情况分析，将热数据直接加载到缓存系统</li>
+<li>分析失效时间，尽量让失效时间分散</li>
+</ul></li>
+</ul>
+<h1 id="集群">集群</h1>
+<h2 id="主从复制">主从复制</h2>
+<p>多台服务器安装了Redis的情况下，将一台机器设为主库，其余设置为从库，它们之间保持数据同步，若客户端有一些写命令，会打到主库上，主库修改后会将数据同步到从库；而读命令可以直接询问从库</p>
+<p>首先需要修改配置文件，指定谁是主库谁是从库；上线后主从库会进行握手通信，当握手完成后，从库需要向主库发送PSYN命令，开启数据同步过程，并发送主库ID和复制进度偏移量offset</p>
+<p>主库收到信息后，会进行逻辑判断，判断该怎么继续执行步骤，告诉从库是进行全量复制（第一次上线）还是断线后重复制（断线重连）</p>
+<h3 id="全量复制">全量复制</h3>
+<p>初次复制后进行同步：</p>
+<ul>
+<li>主库执行<code>bgsave</code>，生成对应RDB文件，并开启缓存区，记录RDB文件执行过程中，收到的新数据命令</li>
+<li>RDB文件产生后，主库把它发给从库，从库通过RDB恢复数据</li>
+</ul>
+<h3 id="命令传播">命令传播</h3>
+<ul>
+<li>当主库状态被修改（增加。修改数据），为了使得从库和主库数据状态一致，主库会把数据变更命令发给从库，从库收到后执行命令</li>
+</ul>
+<h3 id="断线后重复制">断线后重复制</h3>
+<p>当从库和主库断线重连后，需要同步数据，依赖以下数据：</p>
+<ul>
+<li>服务器运行ID：唯一确定主库身份</li>
+<li>复制偏移量：代表主节点传输的字节数</li>
+<li>复制积压缓冲区：先进先出的队列，存储最近主节点的数据修改命令</li>
+</ul>
+<style>.bcidjpurxnjr{}</style>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813211727310.png" class="bcidjpurxnjr" alt="流程">
+<h2 id="哨兵">哨兵</h2>
+<p>新建哨兵组，对主从库统一监控，如果主库坏了，哨兵组进行投票，从从库中重新选出主库，本质上说，哨兵系统是一个不提供数据服务的Redis服务器</p>
+<p>每个机器会向烧饼一定时间发送信息（心跳），哨兵系统如果一定时间收不到这个信息，就默认这个机器断联</p>
+<p>具体逻辑是：当某个哨兵发现主库连不上，会标记为主观下线，并通知其他哨兵连接主库</p>
+<p>超过半数哨兵确认连接不上后，就会标记为客观下线，并执行故障转移</p>
+<p>故障转移的过程中，会通过选举协议，在所有哨兵中选择一个节点主持新主库的选举工作，选取完成后，哨兵会对这个从库发送<code>slave of no one</code>，该从库就会变为主库，同时向其他slave发送新主库的IP和端口号</p>
+<p>如果此时主库重新上线，就会把他降级为从库，从属于新主库</p>
+<h2 id="cluster">Cluster</h2>
+<p>Cluster是Redis提供的分布式数据库解决方案，它会自动将你的数据切分为多个节点存储，即使一部分宕机，也可以继续执行数据操作</p>
+<h3 id="分区策略">分区策略</h3>
+<p>采用虚拟槽，所有键通过CRC16校验函数，对16384取模，决定数据分配到哪个槽位，每个Redis的cluster节点负责一部分槽数据的存储，并且该节点可以结合主从复制模式，将分配给它的数据进行复制</p>
+<h3 id="查询策略">查询策略</h3>
+<p>每个节点会存储整个集群节点信息，也称元信息，这个节点存储的元数据包括在该节点视角下：</p>
+<ul>
+<li>各个节点存储的槽数据</li>
+<li>各个节点的master和slave状态</li>
+<li>各个节点是否存活</li>
+</ul>
+<p>元数据信息的传播会通过gossip协议，每个节点都把自己的数据信息通过该协议散布出去</p>
+<ul>
+<li>每隔一段时间执行一次传播</li>
+<li>所有被感染的节点选择k个邻接节点散布信息</li>
+</ul>
+<h3 id="扩容缩容">扩容缩容</h3>
+<p>由于集群数据可能出现服务器扩容，服务器缩容，该过程中，数据会发生迁移，因此此时查询的时候可能会出现一部分数据还在本节点，一部分数据被迁移到其他节点</p>
+<p>具体逻辑如下：</p>
+<style>.fffuemzjsyti{}</style>
+<img src="/%E6%9D%82%E9%A1%B9/Redis/image-20260813214252221.png" class="fffuemzjsyti" alt="扩容缩容">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Golang/GORM/N+1%E6%9F%A5%E8%AF%A2%E9%97%AE%E9%A2%98/" rel="prev" title="【GORM】N+1查询问题">
+      <i class="fa fa-chevron-left"></i> 【GORM】N+1查询问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-notify/" rel="next" title="【BudgetMatch】增加支付宝异步通知网关路由">
+      【BudgetMatch】增加支付宝异步通知网关路由 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nosql"><span class="nav-number">1.</span> <span class="nav-text">NoSQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">Redis简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.1.</span> <span class="nav-text">定位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#string"><span class="nav-number">3.1.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.1.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.1.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash"><span class="nav-number">3.2.</span> <span class="nav-text">Hash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#list"><span class="nav-number">3.3.</span> <span class="nav-text">List</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-2"><span class="nav-number">3.3.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">3.3.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#set"><span class="nav-number">3.4.</span> <span class="nav-text">Set</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-3"><span class="nav-number">3.4.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-3"><span class="nav-number">3.4.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sorted-setzset"><span class="nav-number">3.5.</span> <span class="nav-text">Sorted set(zset)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-4"><span class="nav-number">3.5.0.1.</span> <span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-4"><span class="nav-number">3.5.1.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#value%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.6.</span> <span class="nav-text">value设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.7.</span> <span class="nav-text">key设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E6%80%A7"><span class="nav-number">3.7.1.</span> <span class="nav-text">唯一性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%AF%BB%E6%80%A7"><span class="nav-number">3.7.2.</span> <span class="nav-text">可读性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%81%B5%E6%B4%BB%E6%80%A7"><span class="nav-number">3.7.3.</span> <span class="nav-text">灵活性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E6%95%88%E6%80%A7"><span class="nav-number">3.7.4.</span> <span class="nav-text">时效性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">全局命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis%E4%BA%8B%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">Redis事务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">6.</span> <span class="nav-text">Redis持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rdb%E6%96%B9%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">RDB方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aof%E6%96%B9%E5%BC%8F"><span class="nav-number">6.2.</span> <span class="nav-text">AOF方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">6.3.</span> <span class="nav-text">混合持久化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%88%B6%E9%80%89%E6%8B%A9"><span class="nav-number">6.4.</span> <span class="nav-text">机制选择</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">缓存机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">7.1.</span> <span class="nav-text">内存淘汰机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="nav-number">7.1.1.</span> <span class="nav-text">Redis淘汰策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%9C%9Fkey%E5%A4%84%E7%90%86"><span class="nav-number">7.2.</span> <span class="nav-text">过期key处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4"><span class="nav-number">7.3.</span> <span class="nav-text">缓存一致</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cache-aside"><span class="nav-number">7.3.1.</span> <span class="nav-text">Cache Aside</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#readwrite-through"><span class="nav-number">7.3.2.</span> <span class="nav-text">Read&#x2F;Write Through</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#write-behind"><span class="nav-number">7.3.3.</span> <span class="nav-text">Write Behind</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">7.4.</span> <span class="nav-text">缓存击穿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">7.5.</span> <span class="nav-text">缓存穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">7.6.</span> <span class="nav-text">缓存雪崩</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">8.</span> <span class="nav-text">集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">8.1.</span> <span class="nav-text">主从复制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6"><span class="nav-number">8.1.1.</span> <span class="nav-text">全量复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E4%BC%A0%E6%92%AD"><span class="nav-number">8.1.2.</span> <span class="nav-text">命令传播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%AD%E7%BA%BF%E5%90%8E%E9%87%8D%E5%A4%8D%E5%88%B6"><span class="nav-number">8.1.3.</span> <span class="nav-text">断线后重复制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%A8%E5%85%B5"><span class="nav-number">8.2.</span> <span class="nav-text">哨兵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cluster"><span class="nav-number">8.3.</span> <span class="nav-text">Cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5"><span class="nav-number">8.3.1.</span> <span class="nav-text">分区策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%AD%96%E7%95%A5"><span class="nav-number">8.3.2.</span> <span class="nav-text">查询策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%AE%B9%E7%BC%A9%E5%AE%B9"><span class="nav-number">8.3.3.</span> <span class="nav-text">扩容缩容</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">201</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">838k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">25:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

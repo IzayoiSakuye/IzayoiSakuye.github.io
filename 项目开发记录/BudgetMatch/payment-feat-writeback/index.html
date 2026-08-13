@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="开发新功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【BudgetMatch】Payment RPC回写mall订单状态">
+<meta property="og:url" content="https://izayoisakuye.github.io/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-writeback/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="开发新功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-13T14:20:34.383Z">
+<meta property="article:modified_time" content="2026-08-13T14:22:37.355Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://izayoisakuye.github.io/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-writeback/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【BudgetMatch】Payment RPC回写mall订单状态 | 红魔咖啡馆</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">红魔咖啡馆</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-writeback/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【BudgetMatch】Payment RPC回写mall订单状态
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-08-13 22:20:34 / 修改时间：22:22:37" itemprop="dateCreated datePublished" datetime="2026-08-13T22:20:34+08:00">2026-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">项目开发记录</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/" itemprop="url" rel="index"><span itemprop="name">BudgetMatch</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description">开发新功能</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>payment-rpc 的 markPaid 已经预留回写订单状态 TODO</p>
+<p># 任务</p>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />在
+services/rpc/payment/internal/config/config.go 增加 mall RPC
+配置。</label></li>
+<li><label><input type="checkbox" checked="" />在
+services/rpc/payment/etc/config.yaml 增加 mall RPC target。</label></li>
+<li><label><input type="checkbox" checked="" />在
+services/rpc/payment/internal/svc/service_context.go 初始化 mall RPC
+client。</label></li>
+<li><label><input type="checkbox" checked="" />在 markPaid
+成功更新支付流水后调用 mall-rpc ConfirmPayment。</label></li>
+<li><label><input type="checkbox" checked="" />确保 QueryPayment 和
+HandleNotify 两条路径都复用 markPaid。</label></li>
+<li><label><input type="checkbox" checked="" />处理 mall
+回写失败的日志和错误返回。</label></li>
+<li><label><input type="checkbox"
+checked="" />保持支付流水成功更新的幂等语义。</label></li>
+</ul>
+<h1 id="实现">实现</h1>
+<p>需要实现的目标：支付宝确认收款后，不仅要把payment-rpc的支付流水修改成功，还需要<strong>同步把mall-rpc的订单从待支付改为已支付</strong></p>
+<h3 id="调用链">调用链</h3>
+<p>目前有两条入口汇总到<code>markPaid</code></p>
+<figure class="shiki 主动查询路径"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre><code>用户请求 /pay/query
+  → App 校验订单归属
+  → payment-rpc QueryPayment
+  → 查询支付宝
+  → markPaid
+  → mall-rpc ConfirmPayment
+  → 订单变为已支付
+
+异步通知路径
+支付宝 POST /api/pay/notify/alipay
+  → App 解析表单
+  → payment-rpc HandleNotify
+  → 验签和业务校验
+  → markPaid
+  → mall-rpc ConfirmPayment
+  → 订单变为已支付
+  → 返回 success 给支付宝</code></pre></div></div></figure>
+<p>两条路径复用同一个markPaid，可以避免主动查询和异步通知各写一套逻辑，产生行为不一致</p>
+<p><strong>支付宝异步通知：</strong></p>
+<p>主路径，用户扫码支付后，支付宝主动请求<code>POST /api/pay/notify/alipay</code>，代码位于<code>alipay_notify_logic.go</code>，这个接口不需要用户JWT，因为请求方是支付宝</p>
+<p><strong>主动查询支付宝：</strong></p>
+<p>兜底路径，异步通知可能因为公网、网络或服务异常没有到达，因此用户还可以调用<code>GET /api/mall/orders/:id/pay/query</code>
+App调用payment-rpc的QueryPayment，payment-rpc再主动请求支付宝查询交易状态，代码位于<code>query_payment_logic.go</code></p>
+<h3 id="主动查询路径">主动查询路径</h3>
+<p>App收到查询请求后，先从认证context中获得用户身份，再读取Mall订单，不能只相信客户端传入的<code>order_id</code>，还需要保证订单属于当前登录用户</p>
+<p>然后App调用<code>QueryPayment</code>，收到请求后再次检查流水归属，若不一致则返回<code>NotFound</code>避免跨用户查询时泄露支付确实存在的事实</p>
+<p>若<strong>支付流水还是待支付：</strong>payment-rpc请求支付宝查询，若支付宝返回已支付，则主动调用markPaid标记为已支付</p>
+<p>若<strong>支付流水已成功：</strong>代码不会再次请求支付宝，但是<strong>仍然调用markPaid</strong>，目的是为了重试上一次失败的Mall回写</p>
+<h3 id="异步通知路径">异步通知路径</h3>
+<p>App网关只负责接收支付宝表单，不持有支付宝密钥，处理入口会：</p>
+<ul>
+<li>限制请求体大小最大为1MB</li>
+<li>使用ParseForm解析支付宝表单</li>
+<li>转换为map存取的键值对</li>
+<li>调用<code>HandleNotify</code></li>
+<li>根据处理结果返回纯文本的success和failure</li>
+</ul>
+<p>若返回success，支付宝认为通知已经消费成功，否则支付宝会按照协议继续重试</p>
+<h3 id="payment-rpc通知校验">Payment-rpc通知校验</h3>
+<p><code>HandleNotify</code>会先调用<code>DecodeNotify</code>完成RSA2验签，然后进行对应的业务校验，具体可以看业务校验部分的文档</p>
+<p>金额转为整数后比较</p>
+<p>全部校验通过后，才会进入<code>markPaid</code></p>
+<h3 id="markpaid">markPaid</h3>
+<p>这是整条回写链路的核心，主要完成两件事：</p>
+<ul>
+<li>幂等更新Payment支付流水</li>
+<li>幂等回写Mall订单</li>
+</ul>
+<p>首先代码复制一份传入的record，作为候选状态，异步通知也会写入，只有数据库更新成功后，才会把内存中的record替换为成功数据</p>
+<p>接着更新Payment流水条件，查询条件为<code>WHERE id = ? AND status = StatusPending</code>，查询到以后更新status为1（支付成功）</p>
+<p>这个条件更新解决了并发问题，假设异步通知和主动查询同时到达，只有一个请求能把status从0改为1，另一个请求的RowsAffected为0，可以用这个来判断是否重复操作，它包含两种情况：</p>
+<ul>
+<li>另一条并发请求已经把流水标记成功</li>
+<li>流水已经关闭，不能再支付</li>
+</ul>
+<p>所以代码会重新读取最新流水<code>FindOne</code>，如果最新状态已经是成功，说明是重复通知或并发确认，直接采用数据库最新数据回写mall</p>
+<p>若不是成功，返回conflict</p>
+<p><strong>为什么重复请求仍然调用mall？</strong></p>
+<p>因为payment和mall是两个数据库，payment更新成功的情况下，mall-rpc可能会调用失败</p>
+<p>如果看到payment成功就直接返回，那么mall可能永远停留在待支付状态</p>
+<p>因此现在的语义是：</p>
+<ul>
+<li>支付流水成功：不重复修改流水</li>
+<li>Mall回写：允许重复调用</li>
+</ul>
+<h3 id="payment获取调用mall的权限">Payment获取调用mall的权限</h3>
+<p>后期改为了独立身份认证，不用再伪造普通用户JWT</p>
+<p>payment-rpc在回写前调用<code>serviceauth.GenerateToken</code>，生成一个有效期一分钟的服务
+JWT，并放入 gRPC metadata</p>
+<p>包含的字段在对应文档里可以看到，使用密钥和普通用户JWT分开</p>
+<p>这样普通用户即使有合法用户JWT，也不能直接调用ConfirmPayment</p>
+<h3 id="mall限制payment回写">Mall限制Payment回写</h3>
+<p>Mall的认证拦截器将ConfirmPayment注册为服务专用接口：</p>
+<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #032F62">&quot;/mall.OrderService/ConfirmPayment&quot;</span><span style="color: #24292E">: {</span></span>
+<span class="line"><span style="color: #24292E">  Caller:   </span><span style="color: #032F62">&quot;payment-rpc&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">  Audience: </span><span style="color: #032F62">&quot;mall-rpc&quot;</span><span style="color: #24292E">,</span></span>
+<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<p>拦截器对这个接口不会走普通用户JWT校验，而是走特定的校验，逻辑内部还会再次检查是否是payment调用</p>
+<h3 id="confirmpayment保证幂等">ConfirmPayment保证幂等</h3>
+<p>mall不因为请求来自payment就完全信任，还会重新查询订单并校验存在性、一致性</p>
+<p><strong>事务和行锁：</strong></p>
+<p>Mall在数据库事务中使用<code>SELECT ... FOR UPDATE</code>行级锁（符合条件的每一行上一个排他锁）锁住订单，这样两个并发的confirm不会同时修改同一订单</p>
+<p><strong>相同支付重复确认：</strong></p>
+<p>如果订单已经保存了相同的<code>out_trade_no</code>和<code>trade_no</code>，则认为是同一笔支付的重复确认，执行<code>sameConfirmPayment</code>，Mall不会再次更新订单，也不会再次创建事件，直接返回success和wasAlreadyConfirmed</p>
+<p><strong>不同支付标识冲突：</strong></p>
+<p>如果订单已经有了交易号，又传入了不同的交易号，则是潜在的数据冲突，直接返回conflict</p>
+<p>这样可以防止另一笔支付覆盖原有订单的支付凭据</p>
+<p><strong>原子更新订单：</strong></p>
+<p>订单更新条件：<code>WHERE id = ? AND user_id = ? AND status = pending</code></p>
+<p>注意mall订单状态和payment流水状态是两个枚举，payment为1时标识支付成功，mall为2时表示订单已支付</p>
+<h3 id="写入outbox事件">写入outbox事件</h3>
+<p>订单更新为已支付后，后续还可能需要其他业务，因此不能事务提交后直接发消息队列，否则可能出现订单更新成功但消息队列发送失败，所以mall使用了outbox，更新订单为已支付后插入paid
+outbox事件，任何一步失败整个事务回滚</p>
+<p>事件的稳定去重键：<code>order:&lt;order_id&gt;:paid</code>，outbox表的<code>dedup_key</code>还有唯一索引，因此不会为同一个订单重复创建多个paid事件，消费者侧还有inbox去重，相同事件重复投递就会跳过</p>
+<p>事务提交后，后台dispatcher再把outbox事件发到消息队列，不影响原子性</p>
+<h3 id="重复查询不扣库存">重复查询不扣库存</h3>
+<p>因为库存是在创建订单事务中扣减，而不是支付确认时扣减，支付回写只做更新订单状态、写支付时间、交易号和创建outbox事件，因此重复查询时库存不会变化，和当前幂等设计一致</p>
+<h3 id="跨服务事务失败时">跨服务事务失败时</h3>
+<p>两个数据库不能放到同一个本地事务，因此系统采用一致性：</p>
+<p>支付宝成功→payment流水成功→mall回写成功</p>
+<p>当出现payment流水成功，mall-rpc不可用时：</p>
+<ol type="1">
+<li>Payment 流水保持成功，不回滚支付宝事实。</li>
+<li>记录明确的 Mall 回写失败日志。</li>
+<li>当前请求返回失败。</li>
+<li>支付宝异步通知收到 failure 后可能重试。</li>
+<li>用户再次主动查询时，发现流水已成功，继续重试 Mall 回写。</li>
+<li>Mall 对重复请求进行幂等处理。</li>
+</ol>
+<p># 测试</p>
+<ul class="task-list">
+<li><label><input type="checkbox"
+checked="" />支付宝查询确认成功后，订单状态变为已支付。</label></li>
+<li><label><input type="checkbox"
+checked="" />支付宝异步通知确认成功后，订单状态变为已支付。</label></li>
+<li><label><input type="checkbox"
+checked="" />重复查询或重复通知不会重复扣库存、重复改状态。</label></li>
+<li><label><input type="checkbox" checked="" />mall
+回写失败时有明确日志，便于后续补偿。</label></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-feat-admininfo/" rel="prev" title="【BudgetMatch】Admin后台展示支付状态和流水信息">
+      <i class="fa fa-chevron-left"></i> 【BudgetMatch】Admin后台展示支付状态和流水信息
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/payment-fix-verify/" rel="next" title="【BudgetMatch】加固支付 RPC 授权与支付宝回调业务校验">
+      【BudgetMatch】加固支付 RPC 授权与支付宝回调业务校验 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">1.0.1.</span> <span class="nav-text">调用链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E6%9F%A5%E8%AF%A2%E8%B7%AF%E5%BE%84"><span class="nav-number">1.0.2.</span> <span class="nav-text">主动查询路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E9%80%9A%E7%9F%A5%E8%B7%AF%E5%BE%84"><span class="nav-number">1.0.3.</span> <span class="nav-text">异步通知路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payment-rpc%E9%80%9A%E7%9F%A5%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.0.4.</span> <span class="nav-text">Payment-rpc通知校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#markpaid"><span class="nav-number">1.0.5.</span> <span class="nav-text">markPaid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payment%E8%8E%B7%E5%8F%96%E8%B0%83%E7%94%A8mall%E7%9A%84%E6%9D%83%E9%99%90"><span class="nav-number">1.0.6.</span> <span class="nav-text">Payment获取调用mall的权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mall%E9%99%90%E5%88%B6payment%E5%9B%9E%E5%86%99"><span class="nav-number">1.0.7.</span> <span class="nav-text">Mall限制Payment回写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#confirmpayment%E4%BF%9D%E8%AF%81%E5%B9%82%E7%AD%89"><span class="nav-number">1.0.8.</span> <span class="nav-text">ConfirmPayment保证幂等</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%85%A5outbox%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.0.9.</span> <span class="nav-text">写入outbox事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E6%9F%A5%E8%AF%A2%E4%B8%8D%E6%89%A3%E5%BA%93%E5%AD%98"><span class="nav-number">1.0.10.</span> <span class="nav-text">重复查询不扣库存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E6%9C%8D%E5%8A%A1%E4%BA%8B%E5%8A%A1%E5%A4%B1%E8%B4%A5%E6%97%B6"><span class="nav-number">1.0.11.</span> <span class="nav-text">跨服务事务失败时</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">201</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">838k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">25:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: true,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'Copy Success',
+      error: 'Copy Error',
+      noSupport: 'Browser Not Support',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
+</html>

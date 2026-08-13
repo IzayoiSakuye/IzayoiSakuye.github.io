@@ -183,6 +183,1080 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Lab2/" class="post-title-link" itemprop="url">【CS61A】CS61A——Lab2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-30 21:44:27" itemprop="dateCreated datePublished" datetime="2025-01-30T21:44:27+08:00">2025-01-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:51:09" itemprop="dateModified" datetime="2025-07-31T17:51:09+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><em>WWPD部分省略</em></p>
+<h1 id="composite-identity-function">Composite Identity Function</h1>
+<p>题意：写一个函数，传入f与g两个函数，返回一个含有参数x的函数，用于判断<span
+class="math inline">\(f(g(x))\)</span>是否等于<span
+class="math inline">\(g(f(x))\)</span></p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">composite_identity</span><span style="color: #24292E">(f, g):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #032F62">    Return a function with one parameter x that returns True if f(g(x)) is</span></span>
+<span class="line"><span style="color: #032F62">    equal to g(f(x)). You can assume the result of g(x) is a valid input for f</span></span>
+<span class="line"><span style="color: #032F62">    and vice versa.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">add_one = lambda x: x + 1        # adds one to x</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">square = lambda x: x**2          # squares x [returns x^2]</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b1 = composite_identity(square, add_one)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b1(0)                            # (0 + 1) ** 2 == 0 ** 2 + 1</span></span>
+<span class="line"><span style="color: #032F62">    True</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b1(4)                            # (4 + 1) ** 2 != 4 ** 2 + 1</span></span>
+<span class="line"><span style="color: #032F62">    False</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x: f(g(x))</span><span style="color: #D73A49">==</span><span style="color: #24292E">g(f(x))</span></span></code></pre></div></div></figure>
+<p>按照题意返回一个lambda函数，传入x即可</p>
+<h1 id="count-cond">Count Cond</h1>
+<blockquote>
+<p>predicate function: 返回True或False的函数</p>
+</blockquote>
+<p>题意：写一个函数，传入一个两个参数的predicate function
+<em>condition</em>，返回一个含有参数n的函数，判断1-n中有几个数满足condition函数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">count_cond</span><span style="color: #24292E">(condition):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Returns a function with one parameter N that counts all the numbers from</span></span>
+<span class="line"><span style="color: #032F62">    1 to N that satisfy the two-argument predicate function Condition, where</span></span>
+<span class="line"><span style="color: #032F62">    the first argument for Condition is N and the second argument is the</span></span>
+<span class="line"><span style="color: #032F62">    number from 1 to N.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_fives = count_cond(lambda n, i: sum_digits(n * i) == 5)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_fives(10)   # 50 (10 * 5)</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_fives(50)   # 50 (50 * 1), 500 (50 * 10), 1400 (50 * 28), 2300 (50 * 46)</span></span>
+<span class="line"><span style="color: #032F62">    4</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">is_i_prime = lambda n, i: is_prime(i) # need to pass 2-argument function into count_cond</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_primes = count_cond(is_i_prime)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_primes(2)    # 2</span></span>
+<span class="line"><span style="color: #032F62">    1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_primes(3)    # 2, 3</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_primes(4)    # 2, 3</span></span>
+<span class="line"><span style="color: #032F62">    2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_primes(5)    # 2, 3, 5</span></span>
+<span class="line"><span style="color: #032F62">    3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">count_primes(20)   # 2, 3, 5, 7, 11, 13, 17, 19</span></span>
+<span class="line"><span style="color: #032F62">    8</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">judge</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">        cnt </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">in</span><span style="color: #24292E"> </span><span style="color: #005CC5">range</span><span style="color: #24292E">(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">):</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> condition(n,i):</span></span>
+<span class="line"><span style="color: #24292E">                cnt</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> cnt</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> judge</span></span></code></pre></div></div></figure>
+<p>遍历1-n，传入condition函数并计数即可</p>
+<p>注意返回的是函数，传入n</p>
+<h1 id="multiple">Multiple</h1>
+<p>题意：写一个函数求参数a，b的最小公倍数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">multiple</span><span style="color: #24292E">(a, b):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return the smallest number n that is a multiple of both a and b.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">multiple(3, 4)</span></span>
+<span class="line"><span style="color: #032F62">    12</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">multiple(14, 21)</span></span>
+<span class="line"><span style="color: #032F62">    42</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(a,b):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> b</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> gcd(b,a</span><span style="color: #D73A49">%</span><span style="color: #24292E">b)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">*</span><span style="color: #24292E">b</span><span style="color: #D73A49">//</span><span style="color: #24292E">gcd(a,b)</span></span></code></pre></div></div></figure>
+<p>辗转相除法求gcd，用gcd求lcm</p>
+<h1 id="i-heard-you-liked-functions">I Heard You Liked Functions…</h1>
+<p>题意：定义一个函数传入三个函数f1,f2,f3，返回一个参数为n的函数g，函数g返回一个参数为x的函数h</p>
+<p>函数x将会循环传给函数f1，f2，f3，具体如下：</p>
+<p>n=0时返回x，n=1时返回f1(x)，n=2时返回f2(f1(x))，n=3时返回f3(f2(f1(x)))，n=4时返回f1(f3(f2(f1(x))))，以此类推</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cycle</span><span style="color: #24292E">(f1, f2, f3):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Returns a function that is itself a higher-order function.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">def add1(x):</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    return x + 1</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">def times2(x):</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    return x * 2</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">def add3(x):</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    return x + 3</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">my_cycle = cycle(add1, times2, add3)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">identity = my_cycle(0)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">identity(5)</span></span>
+<span class="line"><span style="color: #032F62">    5</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">add_one_then_double = my_cycle(2)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">add_one_then_double(1)</span></span>
+<span class="line"><span style="color: #032F62">    4</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">do_all_functions = my_cycle(3)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">do_all_functions(2)</span></span>
+<span class="line"><span style="color: #032F62">    9</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">do_more_than_a_cycle = my_cycle(4)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">do_more_than_a_cycle(2)</span></span>
+<span class="line"><span style="color: #032F62">    10</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">do_two_cycles = my_cycle(6)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">do_two_cycles(1)</span></span>
+<span class="line"><span style="color: #032F62">    19</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">g</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">h</span><span style="color: #24292E">(f,g):</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x: f(g(x))</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x : x</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> n</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> f1</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">            temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f1</span></span>
+<span class="line"><span style="color: #24292E">            i</span><span style="color: #D73A49">=</span><span style="color: #005CC5">2</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">while</span><span style="color: #24292E"> i</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">if</span><span style="color: #24292E"> i</span><span style="color: #D73A49">%</span><span style="color: #005CC5">3</span><span style="color: #D73A49">==</span><span style="color: #005CC5">1</span><span style="color: #24292E">: temp</span><span style="color: #D73A49">=</span><span style="color: #24292E"> h(f1,temp)</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> i</span><span style="color: #D73A49">%</span><span style="color: #005CC5">3</span><span style="color: #D73A49">==</span><span style="color: #005CC5">2</span><span style="color: #24292E">: temp</span><span style="color: #D73A49">=</span><span style="color: #24292E"> h(f2,temp)</span></span>
+<span class="line"><span style="color: #24292E">                </span><span style="color: #D73A49">else</span><span style="color: #24292E">: temp</span><span style="color: #D73A49">=</span><span style="color: #24292E"> h(f3,temp)</span></span>
+<span class="line"><span style="color: #24292E">                i</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> temp</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> g</span></span></code></pre></div></div></figure>
+<p>遍历1-n，每次取模3来判断该套哪个函数，注意0和1时特判，2开始从f1往外套</p>
+<p>即执行顺序为<span class="math inline">\(i\%3=2 -&gt; i\%3=0 -&gt;
+i\%3=1 -&gt; ...\)</span></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Environments/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Environments/" class="post-title-link" itemprop="url">【CS61A】CS61A——Environments</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-30 16:23:18" itemprop="dateCreated datePublished" datetime="2025-01-30T16:23:18+08:00">2025-01-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:49:49" itemprop="dateModified" datetime="2025-07-31T17:49:49+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="environments">Environments</h1>
+<h2 id="environments-in-higher-orde-function">Environments in
+Higher-orde function</h2>
+<figure>
+<img src="CS61A——Environments/image-20250130162319674.png"
+alt="Environments" />
+<figcaption aria-hidden="true">Environments</figcaption>
+</figure>
+<h2 id="local-names">Local Names</h2>
+<p>e.g.</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">f</span><span style="color: #24292E">(x,y):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> g(x)</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">g</span><span style="color: #24292E">(a):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">+</span><span style="color: #24292E">y</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> f(</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>该代码会报错<code>NameError: global name 'y' is not defined</code></p>
+<p>原因很明显：当执行到行4时，系统在g的作用域中找不到y，接着去全局作用域中也找不到y，因而报错</p>
+<p>而对于嵌套函数，函数中定义的函数是可以直接使用嵌套外函数的参数的，因为在同一个作用于下</p>
+<h2 id="function-composition">Function Composition</h2>
+<p>e.g.</p>
+<figure class="shiki python	"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div><div class="code"><pre><code>def make_adder(n):
+    def adder(k):
+        return k+n
+    return adder
+def square(x):
+    return x*x
+def triple(x):
+    return 3*x
+def compose1(f,g):
+    def h(x):
+        return f(g(x))
+    return h</code></pre></div></div></figure>
+<p>compose1函数将两个函数结合起来计算</p>
+<p><code>compose1(triple,square)(5)</code>的结果为225</p>
+<p><code>compose1(square,triple)(5)</code>的结果为75</p>
+<p><code>compose1(square, makek_adder(2))(3)</code>的结果为25</p>
+<p>该函数实际上开辟了两个environments用来分别计算两个函数的return值</p>
+<figure>
+<img src="CS61A——Environments/image-20250130170617058.png"
+alt="Composition" />
+<figcaption aria-hidden="true">Composition</figcaption>
+</figure>
+<p>如图中蓝色和绿色的两个environments，每个中都包含了三个作用域，分别用来计算square与make_adder(2)的值，其中make_adder还会先进入adder函数的作用域</p>
+<h2 id="self-reference">Self-Reference</h2>
+<p>e.g.1</p>
+<figure class="shiki py"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print_all</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(x)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> print_all</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">print_all(</span><span style="color: #005CC5">1</span><span style="color: #24292E">)(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>该函数执行后会输出1</p>
+<p>即print_all函数可以在函数体内以return值形式返回自身，因此该函数被调用的次数与第五行后面的括号数一致（即被调用几次）</p>
+<p>e.g.2</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">print_sums</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(x)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">next_sum</span><span style="color: #24292E">(y):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> print_sums(x</span><span style="color: #D73A49">+</span><span style="color: #24292E">y)</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> next_sum</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292E">print_sums(</span><span style="color: #005CC5">1</span><span style="color: #24292E">)(</span><span style="color: #005CC5">3</span><span style="color: #24292E">)(</span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span></code></pre></div></div></figure>
+<p>函数会把括号后面的数依次相加，输出每次相加的和</p>
+<p>首先传入x=1，打印1，定义next_sum函数，print_sums函数返回该函数，并传入y=3，next_sum返回print_sums函数，传入值为x+y=4</p>
+<p>再次打印4，定义next_sum函数，print_sums函数返回该函数，并传入y=5，next_sum返回print_sums函数，传入值为x+y=9</p>
+<p>再次打印9，没有参数传入，结束</p>
+<p>因此要注意调用表达式中传入的参数去了哪里：</p>
+<p>1传入了print_sums，而3和5传入了print_sums的返回值next_sum函数用于求和</p>
+<h2 id="currying">Currying</h2>
+<p>注意以下两种函数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_adder</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> k:n</span><span style="color: #D73A49">+</span><span style="color: #24292E">k</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">add</span><span style="color: #24292E">(x,y):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">+</span><span style="color: #24292E">y</span></span></code></pre></div></div></figure>
+<p>make_adder函数一次调用一个参数，返回一个函数再调用参数</p>
+<p>add函数调用多个参数，返回最终结果</p>
+<p>我们可以用以下函数将add函数转换为make_adder函数</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">curry</span><span style="color: #24292E">(f):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">g</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">h</span><span style="color: #24292E">(y):</span></span>
+<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> f(x,y)</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> h</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> g</span></span></code></pre></div></div></figure>
+<p>这样，当我们把add函数传入curry函数，我们就可以通过一次调用一个参数的方法实现相同效果</p>
+<p><code>add_three = curry(add)</code></p>
+<p><code>add_three(3)(2) &gt;&gt;&gt; 5</code></p>
+<p>定义：柯里化（Currying）是一种处理多元函数的方法。它产生一系列连锁函数，其中每个函数固定部分参数，并返回一个新函数，用于传回其它剩余参数的功能。</p>
+<p><strong>即它可以把一个多元函数转换为一系列函数，每个函数传入一个参数，即将f(a,b,c)转换为f(a)(b)(c)</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/st%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/st%E8%A1%A8/" class="post-title-link" itemprop="url">【数据结构】ST表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-28 11:05:06" itemprop="dateCreated datePublished" datetime="2025-01-28T11:05:06+08:00">2025-01-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-04-09 21:30:21" itemprop="dateModified" datetime="2026-04-09T21:30:21+08:00">2026-04-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>介绍了st表的原理，适用于离线寻找区间最值/gcd等</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/st%E8%A1%A8/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" class="post-title-link" itemprop="url">【数据结构】树状数组</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-25 15:33:06" itemprop="dateCreated datePublished" datetime="2025-01-25T15:33:06+08:00">2025-01-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-17 22:02:26" itemprop="dateModified" datetime="2025-12-17T22:02:26+08:00">2025-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>介绍了树状数组的原理与用法，主要用于高效区间修改与区间查询</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" class="post-title-link" itemprop="url">【算法】滑动窗口</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-23 10:39:01" itemprop="dateCreated datePublished" datetime="2025-01-23T10:39:01+08:00">2025-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-17 22:08:36" itemprop="dateModified" datetime="2025-12-17T22:08:36+08:00">2025-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">(或许是)基础算法</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>介绍了滑动窗口，用于处理子数组相关问题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/(%E6%88%96%E8%AE%B8%E6%98%AF)%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97(priority_queue)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97(priority_queue)/" class="post-title-link" itemprop="url">【数据结构】优先队列</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-22 21:35:19" itemprop="dateCreated datePublished" datetime="2025-01-22T21:35:19+08:00">2025-01-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-17 22:03:09" itemprop="dateModified" datetime="2025-12-17T22:03:09+08:00">2025-12-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>介绍了优先队列的用法，可以方便的按照优先级存取元素</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97(priority_queue)/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Higher-order%20Functions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="IzayoiSakuye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="红魔咖啡馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/CS61A/CS61A%20Higher-order%20Functions/" class="post-title-link" itemprop="url">【CS61A】CS61A——Higher-Order Functions</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-01-19 09:03:01" itemprop="dateCreated datePublished" datetime="2025-01-19T09:03:01+08:00">2025-01-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-31 17:50:12" itemprop="dateModified" datetime="2025-07-31T17:50:12+08:00">2025-07-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="higher-order-functions">Higher-Order Functions</h1>
+<h2 id="函数特征">函数特征</h2>
+<ul>
+<li>一个函数的定义域(domain)即为所有可能的输入</li>
+<li>一个函数的值域(range)即为所有可能的输出</li>
+<li>一个纯函数表现即为建立输入与输出之间的映射</li>
+</ul>
+<h2 id="assert语句">assert语句</h2>
+<p>格式：<code>assert &lt;bool expression&gt; &lt;output information&gt;</code></p>
+<p>用处：当布尔表达式成立时，语句继续执行；当布尔表达式不成立时，程序跳出并提示指定的报错信息。</p>
+<h2 id="函数作为形参">函数作为形参</h2>
+<p>设计一个计算求和、立方项求和的函数，我们可以通过在对求和函数中传入对每一位数的操作对应的函数来简化代码，而非为不同种类求和分别设计函数，如下：</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">from</span><span style="color: #24292E"> math </span><span style="color: #D73A49">import</span><span style="color: #24292E"> </span><span style="color: #005CC5">pow</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">identity</span><span style="color: #24292E">(k):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> k</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">cube</span><span style="color: #24292E">(k):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">int</span><span style="color: #24292E">(</span><span style="color: #005CC5">pow</span><span style="color: #24292E">(k,</span><span style="color: #005CC5">3</span><span style="color: #24292E">))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">summation</span><span style="color: #24292E">(n,term):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;sum the first N terms of a sequence.</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">summation(5,cube)</span></span>
+<span class="line"><span style="color: #032F62">    225</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    total,k</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> k</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">        total,k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> total </span><span style="color: #D73A49">+</span><span style="color: #24292E"> term(k), k</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> total</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">sum_naturals</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;sum the first N natural numbers</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">sum_naturals(5)</span></span>
+<span class="line"><span style="color: #032F62">    15</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> summation(n,identity) </span><span style="color: #6A737D"># 传入返回原值函数进行计算</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">sum_cubes</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;sum the first N cubes of natural numbers</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">sum_cubes(5)</span></span>
+<span class="line"><span style="color: #032F62">    225</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> summation(n,cube) </span><span style="color: #6A737D"># 传入返回每个值的立方函数进行计算</span></span></code></pre></div></div></figure>
+<p>其中，summation函数中的term参数与传入的函数有关</p>
+<p>identity与cube函数作为单个参数传入summation函数，以处理不同情况下的求和</p>
+<p>形参term函数在计算total时被回调，回调的是传入的对应函数</p>
+<h2 id="函数作为返回值">函数作为返回值</h2>
+<p>当一个函数在另一个函数体内定义，该函数的名称绑定在本地作用域中</p>
+<p>如下：</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_adder</span><span style="color: #24292E">(n):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;return a function that takes one argument called k and return k+N</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">add_three = make_adder(3)</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">add_three(4)</span></span>
+<span class="line"><span style="color: #032F62">    7</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">adder</span><span style="color: #24292E">(k):</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> k</span><span style="color: #D73A49">+</span><span style="color: #24292E">n </span><span style="color: #6A737D"># adder函数返回数值k+n</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> adder </span><span style="color: #6A737D"># make_adder函数返回adder函数</span></span></code></pre></div></div></figure>
+<p>make_adder函数返回一个函数adder，而函数adder是局部定义的函数，它可以使用make_adder内部的变量（k与n）</p>
+<p>对于语句<code>make_adder(1)(2)</code>，实现的效果即为1+2</p>
+<h2 id="作用">作用</h2>
+<ol type="1">
+<li>函数是第一类值(first-class)：函数可以作为参数传递，作为返回值返回</li>
+<li>higher-order函数指代以函数作为参数或返回值的函数
+<ol type="1">
+<li>它可以表示计算的一般情况</li>
+<li>它可以防止程序代码过于重复冗杂</li>
+<li>它可以将不同功能分离成多个函数</li>
+</ol></li>
+</ol>
+<h2 id="匿名函数lambda-expressions">匿名函数(Lambda Expressions )</h2>
+<p>格式：<code>lambda &lt;formal parameter&gt;: &lt;return value&gt;</code></p>
+<p>lambda指定义一个匿名函数</p>
+<p>lambda后紧跟一个形式参数，冒号后为返回值（无return关键字）</p>
+<p><strong>返回值只能是一句表达式</strong></p>
+<p>使用时将其赋值给一个变量并按照def函数方式调用或直接按照def函数方式调用</p>
+<p>与def不同的一点是：def定义的函数拥有一个内部名称(intrinsic
+name)，而lambda定义的函数即使赋值给了另一个名字的变量，它的名称仍为lambda</p>
+<h2 id="返回语句return-statements">返回语句(Return Statements)</h2>
+<p>函数中的return语句让程序返回到先前的environment，并给函数一个值</p>
+<p>在执行函数体时，遇到return语句函数即结束</p>
+<p>看如下例子：</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">search</span><span style="color: #24292E">(f):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;find a number that one more than the square root of</span></span>
+<span class="line"><span style="color: #032F62">    the number put in the positive function</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">search(positive)</span></span>
+<span class="line"><span style="color: #032F62">    11</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    x</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">while</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> f(x): </span><span style="color: #6A737D"># 当positive函数返回为0时进入循环</span></span>
+<span class="line"><span style="color: #24292E">        x</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">square</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> x</span><span style="color: #D73A49">**</span><span style="color: #005CC5">2</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">positive</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">max</span><span style="color: #24292E">(</span><span style="color: #005CC5">0</span><span style="color: #24292E">,square(x)</span><span style="color: #D73A49">-</span><span style="color: #005CC5">100</span><span style="color: #24292E">)</span></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">inverse</span><span style="color: #24292E">(f):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;return g(y) such that g(f(x)) -&gt;x</span></span>
+<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">inverse(square)(16)</span></span>
+<span class="line"><span style="color: #032F62">    4</span></span>
+<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> y: search(</span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x:f(x)</span><span style="color: #D73A49">==</span><span style="color: #24292E">y) </span><span style="color: #6A737D"># 返回某个完全平方数的平方根</span></span></code></pre></div></div></figure>
+<ul>
+<li>positive函数：</li>
+</ul>
+<p>​ 传入search后，寻找的是第一个比positive函数中减数的平方根大的数</p>
+<p>​
+因为若数x的平方比减数小，return值肯定是0，while条件成立，x++继续寻找</p>
+<ul>
+<li><p>inverse函数：</p>
+<p>inverse用于寻找完全平方数y的平方根</p>
+<p>传入square函数用于计算search函数中x的平方，与inverse函数返回的lambda函数中传入的y比较是否相等，若不相等，满足while循环条件，x++继续比较，若相等则找到，跳出循环返回此时x值。</p></li>
+</ul>
+<h2 id="控制语句control-statements">控制语句(Control Statements)</h2>
+<h3 id="条件语句">条件语句</h3>
+<p>执行条件：每一句clause按序执行</p>
+<ol type="1">
+<li>判断条件判断语句是否成立（若存在）</li>
+<li>若值为true或遇到else的clause，执行语句块并跳过其余clauses</li>
+</ol>
+<p>但为何没有一个函数能实现条件判断呢？</p>
+<p>对于调用表达式(call expression)的执行如下：</p>
+<figure>
+<img src="CS61A——Higher-order%20Functions/image-20250118151740899.png"
+alt="调用表达式的执行" />
+<figcaption aria-hidden="true">调用表达式的执行</figcaption>
+</figure>
+<p>而在if语句中，只有其中一句会被执行，因此使用函数替代并不合适，如下代码：</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">if_</span><span style="color: #24292E">(c,t,f):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> c:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> t</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> f</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">from</span><span style="color: #24292E"> math </span><span style="color: #D73A49">import</span><span style="color: #24292E"> sqrt</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">real_sqrt</span><span style="color: #24292E">(x):</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">return</span><span style="color: #24292E"> if_(x</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E">,sqrt(x),</span><span style="color: #005CC5">0.0</span><span style="color: #24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">__name__</span><span style="color: #24292E"> </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;__main__&#39;</span><span style="color: #24292E">:</span></span>
+<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">print</span><span style="color: #24292E">(real_sqrt(</span><span style="color: #D73A49">-</span><span style="color: #005CC5">4</span><span style="color: #24292E">))</span></span></code></pre></div></div></figure>
+<p>我们需要实现返回一个实数平方根结果的实部，众所周知，负数开平方后实部为0，因此负数应输出0</p>
+<p>但执行后发现却出现了sqrt的 ValueError: math domain error</p>
+<p>因为在函数调用时，sqrt(x)同时也会执行，此时x小于0故触发了sqrt的assert</p>
+<p>因此没有了控制语句，我们只能在值之间选择而不能在条件之间选择</p>
+<h4 id="条件语句的简单形式">条件语句的简单形式</h4>
+<p><code>&lt;consequent&gt; if &lt;predicate&gt; else &lt;alternative&gt;</code></p>
+<ol type="1">
+<li>执行predicate语句</li>
+<li>若为真，则整个表达式的值为consequent的值</li>
+<li>若为假，则整个表达式的值为alternative的值</li>
+</ol>
+<h3 id="逻辑运算符的短路效应">逻辑运算符的短路效应</h3>
+<p>执行一个语句<code>&lt;left&gt; and &lt;right&gt;</code></p>
+<ol type="1">
+<li>计算left语句</li>
+<li>若结果是false，则整个表达式的结果是false</li>
+<li>若结果是true，则整个表达式的结果是right语句的结果</li>
+</ol>
+<p>执行一个语句<code>&lt;left&gt; or &lt;right&gt;</code></p>
+<ol type="1">
+<li>计算left语句</li>
+<li>若结果为true，则整个表达式的结果是true</li>
+<li>若结果为false，则整个表达式的结果是right语句的结果</li>
+</ol>
+<h1 id="hw">HW</h1>
+<p>Lecture4的作业部分</p>
+<h2 id="柯里化currying">柯里化(Currying)</h2>
+<p>定义：柯里化（Currying）是一种处理多元函数的方法。它产生一系列连锁函数，其中每个函数固定部分参数，并返回一个新函数，用于传回其它剩余参数的功能。</p>
+<p><strong>即它可以把一个多元函数转换为一系列函数，每个函数传入一个参数，即将f(a,b,c)转换为f(a)(b)(c)</strong></p>
+<p>如上文中的<code>makeadder</code>函数，返回的是在内部定义的adder函数，每个函数接受一个参数，等同于makeadder(k,n)</p>
+<p>柯里化是函数式编程的一个体现，使得函数代码更简洁</p>
+<h2 id="product">1-Product</h2>
+<p>My solution:</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">x </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">re </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #D73A49">while</span><span style="color: #24292E"> x</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">    re</span><span style="color: #D73A49">*=</span><span style="color: #24292E">term(x)</span></span>
+<span class="line"><span style="color: #24292E">    x</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #D73A49">return</span><span style="color: #24292E"> re</span></span></code></pre></div></div></figure>
+<p>product函数有一个term参数用于接收函数，根据不同计算需要可以传入不同计算相关函数(square，identity等)</p>
+<h2 id="accumulate">2- Accumulate</h2>
+<p>My solution:</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">a</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">   re</span><span style="color: #D73A49">=</span><span style="color: #24292E">start</span></span>
+<span class="line"><span style="color: #24292E">   </span><span style="color: #D73A49">while</span><span style="color: #24292E"> a</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">n:</span></span>
+<span class="line"><span style="color: #24292E">       re </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fuse(re,term(a))</span></span>
+<span class="line"><span style="color: #24292E">       a</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
+<span class="line"><span style="color: #24292E">   </span><span style="color: #D73A49">return</span><span style="color: #24292E"> re</span></span></code></pre></div></div></figure>
+<hr />
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">return</span><span style="color: #24292E"> accumulate(add, </span><span style="color: #005CC5">0</span><span style="color: #24292E">, n, term)</span></span></code></pre></div></div></figure>
+<hr />
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">return</span><span style="color: #24292E"> accumulate(mul, </span><span style="color: #005CC5">1</span><span style="color: #24292E">, n, term)</span></span></code></pre></div></div></figure>
+<p>在上一题的基础上添加了选择每个数之间使用加法还是乘法的参数fuse，fuse同时也是接收函数来指定每个term运算之间的运算方式(add,mul
+等)</p>
+<h2 id="make-repeater">3-Make repeater</h2>
+<p>My solution:</p>
+<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> n </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">: </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x: x</span></span>
+<span class="line"><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">lambda</span><span style="color: #24292E"> x: f(make_repeater(f,n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">)(x))</span></span></code></pre></div></div></figure>
+<p>这里需要将传入的数值执行n次指定运算f，即<code>f(f(...f(x)...))</code></p>
+<p>本人使用了递归实现，即<code>make_repeater(f,n)(x)=f(make_repeater(f,n-1)(x))=f(f(make_repeater(f,n-2)))=...=f(f(...f(x)...))</code></p>
+<p>每次加一层f()，直到<span
+class="math inline">\(n=0\)</span>时替换为x</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/C++/%E6%8C%87%E9%92%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1041,109 +2115,10 @@ overflow)</strong></p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/" class="post-title-link" itemprop="url">【数据结构】并查集</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-12-13 11:05:21" itemprop="dateCreated datePublished" datetime="2024-12-13T11:05:21+08:00">2024-12-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-17 22:01:16" itemprop="dateModified" datetime="2025-12-17T22:01:16+08:00">2025-12-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>介绍了并查集的原理与用法，适用于合并两个同类集合，并查找某个元素属于哪个集合</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%B9%B6%E6%9F%A5%E9%9B%86(Disjoint%20Set)/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span>
+    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1210,20 +2185,20 @@ overflow)</strong></p>
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">194</span>
+          <span class="site-state-item-count">201</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1264,12 +2239,12 @@ overflow)</strong></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">813k</span>
+    <span title="站点总字数">838k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">24:38</span>
+    <span title="站点阅读时长">25:23</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
