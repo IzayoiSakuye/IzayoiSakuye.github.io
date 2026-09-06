@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【MySQL】存储对象 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="MySQL, 数据库" />
+  
   <meta name="description" content="处理非结构化数据，包括视图、存储过程、触发器等">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【MySQL】存储对象">
@@ -29,244 +26,248 @@
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="处理非结构化数据，包括视图、存储过程、触发器等">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/image-20260604194819682.png">
-<meta property="og:image" content="https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/image-20260604211426967.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
 <meta property="article:published_time" content="2026-06-07T00:32:09.363Z">
 <meta property="article:modified_time" content="2026-06-07T00:35:16.722Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="数据库">
 <meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/image-20260604194819682.png">
-
-<link rel="canonical" href="https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>【MySQL】存储对象 | 红魔咖啡馆</title>
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
   
-
-
-
-
-
-
-  <noscript>
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【MySQL】存储对象","description":"处理非结构化数据，包括视图、存储过程、触发器等","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-06-07T00:32:09.363Z","dateModified":"2026-06-07T00:35:16.722Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
   <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
-<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">红魔咖啡馆</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
 
 
+        
 
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
             
 
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          【MySQL】存储对象
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2026-06-07 08:32:09 / 修改时间：08:35:16" itemprop="dateCreated datePublished" datetime="2026-06-07T08:32:09+08:00">2026-06-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Database/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span id="busuanzi_value_page_pv"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>5.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
-            </span>
-            <div class="post-description">处理非结构化数据，包括视图、存储过程、触发器等</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="视图">视图</h1>
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【MySQL】存储对象</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-06-07T00:32:09.363Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-06-07</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~5.95K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%86%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">视图</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5%E9%80%89%E9%A1%B9"><span class="toc-number">1.2.</span> <span class="toc-text">检查选项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cascade"><span class="toc-number">1.2.1.</span> <span class="toc-text">cascade</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#local"><span class="toc-number">1.2.2.</span> <span class="toc-text">local</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0"><span class="toc-number">1.3.</span> <span class="toc-text">更新</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">存储过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="toc-number">2.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.</span> <span class="toc-text">变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.1.</span> <span class="toc-text">系统变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.2.</span> <span class="toc-text">用户定义变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.3.</span> <span class="toc-text">局部变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">2.4.</span> <span class="toc-text">条件判断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#if"><span class="toc-number">2.4.1.</span> <span class="toc-text">IF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#case"><span class="toc-number">2.4.2.</span> <span class="toc-text">CASE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF"><span class="toc-number">2.5.</span> <span class="toc-text">循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#while"><span class="toc-number">2.5.1.</span> <span class="toc-text">WHILE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#repeat"><span class="toc-number">2.5.2.</span> <span class="toc-text">REPEAT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#loop"><span class="toc-number">2.5.3.</span> <span class="toc-text">LOOP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B8%E6%A0%87"><span class="toc-number">2.6.</span> <span class="toc-text">游标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.7.</span> <span class="toc-text">条件处理程序</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">存储函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-2"><span class="toc-number">3.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#e.g."><span class="toc-number">3.2.</span> <span class="toc-text">e.g.</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="toc-number">4.</span> <span class="toc-text">触发器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-number">4.1.</span> <span class="toc-text">分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-3"><span class="toc-number">4.2.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#insert%E5%9E%8B"><span class="toc-number">4.3.</span> <span class="toc-text">INSERT型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#update%E5%9E%8B"><span class="toc-number">4.4.</span> <span class="toc-text">UPDATE型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#delete%E5%9E%8B"><span class="toc-number">4.5.</span> <span class="toc-text">DELETE型</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="视图">视图</h1>
 <p>视图是虚拟存在的表，视图中的数据不在数据库中实际存在，行列数据来自自定义视图的查询中使用的表（基表），并且是在使用视图时动态生成的</p>
 <p>视图只保留了查询的SQL逻辑，不保存查询结果</p>
 <h2 id="语法">语法</h2>
@@ -289,15 +290,13 @@ OPTION：通过视图检查正在更改的每一个行，使其符合视图的�
 <h3 id="cascade">cascade</h3>
 <p>该选项会检查当前视图依赖的底层的所有视图是否满足定义，默认是这个值</p>
 <p>e.g.</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE OR REPLACE</span><span style="color: #24292E"> </span><span style="color: #D73A49">VIEW</span><span style="color: #24292E"> </span><span style="color: #6F42C1">stu_v_1</span><span style="color: #24292E"> </span><span style="color: #D73A49">AS</span><span style="color: #24292E"> </span><span style="color: #D73A49">SELECT</span><span style="color: #24292E"> id, </span><span style="color: #D73A49">name</span><span style="color: #24292E"> </span><span style="color: #D73A49">FROM</span><span style="color: #24292E"> student </span><span style="color: #D73A49">WHERE</span><span style="color: #24292E"> id</span><span style="color: #D73A49">&lt;=</span><span style="color: #005CC5">20</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">CREATE OR REPLACE</span><span style="color: #24292E"> </span><span style="color: #D73A49">VIEW</span><span style="color: #24292E"> </span><span style="color: #6F42C1">stu_v_2</span><span style="color: #24292E"> </span><span style="color: #D73A49">FROM</span><span style="color: #24292E"> stu_v_1 </span><span style="color: #D73A49">WHERE</span><span style="color: #24292E"> id</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">10</span><span style="color: #24292E"> </span><span style="color: #D73A49">WITH</span><span style="color: #24292E"> CASCADED </span><span style="color: #D73A49">CHECK</span><span style="color: #24292E"> </span><span style="color: #D73A49">OPTION</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> stu_v_1 <span class="keyword">AS</span> <span class="keyword">SELECT</span> id, name <span class="keyword">FROM</span> student <span class="keyword">WHERE</span> id<span class="operator">&lt;=</span><span class="number">20</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> stu_v_2 <span class="keyword">FROM</span> stu_v_1 <span class="keyword">WHERE</span> id<span class="operator">&gt;=</span><span class="number">10</span> <span class="keyword">WITH</span> <span class="keyword">CASCADED</span> <span class="keyword">CHECK</span> OPTION;</span><br></pre></td></tr></table></figure>
 <p>这样，只能插入在10和20之间的数据</p>
 <h3 id="local">local</h3>
 <p>local选项检查当前视图满足的定义并往上查看依赖的视图</p>
 <p>若依赖的视图添加了检查选项，则继续检查满足的定义，否则不校验</p>
 <p>e.g.</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE OR REPLACE</span><span style="color: #24292E"> </span><span style="color: #D73A49">VIEW</span><span style="color: #24292E"> </span><span style="color: #6F42C1">stu_v_1</span><span style="color: #24292E"> </span><span style="color: #D73A49">AS</span><span style="color: #24292E"> </span><span style="color: #D73A49">SELECT</span><span style="color: #24292E"> id, </span><span style="color: #D73A49">name</span><span style="color: #24292E"> </span><span style="color: #D73A49">FROM</span><span style="color: #24292E"> student </span><span style="color: #D73A49">WHERE</span><span style="color: #24292E"> id</span><span style="color: #D73A49">&lt;=</span><span style="color: #005CC5">20</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">CREATE OR REPLACE</span><span style="color: #24292E"> </span><span style="color: #D73A49">VIEW</span><span style="color: #24292E"> </span><span style="color: #6F42C1">stu_v_2</span><span style="color: #24292E"> </span><span style="color: #D73A49">FROM</span><span style="color: #24292E"> stu_v_1 </span><span style="color: #D73A49">WHERE</span><span style="color: #24292E"> id</span><span style="color: #D73A49">&gt;=</span><span style="color: #005CC5">10</span><span style="color: #24292E"> </span><span style="color: #D73A49">WITH</span><span style="color: #24292E"> </span><span style="color: #D73A49">LOCAL</span><span style="color: #24292E"> </span><span style="color: #D73A49">CHECK</span><span style="color: #24292E"> </span><span style="color: #D73A49">OPTION</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> stu_v_1 <span class="keyword">AS</span> <span class="keyword">SELECT</span> id, name <span class="keyword">FROM</span> student <span class="keyword">WHERE</span> id<span class="operator">&lt;=</span><span class="number">20</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> stu_v_2 <span class="keyword">FROM</span> stu_v_1 <span class="keyword">WHERE</span> id<span class="operator">&gt;=</span><span class="number">10</span> <span class="keyword">WITH</span> <span class="keyword">LOCAL</span> <span class="keyword">CHECK</span> OPTION;</span><br></pre></td></tr></table></figure>
 <p>这样，可以插入大于等于10的数据</p>
 <h2 id="更新">更新</h2>
 <p>要使视图可更新，视图中的行和基础表中的行要存在一对一的关系，且若视图中包含以下任何一项，不可更新：</p>
@@ -314,10 +313,7 @@ OPTION：通过视图检查正在更改的每一个行，使其符合视图的�
 <ul>
 <li>创建存储过程:</li>
 </ul>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">PROCEDURE</span><span style="color: #24292E"> 存储过程名称([参数列表])</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">-- 语句</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> 存储过程名称([参数列表])</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="comment">-- 语句</span></span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>调用存储过程：<code>CALL 名称([参数]);</code></p></li>
 <li><p>查看存储过程：<code>SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA='XXX';</code></p>
@@ -373,46 +369,24 @@ OPTION：通过视图检查正在更改的每一个行，使其符合视图的�
 <p>分类：</p>
 <img src="/Database/MySQL/%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1/image-20260604194819682.png" class="" title="参数">
 <p>用法：</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">PROCEDURE</span><span style="color: #24292E"> 存储过程名称([IN/OUT/INOUT 参数名 参数类型])</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">-- 语句</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> 存储过程名称([<span class="keyword">IN</span><span class="operator">/</span><span class="keyword">OUT</span><span class="operator">/</span><span class="keyword">INOUT</span> 参数名 参数类型])</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="comment">-- 语句</span></span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <p>最后CALL的时候传入一个用户定义变量并SELECT就能拿到</p>
 <h2 id="条件判断">条件判断</h2>
 <h3 id="if">IF</h3>
 <p>语法：</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">IF</span><span style="color: #24292E"> 条件1 </span><span style="color: #D73A49">THEN</span></span>
-<span class="line"><span style="color: #24292E">...</span></span>
-<span class="line"><span style="color: #24292E">ELSEIF 条件2 </span><span style="color: #D73A49">THEN</span></span>
-<span class="line"><span style="color: #24292E">...</span></span>
-<span class="line"><span style="color: #D73A49">ELSE</span></span>
-<span class="line"><span style="color: #24292E">...</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">IF</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">IF 条件<span class="number">1</span> <span class="keyword">THEN</span></span><br><span class="line">...</span><br><span class="line">ELSEIF 条件<span class="number">2</span> <span class="keyword">THEN</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">ELSE</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">END</span> IF;</span><br></pre></td></tr></table></figure>
 <h3 id="case">CASE</h3>
 <p>语法：</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CASE</span><span style="color: #24292E"> case_value</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">WHEN</span><span style="color: #24292E"> when_value1 </span><span style="color: #D73A49">THEN</span><span style="color: #24292E"> statement_list1 </span></span>
-<span class="line"><span style="color: #24292E">	[WHEN when_value2 THEN statement_list2]</span></span>
-<span class="line"><span style="color: #24292E">	[ELSE statement_list]</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">CASE</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CASE</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">WHEN</span><span style="color: #24292E"> search_condition1 </span><span style="color: #D73A49">THEN</span><span style="color: #24292E"> statement_list1</span></span>
-<span class="line"><span style="color: #24292E">	[WHEN search_condition2 THEN statement_list2]</span></span>
-<span class="line"><span style="color: #24292E">	[ELSE statement_list]</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">CASE</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CASE</span> case_value</span><br><span class="line">	<span class="keyword">WHEN</span> when_value1 <span class="keyword">THEN</span> statement_list1 </span><br><span class="line">	[<span class="keyword">WHEN</span> when_value2 <span class="keyword">THEN</span> statement_list2]</span><br><span class="line">	[<span class="keyword">ELSE</span> statement_list]</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">CASE</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CASE</span></span><br><span class="line">	<span class="keyword">WHEN</span> search_condition1 <span class="keyword">THEN</span> statement_list1</span><br><span class="line">	[<span class="keyword">WHEN</span> search_condition2 <span class="keyword">THEN</span> statement_list2]</span><br><span class="line">	[<span class="keyword">ELSE</span> statement_list]</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">CASE</span>;</span><br></pre></td></tr></table></figure>
 <h2 id="循环">循环</h2>
 <h3 id="while">WHILE</h3>
 <p>满足条件进入循环，<del>就是while循环（废话）</del></p>
 <p>语法：</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">WHILE</span><span style="color: #24292E"> 条件 DO</span></span>
-<span class="line"><span style="color: #24292E">	SQL逻辑</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">WHILE</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WHILE 条件 DO</span><br><span class="line">	<span class="keyword">SQL</span>逻辑</span><br><span class="line"><span class="keyword">END</span> WHILE;</span><br></pre></td></tr></table></figure>
 <h3 id="repeat">REPEAT</h3>
 <p>有条件的循环控制语句，满足条件退出循环，就是do…while循环</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">REPEAT</span></span>
-<span class="line"><span style="color: #24292E">	SQL逻辑</span></span>
-<span class="line"><span style="color: #24292E">	UNTIL 条件</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">REPEAT</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">REPEAT</span><br><span class="line">	<span class="keyword">SQL</span>逻辑</span><br><span class="line">	UNTIL 条件</span><br><span class="line"><span class="keyword">END</span> REPEAT;</span><br></pre></td></tr></table></figure>
 <h3 id="loop">LOOP</h3>
 <p>实现简单的循环，就是for循环，配合如下使用：</p>
 <ul>
@@ -420,26 +394,9 @@ OPTION：通过视图检查正在更改的每一个行，使其符合视图的�
 <li>ITERATE：直接进入下次循环</li>
 </ul>
 <p>语法：</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">[begin_label:] </span><span style="color: #D73A49">LOOP</span></span>
-<span class="line"><span style="color: #24292E">	SQL逻辑</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">LOOP</span><span style="color: #24292E"> [end_label];</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">LEAVE label; </span><span style="color: #6A737D">-- 退出</span></span>
-<span class="line"><span style="color: #24292E">ITERATE label; </span><span style="color: #6A737D">-- 跳过</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[begin_label:] LOOP</span><br><span class="line">	<span class="keyword">SQL</span>逻辑</span><br><span class="line"><span class="keyword">END</span> LOOP [end_label];</span><br><span class="line"></span><br><span class="line">LEAVE label; <span class="comment">-- 退出</span></span><br><span class="line">ITERATE label; <span class="comment">-- 跳过</span></span><br></pre></td></tr></table></figure>
 <p>e.g. 计算从1加到n的值</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">PROCEDURE</span><span style="color: #24292E"> p(</span><span style="color: #D73A49">IN</span><span style="color: #24292E"> n </span><span style="color: #D73A49">INT</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> total </span><span style="color: #D73A49">INT</span><span style="color: #24292E"> </span><span style="color: #D73A49">DEFAULT</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">	sum:</span><span style="color: #D73A49">LOOP</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">IF</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&lt;=</span><span style="color: #005CC5">0</span><span style="color: #24292E"> </span><span style="color: #D73A49">THEN</span></span>
-<span class="line"><span style="color: #24292E">			LEAVE sum;</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">IF</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">		</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">SET</span><span style="color: #24292E"> tot:</span><span style="color: #D73A49">=</span><span style="color: #24292E">tot</span><span style="color: #D73A49">+</span><span style="color: #24292E">n;</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">SET</span><span style="color: #24292E"> n:</span><span style="color: #D73A49">=</span><span style="color: #24292E">n</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">LOOP</span><span style="color: #24292E"> sum;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">SELECT</span><span style="color: #24292E"> total;</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> p(<span class="keyword">IN</span> n <span class="type">INT</span>)</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">DECLARE</span> total <span class="type">INT</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>;</span><br><span class="line">	sum:LOOP</span><br><span class="line">		IF n<span class="operator">&lt;=</span><span class="number">0</span> <span class="keyword">THEN</span></span><br><span class="line">			LEAVE sum;</span><br><span class="line">		<span class="keyword">END</span> IF;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">SET</span> tot:<span class="operator">=</span>tot<span class="operator">+</span>n;</span><br><span class="line">		<span class="keyword">SET</span> n:<span class="operator">=</span>n<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">END</span> LOOP sum;</span><br><span class="line">	<span class="keyword">SELECT</span> total;</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <h2 id="游标">游标</h2>
 <p>用来存储查询结果集的数据类型，在存储过程和函数中可以用游标对结果集进行循环处理：</p>
 <ul>
@@ -451,7 +408,7 @@ OPTION：通过视图检查正在更改的每一个行，使其符合视图的�
 </ul>
 <h2 id="条件处理程序">条件处理程序</h2>
 <p>条件处理程序可以用来定义流程控制结构执行过程中遇到问题时相应的处理步骤，语法为：</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> handler_action HANDLER </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> condition_value[, condition_value...] </span><span style="color: #D73A49">statement</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DECLARE</span> handler_action HANDLER <span class="keyword">FOR</span> condition_value[, condition_value...] statement;</span><br></pre></td></tr></table></figure>
 <p>handler_action： CONTINUE：继续执行当前程序 EXIT：退出当前程序
 condition_value SQLSTATE sqlstate_value：状态码
 SQLWARNING：所有以01开头的sqlstate代码缩写 NOT
@@ -459,35 +416,11 @@ FOUND：所有以02开头的sqlstate代码缩写
 SQLEXCEPTION：所有没被上面捕获的sqlstate代码缩写</p>
 <p>e.g.</p>
 <p>根据传入的参数uage，来查询用户表tb_user中，所有的用户年龄小于等于uage的用户姓名(name)和专业(profession)，并将用户的姓名和专业插入到所创建的一张新表(id,name,profession)中。</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">PROCEDURE</span><span style="color: #24292E"> p(</span><span style="color: #D73A49">IN</span><span style="color: #24292E"> uage </span><span style="color: #D73A49">INT</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> uname </span><span style="color: #D73A49">VARCHAR</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> upro </span><span style="color: #D73A49">VARCHAR</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> u_cursor </span><span style="color: #D73A49">CURSOR</span><span style="color: #24292E"> </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> </span><span style="color: #D73A49">SELECT</span><span style="color: #24292E"> </span><span style="color: #D73A49">name</span><span style="color: #24292E">, profession </span><span style="color: #D73A49">FROM</span><span style="color: #24292E"> tb_user </span><span style="color: #D73A49">WHERE</span><span style="color: #24292E"> age</span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E">uage;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> EXIT HANDLER </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> SQLSTATE </span><span style="color: #032F62">&#39;02000&#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">CLOSE</span><span style="color: #24292E"> u_cursor;</span></span>
-<span class="line"><span style="color: #24292E">	</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">TABLE</span><span style="color: #24292E"> </span><span style="color: #6F42C1">IF</span><span style="color: #24292E"> </span><span style="color: #D73A49">NOT</span><span style="color: #24292E"> </span><span style="color: #D73A49">EXISTS</span><span style="color: #24292E"> tb_user_pro(</span></span>
-<span class="line"><span style="color: #24292E">    	id </span><span style="color: #D73A49">INT</span><span style="color: #24292E"> </span><span style="color: #D73A49">PRIMARY KEY</span><span style="color: #24292E"> AUTO_INCREMENT,</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">name</span><span style="color: #24292E"> </span><span style="color: #D73A49">VARCHAR</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #24292E">),</span></span>
-<span class="line"><span style="color: #24292E">        profession </span><span style="color: #D73A49">VARCHAR</span><span style="color: #24292E">(</span><span style="color: #005CC5">100</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">    );</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">OPEN</span><span style="color: #24292E"> u_cursoor;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">WHILE</span><span style="color: #24292E"> true DO</span></span>
-<span class="line"><span style="color: #24292E">    	</span><span style="color: #D73A49">FETCH</span><span style="color: #24292E"> u_cursor </span><span style="color: #D73A49">INTO</span><span style="color: #24292E"> uname, upro;</span></span>
-<span class="line"><span style="color: #24292E">    	</span><span style="color: #D73A49">INSERT INTO</span><span style="color: #24292E"> tb_user_pro </span><span style="color: #D73A49">VALUES</span><span style="color: #24292E">(</span><span style="color: #D73A49">null</span><span style="color: #24292E">, uname, upro);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">WHILE</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">CLOSE</span><span style="color: #24292E"> u_cursor;</span></span>
-<span class="line"><span style="color: #24292E">    </span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> p(<span class="keyword">IN</span> uage <span class="type">INT</span>)</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">DECLARE</span> uname <span class="type">VARCHAR</span>(<span class="number">100</span>);</span><br><span class="line">	<span class="keyword">DECLARE</span> upro <span class="type">VARCHAR</span>(<span class="number">100</span>);</span><br><span class="line">	<span class="keyword">DECLARE</span> u_cursor <span class="keyword">CURSOR</span> <span class="keyword">FOR</span> <span class="keyword">SELECT</span> name, profession <span class="keyword">FROM</span> tb_user <span class="keyword">WHERE</span> age<span class="operator">&lt;=</span>uage;</span><br><span class="line">	<span class="keyword">DECLARE</span> EXIT HANDLER <span class="keyword">FOR</span> <span class="keyword">SQLSTATE</span> <span class="string">&#x27;02000&#x27;</span> <span class="keyword">CLOSE</span> u_cursor;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">CREATE TABLE</span> IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> tb_user_pro(</span><br><span class="line">    	id <span class="type">INT</span> <span class="keyword">PRIMARY KEY</span> AUTO_INCREMENT,</span><br><span class="line">        name <span class="type">VARCHAR</span>(<span class="number">100</span>),</span><br><span class="line">        profession <span class="type">VARCHAR</span>(<span class="number">100</span>)</span><br><span class="line">    );</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">OPEN</span> u_cursoor;</span><br><span class="line">    WHILE <span class="literal">true</span> DO</span><br><span class="line">    	<span class="keyword">FETCH</span> u_cursor <span class="keyword">INTO</span> uname, upro;</span><br><span class="line">    	<span class="keyword">INSERT INTO</span> tb_user_pro <span class="keyword">VALUES</span>(<span class="keyword">null</span>, uname, upro);</span><br><span class="line">    <span class="keyword">END</span> WHILE;</span><br><span class="line">    <span class="keyword">CLOSE</span> u_cursor;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <h1 id="存储函数">存储函数</h1>
 <p>必须具有返回值的存储过程，存储函数的参数只能是IN类型</p>
 <h2 id="语法-2">语法</h2>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">FUNCTION</span><span style="color: #24292E"> </span><span style="color: #6F42C1">存储函数名</span><span style="color: #24292E">([参数列表])</span></span>
-<span class="line"><span style="color: #D73A49">RETURNS</span><span style="color: #24292E"> </span><span style="color: #D73A49">type</span><span style="color: #24292E">[characteristic...]</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">-- SQL 语句</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">FUNCTION</span> 存储函数名([参数列表])</span><br><span class="line"><span class="keyword">RETURNS</span> type[characteristic...]</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="comment">-- SQL 语句</span></span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <p>其中CHARACTERSTIC包括：</p>
 <ul>
 <li>DETERMINISTIC：相同输入参数总是产生相同结果</li>
@@ -496,17 +429,7 @@ SQLEXCEPTION：所有没被上面捕获的sqlstate代码缩写</p>
 </ul>
 <h2 id="e.g.">e.g.</h2>
 <p>从1到n累加</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">FUNCTION</span><span style="color: #24292E"> </span><span style="color: #6F42C1">p</span><span style="color: #24292E">(n </span><span style="color: #D73A49">INT</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #D73A49">RETURNS</span><span style="color: #24292E"> </span><span style="color: #D73A49">INT</span><span style="color: #24292E"> DETERMINISTIC</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">DECLARE</span><span style="color: #24292E"> total </span><span style="color: #D73A49">INT</span><span style="color: #24292E"> </span><span style="color: #D73A49">DEFAULT</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">WHILE</span><span style="color: #24292E"> n</span><span style="color: #D73A49">&gt;</span><span style="color: #005CC5">0</span><span style="color: #24292E"> DO</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">SET</span><span style="color: #24292E"> total :</span><span style="color: #D73A49">=</span><span style="color: #24292E"> total</span><span style="color: #D73A49">+</span><span style="color: #24292E">n;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">SET</span><span style="color: #24292E"> n :</span><span style="color: #D73A49">=</span><span style="color: #24292E"> n</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">END</span><span style="color: #24292E"> </span><span style="color: #D73A49">WHILE</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">	</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">RETURN</span><span style="color: #24292E"> total;</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">FUNCTION</span> p(n <span class="type">INT</span>)</span><br><span class="line"><span class="keyword">RETURNS</span> <span class="type">INT</span> <span class="keyword">DETERMINISTIC</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">DECLARE</span> total <span class="type">INT</span> <span class="keyword">DEFAULT</span> <span class="number">0</span>;</span><br><span class="line">	WHILE n<span class="operator">&gt;</span><span class="number">0</span> DO</span><br><span class="line">        <span class="keyword">SET</span> total :<span class="operator">=</span> total<span class="operator">+</span>n;</span><br><span class="line">        <span class="keyword">SET</span> n :<span class="operator">=</span> n<span class="operator">+</span><span class="number">1</span>;</span><br><span class="line">	<span class="keyword">END</span> WHILE;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">RETURN</span> total;</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <h1 id="触发器">触发器</h1>
 <p>触发器是与表有关的数据库对象，在插入/更新/删除之前或之后触发并执行定义的SQL语句集合，可以在数据库端保证数据完整性</p>
 <p>使用OLD和NEW引用触发器中发生变化的记录内容</p>
@@ -516,350 +439,736 @@ SQLEXCEPTION：所有没被上面捕获的sqlstate代码缩写</p>
 <ul>
 <li>创建触发器：</li>
 </ul>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">TRIGGER</span><span style="color: #24292E"> </span><span style="color: #6F42C1">trigger_name</span><span style="color: #24292E"> </span></span>
-<span class="line"><span style="color: #D73A49">BEFORE/AFTER</span><span style="color: #24292E"> </span><span style="color: #D73A49">INSERT/UPDATE/DELETE</span></span>
-<span class="line"><span style="color: #D73A49">ON</span><span style="color: #24292E"> 表名 </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> EACH </span><span style="color: #D73A49">ROW</span><span style="color: #24292E"> </span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	trigger_stmt;</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> trigger_name </span><br><span class="line">BEFORE<span class="operator">/</span>AFTER <span class="keyword">INSERT</span><span class="operator">/</span><span class="keyword">UPDATE</span><span class="operator">/</span><span class="keyword">DELETE</span></span><br><span class="line"><span class="keyword">ON</span> 表名 <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="type">ROW</span> </span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	trigger_stmt;</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>查看：<code>SHWO TRIGGERS;</code></li>
 <li>删除：<code>DROP TRIGGER [schema_name.]trigger_name;</code></li>
 </ul>
 <h2 id="insert型">INSERT型</h2>
 <p>e.g.为数据库的插入操作写一个触发器，用于记录日志（建表省略）</p>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">TRIGGER</span><span style="color: #24292E"> </span><span style="color: #6F42C1">tb_user_insert_trigger</span></span>
-<span class="line"><span style="color: #D73A49">AFTER</span><span style="color: #24292E"> </span><span style="color: #D73A49">INSERT</span><span style="color: #24292E"> </span><span style="color: #D73A49">ON</span><span style="color: #24292E"> tb_user </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> EACH </span><span style="color: #D73A49">ROW</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">INSERT INTO</span><span style="color: #24292E"> user_logs(id, operation, operate_time, operate_id, operate_params) </span><span style="color: #D73A49">VALUES</span><span style="color: #24292E"> (</span><span style="color: #D73A49">null</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;insert&#39;</span><span style="color: #24292E">, </span><span style="color: #D73A49">now</span><span style="color: #24292E">(), </span><span style="color: #005CC5">new</span><span style="color: #24292E">.</span><span style="color: #005CC5">id</span><span style="color: #24292E">, </span><span style="color: #005CC5">new</span><span style="color: #24292E">.</span><span style="color: #005CC5">content</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> tb_user_insert_trigger</span><br><span class="line">AFTER <span class="keyword">INSERT</span> <span class="keyword">ON</span> tb_user <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="type">ROW</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">INSERT INTO</span> user_logs(id, operation, operate_time, operate_id, operate_params) <span class="keyword">VALUES</span> (<span class="keyword">null</span>, <span class="string">&#x27;insert&#x27;</span>, now(), new.id, new.content);</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <h2 id="update型">UPDATE型</h2>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">TRIGGER</span><span style="color: #24292E"> </span><span style="color: #6F42C1">tb_user_insert_trigger</span></span>
-<span class="line"><span style="color: #D73A49">AFTER</span><span style="color: #24292E"> </span><span style="color: #D73A49">UPDATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">ON</span><span style="color: #24292E"> tb_user </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> EACH </span><span style="color: #D73A49">ROW</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">INSERT INTO</span><span style="color: #24292E"> user_logs(id, operation, operate_time, operate_id, operate_params) </span><span style="color: #D73A49">VALUES</span><span style="color: #24292E"> (</span><span style="color: #D73A49">null</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;update&#39;</span><span style="color: #24292E">, </span><span style="color: #D73A49">now</span><span style="color: #24292E">(), </span><span style="color: #005CC5">new</span><span style="color: #24292E">.</span><span style="color: #005CC5">id</span><span style="color: #24292E">, </span><span style="color: #005CC5">concat</span><span style="color: #24292E">(</span><span style="color: #005CC5">old</span><span style="color: #24292E">.</span><span style="color: #005CC5">content</span><span style="color: #24292E">, </span><span style="color: #005CC5">new</span><span style="color: #24292E">.</span><span style="color: #005CC5">content</span><span style="color: #24292E">));</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> tb_user_insert_trigger</span><br><span class="line">AFTER <span class="keyword">UPDATE</span> <span class="keyword">ON</span> tb_user <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="type">ROW</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">INSERT INTO</span> user_logs(id, operation, operate_time, operate_id, operate_params) <span class="keyword">VALUES</span> (<span class="keyword">null</span>, <span class="string">&#x27;update&#x27;</span>, now(), new.id, concat(old.content, new.content));</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
 <h2 id="delete型">DELETE型</h2>
-<figure class="shiki sql"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">CREATE</span><span style="color: #24292E"> </span><span style="color: #D73A49">TRIGGER</span><span style="color: #24292E"> </span><span style="color: #6F42C1">tb_user_insert_trigger</span></span>
-<span class="line"><span style="color: #D73A49">AFTER</span><span style="color: #24292E"> </span><span style="color: #D73A49">DELETE</span><span style="color: #24292E"> </span><span style="color: #D73A49">ON</span><span style="color: #24292E"> tb_user </span><span style="color: #D73A49">FOR</span><span style="color: #24292E"> EACH </span><span style="color: #D73A49">ROW</span></span>
-<span class="line"><span style="color: #D73A49">BEGIN</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">INSERT INTO</span><span style="color: #24292E"> user_logs(id, operation, operate_time, operate_id, operate_params) </span><span style="color: #D73A49">VALUES</span><span style="color: #24292E"> (</span><span style="color: #D73A49">null</span><span style="color: #24292E">, </span><span style="color: #032F62">&#39;delete&#39;</span><span style="color: #24292E">, </span><span style="color: #D73A49">now</span><span style="color: #24292E">(), </span><span style="color: #005CC5">old</span><span style="color: #24292E">.</span><span style="color: #005CC5">id</span><span style="color: #24292E">, </span><span style="color: #005CC5">concat</span><span style="color: #24292E">(</span><span style="color: #005CC5">old</span><span style="color: #24292E">.</span><span style="color: #005CC5">content</span><span style="color: #24292E">));</span></span>
-<span class="line"><span style="color: #D73A49">END</span><span style="color: #24292E">;</span></span></code></pre></div></div></figure>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
-              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/Database/MySQL/SQL%E4%BC%98%E5%8C%96/" rel="prev" title="【MySQL】SQL优化">
-      <i class="fa fa-chevron-left"></i> 【MySQL】SQL优化
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/Database/MySQL/%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" rel="next" title="【MySQL】存储引擎">
-      【MySQL】存储引擎 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> tb_user_insert_trigger</span><br><span class="line">AFTER <span class="keyword">DELETE</span> <span class="keyword">ON</span> tb_user <span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="type">ROW</span></span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	<span class="keyword">INSERT INTO</span> user_logs(id, operation, operate_time, operate_id, operate_params) <span class="keyword">VALUES</span> (<span class="keyword">null</span>, <span class="string">&#x27;delete&#x27;</span>, now(), old.id, concat(old.content));</span><br><span class="line"><span class="keyword">END</span>;</span><br></pre></td></tr></table></figure>
+</div>
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">视图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E9%80%89%E9%A1%B9"><span class="nav-number">1.2.</span> <span class="nav-text">检查选项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cascade"><span class="nav-number">1.2.1.</span> <span class="nav-text">cascade</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#local"><span class="nav-number">1.2.2.</span> <span class="nav-text">local</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">1.3.</span> <span class="nav-text">更新</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">存储过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.1.</span> <span class="nav-text">系统变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.2.</span> <span class="nav-text">用户定义变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.3.</span> <span class="nav-text">局部变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="nav-number">2.4.</span> <span class="nav-text">条件判断</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#if"><span class="nav-number">2.4.1.</span> <span class="nav-text">IF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case"><span class="nav-number">2.4.2.</span> <span class="nav-text">CASE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.5.</span> <span class="nav-text">循环</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#while"><span class="nav-number">2.5.1.</span> <span class="nav-text">WHILE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#repeat"><span class="nav-number">2.5.2.</span> <span class="nav-text">REPEAT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loop"><span class="nav-number">2.5.3.</span> <span class="nav-text">LOOP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B8%E6%A0%87"><span class="nav-number">2.6.</span> <span class="nav-text">游标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.7.</span> <span class="nav-text">条件处理程序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">存储函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-2"><span class="nav-number">3.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#e.g."><span class="nav-number">3.2.</span> <span class="nav-text">e.g.</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">触发器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">4.1.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-3"><span class="nav-number">4.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#insert%E5%9E%8B"><span class="nav-number">4.3.</span> <span class="nav-text">INSERT型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#update%E5%9E%8B"><span class="nav-number">4.4.</span> <span class="nav-text">UPDATE型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delete%E5%9E%8B"><span class="nav-number">4.5.</span> <span class="nav-text">DELETE型</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">201</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">30</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">43</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/MySQL/" rel="tag">MySQL</a>, <a class="tag-none-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-06-07T00:35:16.722Z" itemprop="dateModified">最后编辑：2026-06-07</time>
+                </div>
+            </div>
+        </footer>
     </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【MySQL】SQL优化" href="/Database/MySQL/SQL优化/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【MySQL】存储引擎" href="/Database/MySQL/存储引擎/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%86%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">视图</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5%E9%80%89%E9%A1%B9"><span class="toc-number">1.2.</span> <span class="toc-text">检查选项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cascade"><span class="toc-number">1.2.1.</span> <span class="toc-text">cascade</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#local"><span class="toc-number">1.2.2.</span> <span class="toc-text">local</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0"><span class="toc-number">1.3.</span> <span class="toc-text">更新</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">存储过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="toc-number">2.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.</span> <span class="toc-text">变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.1.</span> <span class="toc-text">系统变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.2.</span> <span class="toc-text">用户定义变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">2.2.3.</span> <span class="toc-text">局部变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">2.4.</span> <span class="toc-text">条件判断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#if"><span class="toc-number">2.4.1.</span> <span class="toc-text">IF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#case"><span class="toc-number">2.4.2.</span> <span class="toc-text">CASE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF"><span class="toc-number">2.5.</span> <span class="toc-text">循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#while"><span class="toc-number">2.5.1.</span> <span class="toc-text">WHILE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#repeat"><span class="toc-number">2.5.2.</span> <span class="toc-text">REPEAT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#loop"><span class="toc-number">2.5.3.</span> <span class="toc-text">LOOP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B8%E6%A0%87"><span class="toc-number">2.6.</span> <span class="toc-text">游标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.7.</span> <span class="toc-text">条件处理程序</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">存储函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-2"><span class="toc-number">3.1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#e.g."><span class="toc-number">3.2.</span> <span class="toc-text">e.g.</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="toc-number">4.</span> <span class="toc-text">触发器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-number">4.1.</span> <span class="toc-text">分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95-3"><span class="toc-number">4.2.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#insert%E5%9E%8B"><span class="toc-number">4.3.</span> <span class="toc-text">INSERT型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#update%E5%9E%8B"><span class="toc-number">4.4.</span> <span class="toc-text">UPDATE型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#delete%E5%9E%8B"><span class="toc-number">4.5.</span> <span class="toc-text">DELETE型</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
   </aside>
-  <div id="sidebar-dimmer"></div>
 
 
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
       </div>
-    </main>
+  </aside>
 
-    <footer class="footer">
-      <div class="footer-inner">
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
         
-
         
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">838k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">25:23</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
   </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
 
         
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
 </div>
 
 
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
 
 
 
 
 
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
+<!-- 额外的追加注入项 -->
 
 
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
 </script>
 
-    
 
-  
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
 
-<!-- hexo injector body_end start -->
-<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
 
-  <script>
-  const CODE_CONFIG = {
-    beautify: true,
-    highlightCopy: true,
-    highlightLang: true,
-    highlightHeightLimit: undefined,
-    isHighlightShrink: false,
-    copy: {
-      success: 'Copy Success',
-      error: 'Copy Error',
-      noSupport: 'Browser Not Support',
-    }
-  };
-  console.log(
-    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
-    "color: #fff; background: #5f5f5f",
-    "color: #fff; background: #80c8f8",
-    ""
-  );
-  </script>
-  <!-- hexo injector body_end end --></body>
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
 </html>

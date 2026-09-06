@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【Golang】Http标准库 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Golang/http/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Golang" />
+  
+  <meta name="description" content="Golang中net&#x2F;http库的用法以及底层原理解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Golang】Http标准库">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/http/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="Golang中net&#x2F;http库的用法以及底层原理解析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
+<meta property="article:published_time" content="2026-07-15T12:48:20.597Z">
+<meta property="article:modified_time" content="2026-09-06T09:12:29.335Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
+  
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【Golang】Http标准库","description":"Golang中net/http库的用法以及底层原理解析","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-07-15T12:48:20.597Z","dateModified":"2026-09-06T09:12:29.335Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Golang/http/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+  }
+
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
+
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/http/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【Golang】Http标准库</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-07-15T12:48:20.597Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-07-15</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~17.96K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%94%A8%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">简单用法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#getpost%E8%AF%B7%E6%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">GET&#x2F;POST请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.2.</span> <span class="toc-text">配置客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">1.3.</span> <span class="toc-text">配置服务端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B"><span class="toc-number">1.4.</span> <span class="toc-text">例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#server"><span class="toc-number">2.1.</span> <span class="toc-text">Server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#servermux"><span class="toc-number">2.2.</span> <span class="toc-text">ServerMux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#handler%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.3.</span> <span class="toc-text">Handler注册流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">服务端运行流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.1.</span> <span class="toc-text">主流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#serve%E6%96%B9%E6%B3%95"><span class="toc-number">2.4.2.</span> <span class="toc-text">serve方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#client"><span class="toc-number">3.1.</span> <span class="toc-text">Client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E9%93%BE%E8%B7%AF"><span class="toc-number">3.2.</span> <span class="toc-text">方法链路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B"><span class="toc-number">3.3.</span> <span class="toc-text">请求流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E5%85%A5%E8%AF%B7%E6%B1%82"><span class="toc-number">3.3.1.</span> <span class="toc-text">传入请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97%E5%93%8D%E5%BA%94"><span class="toc-number">3.3.2.</span> <span class="toc-text">获得响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96tcp%E9%93%BE%E6%8E%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">获取tcp链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%B9%B2%E9%93%BE%E8%B7%AF"><span class="toc-number">3.3.4.</span> <span class="toc-text">主干链路</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><blockquote>
+<p>参考视频：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Hj411U7Zw">【Golang http
+标准库底层原理解析】</a></p>
+</blockquote>
+<h1 id="简单用法">简单用法</h1>
+<h2 id="getpost请求">GET/POST请求</h2>
+<p>使用<code>http.Get()</code>和<code>http.Post()</code>可以发起简单的请求，返回一个指针和错误，调用后需要手动关闭</p>
+<p>GET：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  resp, err := http.Get(<span class="string">&quot;https://baidu.com&quot;</span>)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    fmt.Println(err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">  content, err := io.ReadAll(resp.Body)</span><br><span class="line">  fmt.Println(<span class="type">string</span>(content))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>POST：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   person := Person&#123;</span><br><span class="line">      UserId:   <span class="string">&quot;120&quot;</span>,</span><br><span class="line">      Username: <span class="string">&quot;jack&quot;</span>,</span><br><span class="line">      Age:      <span class="number">18</span>,</span><br><span class="line">      Address:  <span class="string">&quot;usa&quot;</span>,</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   json, _ := json.Marshal(person)</span><br><span class="line">   reader := bytes.NewReader(json)</span><br><span class="line"></span><br><span class="line">   resp, err := http.Post(<span class="string">&quot;https://golang.org&quot;</span>, <span class="string">&quot;application/json;charset=utf-8&quot;</span>, reader)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(err)</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="配置客户端">配置客户端</h2>
+<p>若需要客户端携带Head，设置超时等，就需要自己配置一个客户端，会用到<code>http.Client&#123;&#125;</code>结构体，配置项如下：</p>
+<ul>
+<li><p><code>Transport</code>：配置 Http
+客户端数据传输相关的配置项，没有就采用默认的策略</p></li>
+<li><p><code>Timeout</code>：请求超时时间配置</p></li>
+<li><p><code>Jar</code>：Cookie 相关配置</p></li>
+<li><p><code>CheckRedirect</code>：重定向配置</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">client := &amp;http.Client&#123;</span><br><span class="line">    Timeout: <span class="number">30</span> * time.Second,</span><br><span class="line">    Transport: &amp;http.Transport&#123;</span><br><span class="line">        MaxIdleConns:        <span class="number">10</span>,</span><br><span class="line">        IdleConnTimeout:     <span class="number">90</span> * time.Second,</span><br><span class="line">        DisableCompression:  <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    CheckRedirect: <span class="function"><span class="keyword">func</span><span class="params">(req *http.Request, via []*http.Request)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(via) &gt;= <span class="number">10</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> errors.New(<span class="string">&quot;too many redirects&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;,</span><br><span class="line">    Jar: cookieJar, <span class="comment">// 可以自动管理 cookie</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>并通过
+<code>client.Do()</code>发送请求，通过<code>.Header.Add()</code>添加请求头</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   client := &amp;http.Client&#123;&#125;</span><br><span class="line">   request, _ := http.NewRequest(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;https://golang.org&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">   request.Header.Add(<span class="string">&quot;Authorization&quot;</span>,<span class="string">&quot;123456&quot;</span>)</span><br><span class="line">   resp, _ := client.Do(request)</span><br><span class="line">   <span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理相应的时候要注意：</p>
+<ul>
+<li>处理完后关闭<code>resp.Body</code></li>
+<li>检查<code>resp.StatusCode</code>，HTTP状态码这些不会作为error返回</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> resp.StatusCode != http.StatusOK &#123;</span><br><span class="line">    <span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;bad status: %s&quot;</span>, resp.Status)</span><br><span class="line">&#125;</span><br><span class="line">body, err := io.ReadAll(resp.Body)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="配置服务端">配置服务端</h2>
+<ul>
+<li><code>http.HandleFunc()</code>用于注册路由，第一个参数是接口，第二个参数可以将一个普通函数作为HTTP处理器使用，该函数携带一个<code>http.ResponseWriter</code>来写响应，<code>*http.Request</code>为请求</li>
+<li><code>http.ListenAndServe()</code>可以直接泡一个服务器，第一个参数是监听的地址，可以只写端口，前面默认localhost；第二个参数是处理器，若为nil则使用默认的处理器</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">http.HandleFunc(<span class="string">&quot;/ping&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    w.Write([]<span class="type">byte</span>(<span class="string">&quot;pong&quot;</span>))</span><br><span class="line">&#125;)</span><br><span class="line">http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>以下方法用于获取请求信息：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 方法</span></span><br><span class="line">    method := r.Method</span><br><span class="line">    <span class="comment">// URL 参数 /user?id=1</span></span><br><span class="line">    id := r.URL.Query().Get(<span class="string">&quot;id&quot;</span>)</span><br><span class="line">    <span class="comment">// 路径参数（需配合路由库，标准库只支持前缀匹配）</span></span><br><span class="line">    path := r.URL.Path</span><br><span class="line">    <span class="comment">// 请求头</span></span><br><span class="line">    auth := r.Header.Get(<span class="string">&quot;Authorization&quot;</span>)</span><br><span class="line">    <span class="comment">// Body</span></span><br><span class="line">    body, _ := io.ReadAll(r.Body)</span><br><span class="line">    <span class="keyword">defer</span> r.Body.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时可以自定义server端结构</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">srv := &amp;http.Server&#123;</span><br><span class="line">    Addr:         <span class="string">&quot;:8080&quot;</span>,</span><br><span class="line">    Handler:      mux,</span><br><span class="line">    ReadTimeout:  <span class="number">5</span> * time.Second,</span><br><span class="line">    WriteTimeout: <span class="number">10</span> * time.Second,</span><br><span class="line">    IdleTimeout:  <span class="number">120</span> * time.Second,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err := srv.ListenAndServe(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 优雅关闭</span></span><br><span class="line">quit := <span class="built_in">make</span>(<span class="keyword">chan</span> os.Signal, <span class="number">1</span>)</span><br><span class="line">signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)</span><br><span class="line">&lt;-quit</span><br><span class="line">ctx, cancel := context.WithTimeout(context.Background(), <span class="number">5</span>*time.Second)</span><br><span class="line"><span class="keyword">defer</span> cancel()</span><br><span class="line">srv.Shutdown(ctx)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>通过Header可以设置返回的响应的格式</p>
+<ul>
+<li><p>纯文本：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">w.Header().Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;text/plain&quot;</span>)</span><br><span class="line">w.Write([]<span class="type">byte</span>(<span class="string">&quot;OK&quot;</span>))</span><br></pre></td></tr></table></figure></li>
+<li><p>JSON：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span></span><br><span class="line">    Age  <span class="type">int</span>    <span class="string">`json:&quot;age&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line">data := User&#123;Name: <span class="string">&quot;John&quot;</span>, Age: <span class="number">30</span>&#125;</span><br><span class="line">w.Header().Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json&quot;</span>)</span><br><span class="line">json.NewEncoder(w).Encode(data) <span class="comment">// 或者 json.Marshal + w.Write</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>在Write前可用<code>WriteHeader()</code>设置状态码，若不调用WriteHeader默认返回<code>200 OK</code></p>
+<p>go中自带了常用状态码的常量名</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">w.WriteHeader(http.StatusCreated) <span class="comment">// 必须在 Write 之前调用</span></span><br><span class="line">w.Write([]<span class="type">byte</span>(<span class="string">&quot;created&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="例">例</h2>
+<p>简单创建一个服务端，注册路由：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/ping&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span>&#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Req: ping&quot;</span>)</span><br><span class="line">		w.Write([]<span class="type">byte</span>(<span class="string">&quot;pone&quot;</span>))</span><br><span class="line">	&#125;)</span><br><span class="line">	http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端写一个单测，向服务端发送一个post请求，得到服务端返回的pone以及error</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> client</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;testing&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test_client</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	resp, err := http.Post(<span class="string">&quot;http://localhost:8080/ping&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		t.Error(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	body, _ :=io.ReadAll(resp.Body)</span><br><span class="line">	<span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line"></span><br><span class="line">	t.Log(<span class="type">string</span>(body))</span><br><span class="line">	t.Error(<span class="string">&quot;test failed&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="服务端">服务端</h1>
+<h2 id="server">Server</h2>
+<p>整个HTTP服务端模块被封装在Server类中，包括两个核心字段：</p>
+<ul>
+<li><p><code>Addr string</code>：服务端的地址</p></li>
+<li><p><code>Handler Handler</code>：路由处理器</p>
+<p>它的类型是一个Handler接口，其中定义了一个方法<code>ServeHTTP</code>，用于根据Http请求中的请求路径映射到对应的handler处理函数，对请求处理和响应</p></li>
+</ul>
+<p>路由处理器用于处理客户端请求，根据请求参数中的路径映射到对应的处理方法，再调用对应方法并返回结果</p>
+<h2 id="servermux">ServerMux</h2>
+<p>对Handler的具体实现，内部维护了一个map用于映射从path到对应处理方法的关系</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> serveMux121 <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu    sync.RWMutex</span><br><span class="line">	m     <span class="keyword">map</span>[<span class="type">string</span>]muxEntry</span><br><span class="line">	es    []muxEntry <span class="comment">// slice of entries sorted from longest to shortest.</span></span><br><span class="line">	hosts <span class="type">bool</span>       <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过一把读写锁保证并发安全性</li>
+<li>使用map建立映射，以请求路径为key，对应处理函数作为value</li>
+<li>es是一个切片，用于前置匹配</li>
+</ul>
+<p>其中muxEntry是一个handler单元，包含了path和处理函数handler两部分，它冗余了一个path，将key和value都保存了下来，同样使用了Handler接口，也需要请求和响应的使用</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> muxEntry <span class="keyword">struct</span> &#123;</span><br><span class="line">	h       Handler</span><br><span class="line">	pattern <span class="type">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="handler注册流程">Handler注册流程</h2>
+<p>方法链：<code>http.handleFunc()</code>作为入口方法调用，进而会调用<code>ServerMux.handleFunc()</code>和<code>ServerMux.Handle()</code></p>
+<p>http包下声明了一个单例<code>var defaultServeMux ServeMux</code>，当使用<code>http.handleFunc()</code>注册handler时，会使用该默认单例注册</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *serveMux121)</span></span> handleFunc(pattern <span class="type">string</span>, handler <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">&quot;http: nil handler&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	mux.handle(pattern, HandlerFunc(handler))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>HandleFunc</code>函数接受路径和处理函数两个变量，并调用默认单例下的<code>HandleFunc</code>函数，该函数会将我们的处理函数handler转化为一个<code>HandlerFunc</code>类型，这个类型内部实现了Handler接口中需要的ServeHTTP方法，即调用函数自身，转换后会调用自己的<code>mux.Handle()</code>方法</p>
+<p>接下来是Handle方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *serveMux121)</span></span> handle(pattern <span class="type">string</span>, handler Handler) &#123;</span><br><span class="line">	mux.mu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> mux.mu.Unlock()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	e := muxEntry&#123;h: handler, pattern: pattern&#125;</span><br><span class="line">	mux.m[pattern] = e</span><br><span class="line">	<span class="keyword">if</span> pattern[<span class="built_in">len</span>(pattern)<span class="number">-1</span>] == <span class="string">&#x27;/&#x27;</span> &#123;</span><br><span class="line">		mux.es = appendSorted(mux.es, e)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> pattern[<span class="number">0</span>] != <span class="string">&#x27;/&#x27;</span> &#123;</span><br><span class="line">		mux.hosts = <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过读写锁保证并发安全性</li>
+<li>handle函数将路径和处理函数组成一个键值对放入serveMux的map中</li>
+<li>若传入的请求路径以<code>/</code>结尾，HTTP服务端就会把它视作前置匹配的模式，将路径加入es切片中，并按照路径长度降序排列</li>
+<li>若不以<code>/</code>开头，说明这个路由模式是主机模式，需要匹配主机头和路径，而若以<code>/</code>开头，说明路由模式是路径模式，可以忽略主机名</li>
+</ul>
+<h2 id="服务端运行流程">服务端运行流程</h2>
+<h3 id="主流程">主流程</h3>
+<p>流程图如下：</p>
+<img src="/Golang/http/image-20260715155342862.png" class="" title="服务端运行流程">
+<ul>
+<li><code>net.Listen()</code>用于为当前端口申请一个监听器</li>
+<li>服务端启动时会以for循环自旋方式运行，每次循环都会调用<code>Listener.Accept()</code>方法，保证持续监听端口时，若当前没有来自客户端的http请求，则当前服务端对应的goroutine会被动陷入阻塞，可以节省CPU，一旦有请求到来，服务端会被唤醒，执行接下来的流程</li>
+<li>针对到来的每一个请求都会构造一个connection结构体并启动一个goroutine来负责完成当前请求的处理，主方法继续循环监听</li>
+<li>接下来封装请求，到<code>Server.ServeHTTP()</code>方法时，会通过map匹配到对应处理函数处理，并输出响应</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ListenAndServe</span><span class="params">(addr <span class="type">string</span>, handler Handler)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">	server := &amp;Server&#123;Addr: addr, Handler: handler&#125;</span><br><span class="line">	<span class="keyword">return</span> server.ListenAndServe()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ListenAndServe函数传入地址和handler，若handler为nil，会默认使用之前定义的default单例，传入后声明一个新的Server对象，并嵌套调用内部的方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Server)</span></span> ListenAndServe() <span class="type">error</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> s.shuttingDown() &#123;</span><br><span class="line">		<span class="keyword">return</span> ErrServerClosed</span><br><span class="line">	&#125;</span><br><span class="line">	addr := s.Addr</span><br><span class="line">	<span class="keyword">if</span> addr == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">		addr = <span class="string">&quot;:http&quot;</span></span><br><span class="line">	&#125;</span><br><span class="line">	ln, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, addr)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> s.Serve(ln)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法根据用户传入的端口，调用listen方法针对端口号分配一个端口监听器，并调用Serve方法</p>
+<h3 id="serve方法">serve方法</h3>
+<style>.oivgjfzlxhxt{zoom: 33%;}</style>
+<img src="/Golang/http/mmexport1784103683201.png" class="oivgjfzlxhxt" alt="Serve">
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Server)</span></span> Serve(l net.Listener) <span class="type">error</span> &#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">	ctx := context.WithValue(baseCtx, ServerContextKey, s)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		rw, err := l.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> s.shuttingDown() &#123;</span><br><span class="line">				<span class="keyword">return</span> ErrServerClosed</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> ne, ok := err.(net.Error); ok &amp;&amp; ne.Temporary() &#123;</span><br><span class="line">				<span class="keyword">if</span> tempDelay == <span class="number">0</span> &#123;</span><br><span class="line">					tempDelay = <span class="number">5</span> * time.Millisecond</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					tempDelay *= <span class="number">2</span></span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> max := <span class="number">1</span> * time.Second; tempDelay &gt; max &#123;</span><br><span class="line">					tempDelay = max</span><br><span class="line">				&#125;</span><br><span class="line">				s.logf(<span class="string">&quot;http: Accept error: %v; retrying in %v&quot;</span>, err, tempDelay)</span><br><span class="line">				time.Sleep(tempDelay)</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> err</span><br><span class="line">		&#125;</span><br><span class="line">		connCtx := ctx</span><br><span class="line">		<span class="keyword">if</span> cc := s.ConnContext; cc != <span class="literal">nil</span> &#123;</span><br><span class="line">			connCtx = cc(connCtx, rw)</span><br><span class="line">			<span class="keyword">if</span> connCtx == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="built_in">panic</span>(<span class="string">&quot;ConnContext returned nil&quot;</span>)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		tempDelay = <span class="number">0</span></span><br><span class="line">		c := s.newConn(rw)</span><br><span class="line">		c.setState(c.rwc, StateNew, runHooks) <span class="comment">// before Serve can return</span></span><br><span class="line">		<span class="keyword">go</span> c.serve(connCtx)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现通过for循环轮询，每次调用<code>Accept()</code>方法，当有请求到来时，会通过<code>newConn()</code>封装一个结构体，并为新的请求调用<code>conn.serve()</code>方法调用一个goroutine，主循环继续监听</p>
+<p>调用的这个方法是整个逻辑的主要方法，用来读取context中的请求，并传入<code>serverHandler.ServeHTTP()</code>来处理请求</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sh serverHandler)</span></span> ServeHTTP(rw Responsewriter,req *Request)&#123;</span><br><span class="line">	handler := sh.srv.Handler</span><br><span class="line">	<span class="keyword">if</span> handler ==<span class="literal">nil</span>&#123;</span><br><span class="line">		handler = DefaultServeMux</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//..</span></span><br><span class="line">	handler.ServeHTTP(rw，req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的serverHandler就是我们ListenAndServe时传入的参数，若handler为nil就会指定为default，进而调用路由中的ServeHTTP方法</p>
+<p>这个方法有两步：</p>
+<ul>
+<li>通过request找到对应的handler</li>
+<li>执行handler的ServeHTTP方法</li>
+</ul>
+<p>如何找到对应的handler呢？</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *serveMux121)</span></span> handler(host, path <span class="type">string</span>) (h Handler, pattern <span class="type">string</span>) &#123;</span><br><span class="line">	mux.mu.RLock()</span><br><span class="line">	<span class="keyword">defer</span> mux.mu.RUnlock()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Host-specific pattern takes precedence over generic ones</span></span><br><span class="line">	<span class="keyword">if</span> mux.hosts &#123;</span><br><span class="line">		h, pattern = mux.match(host + path)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> h == <span class="literal">nil</span> &#123;</span><br><span class="line">		h, pattern = mux.match(path)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> h == <span class="literal">nil</span> &#123;</span><br><span class="line">		h, pattern = NotFoundHandler(), <span class="string">&quot;&quot;</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先对应加一把读锁，防止并发问题</li>
+<li>根据hosts标记是否为真，选择路由模式，调用match函数</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *serveMux121)</span></span> match(path <span class="type">string</span>) (h Handler, pattern <span class="type">string</span>) &#123;</span><br><span class="line">	<span class="comment">// Check for exact match first.</span></span><br><span class="line">	v, ok := mux.m[path]</span><br><span class="line">	<span class="keyword">if</span> ok &#123;</span><br><span class="line">		<span class="keyword">return</span> v.h, v.pattern</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Check for longest valid match.  mux.es contains all patterns</span></span><br><span class="line">	<span class="comment">// that end in / sorted from longest to shortest.</span></span><br><span class="line">	<span class="keyword">for</span> _, e := <span class="keyword">range</span> mux.es &#123;</span><br><span class="line">		<span class="keyword">if</span> strings.HasPrefix(path, e.pattern) &#123;</span><br><span class="line">			<span class="keyword">return</span> e.h, e.pattern</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, <span class="string">&quot;&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先精准匹配，从map例直接找，找到了就返回</li>
+<li>若匹配不上，就按照最长公共前缀从长到短来匹配，若当前拿到的path是我们传入的请求路径的前缀，就返回该前缀对应的处理函数，响应请求</li>
+</ul>
+<h1 id="客户端">客户端</h1>
+<h2 id="client">Client</h2>
+<p>client类对整个客户端模块封装</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">	Transport RoundTripper</span><br><span class="line">	CheckRedirect <span class="function"><span class="keyword">func</span><span class="params">(req *Request, via []*Request)</span></span> <span class="type">error</span></span><br><span class="line">	Jar CookieJar</span><br><span class="line">	Timeout time.Duration</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Transport</code>：http通信核心部分</li>
+<li><code>Jar</code>：Cookie管理</li>
+<li><code>Timeout</code>：超时控制</li>
+</ul>
+<p>其中<code>Transport</code>的类型是<code>RoundTripper</code>接口，里面定义了方法<code>Roundtrip()</code>，通过传入请求和服务端交互后产生响应Response</p>
+<p>而<code>Transport</code>是实现类，核心字段：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Transport <span class="keyword">struct</span> &#123;</span><br><span class="line">    idleConn     <span class="keyword">map</span>[connectMethodKey][]*persistConn</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    DialContext <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, network, addr <span class="type">string</span>)</span></span> (net.Conn, <span class="type">error</span>)</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>idleConn</code>：空闲连接的map，可以实现复用</li>
+<li><code>DialContext</code>：新连接生成器，传入协议，目标地址等生成tcp连接</li>
+</ul>
+<p>Request结构体用于封装请求数据</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// 方法</span></span><br><span class="line">    Method <span class="type">string</span></span><br><span class="line">    <span class="comment">// 请求路径</span></span><br><span class="line">    URL *url.URL</span><br><span class="line">    <span class="comment">// 请求头</span></span><br><span class="line">    Header Header</span><br><span class="line">    <span class="comment">// 请求参数内容</span></span><br><span class="line">    Body io.ReadCloser</span><br><span class="line">    <span class="comment">// 服务器主机</span></span><br><span class="line">    Host <span class="type">string</span></span><br><span class="line">    <span class="comment">// query 请求参数</span></span><br><span class="line">    Form url. Values</span><br><span class="line">    <span class="comment">// 响应参数 struct</span></span><br><span class="line">    Response *Response</span><br><span class="line">    <span class="comment">// 请求链路的上下文</span></span><br><span class="line">    ctx context.Context</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Response结构体用于封装响应数据</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Response <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// 请求状态,200 为 请求成功</span></span><br><span class="line">    StatusCode <span class="type">int</span> <span class="comment">// e.g. 200</span></span><br><span class="line">    <span class="comment">// http 协议,如:HTTP/1.0</span></span><br><span class="line">    Proto <span class="type">string</span> <span class="comment">// e.g. &quot;HTTP/1.0&quot;</span></span><br><span class="line">    <span class="comment">// 请求头</span></span><br><span class="line">    Header Header</span><br><span class="line">    <span class="comment">// 响应参数内容</span></span><br><span class="line">    Body io.ReadCloser</span><br><span class="line">    <span class="comment">// 指向请求参数</span></span><br><span class="line">    Request *Request</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="方法链路">方法链路</h2>
+<p>客户端发起一次http请求的步骤：</p>
+<ul>
+<li>构造http请求参数</li>
+<li>获取用于与服务端交互的tcp连接</li>
+<li>通过tcp连接发送请求参数</li>
+<li>通过tcp连接接受响应结果</li>
+</ul>
+<style>.yteafxcptiet{zoom: 50%;}</style>
+<img src="/Golang/http/132498332b491fef799b15dac85313e3.png" class="yteafxcptiet" alt="Client">
+<p>假设调用<code>http.Post()</code>发送一个post请求：</p>
+<ul>
+<li>首先构造request</li>
+<li>通过Transport模块的roudetrip构建tcp链接</li>
+<li>构建的connection分为两个goroutine：<code>writeLoop</code>和<code>readLoop</code></li>
+<li>通过往request channel中塞入参数，writeLoop就会和服务端通信</li>
+<li>服务端返回的响应由<code>readLoop</code>接收，通过response
+channel传回接受方</li>
+</ul>
+<p>为什么要使用channel和goroutine呢</p>
+<h2 id="请求流程">请求流程</h2>
+<h3 id="传入请求">传入请求</h3>
+<p><code>http.Post()</code>方法需要传入服务端url，请求参数格式和请求参数的io
+reader，它会使用包中的单例客户端<code>DefaultClient</code>处理请求，方法中调用了<code>Defaultclient.Post()</code>方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span></span> Post(url, contentType <span class="type">string</span>, body io.Reader) (resp *Response, err <span class="type">error</span>) &#123;</span><br><span class="line">	req, err := NewRequest(<span class="string">&quot;POST&quot;</span>, url, body)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	req.Header.Set(<span class="string">&quot;Content-Type&quot;</span>, contentType)</span><br><span class="line">	<span class="keyword">return</span> c.Do(req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将方法，url，请求体通过<code>NewRequest()</code>方法构造出完整的请求参数，设置Header，再传入<code>client.Do()</code>方法处理</p>
+<h3 id="获得响应">获得响应</h3>
+<p><code>client.Do()</code>方法通过调用<code>client.send()</code>方法设置cookie，发送请求并更新response的cookie</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span></span> send(req *Request, deadline time.Time) (resp *Response, didTimeout <span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">bool</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	cookieURL := req.URL</span><br><span class="line">	<span class="keyword">if</span> req.Host != <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">		cookieURL = cloneURL(cookieURL)</span><br><span class="line">		cookieURL.Host = req.Host</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> c.Jar != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, cookie := <span class="keyword">range</span> c.Jar.Cookies(cookieURL) &#123;</span><br><span class="line">			req.AddCookie(cookie)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	resp, didTimeout, err = send(req, c.transport(), deadline)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, didTimeout, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> c.Jar != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> rc := resp.Cookies(); <span class="built_in">len</span>(rc) &gt; <span class="number">0</span> &#123;</span><br><span class="line">			c.Jar.SetCookies(cookieURL, rc)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> resp, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>发送请求使用send函数，传入请求参数和通信模块，默认transport类</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">send</span><span class="params">(ireq *Request, rt RoundTripper, deadline time.Time)</span></span> (resp *Response, didTimeout <span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">bool</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	resp, err = rt.RoundTrip(req)</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">return</span> resp, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>send函数使用RoundTrip方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span></span> roundTrip(req *Request) (_ *Response, err <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">    	treq := &amp;transportRequest&#123;Request: req, trace: trace, ctx: ctx, cancel: cancel&#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        pconn, err := t.getConn(treq, cm)</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        resp, err = pconn.roundTrip(treq)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>该方法首先将传入参数格式转换为transport格式</li>
+<li>接下来从transport模块获取一个可用的tcp链接，再用该链接的roundTrip方法获得响应</li>
+</ul>
+<h3 id="获取tcp链接">获取tcp链接</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span></span> getConn(treq *transportRequest, cm connectMethod) (pc *persistConn, err <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="comment">// 获取连接的请求参数体</span></span><br><span class="line">    w := &amp;wantConn&#123;</span><br><span class="line">        cm:         cm,</span><br><span class="line">        <span class="comment">// key 由 http 协议、服务端地址等信息组成</span></span><br><span class="line">        key:        cm.key(),</span><br><span class="line">        ctx:        ctx,</span><br><span class="line">        <span class="comment">// 标识连接构造成功的信号发射器</span></span><br><span class="line">        ready:      <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, <span class="number">1</span>),</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 倘若连接获取失败，在 wantConn.cancel 方法中，会尝试将 tcp 连接放回队列中以供后续复用</span></span><br><span class="line">    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            w.cancel(t, err)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line">    <span class="comment">// 尝试复用指向相同服务端地址的空闲连接</span></span><br><span class="line">    <span class="keyword">if</span> delivered := t.queueForIdleConn(w); delivered &#123;</span><br><span class="line">        pc := w.pc</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> pc, <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 异步构造新的连接</span></span><br><span class="line">    t.queueForDial(w)</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="comment">// 通过阻塞等待信号的方式，等待连接获取完成</span></span><br><span class="line">    <span class="keyword">case</span> &lt;-w.ready:</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> w.pc, w.err</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>通过传入的HTTP协议等信息构建一个key，去之前构建的idle池中映射，尝试复用指向相同服务端地址的空闲链接，若可以则直接返回</p></li>
+<li><p>若无法复用，就直接异步构造新的连接，主程序暂时阻塞，等待连接构造完毕后返回</p></li>
+<li><p>使用<code>queueForIdleConn()</code>尝试复用连接</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span></span> queueForIdleConn(w *wantConn) (delivered <span class="type">bool</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">if</span> list, ok := t.idleConn[w.key]; ok &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">for</span> <span class="built_in">len</span>(list) &gt; <span class="number">0</span> &amp;&amp; !stop &#123;</span><br><span class="line">            pconn := list[<span class="built_in">len</span>(list)<span class="number">-1</span>]</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            delivered = w.tryDeliver(pconn, <span class="literal">nil</span>)</span><br><span class="line">            <span class="keyword">if</span> delivered &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">                list = list[:<span class="built_in">len</span>(list)<span class="number">-1</span>]         </span><br><span class="line">            &#125;</span><br><span class="line">            stop = <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">if</span> stop &#123;</span><br><span class="line">            <span class="keyword">return</span> delivered</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...    </span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从对应的key找符合的连接，若能符合的连接大约等于一个，就找最后一个返回，若没有就只能创造新的连接</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span></span> queueForDial(w *wantConn) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">go</span> t.dialConnFor(w) </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span></span> dialConnFor(w *wantConn) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    pc, err := t.dialConn(w.ctx, w.cm)</span><br><span class="line">    delivered := w.tryDeliver(pc, err)</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>queueForDial会异步调用dialConnFor函数，创建新的tcp连接</p>
+<p>因为tcp连接是有生命周期的，所以我们需要创建两个读写的守护进程</p>
+<ul>
+<li>dialConn用于创建tcp连接</li>
+<li>tryDeliver用于将连接绑定到wantConn上</li>
+<li>最后通过关闭ready channel操作唤醒上游读channel的goroutine</li>
+</ul></li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span></span> dialConn(ctx context.Context, cm connectMethod) (pconn *persistConn, err <span class="type">error</span>) &#123;</span><br><span class="line">    pconn = &amp;persistConn&#123;</span><br><span class="line">        t:             t,</span><br><span class="line">        reqch:         <span class="built_in">make</span>(<span class="keyword">chan</span> requestAndChan, <span class="number">1</span>),</span><br><span class="line">        writech:       <span class="built_in">make</span>(<span class="keyword">chan</span> writeRequest, <span class="number">1</span>),</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    conn, err := t.dial(ctx, <span class="string">&quot;tcp&quot;</span>, cm.addr())</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    pconn.conn = conn      </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">go</span> pconn.readLoop()</span><br><span class="line">    <span class="keyword">go</span> pconn.writeLoop()</span><br><span class="line">    <span class="keyword">return</span> pconn, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>writech由writeLoop持有，readch同理，当客户端想要发送请求后，使用writeLoop写入服务端，使用reqch接收来自服务端的信息到channel</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">func</span> <span class="params">(pc *persistConn)</span></span> readLoop() &#123; </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    alive := <span class="literal">true</span></span><br><span class="line">    <span class="keyword">for</span> alive &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        rc := &lt;-pc.reqch</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">var</span> resp *Response</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        resp, err = pc.readResponse(rc, trace)</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">select</span>&#123;</span><br><span class="line">            rc.ch &lt;- responseAndError&#123;res: resp&#125;:</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...        </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pc *persistConn)</span></span> writeLoop() &#123;    </span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> wr := &lt;-pc.writech:</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            err := wr.req.Request.write(pc.bw, pc.isProxy, wr.req.extra, pc.waitForContinue(wr.continueCh))</span><br><span class="line">            <span class="comment">// ...       </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>readLoop接收到reqch后判断发生新一轮请求，和服务端建立通讯并读取响应，通过内置的channel接收来自服务的响应</li>
+<li>writeLoop拿到客户端提交的请求后，将其发送到服务端</li>
+</ul>
+<h3 id="主干链路">主干链路</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pc *persistConn)</span></span> roundTrip(req *transportRequest) (resp *Response, err <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    pc.writech &lt;- writeRequest&#123;req, writeErrCh, continueCh&#125;</span><br><span class="line">    resc := <span class="built_in">make</span>(<span class="keyword">chan</span> responseAndError)</span><br><span class="line">    pc.reqch &lt;- requestAndChan&#123;</span><br><span class="line">        req:        req.Request,</span><br><span class="line">        cancelKey:  req.cancelKey,</span><br><span class="line">        ch:         resc,</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">for</span> &#123;       </span><br><span class="line">        <span class="keyword">select</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">case</span> re := &lt;-resc:</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            <span class="keyword">return</span> re.res, <span class="literal">nil</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>该函数是和两个Loop通讯的主要函数</li>
+<li>将我们的请求塞入writech，使得writeLoop接收，并把请求放入服务端，并构造好接收响应的channel，塞入requestAndChan中，这样就可以被readLoop接收到</li>
+<li>后续使用for循环持续监听，当readLoop接收到了结果，就会被主流程接收到，进行处理</li>
+</ul>
+</div>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Golang/" rel="tag">Golang</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-09-06T09:12:29.335Z" itemprop="dateModified">最后编辑：2026-09-06</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【Golang】控制并发的三种方式" href="/Golang/context/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【gRPC】Protocol Buffers" href="/Golang/gRPC/Protobuf/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%94%A8%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">简单用法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#getpost%E8%AF%B7%E6%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">GET&#x2F;POST请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.2.</span> <span class="toc-text">配置客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">1.3.</span> <span class="toc-text">配置服务端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B"><span class="toc-number">1.4.</span> <span class="toc-text">例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#server"><span class="toc-number">2.1.</span> <span class="toc-text">Server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#servermux"><span class="toc-number">2.2.</span> <span class="toc-text">ServerMux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#handler%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.3.</span> <span class="toc-text">Handler注册流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">服务端运行流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.1.</span> <span class="toc-text">主流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#serve%E6%96%B9%E6%B3%95"><span class="toc-number">2.4.2.</span> <span class="toc-text">serve方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#client"><span class="toc-number">3.1.</span> <span class="toc-text">Client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E9%93%BE%E8%B7%AF"><span class="toc-number">3.2.</span> <span class="toc-text">方法链路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B"><span class="toc-number">3.3.</span> <span class="toc-text">请求流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E5%85%A5%E8%AF%B7%E6%B1%82"><span class="toc-number">3.3.1.</span> <span class="toc-text">传入请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97%E5%93%8D%E5%BA%94"><span class="toc-number">3.3.2.</span> <span class="toc-text">获得响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96tcp%E9%93%BE%E6%8E%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">获取tcp链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%B9%B2%E9%93%BE%E8%B7%AF"><span class="toc-number">3.3.4.</span> <span class="toc-text">主干链路</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+
+<!-- 额外的追加注入项 -->
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
+</html>

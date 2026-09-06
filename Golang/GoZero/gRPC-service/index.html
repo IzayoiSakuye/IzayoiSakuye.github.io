@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【go-zero】gRPC服务 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Golang/GoZero/gRPC-service/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Golang, Gozero" />
+  
+  <meta name="description" content="go-zero的gRPC框架，为RPC微服务提供方便的方法框架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【go-zero】gRPC服务">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/GoZero/gRPC-service/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="go-zero的gRPC框架，为RPC微服务提供方便的方法框架">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
+<meta property="article:published_time" content="2026-09-06T06:56:19.428Z">
+<meta property="article:modified_time" content="2026-09-06T09:12:29.337Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Gozero">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
+  
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【go-zero】gRPC服务","description":"go-zero的gRPC框架，为RPC微服务提供方便的方法框架","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-09-06T06:56:19.428Z","dateModified":"2026-09-06T09:12:29.337Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Golang/GoZero/gRPC-service/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+  }
+
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
+
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/GoZero/gRPC-service/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【go-zero】gRPC服务</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-09-06T06:56:19.428Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-09-06</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~29.05K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rpcclientconf"><span class="toc-number">1.1.1.</span> <span class="toc-text">RpcClientConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etcdconf"><span class="toc-number">1.1.2.</span> <span class="toc-text">EtcdConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#servermiddlewaresconf"><span class="toc-number">1.1.3.</span> <span class="toc-text">ServerMiddlewaresConf</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">客户端实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%BF%9E%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">直连模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">服务发现模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#newclient%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.3.</span> <span class="toc-text">newClient的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%B5%B7%E8%B0%83%E7%94%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">发起调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.5.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-number">1.2.6.</span> <span class="toc-text">错误处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%86%94%E6%96%AD%E5%99%A8"><span class="toc-number">1.2.7.</span> <span class="toc-text">熔断器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">1.2.8.</span> <span class="toc-text">拦截器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.3.</span> <span class="toc-text">客户端连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%BF%9E"><span class="toc-number">1.3.1.</span> <span class="toc-text">直连</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etcd-%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">1.3.2.</span> <span class="toc-text">etcd 服务发现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F%E6%94%AF%E6%8C%81"><span class="toc-number">1.3.3.</span> <span class="toc-text">原生支持</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91"><span class="toc-number">2.1.</span> <span class="toc-text">开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89proto"><span class="toc-number">2.1.1.</span> <span class="toc-text">定义proto</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81"><span class="toc-number">2.1.2.</span> <span class="toc-text">生成代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="toc-number">2.1.3.</span> <span class="toc-text">实现业务逻辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-number">2.1.4.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.5.</span> <span class="toc-text">服务启动流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="toc-number">2.2.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rpcserverconf"><span class="toc-number">2.2.1.</span> <span class="toc-text">RpcServerConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etcdconf-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">EtcdConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rediskeyconf"><span class="toc-number">2.2.3.</span> <span class="toc-text">RedisKeyConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#servermiddlewaresconf-1"><span class="toc-number">2.2.4.</span> <span class="toc-text">ServerMiddlewaresConf</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.3.</span> <span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.2.</span> <span class="toc-text">连接模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stub%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.3.</span> <span class="toc-text">stub实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81"><span class="toc-number">2.3.4.</span> <span class="toc-text">编写业务代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%90%AFgrpc%E8%B0%83%E8%AF%95%E5%BC%80%E5%85%B3"><span class="toc-number">2.3.5.</span> <span class="toc-text">开启gRPC调试开关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.3.6.</span> <span class="toc-text">中间件的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F"><span class="toc-number">2.3.7.</span> <span class="toc-text">调用顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E9%80%92metadata"><span class="toc-number">2.3.8.</span> <span class="toc-text">传递metadata</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8-1"><span class="toc-number">3.</span> <span class="toc-text">拦截器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF-1"><span class="toc-number">3.1.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.1.1.</span> <span class="toc-text">一元拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%BC%8F%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.1.2.</span> <span class="toc-text">流式拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E6%96%B9%E5%BC%8F"><span class="toc-number">3.1.3.</span> <span class="toc-text">注册方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-1"><span class="toc-number">3.2.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E6%8B%A6%E6%88%AA%E5%99%A8-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">一元拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%BC%8F%E6%8B%A6%E6%88%AA%E5%99%A8-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">流式拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E6%96%B9%E5%BC%8F-1"><span class="toc-number">3.2.3.</span> <span class="toc-text">注册方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">3.3.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#token%E6%B3%A8%E5%85%A5"><span class="toc-number">3.3.1.</span> <span class="toc-text">Token注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%A8%E6%9C%8D%E5%8A%A1%E9%80%8F%E4%BC%A0%E5%85%83%E6%95%B0%E6%8D%AE%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.3.2.</span> <span class="toc-text">跨服务透传元数据拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.3.3.</span> <span class="toc-text">日志拦截器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.4.</span> <span class="toc-text">内置拦截器</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="客户端">客户端</h1>
+<h2 id="配置">配置</h2>
+<h3 id="rpcclientconf">RpcClientConf</h3>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 12%" />
+<col style="width: 35%" />
+<col style="width: 35%" />
+<col style="width: 3%" />
+<col style="width: 4%" />
+</colgroup>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>注意</th>
+<th>默认值</th>
+<th>是否必选</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Etcd</td>
+<td>EtcdConf</td>
+<td>服务发现配置，当需要使用 etcd 做服务发现时配置</td>
+<td>当服务端已经注册etcd，需要让客户端动态获取服务地址时配置</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Endpoints</td>
+<td>string 类型数组</td>
+<td>RPC Server地址列表，用于直连（不用服务发现），当需要直连 rpc server
+集群时配置</td>
+<td>直接指定rpc服务器地址列表，不适用服务发现，当配置etcd时会被忽略</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Target</td>
+<td>string</td>
+<td>域名解析地址</td>
+<td>gRPC原生的命名解析机制，格式为<code>scheme://authority/endpoint_name</code></td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>App</td>
+<td>string</td>
+<td>rpc 认证的 app 名称，仅当 rpc server 开启认证时配置</td>
+<td>当鉴权开启时，客户端必须提供合法app，会自动插入每次请求的metadata</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Token</td>
+<td>string</td>
+<td>rpc 认证的 token，仅当 rpc server 开启认证时配置</td>
+<td>当鉴权开启时，客户端必须提供合法token，会自动插入每次请求的metadata</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>NonBlock</td>
+<td>bool</td>
+<td>是否阻塞模式,当值为 true 时，不会阻塞 rpc 链接</td>
+<td>false时<code>Dial</code>会阻塞到建立成功或超时，true时即使RPC服务不可达，客户端也不会卡死，但是前几次请求可能会失败</td>
+<td>false</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>int64</td>
+<td>超时时间</td>
+<td>客户端发起 RPC 调用的最大等待时间，会覆盖gRPC上下文的超时</td>
+<td>2000ms</td>
+<td>否</td>
+</tr>
+<tr>
+<td>KeepaliveTime</td>
+<td>Time.Duration</td>
+<td>保活时间</td>
+<td>gRPC 客户端向服务端发送 PING
+帧的间隔时间，用于保持长连接不被中间代理或防火墙断开</td>
+<td>20s</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Middlewares</td>
+<td>ClientMiddlewaresConf</td>
+<td>是否启用中间件</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>若需要使用etcd，在yaml文件中注册如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Etcd:</span></span><br><span class="line">  <span class="attr">Hosts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:2379</span></span><br><span class="line">  <span class="attr">Key:</span> <span class="string">user.rpc</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>hosts：etcd集群地址</li>
+<li>key：服务注册的key，通常为服务名</li>
+</ul>
+<h3 id="etcdconf">EtcdConf</h3>
+<p>当使用etcd做服务发现时配置</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 30%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+</colgroup>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>默认值</th>
+<th>是否必选</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hosts</td>
+<td>string 类型数组</td>
+<td>etcd 集群地址</td>
+<td>无</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Key</td>
+<td>string</td>
+<td>服务发现 key</td>
+<td>无</td>
+<td>是</td>
+</tr>
+<tr>
+<td>ID</td>
+<td>int64</td>
+<td>etcd 租户 id</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>User</td>
+<td>string</td>
+<td>etcd 用户名</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Pass</td>
+<td>string</td>
+<td>etcd 密码</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>CertFile</td>
+<td>string</td>
+<td>etcd 证书文件</td>
+<td>CertFile</td>
+<td>否</td>
+</tr>
+<tr>
+<td>CertKeyFile</td>
+<td>string</td>
+<td>etcd 证书私钥文件</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>CACertFile</td>
+<td>string</td>
+<td>etcd 证书根文件</td>
+<td>CertFile</td>
+<td>否</td>
+</tr>
+<tr>
+<td>InsecureSkipVerify</td>
+<td>bool</td>
+<td>etcd 是否跳过证书验证</td>
+<td>无</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h3 id="servermiddlewaresconf">ServerMiddlewaresConf</h3>
+<p>中间件配置，当需要控制中间件时配置，控制需要开启哪些中间件</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>默认值</th>
+<th>是否必选</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trace</td>
+<td>bool</td>
+<td>是否开启链路追踪</td>
+<td>true</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Recover</td>
+<td>bool</td>
+<td>是否开启异常恢复</td>
+<td>true</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Stat</td>
+<td>bool</td>
+<td>是否开启统计</td>
+<td>true</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Prometheus</td>
+<td>bool</td>
+<td>是否开启 prometheus</td>
+<td>true</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Breaker</td>
+<td>bool</td>
+<td>是否开启熔断</td>
+<td>true</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h2 id="客户端实现">客户端实现</h2>
+<p>gRPC客户端封装在<code>zrpc.Client</code>
+中，自动集成了服务发现、负载均衡、熔断器和链路追踪</p>
+<h3 id="直连模式">直连模式</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;github.com/zeromicro/go-zero/zrpc&quot;</span></span><br><span class="line">    <span class="string">&quot;myservice/greeter&quot;</span>  <span class="comment">// 生成的 proto 包</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewServiceContext</span><span class="params">(c config.Config)</span></span> *ServiceContext &#123;</span><br><span class="line">    conn, err := zrpc.NewClient(zrpc.RpcClientConf&#123;</span><br><span class="line">        Endpoints: []<span class="type">string</span>&#123;<span class="string">&quot;localhost:8080&quot;</span>&#125;,</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &amp;ServiceContext&#123;</span><br><span class="line">        Config:        c,</span><br><span class="line">        GreeterClient: greeter.NewGreeterClient(conn.Conn()),</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直连模式会显式指定服务地址，不走注册中心，客户端会和endpoints列表中的地址建立gRPC连接</p>
+<p>缺点为地址写死，迁移后需要手动更新代码或重新部署</p>
+<p>适用于本地开发与单元测试和服务器地址固定不变的场景</p>
+<h3 id="服务发现模式">服务发现模式</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewServiceContext</span><span class="params">(c config.Config)</span></span> *ServiceContext &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;ServiceContext&#123;</span><br><span class="line">        Config:        c,</span><br><span class="line">        GreeterClient: greeter.NewGreeterClient(</span><br><span class="line">            zrpc.MustNewClient(c.GreeterRpc).Conn(),</span><br><span class="line">        ),</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端通过服务注册中心动态获取可用服务节点，具体ip集中在<code>app.yaml</code>中</p>
+<p><strong>运行流程：</strong></p>
+<ul>
+<li>客户端启动时连接etcd</li>
+<li>根据key从etcd拉取一组节点（服务端启动时注册的）</li>
+<li>内置的负载均衡器会从这组地址中选择以恶搞发起调用</li>
+<li>etcd中的节点发生变更时，客户端自动更新本地地址列表</li>
+</ul>
+<p>优点在于适合动态扩缩容，配合<code>Breaker</code>中间件，可以自动摘除故障节点，与整个go-zero生态结合紧密</p>
+<p>适用于生产环境</p>
+<h3 id="newclient的方法">newClient的方法</h3>
+<ul>
+<li><code>NewClient</code>会返回client和err，需要手动处理错误，启动时连接失败不会panic</li>
+<li><code>MustNewClient</code>在内部调用client，如果出错则直接panic</li>
+</ul>
+<p>大部分项目使用第二个即可，需要特殊处理初始化错误时，才使用第一个</p>
+<h3 id="发起调用">发起调用</h3>
+<p>在gozero中HTTP服务调用下游RPC服务的写法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *HelloLogic)</span></span> Hello(req *types.HelloReq) (*types.HelloResp, <span class="type">error</span>) &#123;</span><br><span class="line">    resp, err := l.svcCtx.GreeterClient.SayHello(l.ctx, &amp;greeter.SayHelloReq&#123;</span><br><span class="line">        Name: req.Name,</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &amp;types.HelloResp&#123;Message: resp.Message&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在逻辑层结构体，包含两个重要成员：</p>
+<ul>
+<li><code>svcCtx *ServiceContext</code>包含所有依赖</li>
+<li><code>ctx context.Context</code>由框架传入，携带了本次HTTP请求的全部上下文
+<ul>
+<li>当 go-zero 的 HTTP 网关收到请求时，会从请求头中提取
+<code>traceparent</code>、<code>tracestate</code> 等 W3C TraceContext
+字段，生成带有 <code>SpanContext</code> 的 <code>context</code>，存入
+<code>l.ctx</code></li>
+<li>当调用 gRPC 客户端时，go-zero 的 gRPC 拦截器会自动将
+<code>l.ctx</code> 中的 trace 信息注入到 gRPC 的 metadata 中，生成
+<code>traceparent</code> header</li>
+<li>下游 RPC 服务收到请求后，若同样使用了 go-zero 并开启了 trace
+中间件，会自动解析该 header，并创建子 Span，将其父 Span 设为当前 HTTP
+Span</li>
+</ul></li>
+</ul>
+<p>注意：</p>
+<ul>
+<li><p><code>l.ctx</code>除了trace，还会携带deadline（由http超时或上层调用设置），gRPC会调用并自动遵循，超时返回<code>context.DeadlineExceeded</code></p></li>
+<li><p>若需要在RPC传递业务自定义元数据，可以使用<code>metadata.NewOutgoingContext(l.ctx)</code>
+将 kv 放入 context，gRPC 拦截器会自动传递。</p></li>
+</ul>
+<h3 id="配置文件">配置文件</h3>
+<p>RPC客户端在对应<code>etc/app.yaml</code>中配置，参数如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">GreeterRpc:</span></span><br><span class="line">  <span class="comment"># 方案一：etcd 服务发现</span></span><br><span class="line">  <span class="attr">Etcd:</span></span><br><span class="line">    <span class="attr">Hosts:</span> [<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:2379</span>]</span><br><span class="line">    <span class="attr">Key:</span> <span class="string">greeter.rpc</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 方案二：静态地址</span></span><br><span class="line">  <span class="attr">Endpoints:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:8080</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">Timeout:</span> <span class="number">2000</span>           <span class="comment"># 客户端请求超时（毫秒），0 表示不限</span></span><br><span class="line">  <span class="attr">KeepaliveTime:</span> <span class="number">20000</span>    <span class="comment"># gRPC keepalive ping 间隔（毫秒）</span></span><br></pre></td></tr></table></figure>
+<p>两种方案是互斥的，框架会根据是否填入Etcd
+Key来选择使用哪种模式，etcd的优先级更高，其中：</p>
+<ul>
+<li><code>Timeout</code>：客户端认为一个RPC调用失败前的最大等待时间，防止线程被长时间挂住</li>
+<li><code>KeepaliveTime</code>：gRPC长连接每隔多久发送一次ping，防止负载均衡或防火墙因空闲断开连接</li>
+</ul>
+<h3 id="错误处理">错误处理</h3>
+<p>gRPC的错误是一个结构化状态，包含一个标准的<code>status.Code</code>和描述</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;google.golang.org/grpc/status&quot;</span></span><br><span class="line"></span><br><span class="line">resp, err := l.svcCtx.GreeterClient.SayHello(l.ctx, req)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    st, _ := status.FromError(err)</span><br><span class="line">    <span class="keyword">switch</span> st.Code() &#123;</span><br><span class="line">    <span class="keyword">case</span> codes.NotFound:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errorx.NewCodeError(<span class="number">404</span>, <span class="string">&quot;用户不存在&quot;</span>)</span><br><span class="line">    <span class="keyword">case</span> codes.DeadlineExceeded:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errorx.NewCodeError(<span class="number">504</span>, <span class="string">&quot;上游超时&quot;</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>status.FromError(err)</code> 从 gRPC 错误中提取出
+<code>*status.Status</code> 对象</li>
+<li><code>st.Code()</code> 得到对应的 gRPC 状态码</li>
+<li>可以根据这些状态码使用<code>NewCodeError</code>将错误转换成自己需要的格式，然后再返回给
+HTTP 客户端。</li>
+<li>内置的<code>errorx</code>会和<code>httpx</code>配合，将带code的错误直接映射为HTTP响应状态码</li>
+</ul>
+<h3 id="熔断器">熔断器</h3>
+<p>gozero的RPC客户端默认启用了熔断器，基于自适应熔断，逻辑是：</p>
+<p>在滑动时间窗口内（默认为10秒），如果下游请求的错误率超过50%，熔断器就会打开，拒绝后续请求。一段时间后会进入半开状态，试探性放行少量请求，如果成功率回升则关闭</p>
+<img src="/Golang/GoZero/gRPC-service/image-20260805214353391.png" class="" title="熔断器">
+<h3 id="拦截器">拦截器</h3>
+<p>有些场景需要向每个gRPC请求的metadata中注入业务信息，如<code>x-request-id</code>，认证token等，gozero可以使用<code>WithUnaryClientInterceptor</code>添加自定义拦截器</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">conn, err := zrpc.NewClient(c.GreeterRpc,</span><br><span class="line">    zrpc.WithUnaryClientInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">        ctx context.Context, method <span class="type">string</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        req, reply any, cc *grpc.ClientConn,</span></span></span><br><span class="line"><span class="params"><span class="function">        invoker grpc.UnaryInvoker, opts ...grpc.CallOption,</span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span> <span class="type">error</span> &#123;</span><br><span class="line">        ctx = metadata.AppendToOutgoingContext(ctx,</span><br><span class="line">            <span class="string">&quot;x-request-id&quot;</span>, requestIDFromCtx(ctx),</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> invoker(ctx, method, req, reply, cc, opts...)</span><br><span class="line">    &#125;),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>metadata.AppendToOutgoingContext</code> 向 gRPC 的 outgoing
+metadata 中添加 key‑value 对</li>
+<li><code>invoker(ctx, method, req, reply, cc, opts...)</code>
+继续后续的拦截器链并最终发起调用</li>
+</ul>
+<p>常用场景包括：</p>
+<ul>
+<li><code>x-request-id</code> ：全链路追踪 ID，便于日志关联</li>
+<li><code>Authorization</code> / <code>Token</code>：服务间认证</li>
+<li><code>x-user-id</code>：传递当前操作用户身份</li>
+</ul>
+<h2 id="客户端连接">客户端连接</h2>
+<p>通过goctl生成一个rpc server服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成一个 greet 服务</span></span><br><span class="line">$ goctl rpc new greet</span><br><span class="line"><span class="comment"># 新建一个 main.go 文件来创建一个 greet 服务的客户端</span></span><br><span class="line">$ <span class="built_in">touch</span> main.go</span><br></pre></td></tr></table></figure>
+<h3 id="直连">直连</h3>
+<p>直连下有两种模式</p>
+<p><strong>地址解析模式：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    clientConf:=zrpc.RpcClientConf&#123;&#125;</span><br><span class="line">    conf.FillDefault(&amp;clientConf)<span class="comment">// 填充默认值，比如 trace 透传等，参考服务配置说明</span></span><br><span class="line">    clientConf.Target = <span class="string">&quot;dns:///127.0.0.1:8080&quot;</span></span><br><span class="line">    conn := zrpc.MustNewClient(clientConf)</span><br><span class="line">    client := greet.NewGreetClient(conn.Conn())</span><br><span class="line">    resp, err := client.Ping(context.Background(), &amp;greet.Request&#123;&#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(resp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中Target是gRPC内置的URI风格解析器标识，语法为<code>schema://authority/endpoint</code></p>
+<p>如<code>dns:///127.0.0.1:8080</code>：告诉gRPC的resolver通过DNS查询解析这个地址，当指定的是IP地址时，DNS解析直接返回该IP，类似直连；当指定的是域名时，才会做真正的DNS解析</p>
+<ul>
+<li>若DNS返回多个IP，gRPC会在它们之间做客户端负载均衡</li>
+<li>适合K8s Headless Service场景配合DNS服务发现使用</li>
+<li>其中target和endpoints互斥，同时设置时，前者会被忽略</li>
+</ul>
+<p><strong>多节点直连模式：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    clientConf:=zrpc.RpcClientConf&#123;&#125;</span><br><span class="line">    conf.FillDefault(&amp;clientConf)<span class="comment">// 填充默认值，比如 trace 透传等，参考服务配置说明</span></span><br><span class="line">    clientConf.Endpoints = []<span class="type">string</span>&#123;<span class="string">&quot;127.0.0.1:8080&quot;</span>,<span class="string">&quot;127.0.0.2:8080&quot;</span>&#125;<span class="comment">// 直连集群时，只需要给 Endpoints 配置 rpc server的地址即可</span></span><br><span class="line">    conn := zrpc.MustNewClient(clientConf)</span><br><span class="line">    client := greet.NewGreetClient(conn.Conn())</span><br><span class="line">    resp, err := client.Ping(context.Background(), &amp;greet.Request&#123;&#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(resp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>gozero会遍历给出的endpoints列表，将每个地址构造为gRPC的sunConn，客户端内置的负载均衡策略（P2C，即随机选择两个，选择其中最优的一个）会在这些节点间发送请求，若某个节点故障，gRPC层面的连接重试和gozero的熔断器会将其临时剔除</p>
+<p>这样处理配置直观，且不需要DNS解析或注册中心，多个节点之间自动负载均衡，配合上熔断器可以提高可用性，但是地址列表是静态的，需要手动更新配置并重启</p>
+<h3 id="etcd-服务发现">etcd 服务发现</h3>
+<p>go-zero下，可以使用etcd做服务发现，初始化如下面的例子：从 etcd
+中找到名为 <code>greet.rpc</code> 的服务节点，然后建立 gRPC 连接并调用其
+<code>Ping</code> 方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    clientConf:=zrpc.RpcClientConf&#123;&#125;</span><br><span class="line">    conf.FillDefault(&amp;clientConf)<span class="comment">// 填充默认值，比如 trace 透传等，参考服务配置说明</span></span><br><span class="line">    clientConf.Etcd = discov.EtcdConf&#123;<span class="comment">// 通过 etcd 服务发现时，只需要给 Etcd 配置即可</span></span><br><span class="line">        Hosts:              []<span class="type">string</span>&#123;<span class="string">&quot;127.0.0.1:2379&quot;</span>&#125;,</span><br><span class="line">        Key:                <span class="string">&quot;greet.rpc&quot;</span>,</span><br><span class="line">        User:               <span class="string">&quot;&quot;</span>,<span class="comment">// 当 etcd 开启 acl 时才填写，这里为了展示所以没有删除，实际使用如果没有开启 acl 可忽略</span></span><br><span class="line">        Pass:               <span class="string">&quot;&quot;</span>,<span class="comment">// 当 etcd 开启 acl 时才填写，这里为了展示所以没有删除，实际使用如果没有开启 acl 可忽略</span></span><br><span class="line">        CertFile:           <span class="string">&quot;&quot;</span>,<span class="comment">// 当 etcd 开启 acl 时才填写，这里为了展示所以没有删除，实际使用如果没有开启 acl 可忽略</span></span><br><span class="line">        CertKeyFile:        <span class="string">&quot;&quot;</span>,<span class="comment">// 当 etcd 开启 acl 时才填写，这里为了展示所以没有删除，实际使用如果没有开启 acl 可忽略</span></span><br><span class="line">        CACertFile:         <span class="string">&quot;&quot;</span>,<span class="comment">// 当 etcd 开启 acl 时才填写，这里为了展示所以没有删除，实际使用如果没有开启 acl 可忽略</span></span><br><span class="line">        InsecureSkipVerify: <span class="literal">false</span>,<span class="comment">// 当 etcd 开启 acl 时才填写，这里为了展示所以没有删除，实际使用如果没有开启 acl 可忽略</span></span><br><span class="line">    &#125;</span><br><span class="line">    conn := zrpc.MustNewClient(clientConf)</span><br><span class="line">    client := greet.NewGreetClient(conn.Conn())</span><br><span class="line">    resp, err := client.Ping(context.Background(), &amp;greet.Request&#123;&#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(resp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先通过conf和fillDefault将RPC客户端配置结构体填入默认值，防止服务异常</li>
+<li><code>clientConf.Etcd</code>用于配置etcd：
+<ul>
+<li><code>Hosts</code>：etcd的集群地址</li>
+<li><code>Key</code>：服务在etcd中的注册key（服务名）</li>
+<li>其余字段当etcd开启ACL/TLS时才需要填写</li>
+</ul></li>
+<li>接下来使用<code>MustNewClient</code>创建一个gRPC客户端，此时内部执行的动作：
+<ul>
+<li>根据etcd配置启动服务发现（初始化<code>discov.DiscovClient</code>）</li>
+<li>从etcd监听到的节点列表中，选择一个可用地址，建立一条gRPC
+<code>ClientConn</code></li>
+<li>把该<code>ClientConn</code>包装进<code>zrpc.Client</code>并返回</li>
+</ul></li>
+<li><code>conn.Conn()</code> 返回真正的
+<code>*grpc.ClientConn</code></li>
+<li><code>greet.NewGreetClient</code> 是根据protobuf文件编译出的 gRPC
+client 构造函数，负责将结构体方法映射成 RPC 调用</li>
+<li><code>client.Ping</code>发送请求并等待响应，超时使用gRPC配置中的timeout，gozero自动在拦截层添加context超时</li>
+</ul>
+<h3 id="原生支持">原生支持</h3>
+<p>可以不适用go-zero的zrpc的client初始化，而直接使用<code>grpc.ClientConn</code>原生支持</p>
+<p>原生grpc去掉了服务发现，负载均衡，拦截器等能力，适合连接<strong>固定地址</strong>的场景</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    conn,err:=grpc.Dial(<span class="string">&quot;127.0.0.1:8080&quot;</span>,grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))</span><br><span class="line">    <span class="keyword">if</span> err!=<span class="literal">nil</span>&#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    client := greet.NewGreetClient(conn)</span><br><span class="line">    resp, err := client.Ping(context.Background(), &amp;greet.Request&#123;&#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(resp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>grpc.Dial</code>用于建立连接：
+<ul>
+<li>第一个参数是目标服务地址，直连而不走服务中心</li>
+<li><code>grpc.WithBlock()</code>使Dial阻塞等待连接成功，如果不加这个选项，Dial会立即返回，底层在后台异步建立</li>
+<li><code>grpc.WithTransportCredentials(insecure.NewCredentials())</code>：指定传输证书，这里使用<code>insecure.NewCredentials()</code>无认证，生产环境下可以使用<code>credentials.NewTLS(...)</code></li>
+<li>返回的 <code>conn</code> 是
+<code>*grpc.ClientConn</code>，它负责实际的网络连接管理与复用</li>
+<li>注意：使用<code>WithBlock()</code>
+且<strong>没有设置超时</strong>时，如果目标服务不存在或网络不通，<code>Dial</code>
+可能一直阻塞而不会返回，建议配合带超时的ctx：<code>ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)</code></li>
+</ul></li>
+<li><code>client := greet.NewGreetClient(conn)</code>创建业务客户端，该方法是通过protobuf文件生成的client桩代码，接受一个<code>grpc.ClientConn</code>接口，返回一个可以调用具体方法的客户端对象，只负责将方法调用封装成
+gRPC 请求并发送</li>
+<li><code>client.Ping</code>发送一个ping请求等待响应，这里也是没有超时的，最好自己传入一个带超时的ctx</li>
+</ul>
+<p>使用场景：</p>
+<ul>
+<li>本地功能调试</li>
+<li>服务发现由自己实现</li>
+</ul>
+<h1 id="服务端">服务端</h1>
+<p>go-zero 在标准 gRPC
+服务端之上封装了弹性治理、服务注册和链路追踪等能力</p>
+<p>大体流程：定义 Protobuf → 用 goctl 生成服务骨架 → 填充业务逻辑 → 配置
+etcd 注册 → 启动 RPC 服务</p>
+<h2 id="开发">开发</h2>
+<h3 id="定义proto">定义proto</h3>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"><span class="keyword">package</span> greeter;</span><br><span class="line"><span class="keyword">option</span> go_package = <span class="string">&quot;./greeter&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">SayHelloReq</span>  &#123; <span class="type">string</span> name    = <span class="number">1</span>; &#125;</span><br><span class="line"><span class="keyword">message </span><span class="title class_">SayHelloResp</span> &#123; <span class="type">string</span> message = <span class="number">1</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">Greeter</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">rpc</span> SayHello(SayHelloReq) <span class="keyword">returns</span>(SayHelloResp)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过protobuf文件定义接口逻辑，生成代码时会以此为依据生成 Handler
+接口、消息类型、client stub 和 server 注册逻辑</p>
+<h3 id="生成代码">生成代码</h3>
+<p>通过goctl生成代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">goctl rpc protoc greeter.proto --go_out=. --go-grpc_out=. --zrpc_out=.</span><br></pre></td></tr></table></figure>
+<p>目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">greeter/</span><br><span class="line">├── etc/greeter.yaml</span><br><span class="line">├── internal/</span><br><span class="line">│   ├── config/config.go</span><br><span class="line">│   ├── logic/sayhellologic.go</span><br><span class="line">│   ├── server/greeterserver.go</span><br><span class="line">│   └── svc/servicecontext.go</span><br><span class="line">├── greeter/        # protobuf 生成文件</span><br><span class="line">└── greeter.go</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>greeter/</code>：存放 <code>*.pb.go</code> 和
+<code>*_grpc.pb.go</code>，这是由 protoc 生成的纯 gRPC 代码，不渗透任何
+go-zero 关联</li>
+<li><code>internal/config</code>：定义从 yaml 读取的配置结构体。例如
+<code>Name</code>、<code>ListenOn</code>、<code>Etcd</code></li>
+<li><code>internal/svc</code>：保存 <code>ServiceContext</code>
+结构体，相当于一个“依赖容器”，把一个服务需要用到的数据库、缓存等资源组装好。</li>
+<li><code>internal/logic</code>：<strong>业务代码唯一需要写的地方</strong>。包含每个
+RPC 方法的逻辑</li>
+<li><code>internal/server</code>：由 goctl 生成，负责将 gRPC 请求转交给
+logic 层处理，本质是适配器。</li>
+<li><code>greeter.go</code>：启动入口，会组装整个服务并启动监听</li>
+</ul>
+<h3 id="实现业务逻辑">实现业务逻辑</h3>
+<p>下面是一个logic文件逻辑实现示例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *SayHelloLogic)</span></span> SayHello(in *greeter.SayHelloReq) (*greeter.SayHelloResp, <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;greeter.SayHelloResp&#123;Message: <span class="string">&quot;Hello &quot;</span> + in.Name&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需要关注逻辑层并返回resp即可，不需要关注server层</p>
+<h3 id="配置文件-1">配置文件</h3>
+<p>配置文件处于<code>etc/*.yaml</code></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Name:</span> <span class="string">greeter.rpc</span></span><br><span class="line"><span class="attr">ListenOn:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">:8080</span></span><br><span class="line"><span class="attr">Etcd:</span></span><br><span class="line">  <span class="attr">Hosts:</span> [<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:2379</span>]</span><br><span class="line">  <span class="attr">Key:</span> <span class="string">greeter.rpc</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Name</code>指服务名，客户端在etcd中寻找key时使用的是这里的名字</li>
+<li><code>ListenOn</code>指监听地址</li>
+<li><code>Etcd</code>是服务注册，启动时 go-zero
+会将本服务地址（通常是本机外网 IP + <code>:8080</code>）注册到 etcd 的
+<code>/services/greeter.rpc</code>（或等价路径）下，这样etcd才能通过key找到该服务</li>
+</ul>
+<h3 id="服务启动流程">服务启动流程</h3>
+<p>启动入口<code>greeter.go</code>入口的流程如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> c config.Config</span><br><span class="line">    conf.MustLoad(<span class="string">&quot;etc/greeter.yaml&quot;</span>, &amp;c)   <span class="comment">// 加载配置</span></span><br><span class="line"></span><br><span class="line">    server := zrpc.MustNewServer(</span><br><span class="line">        c.RpcServerConf,                     <span class="comment">// Name, ListenOn, Etcd 等</span></span><br><span class="line">        <span class="function"><span class="keyword">func</span><span class="params">(server *grpc.Server)</span></span> &#123;</span><br><span class="line">            greeter.RegisterGreeterServer(server, server.NewGreeterServer(svcCtx))</span><br><span class="line">        &#125;,</span><br><span class="line">    )</span><br><span class="line">    server.Start()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>首先加载配置，构建serverContext</p></li>
+<li><p>注册<code>GreeterServer</code>的实现：<code>greeter.RegisterGreeterServer(server, server.NewGreeterServer(svcCtx))</code></p></li>
+<li><p>然后自动向etcd注册<code>greeter.rpc</code>服务，并定期续约，监听注册的地址提供请求</p></li>
+<li><p>只要客户端配置的etcd的key和服务端的etcd的key一致，客户端就可以从etcd发现该服务的多个实例，进而做负载均衡，动态更新连接池等</p></li>
+</ul>
+<h2 id="配置-1">配置</h2>
+<p>zRPC 服务配置主要用于控制 rpc
+的监听地址、服务注册发现、链路追踪、日志、中间件等</p>
+<h3 id="rpcserverconf">RpcServerConf</h3>
+<p>这里是服务总配置的入口</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> RpcServerConf <span class="keyword">struct</span> &#123;</span><br><span class="line">    service.ServiceConf      <span class="comment">// 通用服务配置</span></span><br><span class="line">    ListenOn      <span class="type">string</span></span><br><span class="line">    Etcd          discov.EtcdConf</span><br><span class="line">    Auth          <span class="type">bool</span></span><br><span class="line">    Redis         redis.RedisKeyConf</span><br><span class="line">    StrictControl <span class="type">bool</span></span><br><span class="line">    Timeout       <span class="type">int64</span>   <span class="comment">// default=2000</span></span><br><span class="line">    CpuThreshold  <span class="type">int64</span>   <span class="comment">// default=900, range=[0:1000]</span></span><br><span class="line">    Health        <span class="type">bool</span>    <span class="comment">// default=true</span></span><br><span class="line">    Middlewares   ServerMiddlewaresConf</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>service.ServiceConf</code>是通用配置，决定了服务全局行为</li>
+<li><code>ListenOn</code>是监听地址，若只写端口号表示监听所有网卡</li>
+<li><code>etcd</code>是服务注册与发现配置，不需要向etcd注册时可以为空，此时客户端通过直连地址访问服务</li>
+<li><code>auth</code>表示开启rpc调用认证，客户端必须要在gRPC的metadata中携带token，服务端才会接受请求</li>
+<li><code>Redis</code>保存了合法token的映射，服务端会去Redis校验</li>
+<li><code>StrictControl</code>指定校验失败时的策略，true表示失败即拒绝，false记录waring但不拒绝，适合调试场景</li>
+<li><code>Timeout</code>指服务端处理单个请求的超时时间</li>
+<li><code>CpuThreshold</code>是自适应降载阈值，默认900，表示当CPU利用率达到90%时开始拒绝部分服务</li>
+<li><code>Health</code>表示是否注册gRPC健康检查服务，默认开启，这样k8s或gRPC
+health
+client可以探测服务存活状态：<code>grpc_health_v1.NewHealthClient(conn).Check(...)</code></li>
+<li><code>Middlewares</code>控制服务器内置中间件开关，生产环境保持默认即可</li>
+</ul>
+<h3 id="etcdconf-1">EtcdConf</h3>
+<p>这里是etcd的详细配置</p>
+<p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> EtcdConf <span class="keyword">struct</span> &#123;</span><br><span class="line">    Hosts              []<span class="type">string</span></span><br><span class="line">    Key                <span class="type">string</span></span><br><span class="line">    ID                 <span class="type">int64</span></span><br><span class="line">    User               <span class="type">string</span></span><br><span class="line">    Pass               <span class="type">string</span></span><br><span class="line">    CertFile           <span class="type">string</span></span><br><span class="line">    CertKeyFile        <span class="type">string</span></span><br><span class="line">    CACertFile         <span class="type">string</span></span><br><span class="line">    InsecureSkipVerify <span class="type">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>Hosts</code>：etcd 集群节点地址</li>
+<li><code>Key</code>：服务唯一标识，建议与服务 Name 保持一致（如
+<code>greeter.rpc</code>），客户端也使用这个 Key 去 etcd 中寻找服务</li>
+<li><code>ID</code>：可选的实例 ID，如果不填，go-zero 会使用本机 IP +
+端口自动生成唯一 ID，用于多实例注册时区分</li>
+<li>其余字段：当 etcd 开启 TLS/ACL 时需要提供</li>
+<li><strong>注意：gozero的etcd注册路径一般是<code>/services/&#123;Key&#125;/&#123;ID&#125;</code>
+的形式，key相同但id不同会被视为同一服务的不同副本</strong></li>
+</ul>
+<h3 id="rediskeyconf">RedisKeyConf</h3>
+<p>用于认证存储，<code>RedisKeyConf</code>是当你需要使用 redis 来管理
+rpc 认证时需要配置的参数</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> (</span><br><span class="line">    <span class="comment">// A RedisConf is a redis config.</span></span><br><span class="line">    RedisConf <span class="keyword">struct</span> &#123;</span><br><span class="line">        Host <span class="type">string</span></span><br><span class="line">        Type <span class="type">string</span> <span class="string">`json:&quot;,default=node,options=node|cluster&quot;`</span></span><br><span class="line">        Pass <span class="type">string</span> <span class="string">`json:&quot;,optional&quot;`</span></span><br><span class="line">        Tls  <span class="type">bool</span>   <span class="string">`json:&quot;,optional&quot;`</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// A RedisKeyConf is a redis config with key.</span></span><br><span class="line">    RedisKeyConf <span class="keyword">struct</span> &#123;</span><br><span class="line">        RedisConf</span><br><span class="line">        Key <span class="type">string</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Key</code> 是存储 token 的 redis key 前缀，例如
+<code>rpcAuth:</code></li>
+<li>服务端会根据客户端传来的 token，去 redis 的
+<code>$&#123;Key&#125;$&#123;token&#125;</code> 中查找是否存在且未过期</li>
+</ul>
+<h3 id="servermiddlewaresconf-1">ServerMiddlewaresConf</h3>
+<p>中间件配置，控制常用中间件的开启和关闭</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ServerMiddlewaresConf <span class="keyword">struct</span> &#123;</span><br><span class="line">    Trace      <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Recover    <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Stat       <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Prometheus <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Breaker    <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="示例">示例</h2>
+<p>以下是创建一个gRPC服务端的示例</p>
+<h3 id="初始化">初始化</h3>
+<p>首先创建目录并初始化<code>go module</code>，并生成一个proto文件，然后根据proto生成gRPC服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> demo &amp;&amp; <span class="built_in">cd</span> demo</span><br><span class="line">$ go mod init demo</span><br><span class="line"></span><br><span class="line">$ goctl rpc -o greet.proto</span><br><span class="line"></span><br><span class="line">$ goctl rpc protoc greet.proto --go_out=.  --go-grpc_out=.  --zrpc_out=.</span><br></pre></td></tr></table></figure>
+<h3 id="连接模式">连接模式</h3>
+<p>有服务发现和直连模式两种连接模式，通过调整<code>etc/</code>文件夹下的yaml文件即可</p>
+<p>etcd服务注册使用etcd作为注册中心，只需要在文件下添加etcd的配置即可，最简配置如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Etcd:</span></span><br><span class="line">  <span class="attr">Hosts:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:2379</span></span><br><span class="line">  <span class="attr">Key:</span> <span class="string">greet.rpc</span></span><br></pre></td></tr></table></figure>
+<p>这样，服务启动后，会自动把ip注册到注册中心，其他服务如果使用gozero的zrpc客户端，只需要设置相同的etcd
+key，就可以自动负载均衡到这台服务</p>
+<p>使用<code>etcdctl get --prefix greet.rpc</code>查看注册结果</p>
+<p>使用<code>etcdctl get --prefix</code>获取所有可用ip和节点</p>
+<blockquote>
+<p>由于 etcd 注册的 key 都是 greet.rpc，从业务表现层来看，是将一个 key
+注册到了 etcd，实则 go-zero 底层是将该 key 拼上了一个 etcd 的租户 id
+来存储到 etcd 的，类似于：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">key = /services/greet.rpc/&#123;租户ID&#125;</span><br><span class="line">value = &quot;192.168.72.53:8080&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果多个实例都注册同一个 <code>greet.rpc</code>，直接使用固定 key
+会导致互相覆盖</li>
+<li>加入租户
+ID（实际上是实例唯一标识）后，每个实例都能独立注册，且服务发现方可以通过
+<code>get --prefix greet.rpc</code> 一次取出所有实例</li>
+</ul>
+<p>这也是gozero客户端可以实现多实例负载均衡的基础</p>
+</blockquote>
+<p>若使用直连模式，去除etcd配置即可</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Name:</span> <span class="string">greet.rpc</span></span><br><span class="line"><span class="attr">ListenOn:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">:8080</span></span><br></pre></td></tr></table></figure>
+<h3 id="stub实现">stub实现</h3>
+<p>通过goctl生成的代码就不用stub方法了，goctl会全部实现</p>
+<p>代码存在于<code>/internal/server/greetserver.go</code>下，用于实现
+gRPC 框架定义的服务接口<code>greet.GreetServer</code>，并把请求转交给
+<code>internal/logic</code> 层的业务代码。</p>
+<p><strong>结构体定义：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> GreetServer <span class="keyword">struct</span> &#123;</span><br><span class="line">    svcCtx *svc.ServiceContext</span><br><span class="line">    greet.UnimplementedGreetServer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>svcCtx</code>保存了服务上下文，包括配置、数据库连接、redis等共享依赖，它是
+go-zero 依赖注入的核心：所有 logic 方法都通过它访问全局资源</li>
+<li><code>greet.UnimplementedGreetServer</code>是官方gRPC生成器在pb文件中定义的，即使未来proto新增了rpc方法但你的代码没有实现，也不会panic而是返回未实现，这是一种<strong>向前兼容</strong></li>
+</ul>
+<p><strong>构造函数：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewGreetServer</span><span class="params">(svcCtx *svc.ServiceContext)</span></span> *GreetServer &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;GreetServer&#123;</span><br><span class="line">        svcCtx: svcCtx,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将 <code>ServiceContext</code> 注入到服务端对象中，之后每个 RPC
+方法都可以使用这个上下文</p>
+<p><strong>核心方法：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *GreetServer)</span></span> Ping(ctx context.Context, in *greet.Request) (*greet.Response, <span class="type">error</span>) &#123;</span><br><span class="line">    l := logic.NewPingLogic(ctx, s.svcCtx)</span><br><span class="line">    <span class="keyword">return</span> l.Ping(in)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设是一个Ping方法，gozero的处理流程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gRPC 请求</span><br><span class="line">   ↓</span><br><span class="line">GreetServer.Ping()          // internal/server  （模板方法）</span><br><span class="line">   ↓</span><br><span class="line">logic.NewPingLogic()        // 创建业务逻辑对象</span><br><span class="line">   ↓</span><br><span class="line">l.Ping(in)                  // internal/logic 中你真正填写的实现</span><br></pre></td></tr></table></figure>
+<ul>
+<li>server 层：只做“路由转发”，代码千篇一律，交给 goctl 生成</li>
+<li>logic 层：包含全部业务规则，由开发者编写</li>
+<li>当 <code>.proto</code> 接口变更，goctl 会<strong>自动更新 server
+层并生成新的 logic 占位代码</strong>，你只需在新占位方法中实现业务</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> logic</span><br><span class="line"><span class="keyword">type</span> PingLogic <span class="keyword">struct</span> &#123;</span><br><span class="line">    ctx    context.Context</span><br><span class="line">    svcCtx *svc.ServiceContext</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPingLogic</span><span class="params">(ctx context.Context, svcCtx *svc.ServiceContext)</span></span> *PingLogic &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;PingLogic&#123;</span><br><span class="line">        ctx:    ctx,</span><br><span class="line">        svcCtx: svcCtx,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *PingLogic)</span></span> Ping(in *greet.Request) (*greet.Response, <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="comment">// 你的业务代码写在这里</span></span><br><span class="line">    <span class="keyword">return</span> &amp;greet.Response&#123;Pong: <span class="string">&quot;pong&quot;</span>&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于逻辑层：</p>
+<ul>
+<li><code>NewPingLogic</code> 接收 context 和 svcCtx</li>
+<li><code>Ping()</code> 方法直接从 <code>GreetServer.Ping()</code>
+调过来，<code>in</code> 就是解码后的请求参数，返回即为响应体</li>
+</ul>
+<p>对于客户端：</p>
+<p>目录中的<code>greetclient/greet.go</code>是为调用方生成的客户端代码，为了方便业务方生成的代码，当你不是服务端实现者时，只需要<code>greetclient.NewGreetClient(...)</code>
+就能请求这个 RPC 服务</p>
+<h3 id="编写业务代码">编写业务代码</h3>
+<p>通过goctl生成代码后，只需要在logic下填入我们的业务代码即可</p>
+<h3 id="开启grpc调试开关">开启gRPC调试开关</h3>
+<p>gRPC提供了调试功能，以便于通过grpcurl等工具调试，建议在<strong>开发环境和测试环境</strong>开启，<strong>预生产环境和正式环境</strong>建议关闭的，相关方法为<code>reflection.Register(grpcServer)</code></p>
+<p><strong>为什么需要：</strong></p>
+<p>gRPC
+默认使用protobuf二进制协议，请求和响应的结构对外部工具不可见。普通 HTTP
+接口可以用 curl 直接调试，但 gRPC 很难，<code>grpcurl</code>
+这类工具就是为了解决这个问题：它向服务端发送 <strong>server
+reflection</strong>
+请求，服务端返回自己支持的服务列表、方法、消息定义。于是 grpcurl 就能像
+RESTful 工具一样，动态构造请求和解析响应，<strong>不需要预先拿到
+<code>.proto</code> 文件</strong></p>
+<p>只需要在程序入口文件中添加如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> c.Mode == service.DevMode || c.Mode == service.TestMode &#123;</span><br><span class="line">    reflection.Register(grpcServer)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>且在配置文件内声明模式为dev或test：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Mode:</span> <span class="string">dev</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Mode是基础配置<code>service.ServiceConf</code>中的一个字段，dev是开发环境，test是测试环境，pro/prod是生产环境</p>
+</blockquote>
+<p><strong>grpcurl调试：</strong></p>
+<p>假如你的服务运行在 <code>127.0.0.1:8080</code>，并且
+<code>Mode: dev</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 列举所有 service</span></span><br><span class="line">grpcurl -plaintext 127.0.0.1:8080 list</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看某个 service 下的所有方法</span></span><br><span class="line">grpcurl -plaintext 127.0.0.1:8080 list greet.Greeter</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取请求消息结构描述</span></span><br><span class="line">grpcurl -plaintext 127.0.0.1:8080 describe greet.SayHelloReq</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用 Ping 方法</span></span><br><span class="line">grpcurl -plaintext -d <span class="string">&#x27;&#123;&quot;name&quot;:&quot;go-zero&quot;&#125;&#x27;</span> \</span><br><span class="line">  127.0.0.1:8080 greet.Greeter/SayHello</span><br></pre></td></tr></table></figure>
+<p>若没有开启reflection，会报错<code>Error: server does not support the reflection API</code>，此时只能通过<code>-proto</code>参数显式执行protobuf文件来调试</p>
+<h3 id="中间件的使用">中间件的使用</h3>
+<p>gozero中有大量拦截器，对应grpc两种调用模式：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">拦截器类型</th>
+<th style="text-align: left;">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">UnaryXXXInterceptor</td>
+<td style="text-align: left;">拦截普通一元 RPC
+请求（一个请求一个响应）</td>
+</tr>
+<tr>
+<td style="text-align: left;">StreamXXXInterceptor</td>
+<td style="text-align: left;">拦截流式 RPC
+请求（客户端/服务端双向流）</td>
+</tr>
+</tbody>
+</table>
+<p><code>RpcServerConf.Middlewares</code>中可以通过配置控制五个内置中间件：</p>
+<ul>
+<li><code>Trace</code>：链路追踪</li>
+<li><code>Recover</code>：捕获 panic</li>
+<li><code>Stat</code>：服务调用统计</li>
+<li><code>Prometheus</code>：指标暴露</li>
+<li><code>Breaker</code>：熔断</li>
+</ul>
+<p>其中这五种可以通过配置开启关闭，默认开启</p>
+<p>实际项目中，一般将自定义拦截器定义在独立文件<code>/internal/middleware/exampleinterceptor.go</code>，在main入口中引入，保证文件整洁</p>
+<p><strong>注册自定义中间件：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">s := zrpc.MustNewServer(c.RpcServerConf, <span class="function"><span class="keyword">func</span><span class="params">(grpcServer *grpc.Server)</span></span> &#123;</span><br><span class="line">    greet.RegisterGreetServer(grpcServer, server.NewGreetServer(ctx))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> c.Mode == service.DevMode || c.Mode == service.TestMode &#123;</span><br><span class="line">        reflection.Register(grpcServer)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">s.AddUnaryInterceptors(exampleUnaryInterceptor)</span><br><span class="line">s.AddStreamInterceptors(exampleStreamInterceptor)</span><br></pre></td></tr></table></figure>
+<p>顺序如下：</p>
+<ol type="1">
+<li><code>MustNewServer</code> 创建服务对象</li>
+<li>在回调中注册业务服务和调试反射</li>
+<li><strong>在服务启动前</strong>，通过
+<code>AddUnaryInterceptors</code> 和 <code>AddStreamInterceptors</code>
+注册自定义中间件</li>
+<li><code>Start()</code> 后生效</li>
+</ol>
+<p><strong>定义自定义Unary中间件：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">exampleUnaryInterceptor</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>&#123;&#125;, err <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> fill your logic here</span></span><br><span class="line">    <span class="keyword">return</span> handler(ctx, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>ctx</code>：gRPC请求的上下文，可以读取metadata</li>
+<li><code>req</code>：已解码的请求消息对象</li>
+<li><code>info</code>：包含当前请求对应的服务方法信息info.FullMethod</li>
+<li><code>handler</code>：业务处理函数，调用handler后会继续向后执行直到进入logic</li>
+</ul>
+<p><strong>定义自定义Stream中间件：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">exampleStreamInterceptor</span><span class="params">(srv <span class="keyword">interface</span>&#123;&#125;, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> fill your logic here</span></span><br><span class="line">    <span class="keyword">return</span> handler(srv, ss)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>srv</code>：当前服务实例，通常用 <code>server</code> 中的
+handler 对象</li>
+<li><code>ss</code>：服务端流对象，用于收发消息。</li>
+<li><code>info</code>：方法信息</li>
+<li><code>handler</code>：流式 RPC
+的实际处理函数，需要你手动调用，期间可在外层包裹流程</li>
+</ul>
+<p>例子：打印请求日志</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loggingInterceptor</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (<span class="keyword">interface</span>&#123;&#125;, <span class="type">error</span>) &#123;</span><br><span class="line">    log.Printf(<span class="string">&quot;收到请求: %s, 参数: %v&quot;</span>, info.FullMethod, req)</span><br><span class="line">    resp, err := handler(ctx, req)</span><br><span class="line">    log.Printf(<span class="string">&quot;请求完成: %s, 响应: %v, error: %v&quot;</span>, info.FullMethod, resp, err)</span><br><span class="line">    <span class="keyword">return</span> resp, err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="调用顺序">调用顺序</h3>
+<p>注意，若有多个自定义拦截器，执行模式按照洋葱模型栈式调用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">请求进入</span><br><span class="line">  ↓</span><br><span class="line">自定义拦截器1（前置逻辑）</span><br><span class="line">  ↓</span><br><span class="line">自定义拦截器2（前置逻辑）</span><br><span class="line">  ↓</span><br><span class="line">内置拦截器链（Trace、Recover等）</span><br><span class="line">  ↓</span><br><span class="line">业务 Handler(handler)</span><br><span class="line">  ↓</span><br><span class="line">逐层返回，执行后置逻辑</span><br></pre></td></tr></table></figure>
+<h3 id="传递metadata">传递metadata</h3>
+<p>gozero中服务端的自定义拦截器会默认拿到ctx，所以读取metadata非常方便</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">exampleUnaryInterceptor</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>&#123;&#125;, err <span class="type">error</span>) &#123;</span><br><span class="line">    md, ok := metadata.FromIncomingContext(ctx)</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, status.Error(codes.Unauthenticated, <span class="string">&quot;missing metadata&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 读取客户端传过来的 token</span></span><br><span class="line">    tokenList := md[<span class="string">&quot;token&quot;</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(tokenList) == <span class="number">0</span> || tokenList[<span class="number">0</span>] != <span class="string">&quot;secret-token&quot;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, status.Error(codes.Unauthenticated, <span class="string">&quot;invalid token&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> handler(ctx, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后可以通过<code>s.AddUnaryInterceptors(exampleUnaryInterceptor)</code>
+注册到rpc服务端</p>
+<p>如果是在客户端调用时携带metadata，只需要在传入的ctx上附加metadata即可</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 方式1：推荐，追加</span></span><br><span class="line">ctx := metadata.AppendToOutgoingContext(context.Background(),</span><br><span class="line">    <span class="string">&quot;token&quot;</span>, <span class="string">&quot;secret-token&quot;</span>,</span><br><span class="line">    <span class="string">&quot;x-trace-id&quot;</span>, <span class="string">&quot;abc123&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">resp, err := client.Ping(ctx, &amp;greet.Request&#123;Name: <span class="string">&quot;Alice&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>在logic层发送header/trailer可以直接使用grpc的方法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> PingLogic <span class="keyword">struct</span> &#123;</span><br><span class="line">    ctx    context.Context</span><br><span class="line">    svcCtx *svc.ServiceContext</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *PingLogic)</span></span> Ping(in *greet.Request) (*greet.Response, <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="comment">// 这种方式在服务端 handler 中可用</span></span><br><span class="line">    grpc.SetHeader(l.ctx, metadata.Pairs(<span class="string">&quot;x-custom-header&quot;</span>, <span class="string">&quot;hello&quot;</span>))</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="拦截器-1">拦截器</h1>
+<p>拦截器是 gRPC 中实现跨请求逻辑的关键机制，等价于 HTTP 中间件。每次
+RPC 调用前后都会执行拦截器，可用于鉴权、记录指标或修改请求上下文</p>
+<h2 id="服务端-1">服务端</h2>
+<h3 id="一元拦截器">一元拦截器</h3>
+<p>以登录认证为例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">authInterceptor</span><span class="params">(ctx context.Context, req any, info *grpc.UnaryServerInfo,</span></span></span><br><span class="line"><span class="params"><span class="function">    handler grpc.UnaryHandler)</span></span> (any, <span class="type">error</span>) &#123;</span><br><span class="line"></span><br><span class="line">    md, _ := metadata.FromIncomingContext(ctx)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(md[<span class="string">&quot;token&quot;</span>]) == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, status.Error(codes.Unauthenticated, <span class="string">&quot;缺少 token&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> handler(ctx, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>拦截器从rpc的ctx中取出metadata，检查是否有token字段，若没有则返回认证错误，若有则继续调用handler继续执行业务代码：</p>
+<ul>
+<li>ctx：上下文，包括传来的metadata等</li>
+<li>req：解码后的请求消息对象</li>
+<li>info：当前调用信息</li>
+<li>handler：拦截器上的下一环，最终指向业务handler</li>
+</ul>
+<p>注意这里any是golang新版本中的<code>interface&#123;&#125;</code>别名</p>
+<h3 id="流式拦截器">流式拦截器</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loggingStreamInterceptor</span><span class="params">(srv any, ss grpc.ServerStream,</span></span></span><br><span class="line"><span class="params"><span class="function">    info *grpc.StreamServerInfo, handler grpc.StreamHandler)</span></span> <span class="type">error</span> &#123;</span><br><span class="line"></span><br><span class="line">    logx.Infof(<span class="string">&quot;流式调用开始: %s&quot;</span>, info.FullMethod)</span><br><span class="line">    err := handler(srv, ss)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        logx.Errorf(<span class="string">&quot;流式调用错误: %s — %v&quot;</span>, info.FullMethod, err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>流式 handler 不像一元 handler 那样直接调
+<code>handler(ctx, req)</code>，而是
+<code>handler(srv, ss)</code>。业务代码通过 <code>ss.Recv()</code> 和
+<code>ss.Send()</code> 来处理流中的多个消息</p>
+<ul>
+<li>srv：服务端实现对象</li>
+<li>ss：<code>grpc.ServerStream</code>接口，对应流式调用的服务端流对象</li>
+<li>info：当前调用信息，包含流式RPC的方法流，是否是客户端流等信息</li>
+<li>handler：最终执行流处理的函数</li>
+</ul>
+<h3 id="注册方式">注册方式</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">server := zrpc.MustNewServer(c.RpcServerConf, <span class="function"><span class="keyword">func</span><span class="params">(grpcServer *grpc.Server)</span></span> &#123;</span><br><span class="line">    greeter.RegisterGreeterServer(grpcServer, srv)</span><br><span class="line">&#125;)</span><br><span class="line">server.AddUnaryInterceptors(authInterceptor)</span><br><span class="line">server.AddStreamInterceptors(loggingStreamInterceptor)</span><br><span class="line">server.Start()</span><br></pre></td></tr></table></figure>
+<p>也可以放到同一个<code>AddUnaryInterceptors</code>中</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">server.AddUnaryInterceptors(</span><br><span class="line">    authInterceptor,</span><br><span class="line">    loggingInterceptor,</span><br><span class="line">    recoverInterceptor,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>执行顺序依据洋葱模型</p>
+<h2 id="客户端-1">客户端</h2>
+<p>有时候需要给所有发出去的RPC请求附加一些公共信息：比如Token认证、请求ID、业务租户ID或客户端来源/版本，客户端拦截器可以让统一在RPC调用前拦截并修改context/metadata，然后继续发送请求</p>
+<h3 id="一元拦截器-1">一元拦截器</h3>
+<p>例如：在每次对外RPC请求中注入Token或传递请求头</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">zrpc.WithUnaryClientInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, method <span class="type">string</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    req, reply any, cc *grpc.ClientConn,</span></span></span><br><span class="line"><span class="params"><span class="function">    invoker grpc.UnaryInvoker, opts ...grpc.CallOption)</span></span> <span class="type">error</span> &#123;</span><br><span class="line"></span><br><span class="line">    ctx = metadata.AppendToOutgoingContext(ctx, <span class="string">&quot;token&quot;</span>, getToken())</span><br><span class="line">    <span class="keyword">return</span> invoker(ctx, method, req, reply, cc, opts...)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ctx：当前调用上下文</li>
+<li>method：将要调用的gRPC方法名</li>
+<li>req：请求信息</li>
+<li>reply：响应信息</li>
+<li>cc：gRPC连接对象</li>
+<li>invoker：下一环节的调用函数，调用才能发送请求</li>
+<li>opts：调用选项</li>
+</ul>
+<p>流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">发起 RPC</span><br><span class="line">   ↓</span><br><span class="line">进入 client interceptor</span><br><span class="line">   ↓</span><br><span class="line">给 ctx 追加 metadata token</span><br><span class="line">   ↓</span><br><span class="line">调用 invoker(ctx, ...) → 把修改后的 context 发给远端服务</span><br><span class="line">   ↓</span><br><span class="line">返回响应或错误</span><br></pre></td></tr></table></figure>
+<p>可以理解为：<code>invoker</code> 就是后续真正的 gRPC
+调用链路，你只是“劫持”了它的 <code>ctx</code> 参数，替换成带 metadata
+的<code>ctx</code></p>
+<h3 id="流式拦截器-1">流式拦截器</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">zrpc.WithStreamClientInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, desc *grpc.StreamDesc,</span></span></span><br><span class="line"><span class="params"><span class="function">    cc *grpc.ClientConn, method <span class="type">string</span>, streamer grpc.Streamer,</span></span></span><br><span class="line"><span class="params"><span class="function">    opts ...grpc.CallOption)</span></span> (grpc.ClientStream, <span class="type">error</span>) &#123;</span><br><span class="line"></span><br><span class="line">    ctx = metadata.AppendToOutgoingContext(ctx, <span class="string">&quot;request-id&quot;</span>, uuid.New().String())</span><br><span class="line">    <span class="keyword">return</span> streamer(ctx, desc, cc, method, opts...)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ctx：调用上下文</li>
+<li>desc：流描述，描述是客户端，服务端还是双向流</li>
+<li>cc：连接对象</li>
+<li>method：方法名</li>
+<li>streamer：真正的流创建函数，返回一个<code>grpc.ClientStream</code></li>
+<li>opts：调用选项</li>
+</ul>
+<p>一元拦截器是一次请求一次性处理，invoker完成整个调用，而流式流通过streamer创建流，后续还会通过
+<code>stream.Send</code>、<code>stream.Recv</code>
+等进行多次消息交互，因此：</p>
+<ul>
+<li>在拦截器中，你会修改ctx，然后传给streamer，返回ClientStream</li>
+<li>后续所有sendmsg，recvmsg都是用这个流，metadata已经在这个流理的context中固定了</li>
+</ul>
+<p>因此流式拦截器适合在流建立前统一处理</p>
+<h3 id="注册方式-1">注册方式</h3>
+<p><code>NewClient</code>支持选项式注入：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">conn, err := zrpc.NewClient(c.GreeterRpc,</span><br><span class="line">    zrpc.WithUnaryClientInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(...)</span></span> <span class="type">error</span> &#123; ... &#125;),</span><br><span class="line">    zrpc.WithStreamClientInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(...)</span></span> (grpc.ClientStream, <span class="type">error</span>) &#123; ... &#125;),</span><br><span class="line">)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">&#125;</span><br><span class="line">client := greeter.NewGreeterClient(conn)</span><br></pre></td></tr></table></figure>
+<p><code>MustNewClient</code>需要先获取底层连接</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">client, err := zrpc.MustNewClient(c.GreeterRpc, zrpc.WithUnaryClientInterceptor(...))</span><br><span class="line">conn := client.Conn()</span><br><span class="line">greeterClient := greeter.NewGreeterClient(conn)</span><br></pre></td></tr></table></figure>
+<h2 id="实例">实例</h2>
+<h3 id="token注入">Token注入</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">tokenClientInterceptor</span><span class="params">(ctx context.Context, method <span class="type">string</span>, req, reply any,</span></span></span><br><span class="line"><span class="params"><span class="function">    cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption)</span></span> <span class="type">error</span> &#123;</span><br><span class="line"></span><br><span class="line">    ctx = metadata.AppendToOutgoingContext(ctx, <span class="string">&quot;token&quot;</span>, <span class="string">&quot;my-secret-token&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> invoker(ctx, method, req, reply, cc, opts...)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">conn, err := zrpc.NewClient(c.GreeterRpc,</span><br><span class="line">    zrpc.WithUnaryClientInterceptor(tokenClientInterceptor),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="跨服务透传元数据拦截器">跨服务透传元数据拦截器</h3>
+<p>用于将上游metadata传给下游</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">forwardMetadataInterceptor</span><span class="params">(ctx context.Context, req any,</span></span></span><br><span class="line"><span class="params"><span class="function">    info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (any, <span class="type">error</span>) &#123;</span><br><span class="line"></span><br><span class="line">    incomingMd, _ := metadata.FromIncomingContext(ctx)</span><br><span class="line"></span><br><span class="line">    outgoingCtx := metadata.NewOutgoingContext(ctx, metadata.Join(</span><br><span class="line">        incomingMd,</span><br><span class="line">        metadata.Pairs(<span class="string">&quot;x-request-id&quot;</span>, incomingMd.Get(<span class="string">&quot;x-request-id&quot;</span>)...),</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> handler(outgoingCtx, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先从当前RPC的ctx中获得客户端传来的metadata</li>
+<li>使用<code>metadata.Join</code>合并传来的metadata和需要添加的内容</li>
+<li>使用<code>NewOutgoingContext</code>把合并后的metadata绑定到context上</li>
+<li>将该ctx传入下游的handler，如果下游服务从这个ctx发起RPC服务，metadata就会被带过去</li>
+</ul>
+<p>注意，这里Incoming的metadata是别人传给我的，而Outgoing的metadata是我传给别人的</p>
+<h3 id="日志拦截器">日志拦截器</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loggingInterceptor</span><span class="params">(ctx context.Context, req any, info *grpc.UnaryServerInfo,</span></span></span><br><span class="line"><span class="params"><span class="function">    handler grpc.UnaryHandler)</span></span> (any, <span class="type">error</span>) &#123;</span><br><span class="line"></span><br><span class="line">    start := time.Now()</span><br><span class="line"></span><br><span class="line">    resp, err := handler(ctx, req)</span><br><span class="line"></span><br><span class="line">    logx.WithContext(ctx).Infow(<span class="string">&quot;rpc 调用&quot;</span>,</span><br><span class="line">        logx.Field(<span class="string">&quot;method&quot;</span>, info.FullMethod),</span><br><span class="line">        logx.Field(<span class="string">&quot;duration&quot;</span>, time.Since(start).String()),</span><br><span class="line">        logx.Field(<span class="string">&quot;error&quot;</span>, err),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> resp, err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调用前记录start</li>
+<li>执行业务handler</li>
+<li>调用后记录方法名，耗时和错误信息</li>
+<li>返回值透传，不影响业务</li>
+</ul>
+<p>WithContext是go-zero的增强日志专用写法，可以将当前context的链路信息自动注入日志字段，方便采集到分布式链路系统，<code>logx.Field</code>可以创建键值结构</p>
+<h2 id="内置拦截器">内置拦截器</h2>
+<p>go-zero 在每个 <code>zrpc.Server</code> 和 <code>zrpc.Client</code>
+上自动注册以下拦截器，无需额外配置：</p>
+<table>
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr>
+<th>拦截器</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RecoverInterceptor</code></td>
+<td>将 panic 转换为 gRPC <code>Internal</code> 错误</td>
+</tr>
+<tr>
+<td><code>PrometheusInterceptor</code></td>
+<td>记录 RPC 耗时与错误率指标</td>
+</tr>
+<tr>
+<td><code>TracingInterceptor</code></td>
+<td>创建 OpenTelemetry span，传播 trace context</td>
+</tr>
+<tr>
+<td><code>BreakerInterceptor</code></td>
+<td>错误率超阈值时打开熔断器</td>
+</tr>
+<tr>
+<td><code>SheddingInterceptor</code></td>
+<td>CPU 负载过高时主动降载</td>
+</tr>
+<tr>
+<td><code>TimeoutInterceptor</code></td>
+<td>根据服务端配置执行每次 RPC 的超时限制</td>
+</tr>
+</tbody>
+</table>
+</div>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Golang/" rel="tag">Golang</a>, <a class="tag-none-link" href="/tags/Gozero/" rel="tag">Gozero</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-09-06T09:12:29.337Z" itemprop="dateModified">最后编辑：2026-09-06</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【BudgetMatch】接入APP支付网关API" href="/项目开发记录/BudgetMatch/payment-feat-apidesign/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【Golang】golang常见八股" href="/Golang/Golang-interview/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rpcclientconf"><span class="toc-number">1.1.1.</span> <span class="toc-text">RpcClientConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etcdconf"><span class="toc-number">1.1.2.</span> <span class="toc-text">EtcdConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#servermiddlewaresconf"><span class="toc-number">1.1.3.</span> <span class="toc-text">ServerMiddlewaresConf</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">客户端实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%BF%9E%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">直连模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">服务发现模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#newclient%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.3.</span> <span class="toc-text">newClient的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E8%B5%B7%E8%B0%83%E7%94%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">发起调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.5.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-number">1.2.6.</span> <span class="toc-text">错误处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%86%94%E6%96%AD%E5%99%A8"><span class="toc-number">1.2.7.</span> <span class="toc-text">熔断器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">1.2.8.</span> <span class="toc-text">拦截器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.3.</span> <span class="toc-text">客户端连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E8%BF%9E"><span class="toc-number">1.3.1.</span> <span class="toc-text">直连</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etcd-%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">1.3.2.</span> <span class="toc-text">etcd 服务发现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%94%9F%E6%94%AF%E6%8C%81"><span class="toc-number">1.3.3.</span> <span class="toc-text">原生支持</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91"><span class="toc-number">2.1.</span> <span class="toc-text">开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89proto"><span class="toc-number">2.1.1.</span> <span class="toc-text">定义proto</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81"><span class="toc-number">2.1.2.</span> <span class="toc-text">生成代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="toc-number">2.1.3.</span> <span class="toc-text">实现业务逻辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-number">2.1.4.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.5.</span> <span class="toc-text">服务启动流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="toc-number">2.2.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rpcserverconf"><span class="toc-number">2.2.1.</span> <span class="toc-text">RpcServerConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etcdconf-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">EtcdConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rediskeyconf"><span class="toc-number">2.2.3.</span> <span class="toc-text">RedisKeyConf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#servermiddlewaresconf-1"><span class="toc-number">2.2.4.</span> <span class="toc-text">ServerMiddlewaresConf</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.3.</span> <span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.2.</span> <span class="toc-text">连接模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stub%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.3.</span> <span class="toc-text">stub实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81"><span class="toc-number">2.3.4.</span> <span class="toc-text">编写业务代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%90%AFgrpc%E8%B0%83%E8%AF%95%E5%BC%80%E5%85%B3"><span class="toc-number">2.3.5.</span> <span class="toc-text">开启gRPC调试开关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.3.6.</span> <span class="toc-text">中间件的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F"><span class="toc-number">2.3.7.</span> <span class="toc-text">调用顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E9%80%92metadata"><span class="toc-number">2.3.8.</span> <span class="toc-text">传递metadata</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8-1"><span class="toc-number">3.</span> <span class="toc-text">拦截器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF-1"><span class="toc-number">3.1.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.1.1.</span> <span class="toc-text">一元拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%BC%8F%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.1.2.</span> <span class="toc-text">流式拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E6%96%B9%E5%BC%8F"><span class="toc-number">3.1.3.</span> <span class="toc-text">注册方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-1"><span class="toc-number">3.2.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E6%8B%A6%E6%88%AA%E5%99%A8-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">一元拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%BC%8F%E6%8B%A6%E6%88%AA%E5%99%A8-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">流式拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E6%96%B9%E5%BC%8F-1"><span class="toc-number">3.2.3.</span> <span class="toc-text">注册方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">3.3.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#token%E6%B3%A8%E5%85%A5"><span class="toc-number">3.3.1.</span> <span class="toc-text">Token注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%A8%E6%9C%8D%E5%8A%A1%E9%80%8F%E4%BC%A0%E5%85%83%E6%95%B0%E6%8D%AE%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.3.2.</span> <span class="toc-text">跨服务透传元数据拦截器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.3.3.</span> <span class="toc-text">日志拦截器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-number">3.4.</span> <span class="toc-text">内置拦截器</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+
+<!-- 额外的追加注入项 -->
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
+</html>

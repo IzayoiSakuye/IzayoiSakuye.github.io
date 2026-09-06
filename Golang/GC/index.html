@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【Golang】GC垃圾回收机制 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Golang/GC/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Golang" />
+  
+  <meta name="description" content="Golang的垃圾回收机制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Golang】GC垃圾回收机制">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/GC/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="Golang的垃圾回收机制">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
+<meta property="article:published_time" content="2026-09-06T06:56:58.447Z">
+<meta property="article:modified_time" content="2026-09-06T09:12:29.332Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
+  
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【Golang】GC垃圾回收机制","description":"Golang的垃圾回收机制","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-09-06T06:56:58.447Z","dateModified":"2026-09-06T09:12:29.332Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Golang/GC/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+  }
+
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
+
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/GC/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【Golang】GC垃圾回收机制</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-09-06T06:56:58.447Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-09-06</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~1.73K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">标记清除法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">三色标记法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B-1"><span class="toc-number">2.1.</span> <span class="toc-text">流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0stw"><span class="toc-number">2.2.</span> <span class="toc-text">无STW</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%BA%E5%BC%B1%E4%B8%89%E8%89%B2%E4%B8%8D%E5%8F%98%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">强弱三色不变式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.</span> <span class="toc-text">屏障</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.1.</span> <span class="toc-text">插入屏障</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.2.</span> <span class="toc-text">删除屏障</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.3.</span> <span class="toc-text">混合写屏障</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF1"><span class="toc-number">3.3.1.</span> <span class="toc-text">场景1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF2"><span class="toc-number">3.3.2.</span> <span class="toc-text">场景2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF3"><span class="toc-number">3.3.3.</span> <span class="toc-text">场景3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF4"><span class="toc-number">3.3.4.</span> <span class="toc-text">场景4</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><blockquote>
+<p>参考视频：<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1wz4y1y7Kd">Golang中GC回收机制三色标记与混合写屏障</a></p>
+</blockquote>
+<h1 id="标记清除法">标记清除法</h1>
+<p>该方法是golang v1.3的垃圾回收机制</p>
+<h2 id="流程">流程</h2>
+<p>假设一个程序和对象的可达关系如下：</p>
+<img src="/Golang/GC/image-20260903193657952.png" class="" title="marksweep">
+<p>则具体回收机制如下：</p>
+<ul>
+<li>首先执行STW(Stop the World)</li>
+<li>遍历所有对象并将全部可达对象标记（图中为1 2 3 4 7）</li>
+<li>没有被标记的即为垃圾，会被回收</li>
+<li>结束STW</li>
+</ul>
+<h2 id="缺点">缺点</h2>
+<ul>
+<li><strong>STW</strong>会让程序暂停，程序出现卡顿</li>
+<li>标记时需要遍历整个heap</li>
+<li>清除数据会产生heap碎片</li>
+</ul>
+<p>早期有尝试过将STW和清除交换顺序，使STW窗口变小，但是用处不大</p>
+<h1 id="三色标记法">三色标记法</h1>
+<h2 id="流程-1">流程</h2>
+<p>三色标记法会统计三个集合：白色、灰色和黑色</p>
+<p>程序创建时，将所有节点标记为白色，放入白色集合</p>
+<img src="/Golang/GC/image-20260903195423708.png" class="" width="1">
+<p>将程序展开为根集合，以根集合中的节点为起点，遍历根集合（非递归），得到灰色节点，并移入灰色集合</p>
+<img src="/Golang/GC/image-20260903195433861.png" class="" width="2">
+<p>接下来遍历灰色集合，将可达对象从白色标记为灰色，遍历后的灰色标记为黑色，移入黑色集合</p>
+<img src="/Golang/GC/image-20260903195445712.png" class="" width="3">
+<p>重复上一步，直到灰色集合中没有任何对象，此时剩余的白色对象就是垃圾，收集所有白色对象</p>
+<img src="/Golang/GC/image-20260903195457423.png" class="" width="4">
+<h2 id="无stw">无STW</h2>
+<p>若没有STW：一开始对象2的指针指向对象3，在还没扫描到对象2的时候，已被标记为黑色的对象4创建了指向对象3的指针，与此同时对象2移除指向对象3的指针，此时对象3就挂在了已经扫描完成的黑色对象4下</p>
+<p>按照正常逻辑，对象2
+3标记为黑色，而对象3无法被遍历到，会被认为是垃圾，等待回收清除</p>
+<img src="/Golang/GC/image-20260903200212609.png" class="" width="1">
+<img src="/Golang/GC/image-20260903200221915.png" class="" width="2">
+<img src="/Golang/GC/image-20260903200301282.png" class="" width="3">
+<p>综上，在不STW的情况下，如果同时满足如下两个条件，就会出现对象丢失的现象：</p>
+<ul>
+<li>一个白色对象被黑色对象引用</li>
+<li>灰色对象和它之间的可达关系的白色对象遭到破坏</li>
+</ul>
+<h2 id="强弱三色不变式">强弱三色不变式</h2>
+<p>通过两种三色不变式来破坏上面的两种条件</p>
+<p>强三色不变式：强制性的不允许黑色对象引用白色对象</p>
+<p>弱三色不变式：白色对象存在其他灰色对象对他的引用，或者可达它的链路上游存在灰色对象时，黑色对象可以引用白色对象</p>
+<img src="/Golang/GC/image-20260903201909517.png" class="" title="不变式">
+<p>在三色标记中如果满足强/弱三色不变式之一，即可保证对象不丢失</p>
+<h1 id="屏障">屏障</h1>
+<p>屏障提供了一种额外的判断机制，不打扰正常程序运行</p>
+<h2 id="插入屏障">插入屏障</h2>
+<p>在A对象引用B对象时，B对象被标记为灰色（即将B挂在A下游时，B必须被标记为灰色），它满足强三色不变式</p>
+<img src="/Golang/GC/image-20260903203234124.png" class="" title="插入屏障">
+<p><strong>注意：插入屏障不在栈上执行</strong>，为了不拖累栈的效率</p>
+<img src="/Golang/GC/image-20260903203739369.png" class="" title="插入屏障">
+<p>为了防止漏扫，在回收白色之前，加STW重新扫描一次栈空间，进行一次三色标记</p>
+<img src="/Golang/GC/image-20260903205236946.png" class="" title="stw">
+<p>插入写屏障因为要加一次STW，所以会慢10-100ms</p>
+<h2 id="删除屏障">删除屏障</h2>
+<p>被删除的对象如果自身为灰色或者白色，则标记为灰色，它满足弱三色不等式</p>
+<img src="/Golang/GC/image-20260903205803640.png" class="" title="删除屏障">
+<p>假如这里对象1要删除对象5，对象5是白色的，则自身被标记为灰色</p>
+<img src="/Golang/GC/image-20260903210037391.png" class="" width="1">
+<img src="/Golang/GC/image-20260903210130971.png" class="" width="2">
+<p>它的不足之处在于回收精度低：一个对象即使被删除了最后一个指向它的指针也可以活过这一轮，在下一轮GC被清理掉</p>
+<h2 id="混合写屏障">混合写屏障</h2>
+<p>操作如下：</p>
+<ul>
+<li>GC开始时将栈上的对象全部扫描并标记为黑色</li>
+<li>GC期间，任何在栈上创建的新对象，均为黑色</li>
+<li>被删除、添加的对象标记为灰色</li>
+</ul>
+<p>它满足变形的弱三色表达式</p>
+<img src="/Golang/GC/image-20260903211401016.png" class="" title="混合写">
+<p><strong>注意·：为了保证效率，栈不启用屏障</strong></p>
+<p>GC开始时，默认为白色，优先扫描栈，把栈中的可达对象全部标记为黑色</p>
+<img src="/Golang/GC/image-20260903211707381.png" class="" width="1">
+<h3 id="场景1">场景1</h3>
+<p>对象被一个堆对象删除引用，成为栈对象的下游</p>
+<p>如：对象7添加到对象1的下游，对象4删除对象7的引用，此时对象4处于堆区，会触发写屏障，标记对象7为灰色</p>
+<img src="/Golang/GC/image-20260903212608485.png" class="" width="1">
+<img src="/Golang/GC/image-20260903212742245.png" class="" width="1">
+<h3 id="场景2">场景2</h3>
+<p>对象被一个栈对象删除引用，称为另一个栈对象的下游</p>
+<p>如：我们新建一个对象9在栈上，此时会被标记为黑色，对象9添加下游对象3，然后对象2删除对象3的引用关系</p>
+<img src="/Golang/GC/image-20260903213200217.png" class="" width="2">
+<img src="/Golang/GC/image-20260903213209558.png" class="" width="2">
+<p>若没有new对象9，直接删除2和3的关系，则会触发弱三色不变式，延迟一轮删除对象3</p>
+<h3 id="场景3">场景3</h3>
+<p>对象被一个堆对象删除引用，成为另一个堆对象的下游</p>
+<p>如：堆对象10已经被扫描为黑，它添加下游引用堆对象7，触发屏障机制，标记为灰色</p>
+<img src="/Golang/GC/image-20260903213737560.png" class="" width="3">
+<h3 id="场景4">场景4</h3>
+<p>对象从一个栈对象删除引用，成为另一个堆对象的下游</p>
+<p>如：接下来栈对象1要删除栈对象2的引用，堆对象4删除引用对象7的关系，转移到对象2，此时触发写屏障，对象7被标记为灰色</p>
+<img src="/Golang/GC/image-20260903214224069.png" class="" width="4">
+<img src="/Golang/GC/QQ_1788442955111.png" class="" width="4">
+</div>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Golang/" rel="tag">Golang</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-09-06T09:12:29.332Z" itemprop="dateModified">最后编辑：2026-09-06</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【Golang】golang常见八股" href="/Golang/Golang-interview/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【Golang】GMP模型" href="/Golang/GMP/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">标记清除法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">三色标记法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B-1"><span class="toc-number">2.1.</span> <span class="toc-text">流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0stw"><span class="toc-number">2.2.</span> <span class="toc-text">无STW</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%BA%E5%BC%B1%E4%B8%89%E8%89%B2%E4%B8%8D%E5%8F%98%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">强弱三色不变式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.</span> <span class="toc-text">屏障</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.1.</span> <span class="toc-text">插入屏障</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.2.</span> <span class="toc-text">删除屏障</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C"><span class="toc-number">3.3.</span> <span class="toc-text">混合写屏障</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF1"><span class="toc-number">3.3.1.</span> <span class="toc-text">场景1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF2"><span class="toc-number">3.3.2.</span> <span class="toc-text">场景2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF3"><span class="toc-number">3.3.3.</span> <span class="toc-text">场景3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF4"><span class="toc-number">3.3.4.</span> <span class="toc-text">场景4</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+
+<!-- 额外的追加注入项 -->
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
+</html>

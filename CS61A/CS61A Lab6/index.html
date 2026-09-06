@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【CS61A】CS61A——Lab6 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab6/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="CS61A, Python" />
+  
   <meta name="description" content="Lab 6 Q1: Bank Account 扩充Account类，添加属性transaction，即一个transaction列表实例，每一次调用都会创建一个该实例，记录每次调用deposit和withdraw前后的余额。另外，每个transaction有一个id属性，记录之前账户对deposit或withdraw的调用次数。id对于每个账户内是唯一的，而不是在所有transaction中的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【CS61A】CS61A——Lab6">
@@ -29,242 +26,248 @@
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="Lab 6 Q1: Bank Account 扩充Account类，添加属性transaction，即一个transaction列表实例，每一次调用都会创建一个该实例，记录每次调用deposit和withdraw前后的余额。另外，每个transaction有一个id属性，记录之前账户对deposit或withdraw的调用次数。id对于每个账户内是唯一的，而不是在所有transaction中的">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
 <meta property="article:published_time" content="2025-04-04T02:35:08.303Z">
 <meta property="article:modified_time" content="2025-07-31T09:51:36.569Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="CS61A">
 <meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab6/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>【CS61A】CS61A——Lab6 | 红魔咖啡馆</title>
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
   
-
-
-
-
-
-
-  <noscript>
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【CS61A】CS61A——Lab6","description":"Lab 6\r\nQ1: Bank Account\r\n扩充Account类，添加属性transaction，即一个transaction列表...","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2025-04-04T02:35:08.303Z","dateModified":"2025-07-31T09:51:36.569Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/CS61A/CS61A%20Lab6/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
   <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
-<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">红魔咖啡馆</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
 
 
+        
 
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
             
 
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/CS61A/CS61A%20Lab6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          【CS61A】CS61A——Lab6
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-04-04 10:35:08" itemprop="dateCreated datePublished" datetime="2025-04-04T10:35:08+08:00">2025-04-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 17:51:36" itemprop="dateModified" datetime="2025-07-31T17:51:36+08:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CS61A/" itemprop="url" rel="index"><span itemprop="name">CS61A</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span id="busuanzi_value_page_pv"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>8.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>16 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="lab-6">Lab 6</h1>
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【CS61A】CS61A——Lab6</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2025-04-04T02:35:08.303Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2025-04-04</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~11.45K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#lab-6"><span class="toc-number">1.</span> <span class="toc-text">Lab 6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#q1-bank-account"><span class="toc-number">1.1.</span> <span class="toc-text">Q1: Bank Account</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#q2-email"><span class="toc-number">1.2.</span> <span class="toc-text">Q2: Email</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#q3-make-change"><span class="toc-number">1.3.</span> <span class="toc-text">Q3: Make Change</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#q4-change-machine"><span class="toc-number">1.4.</span> <span class="toc-text">Q4: Change Machine</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="lab-6">Lab 6</h1>
 <h2 id="q1-bank-account">Q1: Bank Account</h2>
 <p>扩充Account类，添加属性<code>transaction</code>，即一个<code>transaction</code>列表实例，每一次调用都会创建一个该实例，记录每次调用<code>deposit</code>和<code>withdraw</code>前后的余额。另外，每个<code>transaction</code>有一个<code>id</code>属性，记录之前账户对<code>deposit</code>或<code>withdraw</code>的调用次数。<code>id</code>对于每个账户内是唯一的，而不是在所有<code>transaction</code>中的全局标识符</p>
 <p><code>transaction</code>有两个方法：</p>
@@ -272,214 +275,20 @@
 <li>changed：若在调用前后balance发生变化则返回True，否则返回False</li>
 <li>report：返回一个字符串用来描述该次transaction，以id开始，之后返回消息</li>
 </ul>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Transaction</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, id, before, after):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.id </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">id</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">=</span><span style="color: #24292E"> before</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after </span><span style="color: #D73A49">=</span><span style="color: #24292E"> after</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">changed</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Return whether the transaction resulted in a changed balance.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">False</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">report</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Return a string describing the transaction.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(3, 20, 10).report()</span></span>
-<span class="line"><span style="color: #032F62">        &#39;3: decreased 20-&gt;10&#39;</span></span>
-<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(4, 20, 50).report()</span></span>
-<span class="line"><span style="color: #032F62">        &#39;4: increased 20-&gt;50&#39;</span></span>
-<span class="line"><span style="color: #032F62">        </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">Transaction(5, 50, 50).report()</span></span>
-<span class="line"><span style="color: #032F62">        &#39;5: no change&#39;</span></span>
-<span class="line"><span style="color: #032F62">        &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;no change&#39;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.changed():</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.before </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.after:</span></span>
-<span class="line"><span style="color: #24292E">                msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;decreased &#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.before)</span><span style="color: #D73A49">+</span><span style="color: #032F62">&#39;-&gt;&#39;</span><span style="color: #D73A49">+</span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.after)</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
-<span class="line"><span style="color: #24292E">                msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;increased &#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.before) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;-&gt;&#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.after)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">str</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id) </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;: &#39;</span><span style="color: #24292E"> </span><span style="color: #D73A49">+</span><span style="color: #24292E"> msg</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Account</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;A bank account that tracks its transaction history.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = Account(&#39;Eric&#39;)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.deposit(100)    # Transaction 0 for a</span></span>
-<span class="line"><span style="color: #032F62">    100</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = Account(&#39;Erica&#39;)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.withdraw(30)    # Transaction 1 for a</span></span>
-<span class="line"><span style="color: #032F62">    70</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.deposit(10)     # Transaction 2 for a</span></span>
-<span class="line"><span style="color: #032F62">    80</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.deposit(50)     # Transaction 0 for b</span></span>
-<span class="line"><span style="color: #032F62">    50</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(10)    # Transaction 1 for b</span></span>
-<span class="line"><span style="color: #032F62">    40</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.withdraw(100)   # Transaction 3 for a</span></span>
-<span class="line"><span style="color: #032F62">    &#39;Insufficient funds&#39;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len(a.transactions)</span></span>
-<span class="line"><span style="color: #032F62">    4</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len([t for t in a.transactions if t.changed()])</span></span>
-<span class="line"><span style="color: #032F62">    3</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">for t in a.transactions:</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    print(t.report())</span></span>
-<span class="line"><span style="color: #032F62">    0: increased 0-&gt;100</span></span>
-<span class="line"><span style="color: #032F62">    1: decreased 100-&gt;70</span></span>
-<span class="line"><span style="color: #032F62">    2: increased 70-&gt;80</span></span>
-<span class="line"><span style="color: #032F62">    3: no change</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(100)   # Transaction 2 for b</span></span>
-<span class="line"><span style="color: #032F62">    &#39;Insufficient funds&#39;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.withdraw(30)    # Transaction 3 for b</span></span>
-<span class="line"><span style="color: #032F62">    10</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">for t in b.transactions:</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">... </span><span style="color: #032F62">    print(t.report())</span></span>
-<span class="line"><span style="color: #032F62">    0: increased 0-&gt;50</span></span>
-<span class="line"><span style="color: #032F62">    1: decreased 50-&gt;40</span></span>
-<span class="line"><span style="color: #032F62">    2: no change</span></span>
-<span class="line"><span style="color: #032F62">    3: decreased 40-&gt;10</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D"># *** YOU NEED TO MAKE CHANGES IN SEVERAL PLACES IN THIS CLASS ***</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, account_holder):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.holder </span><span style="color: #D73A49">=</span><span style="color: #24292E"> account_holder</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">id_gene</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter</span><span style="color: #D73A49">+=</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">yield</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.counter</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">deposit</span><span style="color: #24292E">(self, amount):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Increase the account balance by amount, add the deposit</span></span>
-<span class="line"><span style="color: #032F62">        to the transaction history, and return the new balance.</span></span>
-<span class="line"><span style="color: #032F62">        &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">+</span><span style="color: #24292E"> amount</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()),pre, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">withdraw</span><span style="color: #24292E">(self, amount):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Decrease the account balance by amount, add the withdraw</span></span>
-<span class="line"><span style="color: #032F62">        to the transaction history, and return the new balance.</span></span>
-<span class="line"><span style="color: #032F62">        &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()), </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #032F62">&#39;Insufficient funds&#39;</span></span>
-<span class="line"><span style="color: #24292E">        pre </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance </span><span style="color: #D73A49">-</span><span style="color: #24292E"> amount</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.transactions.append(Transaction(</span><span style="color: #005CC5">next</span><span style="color: #24292E">(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.id_gene()), pre, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance))</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.balance</span></span></code></pre></div></div></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, <span class="built_in">id</span>, before, after</span>):</span><br><span class="line">        <span class="variable language_">self</span>.<span class="built_in">id</span> = <span class="built_in">id</span></span><br><span class="line">        <span class="variable language_">self</span>.before = before</span><br><span class="line">        <span class="variable language_">self</span>.after = after</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">changed</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return whether the transaction resulted in a changed balance.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.before == <span class="variable language_">self</span>.after:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">else</span> :</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">report</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return a string describing the transaction.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; Transaction(3, 20, 10).report()</span></span><br><span class="line"><span class="string">        &#x27;3: decreased 20-&gt;10&#x27;</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; Transaction(4, 20, 50).report()</span></span><br><span class="line"><span class="string">        &#x27;4: increased 20-&gt;50&#x27;</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; Transaction(5, 50, 50).report()</span></span><br><span class="line"><span class="string">        &#x27;5: no change&#x27;</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        msg = <span class="string">&#x27;no change&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.changed():</span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.before &gt; <span class="variable language_">self</span>.after:</span><br><span class="line">                msg = <span class="string">&#x27;decreased &#x27;</span> + <span class="built_in">str</span>(<span class="variable language_">self</span>.before)+<span class="string">&#x27;-&gt;&#x27;</span>+<span class="built_in">str</span>(<span class="variable language_">self</span>.after)</span><br><span class="line">            <span class="keyword">else</span> :</span><br><span class="line">                msg = <span class="string">&#x27;increased &#x27;</span> + <span class="built_in">str</span>(<span class="variable language_">self</span>.before) + <span class="string">&#x27;-&gt;&#x27;</span> + <span class="built_in">str</span>(<span class="variable language_">self</span>.after)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">str</span>(<span class="variable language_">self</span>.<span class="built_in">id</span>) + <span class="string">&#x27;: &#x27;</span> + msg</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Account</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;A bank account that tracks its transaction history.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a = Account(&#x27;Eric&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a.deposit(100)    # Transaction 0 for a</span></span><br><span class="line"><span class="string">    100</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b = Account(&#x27;Erica&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a.withdraw(30)    # Transaction 1 for a</span></span><br><span class="line"><span class="string">    70</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a.deposit(10)     # Transaction 2 for a</span></span><br><span class="line"><span class="string">    80</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.deposit(50)     # Transaction 0 for b</span></span><br><span class="line"><span class="string">    50</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.withdraw(10)    # Transaction 1 for b</span></span><br><span class="line"><span class="string">    40</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a.withdraw(100)   # Transaction 3 for a</span></span><br><span class="line"><span class="string">    &#x27;Insufficient funds&#x27;</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; len(a.transactions)</span></span><br><span class="line"><span class="string">    4</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; len([t for t in a.transactions if t.changed()])</span></span><br><span class="line"><span class="string">    3</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; for t in a.transactions:</span></span><br><span class="line"><span class="string">    ...     print(t.report())</span></span><br><span class="line"><span class="string">    0: increased 0-&gt;100</span></span><br><span class="line"><span class="string">    1: decreased 100-&gt;70</span></span><br><span class="line"><span class="string">    2: increased 70-&gt;80</span></span><br><span class="line"><span class="string">    3: no change</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.withdraw(100)   # Transaction 2 for b</span></span><br><span class="line"><span class="string">    &#x27;Insufficient funds&#x27;</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.withdraw(30)    # Transaction 3 for b</span></span><br><span class="line"><span class="string">    10</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; for t in b.transactions:</span></span><br><span class="line"><span class="string">    ...     print(t.report())</span></span><br><span class="line"><span class="string">    0: increased 0-&gt;50</span></span><br><span class="line"><span class="string">    1: decreased 50-&gt;40</span></span><br><span class="line"><span class="string">    2: no change</span></span><br><span class="line"><span class="string">    3: decreased 40-&gt;10</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># *** YOU NEED TO MAKE CHANGES IN SEVERAL PLACES IN THIS CLASS ***</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, account_holder</span>):</span><br><span class="line">        <span class="variable language_">self</span>.balance = <span class="number">0</span></span><br><span class="line">        <span class="variable language_">self</span>.holder = account_holder</span><br><span class="line">        <span class="variable language_">self</span>.counter = -<span class="number">1</span></span><br><span class="line">        <span class="variable language_">self</span>.transactions = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">id_gene</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.counter+=<span class="number">1</span></span><br><span class="line">        <span class="keyword">yield</span> <span class="variable language_">self</span>.counter</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">deposit</span>(<span class="params">self, amount</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Increase the account balance by amount, add the deposit</span></span><br><span class="line"><span class="string">        to the transaction history, and return the new balance.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        pre = <span class="variable language_">self</span>.balance</span><br><span class="line">        <span class="variable language_">self</span>.balance = <span class="variable language_">self</span>.balance + amount</span><br><span class="line">        <span class="variable language_">self</span>.transactions.append(Transaction(<span class="built_in">next</span>(<span class="variable language_">self</span>.id_gene()),pre, <span class="variable language_">self</span>.balance))</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.balance</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">withdraw</span>(<span class="params">self, amount</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Decrease the account balance by amount, add the withdraw</span></span><br><span class="line"><span class="string">        to the transaction history, and return the new balance.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> amount &gt; <span class="variable language_">self</span>.balance:</span><br><span class="line">            <span class="variable language_">self</span>.transactions.append(Transaction(<span class="built_in">next</span>(<span class="variable language_">self</span>.id_gene()), <span class="variable language_">self</span>.balance, <span class="variable language_">self</span>.balance))</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;Insufficient funds&#x27;</span></span><br><span class="line">        pre = <span class="variable language_">self</span>.balance</span><br><span class="line">        <span class="variable language_">self</span>.balance = <span class="variable language_">self</span>.balance - amount</span><br><span class="line">        <span class="variable language_">self</span>.transactions.append(Transaction(<span class="built_in">next</span>(<span class="variable language_">self</span>.id_gene()), pre, <span class="variable language_">self</span>.balance))</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.balance</span><br></pre></td></tr></table></figure>
 <h2 id="q2-email">Q2: Email</h2>
 <p>一个邮箱系统包括三个类：<code>Email</code>, <code>Server</code>,
 <code>Client</code></p>
 <p><code>Client</code>类可以<code>compose</code>邮件，该邮件会被<code>send</code>到<code>Server</code>类中</p>
 <p><code>Server</code>类会把该邮件运到对应<code>Client</code>的<code>inbox</code>中，为了实现这个，一个<code>Server</code>类拥有一个字典<code>clients</code>，将<code>Email</code>中的<code>recipient_name</code>与拥有该名称的<code>Client</code>对象绑定</p>
 <p>注意：client永远不会更改其使用的<code>server</code></p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Email</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;An email has the following instance attributes:</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">        msg (str): the contents of the message</span></span>
-<span class="line"><span style="color: #032F62">        sender (Client): the client that sent the email</span></span>
-<span class="line"><span style="color: #032F62">        recipient_name (str): the name of the recipient (another client)</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, msg, sender, recipient_name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.msg </span><span style="color: #D73A49">=</span><span style="color: #24292E"> msg</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.sender </span><span style="color: #D73A49">=</span><span style="color: #24292E"> sender</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.recipient_name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> recipient_name</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Server</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Each Server has one instance attribute called clients that is a</span></span>
-<span class="line"><span style="color: #032F62">    dictionary from client names to client objects.</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">send</span><span style="color: #24292E">(self, email):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Append the email to the inbox of the client it is addressed to.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients[email.recipient_name].inbox.append(email)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">register_client</span><span style="color: #24292E">(self, client):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Add a client to the dictionary of clients.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.clients[client.name] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> client</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Client</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;A client has a server, a name (str), and an inbox (list).</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">s = Server()</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a = Client(s, &#39;Alice&#39;)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b = Client(s, &#39;Bob&#39;)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.compose(&#39;Hello, World!&#39;, &#39;Bob&#39;)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[0].msg</span></span>
-<span class="line"><span style="color: #032F62">    &#39;Hello, World!&#39;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">a.compose(&#39;CS 61A Rocks!&#39;, &#39;Bob&#39;)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">len(b.inbox)</span></span>
-<span class="line"><span style="color: #032F62">    2</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[1].msg</span></span>
-<span class="line"><span style="color: #032F62">    &#39;CS 61A Rocks!&#39;</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">b.inbox[1].sender.name</span></span>
-<span class="line"><span style="color: #032F62">    &#39;Alice&#39;</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, server, name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.inbox </span><span style="color: #D73A49">=</span><span style="color: #24292E"> []</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.server </span><span style="color: #D73A49">=</span><span style="color: #24292E"> server</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.name </span><span style="color: #D73A49">=</span><span style="color: #24292E"> name</span></span>
-<span class="line"><span style="color: #24292E">        server.register_client(</span><span style="color: #005CC5">self</span><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">compose</span><span style="color: #24292E">(self, message, recipient_name):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Send an email with the given message to the recipient.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        email </span><span style="color: #D73A49">=</span><span style="color: #24292E"> Email(message, </span><span style="color: #005CC5">self</span><span style="color: #24292E">, recipient_name)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.server.send(email)</span></span></code></pre></div></div></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Email</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;An email has the following instance attributes:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        msg (str): the contents of the message</span></span><br><span class="line"><span class="string">        sender (Client): the client that sent the email</span></span><br><span class="line"><span class="string">        recipient_name (str): the name of the recipient (another client)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, msg, sender, recipient_name</span>):</span><br><span class="line">        <span class="variable language_">self</span>.msg = msg</span><br><span class="line">        <span class="variable language_">self</span>.sender = sender</span><br><span class="line">        <span class="variable language_">self</span>.recipient_name = recipient_name</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Server</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Each Server has one instance attribute called clients that is a</span></span><br><span class="line"><span class="string">    dictionary from client names to client objects.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.clients = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">send</span>(<span class="params">self, email</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Append the email to the inbox of the client it is addressed to.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.clients[email.recipient_name].inbox.append(email)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">register_client</span>(<span class="params">self, client</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Add a client to the dictionary of clients.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.clients[client.name] = client</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Client</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;A client has a server, a name (str), and an inbox (list).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; s = Server()</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a = Client(s, &#x27;Alice&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b = Client(s, &#x27;Bob&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a.compose(&#x27;Hello, World!&#x27;, &#x27;Bob&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.inbox[0].msg</span></span><br><span class="line"><span class="string">    &#x27;Hello, World!&#x27;</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; a.compose(&#x27;CS 61A Rocks!&#x27;, &#x27;Bob&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; len(b.inbox)</span></span><br><span class="line"><span class="string">    2</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.inbox[1].msg</span></span><br><span class="line"><span class="string">    &#x27;CS 61A Rocks!&#x27;</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; b.inbox[1].sender.name</span></span><br><span class="line"><span class="string">    &#x27;Alice&#x27;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, server, name</span>):</span><br><span class="line">        <span class="variable language_">self</span>.inbox = []</span><br><span class="line">        <span class="variable language_">self</span>.server = server</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line">        server.register_client(<span class="variable language_">self</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">compose</span>(<span class="params">self, message, recipient_name</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Send an email with the given message to the recipient.&quot;&quot;&quot;</span></span><br><span class="line">        email = Email(message, <span class="variable language_">self</span>, recipient_name)</span><br><span class="line">        <span class="variable language_">self</span>.server.send(email)</span><br></pre></td></tr></table></figure>
 <p>这里的inbox存储的是每一个email实例，故传参时应传入self</p>
 <h2 id="q3-make-change">Q3: Make Change</h2>
 <p>实现<code>make_change</code>函数，输入amount和coins字典</p>
 <p>coins字典的键是一个正整数，表示面额；值也是一个正整数，表示硬币数量，如<code>&#123;1:4, 5:2&#125;</code>表示四个便士和两个五分</p>
 <p>函数返回列表，其中元素是求和能达到amount数量的硬币列表，其中每种面额k最多使用<code>coins[k]</code>次</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">make_change</span><span style="color: #24292E">(amount, coins):</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;Return a list of coins that sum to amount, preferring the smallest coins</span></span>
-<span class="line"><span style="color: #032F62">    available and placing the smallest coins first in the returned list.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    The coins argument is a dictionary with keys that are positive integer</span></span>
-<span class="line"><span style="color: #032F62">    denominations and values that are positive integer coin counts.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(2, {2: 1})</span></span>
-<span class="line"><span style="color: #032F62">    [2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(2, {1: 2, 2: 1})</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, {1: 2, 2: 1})</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, {2: 1}) == None</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">coins = {2: 2, 3: 2, 4: 3, 5: 1}</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(4, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(8, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 2, 4]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(25, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 3, 3, 4, 4, 4, 5]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">coins[8] = 1</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">make_change(25, coins)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 2, 4, 4, 5, 8]</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> coins:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">None</span></span>
-<span class="line"><span style="color: #24292E">    smallest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">min</span><span style="color: #24292E">(coins)</span></span>
-<span class="line"><span style="color: #24292E">    rest </span><span style="color: #D73A49">=</span><span style="color: #24292E"> remove_one(coins, smallest)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> smallest:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">None</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">elif</span><span style="color: #24292E"> amount </span><span style="color: #D73A49">==</span><span style="color: #24292E"> smallest:</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [smallest]</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">        temp </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_change(amount</span><span style="color: #D73A49">-</span><span style="color: #24292E">smallest, rest)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">if</span><span style="color: #24292E"> </span><span style="color: #D73A49">not</span><span style="color: #24292E"> temp:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> make_change(amount, rest)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">else</span><span style="color: #24292E"> :</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #D73A49">return</span><span style="color: #24292E"> [smallest]</span><span style="color: #D73A49">+</span><span style="color: #24292E">temp</span></span></code></pre></div></div></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">make_change</span>(<span class="params">amount, coins</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Return a list of coins that sum to amount, preferring the smallest coins</span></span><br><span class="line"><span class="string">    available and placing the smallest coins first in the returned list.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    The coins argument is a dictionary with keys that are positive integer</span></span><br><span class="line"><span class="string">    denominations and values that are positive integer coin counts.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(2, &#123;2: 1&#125;)</span></span><br><span class="line"><span class="string">    [2]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(2, &#123;1: 2, 2: 1&#125;)</span></span><br><span class="line"><span class="string">    [1, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(4, &#123;1: 2, 2: 1&#125;)</span></span><br><span class="line"><span class="string">    [1, 1, 2]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(4, &#123;2: 1&#125;) == None</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; coins = &#123;2: 2, 3: 2, 4: 3, 5: 1&#125;</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(4, coins)</span></span><br><span class="line"><span class="string">    [2, 2]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(8, coins)</span></span><br><span class="line"><span class="string">    [2, 2, 4]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(25, coins)</span></span><br><span class="line"><span class="string">    [2, 3, 3, 4, 4, 4, 5]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; coins[8] = 1</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; make_change(25, coins)</span></span><br><span class="line"><span class="string">    [2, 2, 4, 4, 5, 8]</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> coins:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    smallest = <span class="built_in">min</span>(coins)</span><br><span class="line">    rest = remove_one(coins, smallest)</span><br><span class="line">    <span class="keyword">if</span> amount &lt; smallest:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">elif</span> amount == smallest:</span><br><span class="line">        <span class="keyword">return</span> [smallest]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        temp = make_change(amount-smallest, rest)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> temp:</span><br><span class="line">            <span class="keyword">return</span> make_change(amount, rest)</span><br><span class="line">        <span class="keyword">else</span> :</span><br><span class="line">            <span class="keyword">return</span> [smallest]+temp</span><br></pre></td></tr></table></figure>
 <p>首先尝试使用最小面额的coin，但若无法实现则尝试使用更大面额</p>
 <p>具体步骤：</p>
 <ul>
@@ -492,407 +301,731 @@
 <h2 id="q4-change-machine">Q4: Change Machine</h2>
 <p>完成<code>ChangeMachine</code>类中的<code>change</code>方法，每个该类的实例包含了一些coins，一开始都是便士。<code>change</code>方法传入正整数coin，把他添加到<code>coins</code>中，并返回列表，其中的硬币面额之和要达到cin</p>
 <p>该类倾向于使用尽可能多的最小面额硬币</p>
-<figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">class</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ChangeMachine</span><span style="color: #24292E">:</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #032F62">&quot;&quot;&quot;A change machine holds a certain number of coins, initially all pennies.</span></span>
-<span class="line"><span style="color: #032F62">    The change method adds a single coin of some denomination X and returns a</span></span>
-<span class="line"><span style="color: #032F62">    list of coins that sums to X. The machine prefers to return the smallest</span></span>
-<span class="line"><span style="color: #032F62">    coins available. The total value in the machine never changes, and it can</span></span>
-<span class="line"><span style="color: #032F62">    always make change for any coin (perhaps by returning the coin passed in).</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    The coins attribute is a dictionary with keys that are positive integer</span></span>
-<span class="line"><span style="color: #032F62">    denominations and values that are positive integer coin counts.</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(2)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
-<span class="line"><span style="color: #032F62">    [2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(3)</span></span>
-<span class="line"><span style="color: #032F62">    [3]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(10) # 10 pennies</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 10}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(5) # takes a nickel &amp; returns 5 pennies</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 1, 1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 5, 5: 1} # 5 pennies &amp; a nickel remain</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(3)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2, 3: 1, 5: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(2) # not enough 1&#39;s remaining; return a 2</span></span>
-<span class="line"><span style="color: #032F62">    [2]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 3: 1, 5: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(8) # cannot use the 2 to make 8, so use 3 &amp; 5</span></span>
-<span class="line"><span style="color: #032F62">    [3, 5]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 8: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(1) # return the penny passed in (it&#39;s the smallest)</span></span>
-<span class="line"><span style="color: #032F62">    [1]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(9) # return the 9 passed in (no change possible)</span></span>
-<span class="line"><span style="color: #032F62">    [9]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 8: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(10)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 8]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {10: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m = ChangeMachine(9)</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">[m.change(k) for k in [2, 2, 3]]</span></span>
-<span class="line"><span style="color: #032F62">    [[1, 1], [1, 1], [1, 1, 1]]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {1: 2, 2: 2, 3: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(5) # Prefers [1, 1, 3] to [1, 2, 2] (more pennies)</span></span>
-<span class="line"><span style="color: #032F62">    [1, 1, 3]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.change(7)</span></span>
-<span class="line"><span style="color: #032F62">    [2, 5]</span></span>
-<span class="line"><span style="color: #032F62">    </span><span style="color: #D73A49">&gt;&gt;&gt; </span><span style="color: #032F62">m.coins == {2: 1, 7: 1}</span></span>
-<span class="line"><span style="color: #032F62">    True</span></span>
-<span class="line"><span style="color: #032F62">    &quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #005CC5">__init__</span><span style="color: #24292E">(self, pennies):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins </span><span style="color: #D73A49">=</span><span style="color: #24292E"> {</span><span style="color: #005CC5">1</span><span style="color: #24292E">: pennies}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">def</span><span style="color: #24292E"> </span><span style="color: #6F42C1">change</span><span style="color: #24292E">(self, coin):</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #032F62">&quot;&quot;&quot;Return change for coin, removing the result from self.coins.&quot;&quot;&quot;</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins[coin] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins.get(coin, </span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span><span style="color: #D73A49">+</span><span style="color: #005CC5">1</span></span>
-<span class="line"><span style="color: #24292E">        result </span><span style="color: #D73A49">=</span><span style="color: #24292E"> make_change(coin, </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">for</span><span style="color: #24292E"> c </span><span style="color: #D73A49">in</span><span style="color: #24292E"> result:</span></span>
-<span class="line"><span style="color: #24292E">            </span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins </span><span style="color: #D73A49">=</span><span style="color: #24292E"> remove_one(</span><span style="color: #005CC5">self</span><span style="color: #24292E">.coins, c)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">return</span><span style="color: #24292E"> result</span></span></code></pre></div></div></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ChangeMachine</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;A change machine holds a certain number of coins, initially all pennies.</span></span><br><span class="line"><span class="string">    The change method adds a single coin of some denomination X and returns a</span></span><br><span class="line"><span class="string">    list of coins that sums to X. The machine prefers to return the smallest</span></span><br><span class="line"><span class="string">    coins available. The total value in the machine never changes, and it can</span></span><br><span class="line"><span class="string">    always make change for any coin (perhaps by returning the coin passed in).</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    The coins attribute is a dictionary with keys that are positive integer</span></span><br><span class="line"><span class="string">    denominations and values that are positive integer coin counts.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m = ChangeMachine(2)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;1: 2&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(2)</span></span><br><span class="line"><span class="string">    [1, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(2)</span></span><br><span class="line"><span class="string">    [2]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(3)</span></span><br><span class="line"><span class="string">    [3]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m = ChangeMachine(10) # 10 pennies</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;1: 10&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(5) # takes a nickel &amp; returns 5 pennies</span></span><br><span class="line"><span class="string">    [1, 1, 1, 1, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;1: 5, 5: 1&#125; # 5 pennies &amp; a nickel remain</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(3)</span></span><br><span class="line"><span class="string">    [1, 1, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;1: 2, 3: 1, 5: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(2)</span></span><br><span class="line"><span class="string">    [1, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(2) # not enough 1&#x27;s remaining; return a 2</span></span><br><span class="line"><span class="string">    [2]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1, 3: 1, 5: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(8) # cannot use the 2 to make 8, so use 3 &amp; 5</span></span><br><span class="line"><span class="string">    [3, 5]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1, 8: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(1) # return the penny passed in (it&#x27;s the smallest)</span></span><br><span class="line"><span class="string">    [1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(9) # return the 9 passed in (no change possible)</span></span><br><span class="line"><span class="string">    [9]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1, 8: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(10)</span></span><br><span class="line"><span class="string">    [2, 8]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;10: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m = ChangeMachine(9)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; [m.change(k) for k in [2, 2, 3]]</span></span><br><span class="line"><span class="string">    [[1, 1], [1, 1], [1, 1, 1]]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;1: 2, 2: 2, 3: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(5) # Prefers [1, 1, 3] to [1, 2, 2] (more pennies)</span></span><br><span class="line"><span class="string">    [1, 1, 3]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.change(7)</span></span><br><span class="line"><span class="string">    [2, 5]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; m.coins == &#123;2: 1, 7: 1&#125;</span></span><br><span class="line"><span class="string">    True</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, pennies</span>):</span><br><span class="line">        <span class="variable language_">self</span>.coins = &#123;<span class="number">1</span>: pennies&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">change</span>(<span class="params">self, coin</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Return change for coin, removing the result from self.coins.&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.coins[coin] = <span class="variable language_">self</span>.coins.get(coin, <span class="number">0</span>)+<span class="number">1</span></span><br><span class="line">        result = make_change(coin, <span class="variable language_">self</span>.coins)</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> result:</span><br><span class="line">            <span class="variable language_">self</span>.coins = remove_one(<span class="variable language_">self</span>.coins, c)</span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
 <ul>
 <li>将加入的coin放入coins字典，注意，这里的键为面额对应数量，而值为面额，故我们用get方法获取传入coin的键，并在此基础上+1（我们可以在第二个参数设置默认值，当没有对应面额时，get会返回设定值而非None）</li>
 <li>之后调用<code>make_change</code>方法，获得最小面额能实现达到coin数的硬币列表</li>
 <li>使用<code>remove_one</code>将类中已经用过的硬币移除</li>
 <li>返回列表</li>
 </ul>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Python/" rel="tag"># Python</a>
-              <a href="/tags/CS61A/" rel="tag"># CS61A</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/CS61A/CS61A%20Attributes/" rel="prev" title="【CS61A】CS61A——Attributes">
-      <i class="fa fa-chevron-left"></i> 【CS61A】CS61A——Attributes
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/CS61A/CS61A%20Lab5/" rel="next" title="【CS61A】CS61A——Lab5">
-      【CS61A】CS61A——Lab5 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+</div>
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#lab-6"><span class="nav-number">1.</span> <span class="nav-text">Lab 6</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#q1-bank-account"><span class="nav-number">1.1.</span> <span class="nav-text">Q1: Bank Account</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q2-email"><span class="nav-number">1.2.</span> <span class="nav-text">Q2: Email</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q3-make-change"><span class="nav-number">1.3.</span> <span class="nav-text">Q3: Make Change</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q4-change-machine"><span class="nav-number">1.4.</span> <span class="nav-text">Q4: Change Machine</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">201</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">30</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">43</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/CS61A/" rel="tag">CS61A</a>, <a class="tag-none-link" href="/tags/Python/" rel="tag">Python</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2025-07-31T09:51:36.569Z" itemprop="dateModified">最后编辑：2025-07-31</time>
+                </div>
+            </div>
+        </footer>
     </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【CS61A】CS61A——Attributes" href="/CS61A/CS61A Attributes/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【CS61A】CS61A——Lab5" href="/CS61A/CS61A Lab5/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#lab-6"><span class="toc-number">1.</span> <span class="toc-text">Lab 6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#q1-bank-account"><span class="toc-number">1.1.</span> <span class="toc-text">Q1: Bank Account</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#q2-email"><span class="toc-number">1.2.</span> <span class="toc-text">Q2: Email</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#q3-make-change"><span class="toc-number">1.3.</span> <span class="toc-text">Q3: Make Change</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#q4-change-machine"><span class="toc-number">1.4.</span> <span class="toc-text">Q4: Change Machine</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
   </aside>
-  <div id="sidebar-dimmer"></div>
 
 
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
       </div>
-    </main>
+  </aside>
 
-    <footer class="footer">
-      <div class="footer-inner">
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
         
-
         
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">838k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">25:23</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
   </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
 
         
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
 </div>
 
 
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
 
 
 
 
 
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
+<!-- 额外的追加注入项 -->
 
 
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
 </script>
 
-    
 
-  
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
 
-<!-- hexo injector body_end start -->
-<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
 
-  <script>
-  const CODE_CONFIG = {
-    beautify: true,
-    highlightCopy: true,
-    highlightLang: true,
-    highlightHeightLimit: undefined,
-    isHighlightShrink: false,
-    copy: {
-      success: 'Copy Success',
-      error: 'Copy Error',
-      noSupport: 'Browser Not Support',
-    }
-  };
-  console.log(
-    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
-    "color: #fff; background: #5f5f5f",
-    "color: #fff; background: #80c8f8",
-    ""
-  );
-  </script>
-  <!-- hexo injector body_end end --></body>
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
 </html>

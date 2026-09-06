@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【GORM】查询操作 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Golang/GORM/%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="GORM, Golang" />
+  
   <meta name="description" content="通过GORM执行查询操作的方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【GORM】查询操作">
@@ -29,241 +26,248 @@
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="通过GORM执行查询操作的方法">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
 <meta property="article:published_time" content="2026-07-19T11:47:00.801Z">
 <meta property="article:modified_time" content="2026-07-19T14:17:38.149Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="Golang">
 <meta property="article:tag" content="GORM">
 <meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://izayoisakuye.github.io/Golang/GORM/%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>【GORM】查询操作 | 红魔咖啡馆</title>
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
   
-
-
-
-
-
-
-  <noscript>
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【GORM】查询操作","description":"通过GORM执行查询操作的方法","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-07-19T11:47:00.801Z","dateModified":"2026-07-19T14:17:38.149Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Golang/GORM/%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
   <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
-<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">红魔咖啡馆</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
 
 
+        
 
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
             
 
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/GORM/%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          【GORM】查询操作
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2026-07-19 19:47:00 / 修改时间：22:17:38" itemprop="dateCreated datePublished" datetime="2026-07-19T19:47:00+08:00">2026-07-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Golang/GORM/" itemprop="url" rel="index"><span itemprop="name">GORM</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span id="busuanzi_value_page_pv"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>9.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>17 分钟</span>
-            </span>
-            <div class="post-description">通过GORM执行查询操作的方法</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="查询操作">查询操作</h1>
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【GORM】查询操作</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-07-19T11:47:00.801Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-07-19</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~10.96K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">查询操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.</span> <span class="toc-text">基本查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E4%B8%BB%E9%94%AE%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.1.</span> <span class="toc-text">根据主键查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">条件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#string%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">string条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-map-%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.2.</span> <span class="toc-text">Struct &amp; Map 条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E8%81%94%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.3.</span> <span class="toc-text">内联条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#not%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.4.</span> <span class="toc-text">Not条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#or%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.5.</span> <span class="toc-text">OR条件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E7%89%B9%E5%AE%9A%E5%AD%97%E6%AE%B5"><span class="toc-number">1.3.</span> <span class="toc-text">选择特定字段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F"><span class="toc-number">1.4.</span> <span class="toc-text">排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E9%A1%B5"><span class="toc-number">1.5.</span> <span class="toc-text">分页</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#groupby%E4%B8%8Ehaving"><span class="toc-number">1.6.</span> <span class="toc-text">Groupby与Having</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#distinct"><span class="toc-number">1.7.</span> <span class="toc-text">Distinct</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#join"><span class="toc-number">1.8.</span> <span class="toc-text">Join</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#joins%E9%A2%84%E5%8A%A0%E8%BD%BD"><span class="toc-number">1.8.1.</span> <span class="toc-text">JOINS预加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BE%97%E5%88%B0%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-number">2.</span> <span class="toc-text">得到的数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#find%E7%B1%BB"><span class="toc-number">2.1.</span> <span class="toc-text">Find类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rows"><span class="toc-number">2.2.</span> <span class="toc-text">Rows</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scan"><span class="toc-number">2.3.</span> <span class="toc-text">Scan</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="查询操作">查询操作</h1>
 <h2 id="基本查询">基本查询</h2>
 <p>假设定义<code>var user User</code>，查询数据存入user</p>
 <ul>
@@ -275,580 +279,793 @@
 <p>First和Last只有struct传入的是指针或通过<code>db.Model</code>指定model才有效，另外，如果没有定义主键，则按第一个字段排序</p>
 <h3 id="根据主键查询">根据主键查询</h3>
 <p>如果主键是数字类型，可以用内联条件检索</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user, </span><span style="color: #005CC5">10</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = 10;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user, </span><span style="color: #032F62">&quot;10&quot;</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = 10;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users, []</span><span style="color: #D73A49">int</span><span style="color: #24292E">{</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">})</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id IN (1,2,3);</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.First(&amp;user, <span class="number">10</span>)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line">db.First(&amp;user, <span class="string">&quot;10&quot;</span>)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line">db.Find(&amp;users, []<span class="type">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id IN (1,2,3);</span></span><br></pre></td></tr></table></figure>
 <p>如果主键是字符串，查询类似如下：</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user, </span><span style="color: #032F62">&quot;id = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;1b74413f-f3b8-409f-ac47-e8c062e3472a&quot;</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = &quot;1b74413f-f3b8-409f-ac47-e8c062e3472a&quot;;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.First(&amp;user, <span class="string">&quot;id = ?&quot;</span>, <span class="string">&quot;1b74413f-f3b8-409f-ac47-e8c062e3472a&quot;</span>)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = &quot;1b74413f-f3b8-409f-ac47-e8c062e3472a&quot;;</span></span><br></pre></td></tr></table></figure>
 <p>如果目标对象有一个主键值，可以使用主键构建查询条件</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> user </span><span style="color: #D73A49">=</span><span style="color: #24292E"> User{ID: </span><span style="color: #005CC5">10</span><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = 10;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> result User</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Model</span><span style="color: #24292E">(User{ID: </span><span style="color: #005CC5">10</span><span style="color: #24292E">}).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">result)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = 10;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> user = User&#123;ID: <span class="number">10</span>&#125;</span><br><span class="line">db.First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result User</span><br><span class="line">db.Model(User&#123;ID: <span class="number">10</span>&#125;).First(&amp;result)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = 10;</span></span><br></pre></td></tr></table></figure>
 <h2 id="条件">条件</h2>
 <p>使用<code>db.Where().xxx()</code>在查询前添加条件，Where里用问号格式化检索条件，其余和sql语句类似，代替sql中<code>WHERE</code>的作用</p>
 <h3 id="string条件">string条件</h3>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// Get first matched record</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &#39;jinzhu&#39; ORDER BY id LIMIT 1;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Get all matched records</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name &lt;&gt; ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name &lt;&gt; &#39;jinzhu&#39;;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// IN</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name IN ?&quot;</span><span style="color: #24292E">, []</span><span style="color: #D73A49">string</span><span style="color: #24292E">{</span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu 2&quot;</span><span style="color: #24292E">}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name IN (&#39;jinzhu&#39;,&#39;jinzhu 2&#39;);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// LIKE</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name LIKE ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;%jin%&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name LIKE &#39;%jin%&#39;;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// AND</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name = ? AND age &gt;= ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;22&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &#39;jinzhu&#39; AND age &gt;= 22;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Time</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;updated_at &gt; ?&quot;</span><span style="color: #24292E">, lastWeek).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE updated_at &gt; &#39;2000-01-01 00:00:00&#39;;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// BETWEEN</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;created_at BETWEEN ? AND ?&quot;</span><span style="color: #24292E">, lastWeek, today).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE created_at BETWEEN &#39;2000-01-01 00:00:00&#39; AND &#39;2000-01-08 00:00:00&#39;;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Get first matched record</span></span><br><span class="line">db.Where(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>).First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &#x27;jinzhu&#x27; ORDER BY id LIMIT 1;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Get all matched records</span></span><br><span class="line">db.Where(<span class="string">&quot;name &lt;&gt; ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name &lt;&gt; &#x27;jinzhu&#x27;;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// IN</span></span><br><span class="line">db.Where(<span class="string">&quot;name IN ?&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;jinzhu&quot;</span>, <span class="string">&quot;jinzhu 2&quot;</span>&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name IN (&#x27;jinzhu&#x27;,&#x27;jinzhu 2&#x27;);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// LIKE</span></span><br><span class="line">db.Where(<span class="string">&quot;name LIKE ?&quot;</span>, <span class="string">&quot;%jin%&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name LIKE &#x27;%jin%&#x27;;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// AND</span></span><br><span class="line">db.Where(<span class="string">&quot;name = ? AND age &gt;= ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>, <span class="string">&quot;22&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &#x27;jinzhu&#x27; AND age &gt;= 22;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Time</span></span><br><span class="line">db.Where(<span class="string">&quot;updated_at &gt; ?&quot;</span>, lastWeek).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE updated_at &gt; &#x27;2000-01-01 00:00:00&#x27;;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// BETWEEN</span></span><br><span class="line">db.Where(<span class="string">&quot;created_at BETWEEN ? AND ?&quot;</span>, lastWeek, today).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE created_at BETWEEN &#x27;2000-01-01 00:00:00&#x27; AND &#x27;2000-01-08 00:00:00&#x27;;</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>注意：若对象设置了主键，条件查询不会覆盖主键的值，而是用And相连，这样就报错了，所以记得要提前将id这样的主键设置为nil</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> user </span><span style="color: #D73A49">=</span><span style="color: #24292E"> User{ID: </span><span style="color: #005CC5">10</span><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;id = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">20</span><span style="color: #24292E">).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = 10 and id = 20 ORDER BY id ASC LIMIT 1</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> user = User&#123;ID: <span class="number">10</span>&#125;</span><br><span class="line">db.Where(<span class="string">&quot;id = ?&quot;</span>, <span class="number">20</span>).First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = 10 and id = 20 ORDER BY id ASC LIMIT 1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 </blockquote>
 <h3 id="struct-map-条件">Struct &amp; Map 条件</h3>
 <p>Where里也可以塞结构体，map和切片</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// Struct</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">User{Name: </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, Age: </span><span style="color: #005CC5">20</span><span style="color: #24292E">}).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &quot;jinzhu&quot; AND age = 20 ORDER BY id LIMIT 1;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Map</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #D73A49">map</span><span style="color: #24292E">[</span><span style="color: #D73A49">string</span><span style="color: #24292E">]</span><span style="color: #D73A49">interface</span><span style="color: #24292E">{}{</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">20</span><span style="color: #24292E">}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &quot;jinzhu&quot; AND age = 20;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Slice of primary keys</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">([]</span><span style="color: #D73A49">int64</span><span style="color: #24292E">{</span><span style="color: #005CC5">20</span><span style="color: #24292E">, </span><span style="color: #005CC5">21</span><span style="color: #24292E">, </span><span style="color: #005CC5">22</span><span style="color: #24292E">}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id IN (20, 21, 22);</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Struct</span></span><br><span class="line">db.Where(&amp;User&#123;Name: <span class="string">&quot;jinzhu&quot;</span>, Age: <span class="number">20</span>&#125;).First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &quot;jinzhu&quot; AND age = 20 ORDER BY id LIMIT 1;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Map</span></span><br><span class="line">db.Where(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;jinzhu&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">20</span>&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &quot;jinzhu&quot; AND age = 20;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Slice of primary keys</span></span><br><span class="line">db.Where([]<span class="type">int64</span>&#123;<span class="number">20</span>, <span class="number">21</span>, <span class="number">22</span>&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id IN (20, 21, 22);</span></span><br></pre></td></tr></table></figure>
 <p>结构体查询的时候会省略零值，如果想要保留零值需要使用map</p>
 <p>使用结构体的时候还可以指定结构体查询字段：</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">User{Name: </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">}, </span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;Age&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &quot;jinzhu&quot; AND age = 0;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">User{Name: </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">}, </span><span style="color: #032F62">&quot;Age&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE age = 0;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.Where(&amp;User&#123;Name: <span class="string">&quot;jinzhu&quot;</span>&#125;, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;Age&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &quot;jinzhu&quot; AND age = 0;</span></span><br><span class="line"></span><br><span class="line">db.Where(&amp;User&#123;Name: <span class="string">&quot;jinzhu&quot;</span>&#125;, <span class="string">&quot;Age&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE age = 0;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="内联条件">内联条件</h3>
 <p>类似Where的用法，First和Find方法可以将上述条件写入方法参数</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// Get by primary key if it were a non-integer type</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user, </span><span style="color: #032F62">&quot;id = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;string_primary_key&quot;</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id = &#39;string_primary_key&#39;;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Plain SQL</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user, </span><span style="color: #032F62">&quot;name = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &quot;jinzhu&quot;;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users, </span><span style="color: #032F62">&quot;name &lt;&gt; ? AND age &gt; ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">20</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name &lt;&gt; &quot;jinzhu&quot; AND age &gt; 20;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Struct</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users, User{Age: </span><span style="color: #005CC5">20</span><span style="color: #24292E">})</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE age = 20;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Map</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users, </span><span style="color: #D73A49">map</span><span style="color: #24292E">[</span><span style="color: #D73A49">string</span><span style="color: #24292E">]</span><span style="color: #D73A49">interface</span><span style="color: #24292E">{}{</span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">20</span><span style="color: #24292E">})</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE age = 20;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Get by primary key if it were a non-integer type</span></span><br><span class="line">db.First(&amp;user, <span class="string">&quot;id = ?&quot;</span>, <span class="string">&quot;string_primary_key&quot;</span>)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id = &#x27;string_primary_key&#x27;;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Plain SQL</span></span><br><span class="line">db.Find(&amp;user, <span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &quot;jinzhu&quot;;</span></span><br><span class="line"></span><br><span class="line">db.Find(&amp;users, <span class="string">&quot;name &lt;&gt; ? AND age &gt; ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>, <span class="number">20</span>)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name &lt;&gt; &quot;jinzhu&quot; AND age &gt; 20;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Struct</span></span><br><span class="line">db.Find(&amp;users, User&#123;Age: <span class="number">20</span>&#125;)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE age = 20;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Map</span></span><br><span class="line">db.Find(&amp;users, <span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;age&quot;</span>: <span class="number">20</span>&#125;)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE age = 20;</span></span><br></pre></td></tr></table></figure>
 <h3 id="not条件">Not条件</h3>
 <p>类似Where，代替sql中<code>&lt;&gt;</code>和<code>NOT IN</code>的作用</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Not</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE NOT name = &quot;jinzhu&quot; ORDER BY id LIMIT 1;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Not In</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Not</span><span style="color: #24292E">(</span><span style="color: #D73A49">map</span><span style="color: #24292E">[</span><span style="color: #D73A49">string</span><span style="color: #24292E">]</span><span style="color: #D73A49">interface</span><span style="color: #24292E">{}{</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">: []</span><span style="color: #D73A49">string</span><span style="color: #24292E">{</span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu 2&quot;</span><span style="color: #24292E">}}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name NOT IN (&quot;jinzhu&quot;, &quot;jinzhu 2&quot;);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Struct</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Not</span><span style="color: #24292E">(User{Name: </span><span style="color: #032F62">&quot;jinzhu&quot;</span><span style="color: #24292E">, Age: </span><span style="color: #005CC5">18</span><span style="color: #24292E">}).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name &lt;&gt; &quot;jinzhu&quot; AND age &lt;&gt; 18 ORDER BY id LIMIT 1;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Not In slice of primary keys</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Not</span><span style="color: #24292E">([]</span><span style="color: #D73A49">int64</span><span style="color: #24292E">{</span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span><span style="color: #005CC5">2</span><span style="color: #24292E">,</span><span style="color: #005CC5">3</span><span style="color: #24292E">}).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE id NOT IN (1,2,3) ORDER BY id LIMIT 1;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">db.Not(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>).First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE NOT name = &quot;jinzhu&quot; ORDER BY id LIMIT 1;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Not In</span></span><br><span class="line">db.Not(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: []<span class="type">string</span>&#123;<span class="string">&quot;jinzhu&quot;</span>, <span class="string">&quot;jinzhu 2&quot;</span>&#125;&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name NOT IN (&quot;jinzhu&quot;, &quot;jinzhu 2&quot;);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Struct</span></span><br><span class="line">db.Not(User&#123;Name: <span class="string">&quot;jinzhu&quot;</span>, Age: <span class="number">18</span>&#125;).First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name &lt;&gt; &quot;jinzhu&quot; AND age &lt;&gt; 18 ORDER BY id LIMIT 1;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Not In slice of primary keys</span></span><br><span class="line">db.Not([]<span class="type">int64</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;).First(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE id NOT IN (1,2,3) ORDER BY id LIMIT 1;</span></span><br></pre></td></tr></table></figure>
 <h3 id="or条件">OR条件</h3>
 <p>代替sql中<code>OR</code>的作用</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;role = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;admin&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Or</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;role = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;super_admin&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE role = &#39;admin&#39; OR role = &#39;super_admin&#39;;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Struct</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name = &#39;jinzhu&#39;&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Or</span><span style="color: #24292E">(User{Name: </span><span style="color: #032F62">&quot;jinzhu 2&quot;</span><span style="color: #24292E">, Age: </span><span style="color: #005CC5">18</span><span style="color: #24292E">}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &#39;jinzhu&#39; OR (name = &#39;jinzhu 2&#39; AND age = 18);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Map</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name = &#39;jinzhu&#39;&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Or</span><span style="color: #24292E">(</span><span style="color: #D73A49">map</span><span style="color: #24292E">[</span><span style="color: #D73A49">string</span><span style="color: #24292E">]</span><span style="color: #D73A49">interface</span><span style="color: #24292E">{}{</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;jinzhu 2&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">18</span><span style="color: #24292E">}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users WHERE name = &#39;jinzhu&#39; OR (name = &#39;jinzhu 2&#39; AND age = 18);</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;role = ?&quot;</span>, <span class="string">&quot;admin&quot;</span>).Or(<span class="string">&quot;role = ?&quot;</span>, <span class="string">&quot;super_admin&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE role = &#x27;admin&#x27; OR role = &#x27;super_admin&#x27;;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Struct</span></span><br><span class="line">db.Where(<span class="string">&quot;name = &#x27;jinzhu&#x27;&quot;</span>).Or(User&#123;Name: <span class="string">&quot;jinzhu 2&quot;</span>, Age: <span class="number">18</span>&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &#x27;jinzhu&#x27; OR (name = &#x27;jinzhu 2&#x27; AND age = 18);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Map</span></span><br><span class="line">db.Where(<span class="string">&quot;name = &#x27;jinzhu&#x27;&quot;</span>).Or(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;jinzhu 2&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name = &#x27;jinzhu&#x27; OR (name = &#x27;jinzhu 2&#x27; AND age = 18);</span></span><br></pre></td></tr></table></figure>
 <h2 id="选择特定字段">选择特定字段</h2>
 <p>可以用<code>db.Select</code>选择从表获取的特定字段，默认获取全部字段</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT name, age FROM users;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Select</span><span style="color: #24292E">([]</span><span style="color: #D73A49">string</span><span style="color: #24292E">{</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">}).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT name, age FROM users;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;COALESCE(age,?)&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">42</span><span style="color: #24292E">).</span><span style="color: #005CC5">Rows</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT COALESCE(age,&#39;42&#39;) FROM users;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.Select(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT name, age FROM users;</span></span><br><span class="line"></span><br><span class="line">db.Select([]<span class="type">string</span>&#123;<span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>&#125;).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT name, age FROM users;</span></span><br><span class="line"></span><br><span class="line">db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;COALESCE(age,?)&quot;</span>, <span class="number">42</span>).Rows()</span><br><span class="line"><span class="comment">// SELECT COALESCE(age,&#x27;42&#x27;) FROM users;</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>以防你忘了：COALESCES的作用是接收多个参数，返回第一个非NULL的参数，可以更好的处理NULL值</p>
 <p>Rows()返回的是一个*sql.Rows对象，拿到以后要手动循环读取并处理每一行数据，用法如下：</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">rows, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;COALESCE(age, ?)&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">42</span><span style="color: #24292E">).</span><span style="color: #005CC5">Rows</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">defer</span><span style="color: #24292E"> rows.</span><span style="color: #005CC5">Close</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> rows.</span><span style="color: #005CC5">Next</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">var</span><span style="color: #24292E"> age </span><span style="color: #D73A49">int64</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #6A737D">// 用 rows.Scan 扫描当前行的值</span></span>
-<span class="line"><span style="color: #24292E">    rows.</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">age)</span></span>
-<span class="line"><span style="color: #24292E">    fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(age)</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">rows, err := db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;COALESCE(age, ?)&quot;</span>, <span class="number">42</span>).Rows()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">defer</span> rows.Close()</span><br><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">    <span class="keyword">var</span> age <span class="type">int64</span></span><br><span class="line">    <span class="comment">// 用 rows.Scan 扫描当前行的值</span></span><br><span class="line">    rows.Scan(&amp;age)</span><br><span class="line">    fmt.Println(age)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </blockquote>
 <h2 id="排序">排序</h2>
 <p>使用<code>db.Order()</code>设置排序</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Order</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;age desc, name&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users ORDER BY age desc, name;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Multiple orders</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Order</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;age desc&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Order</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users ORDER BY age desc, name;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.Order(<span class="string">&quot;age desc, name&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users ORDER BY age desc, name;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Multiple orders</span></span><br><span class="line">db.Order(<span class="string">&quot;age desc&quot;</span>).Order(<span class="string">&quot;name&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users ORDER BY age desc, name;</span></span><br></pre></td></tr></table></figure>
 <h2 id="分页">分页</h2>
 <p>使用<code>db.Limit()</code>和<code>db.Offset()</code>控制分页</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Limit</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users LIMIT 3;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Cancel limit condition with -1</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Limit</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users1).</span><span style="color: #005CC5">Limit</span><span style="color: #24292E">(</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users2)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users LIMIT 10; (users1)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users; (users2)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Offset</span><span style="color: #24292E">(</span><span style="color: #005CC5">3</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users OFFSET 3;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Limit</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">).</span><span style="color: #005CC5">Offset</span><span style="color: #24292E">(</span><span style="color: #005CC5">5</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users OFFSET 5 LIMIT 10;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// Cancel offset condition with -1</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Offset</span><span style="color: #24292E">(</span><span style="color: #005CC5">10</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users1).</span><span style="color: #005CC5">Offset</span><span style="color: #24292E">(</span><span style="color: #D73A49">-</span><span style="color: #005CC5">1</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users2)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users OFFSET 10; (users1)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT * FROM users; (users2)</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">db.Limit(<span class="number">3</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users LIMIT 3;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Cancel limit condition with -1</span></span><br><span class="line">db.Limit(<span class="number">10</span>).Find(&amp;users1).Limit(<span class="number">-1</span>).Find(&amp;users2)</span><br><span class="line"><span class="comment">// SELECT * FROM users LIMIT 10; (users1)</span></span><br><span class="line"><span class="comment">// SELECT * FROM users; (users2)</span></span><br><span class="line"></span><br><span class="line">db.Offset(<span class="number">3</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users OFFSET 3;</span></span><br><span class="line"></span><br><span class="line">db.Limit(<span class="number">10</span>).Offset(<span class="number">5</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT * FROM users OFFSET 5 LIMIT 10;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Cancel offset condition with -1</span></span><br><span class="line">db.Offset(<span class="number">10</span>).Find(&amp;users1).Offset(<span class="number">-1</span>).Find(&amp;users2)</span><br><span class="line"><span class="comment">// SELECT * FROM users OFFSET 10; (users1)</span></span><br><span class="line"><span class="comment">// SELECT * FROM users; (users2)</span></span><br></pre></td></tr></table></figure>
 <h2 id="groupby与having">Groupby与Having</h2>
 <p><code>db.Group()</code>代替sql里的group
 by操作，<code>db.Having</code>代替sql里的having操作</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">result</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">  Date  time.Time</span></span>
-<span class="line"><span style="color: #24292E">  Total </span><span style="color: #D73A49">int</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Model</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">User{}).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name, sum(age) as total&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name LIKE ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;group%&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Group</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">First</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">result)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT name, sum(age) as total FROM `users` WHERE name LIKE &quot;group%&quot; GROUP BY `name` LIMIT 1</span></span>
-<span class="line"></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Model</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">User{}).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name, sum(age) as total&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Group</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Having</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;group&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">result)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT name, sum(age) as total FROM `users` GROUP BY `name` HAVING name = &quot;group&quot;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> result <span class="keyword">struct</span> &#123;</span><br><span class="line">  Date  time.Time</span><br><span class="line">  Total <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Select(<span class="string">&quot;name, sum(age) as total&quot;</span>).Where(<span class="string">&quot;name LIKE ?&quot;</span>, <span class="string">&quot;group%&quot;</span>).Group(<span class="string">&quot;name&quot;</span>).First(&amp;result)</span><br><span class="line"><span class="comment">// SELECT name, sum(age) as total FROM `users` WHERE name LIKE &quot;group%&quot; GROUP BY `name` LIMIT 1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Select(<span class="string">&quot;name, sum(age) as total&quot;</span>).Group(<span class="string">&quot;name&quot;</span>).Having(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;group&quot;</span>).Find(&amp;result)</span><br><span class="line"><span class="comment">// SELECT name, sum(age) as total FROM `users` GROUP BY `name` HAVING name = &quot;group&quot;</span></span><br></pre></td></tr></table></figure>
 <h2 id="distinct">Distinct</h2>
 <p>使用<code>db.Distinct</code>代替sql中的distinct</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Distinct</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Order</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name, age desc&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">results)</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Distinct(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>).Order(<span class="string">&quot;name, age desc&quot;</span>).Find(&amp;results)</span><br></pre></td></tr></table></figure>
 <h2 id="join">Join</h2>
 <p>使用<code>db.Joins()</code>实现JOIN操作，左外与右外在参数内部指明</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">result</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">  Name  </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">  Email </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Model</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">User{}).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users.name, emails.email&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Joins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;left join emails on emails.user_id = users.id&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">result{})</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT users.name, emails.email FROM `users` left join emails on emails.user_id = users.id</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">rows, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users.name, emails.email&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Joins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;left join emails on emails.user_id = users.id&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Rows</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> rows.</span><span style="color: #005CC5">Next</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">...</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users.name, emails.email&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Joins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;left join emails on emails.user_id = users.id&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">results)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// multiple joins with parameter</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Joins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;JOIN emails ON emails.user_id = users.id AND emails.email = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;jinzhu@example.org&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Joins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;JOIN credit_cards ON credit_cards.user_id = users.id&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Where</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;credit_cards.number = ?&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;411111111111&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">user)</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> result <span class="keyword">struct</span> &#123;</span><br><span class="line">  Name  <span class="type">string</span></span><br><span class="line">  Email <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Select(<span class="string">&quot;users.name, emails.email&quot;</span>).Joins(<span class="string">&quot;left join emails on emails.user_id = users.id&quot;</span>).Scan(&amp;result&#123;&#125;)</span><br><span class="line"><span class="comment">// SELECT users.name, emails.email FROM `users` left join emails on emails.user_id = users.id</span></span><br><span class="line"></span><br><span class="line">rows, err := db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;users.name, emails.email&quot;</span>).Joins(<span class="string">&quot;left join emails on emails.user_id = users.id&quot;</span>).Rows()</span><br><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;users.name, emails.email&quot;</span>).Joins(<span class="string">&quot;left join emails on emails.user_id = users.id&quot;</span>).Scan(&amp;results)</span><br><span class="line"></span><br><span class="line"><span class="comment">// multiple joins with parameter</span></span><br><span class="line">db.Joins(<span class="string">&quot;JOIN emails ON emails.user_id = users.id AND emails.email = ?&quot;</span>, <span class="string">&quot;jinzhu@example.org&quot;</span>).Joins(<span class="string">&quot;JOIN credit_cards ON credit_cards.user_id = users.id&quot;</span>).Where(<span class="string">&quot;credit_cards.number = ?&quot;</span>, <span class="string">&quot;411111111111&quot;</span>).Find(&amp;user)</span><br></pre></td></tr></table></figure>
 <h3 id="joins预加载">JOINS预加载</h3>
 <p>JOINS预加载可以自动对传入的表左外连接，用一条sql查出主表和关联表的数据，同时可以选择是左外连接还是内连接</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Joins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Company&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT `users`.`id`,`users`.`name`,`users`.`age`,`Company`.`id` AS `Company__id`,`Company`.`name` AS `Company__name` FROM `users` LEFT JOIN `companies` AS `Company` ON `users`.`company_id` = `Company`.`id`;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// inner join</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">InnerJoins</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Company&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Find</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">users)</span></span>
-<span class="line"><span style="color: #6A737D">// SELECT `users`.`id`,`users`.`name`,`users`.`age`,`Company`.`id` AS `Company__id`,`Company`.`name` AS `Company__name` FROM `users` INNER JOIN `companies` AS `Company` ON `users`.`company_id` = `Company`.`id`;</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.Joins(<span class="string">&quot;Company&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT `users`.`id`,`users`.`name`,`users`.`age`,`Company`.`id` AS `Company__id`,`Company`.`name` AS `Company__name` FROM `users` LEFT JOIN `companies` AS `Company` ON `users`.`company_id` = `Company`.`id`;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// inner join</span></span><br><span class="line">db.InnerJoins(<span class="string">&quot;Company&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">// SELECT `users`.`id`,`users`.`name`,`users`.`age`,`Company`.`id` AS `Company__id`,`Company`.`name` AS `Company__name` FROM `users` INNER JOIN `companies` AS `Company` ON `users`.`company_id` = `Company`.`id`;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h1 id="得到的数据">得到的数据</h1>
 <h2 id="find类">Find类</h2>
 <p>通过Find，First方法返回的数据类型一定是一个指向模型切片或结构体的指针，GORM会根据字段名和数据库列明映射</p>
 <p>特点是强类型，只能接收和数据库表有对应关系的模型结构体，不需要手动管理资源</p>
 <h2 id="rows">Rows</h2>
 <p>来自go标准库的<code>*sql.Rows</code>，必须使用<code>rows.Next()</code>遍历，用<code>rows.Scan()</code>逐列扫描到基础变量，最后需要<code>rows.Close()</code></p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292E">rows, _ </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name, age&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Rows</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #D73A49">defer</span><span style="color: #24292E"> rows.</span><span style="color: #005CC5">Close</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #D73A49">for</span><span style="color: #24292E"> rows.</span><span style="color: #005CC5">Next</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">var</span><span style="color: #24292E"> name </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">var</span><span style="color: #24292E"> age </span><span style="color: #D73A49">int</span></span>
-<span class="line"><span style="color: #24292E">    rows.</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">name, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">age)   </span><span style="color: #6A737D">// 这是 database/sql 包的 Scan</span></span>
-<span class="line"><span style="color: #24292E">    fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(name, age)</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rows, _ := db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;name, age&quot;</span>).Rows()</span><br><span class="line"><span class="keyword">defer</span> rows.Close()</span><br><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">    <span class="keyword">var</span> name <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> age <span class="type">int</span></span><br><span class="line">    rows.Scan(&amp;name, &amp;age)   <span class="comment">// 这是 database/sql 包的 Scan</span></span><br><span class="line">    fmt.Println(name, age)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>特点是灵活，可以处理任意复杂动态查询，不受约束，且逐行处理适合大型结果</p>
 <h2 id="scan">Scan</h2>
 <p>返回的数据类型可以是任意类型的切片或结构体指针，或者map切片</p>
 <p>不需要模型定义，只要接受变量的结构和查询结果列名匹配</p>
 <p>且是一次性把所有行扫描到提供的目标内</p>
-<p><figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 扫描到自定义结构体切片</span></span>
-<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">Result</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">    Dept   </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">    Count  </span><span style="color: #D73A49">int</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> results []Result</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Raw</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;SELECT department, COUNT(*) as count FROM users GROUP BY department&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">results)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 扫描到 map 切片</span></span>
-<span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> list []</span><span style="color: #D73A49">map</span><span style="color: #24292E">[</span><span style="color: #D73A49">string</span><span style="color: #24292E">]</span><span style="color: #D73A49">interface</span><span style="color: #24292E">{}</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;name&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">list)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 扫描单个列到切片</span></span>
-<span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> ages []</span><span style="color: #D73A49">int</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Pluck</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;age&quot;</span><span style="color: #24292E">, </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">ages)   </span><span style="color: #6A737D">// Pluck 是 Scan 的特殊情况</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 扫描单行单列到变量</span></span>
-<span class="line"><span style="color: #D73A49">var</span><span style="color: #24292E"> maxAge </span><span style="color: #D73A49">int</span></span>
-<span class="line"><span style="color: #24292E">db.</span><span style="color: #005CC5">Table</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;users&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Select</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;MAX(age)&quot;</span><span style="color: #24292E">).</span><span style="color: #005CC5">Scan</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">maxAge)</span></span></code></pre></div></div></figure></p>
+<p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扫描到自定义结构体切片</span></span><br><span class="line"><span class="keyword">type</span> Result <span class="keyword">struct</span> &#123;</span><br><span class="line">    Dept   <span class="type">string</span></span><br><span class="line">    Count  <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> results []Result</span><br><span class="line">db.Raw(<span class="string">&quot;SELECT department, COUNT(*) as count FROM users GROUP BY department&quot;</span>).Scan(&amp;results)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扫描到 map 切片</span></span><br><span class="line"><span class="keyword">var</span> list []<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;name&quot;</span>).Scan(&amp;list)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扫描单个列到切片</span></span><br><span class="line"><span class="keyword">var</span> ages []<span class="type">int</span></span><br><span class="line">db.Table(<span class="string">&quot;users&quot;</span>).Pluck(<span class="string">&quot;age&quot;</span>, &amp;ages)   <span class="comment">// Pluck 是 Scan 的特殊情况</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 扫描单行单列到变量</span></span><br><span class="line"><span class="keyword">var</span> maxAge <span class="type">int</span></span><br><span class="line">db.Table(<span class="string">&quot;users&quot;</span>).Select(<span class="string">&quot;MAX(age)&quot;</span>).Scan(&amp;maxAge)</span><br></pre></td></tr></table></figure></p>
 <p>特点是比row方便且比find自由 适合聚合查询和跨表查询</p>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Golang/" rel="tag"># Golang</a>
-              <a href="/tags/GORM/" rel="tag"># GORM</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/Golang/GORM/%E5%88%9B%E5%BB%BA%E6%93%8D%E4%BD%9C/" rel="prev" title="【GORM】创建操作">
-      <i class="fa fa-chevron-left"></i> 【GORM】创建操作
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/Golang/GORM/%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C/" rel="next" title="【GORM】更新操作">
-      【GORM】更新操作 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+</div>
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">查询操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.1.</span> <span class="nav-text">基本查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E4%B8%BB%E9%94%AE%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.1.1.</span> <span class="nav-text">根据主键查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.1.</span> <span class="nav-text">string条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#struct-map-%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.2.</span> <span class="nav-text">Struct &amp; Map 条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E8%81%94%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.3.</span> <span class="nav-text">内联条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.4.</span> <span class="nav-text">Not条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#or%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.2.5.</span> <span class="nav-text">OR条件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E7%89%B9%E5%AE%9A%E5%AD%97%E6%AE%B5"><span class="nav-number">1.3.</span> <span class="nav-text">选择特定字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">1.4.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%A1%B5"><span class="nav-number">1.5.</span> <span class="nav-text">分页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#groupby%E4%B8%8Ehaving"><span class="nav-number">1.6.</span> <span class="nav-text">Groupby与Having</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#distinct"><span class="nav-number">1.7.</span> <span class="nav-text">Distinct</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join"><span class="nav-number">1.8.</span> <span class="nav-text">Join</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#joins%E9%A2%84%E5%8A%A0%E8%BD%BD"><span class="nav-number">1.8.1.</span> <span class="nav-text">JOINS预加载</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%97%E5%88%B0%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">得到的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#find%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">Find类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rows"><span class="nav-number">2.2.</span> <span class="nav-text">Rows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scan"><span class="nav-number">2.3.</span> <span class="nav-text">Scan</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">201</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">30</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">43</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/GORM/" rel="tag">GORM</a>, <a class="tag-none-link" href="/tags/Golang/" rel="tag">Golang</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-07-19T14:17:38.149Z" itemprop="dateModified">最后编辑：2026-07-19</time>
+                </div>
+            </div>
+        </footer>
     </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【GORM】创建操作" href="/Golang/GORM/创建操作/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【GORM】更新操作" href="/Golang/GORM/更新操作/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">查询操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.</span> <span class="toc-text">基本查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E4%B8%BB%E9%94%AE%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.1.</span> <span class="toc-text">根据主键查询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">条件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#string%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">string条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#struct-map-%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.2.</span> <span class="toc-text">Struct &amp; Map 条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E8%81%94%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.3.</span> <span class="toc-text">内联条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#not%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.4.</span> <span class="toc-text">Not条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#or%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.5.</span> <span class="toc-text">OR条件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E7%89%B9%E5%AE%9A%E5%AD%97%E6%AE%B5"><span class="toc-number">1.3.</span> <span class="toc-text">选择特定字段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%92%E5%BA%8F"><span class="toc-number">1.4.</span> <span class="toc-text">排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E9%A1%B5"><span class="toc-number">1.5.</span> <span class="toc-text">分页</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#groupby%E4%B8%8Ehaving"><span class="toc-number">1.6.</span> <span class="toc-text">Groupby与Having</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#distinct"><span class="toc-number">1.7.</span> <span class="toc-text">Distinct</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#join"><span class="toc-number">1.8.</span> <span class="toc-text">Join</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#joins%E9%A2%84%E5%8A%A0%E8%BD%BD"><span class="toc-number">1.8.1.</span> <span class="toc-text">JOINS预加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BE%97%E5%88%B0%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-number">2.</span> <span class="toc-text">得到的数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#find%E7%B1%BB"><span class="toc-number">2.1.</span> <span class="toc-text">Find类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rows"><span class="toc-number">2.2.</span> <span class="toc-text">Rows</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scan"><span class="toc-number">2.3.</span> <span class="toc-text">Scan</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
   </aside>
-  <div id="sidebar-dimmer"></div>
 
 
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
       </div>
-    </main>
+  </aside>
 
-    <footer class="footer">
-      <div class="footer-inner">
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
         
-
         
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">838k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">25:23</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
   </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
 
         
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
 </div>
 
 
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
 
 
 
 
 
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
+<!-- 额外的追加注入项 -->
 
 
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
 </script>
 
-    
 
-  
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
 
-<!-- hexo injector body_end start -->
-<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
 
-  <script>
-  const CODE_CONFIG = {
-    beautify: true,
-    highlightCopy: true,
-    highlightLang: true,
-    highlightHeightLimit: undefined,
-    isHighlightShrink: false,
-    copy: {
-      success: 'Copy Success',
-      error: 'Copy Error',
-      noSupport: 'Browser Not Support',
-    }
-  };
-  console.log(
-    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
-    "color: #fff; background: #5f5f5f",
-    "color: #fff; background: #80c8f8",
-    ""
-  );
-  </script>
-  <!-- hexo injector body_end end --></body>
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
 </html>

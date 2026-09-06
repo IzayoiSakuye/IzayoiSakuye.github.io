@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【gRPC】服务端与客户端搭建 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Golang, gRPC" />
+  
   <meta name="description" content="一个gRPC下实现客户端和服务端服务的示例">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【gRPC】服务端与客户端搭建">
@@ -29,441 +26,267 @@
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="一个gRPC下实现客户端和服务端服务的示例">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
 <meta property="article:published_time" content="2026-07-16T07:34:50.100Z">
 <meta property="article:modified_time" content="2026-07-19T07:44:06.846Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="Golang">
 <meta property="article:tag" content="gRPC">
 <meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>【gRPC】服务端与客户端搭建 | 红魔咖啡馆</title>
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
   
-
-
-
-
-
-
-  <noscript>
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【gRPC】服务端与客户端搭建","description":"一个gRPC下实现客户端和服务端服务的示例","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-07-16T07:34:50.100Z","dateModified":"2026-07-19T07:44:06.846Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
   <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
-<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">红魔咖啡馆</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
 
 
+        
 
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
             
 
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/gRPC/%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          【gRPC】服务端与客户端搭建
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2026-07-16 15:34:50" itemprop="dateCreated datePublished" datetime="2026-07-16T15:34:50+08:00">2026-07-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-07-19 15:44:06" itemprop="dateModified" datetime="2026-07-19T15:44:06+08:00">2026-07-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Golang/gRPC/" itemprop="url" rel="index"><span itemprop="name">gRPC</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span id="busuanzi_value_page_pv"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
-            </span>
-            <div class="post-description">一个gRPC下实现客户端和服务端服务的示例</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="protobuf文件实现">Protobuf文件实现</h1>
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【gRPC】服务端与客户端搭建</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-07-16T07:34:50.100Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-07-16</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~5.57K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#protobuf%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">Protobuf文件实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAserver"><span class="toc-number">2.</span> <span class="toc-text">实现一个server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAclient"><span class="toc-number">3.</span> <span class="toc-text">实现一个Client</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E9%93%BE%E8%B7%AF"><span class="toc-number">3.1.</span> <span class="toc-text">整体链路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A5%E5%8F%A3"><span class="toc-number">3.1.1.</span> <span class="toc-text">入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#controller"><span class="toc-number">3.1.2.</span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.1.3.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="protobuf文件实现">Protobuf文件实现</h1>
 <p>若需要采用grpc相关，需要在proto文件中以service定义，例：</p>
-<figure class="shiki protobuf"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></div><div class="code"><pre><code>syntax = "proto3";
-package auth;
-
-import "user.proto";
-option go_package = "./auth;auth";
-
-// 定义服务
-service AuthService {
-  rpc Login(LoginRequest) returns (LoginResponse);
-  rpc Register(RegisterRequest) returns (RegisterResponse);
-}
-
-message LoginRequest {
-  string username = 1;
-  string password = 2;
-}
-
-message LoginResponse {
-  string token = 1;
-  user.User user = 2;
-}
-
-message RegisterRequest {
-  string username = 1;
-  string password = 2;
-  string email = 3;
-}
-
-message registerresponse {}</code></pre></div></div></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"><span class="keyword">package</span> auth;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;user.proto&quot;</span>;</span><br><span class="line"><span class="keyword">option</span> go_package = <span class="string">&quot;./auth;auth&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义服务</span></span><br><span class="line"><span class="keyword">service </span><span class="title class_">AuthService</span> &#123;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Login(LoginRequest) <span class="keyword">returns</span> (LoginResponse)</span>;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Register(RegisterRequest) <span class="keyword">returns</span> (RegisterResponse)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">LoginRequest</span> &#123;</span><br><span class="line">  <span class="type">string</span> username = <span class="number">1</span>;</span><br><span class="line">  <span class="type">string</span> password = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">LoginResponse</span> &#123;</span><br><span class="line">  <span class="type">string</span> token = <span class="number">1</span>;</span><br><span class="line">  user.User user = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">RegisterRequest</span> &#123;</span><br><span class="line">  <span class="type">string</span> username = <span class="number">1</span>;</span><br><span class="line">  <span class="type">string</span> password = <span class="number">2</span>;</span><br><span class="line">  <span class="type">string</span> email = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">registerresponse</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
 <p>使用编译命令编译后，除了普通的<code>.pb.go</code>文件，还会生成<code>xx_grpc.pb.go</code>文件，里面实现了客户端和服务端需要的一些方法</p>
-<figure class="shiki bash"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">protoc</span><span style="color: #24292E"> </span><span style="color: #005CC5">-I.</span><span style="color: #24292E"> </span><span style="color: #005CC5">-I/usr/include</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go_out=.</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go_opt=module=grpc-study</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go-grpc_out=.</span><span style="color: #24292E"> </span><span style="color: #005CC5">--go-grpc_opt=module=grpc-study</span><span style="color: #24292E"> </span><span style="color: #032F62">./au</span></span>
-<span class="line"><span style="color: #6F42C1">th.proto</span></span></code></pre></div></div></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">protoc -I. -I/usr/include --go_out=. --go_opt=module=grpc-study --go-grpc_out=. --go-grpc_opt=module=grpc-study ./au</span><br><span class="line">th.proto </span><br></pre></td></tr></table></figure>
 <h1 id="实现一个server">实现一个server</h1>
 <p>首先在<code>/internal/grpc</code>下创建一个server.go</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">grpc</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">net</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">google.golang.org/grpc</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">StartGrpcServer</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">	ln, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> net.</span><span style="color: #005CC5">Listen</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;tc p&quot;</span><span style="color: #24292E">, </span><span style="color: #032F62">&quot;:8000&quot;</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">	s </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> grpc.</span><span style="color: #005CC5">NewServer</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #24292E">	err </span><span style="color: #D73A49">=</span><span style="color: #24292E"> s.</span><span style="color: #005CC5">Serve</span><span style="color: #24292E">(ln)</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(err)</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> grpc</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">StartGrpcServer</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ln, err := net.Listen(<span class="string">&quot;tc p&quot;</span>, <span class="string">&quot;:8000&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	s := grpc.NewServer()</span><br><span class="line">	err = s.Serve(ln)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>接下来需要实现方法，在<code>service</code>文件夹下创建<code>auth.go</code>，实现一个登录方法</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">service</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/auth</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/model</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">AuthService</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NewAuthService</span><span style="color: #24292E">() </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthService {</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">AuthService{}</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (s </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthService) </span><span style="color: #6F42C1">Login</span><span style="color: #24292E">(ctx context.Context, req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginRequest) (</span><span style="color: #D73A49">*</span><span style="color: #24292E">model.UserModel, </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">model.UserModel{</span></span>
-<span class="line"><span style="color: #24292E">		Id:       </span><span style="color: #005CC5">1</span><span style="color: #24292E">,</span></span>
-<span class="line"><span style="color: #24292E">		Username: req.Username,</span></span>
-<span class="line"><span style="color: #24292E">		Password: req.Password,</span></span>
-<span class="line"><span style="color: #24292E">		Email:    </span><span style="color: #032F62">&quot;&quot;</span><span style="color: #24292E">,</span></span>
-<span class="line"><span style="color: #24292E">	},</span><span style="color: #005CC5">nil</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> service</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	userProto <span class="string">&quot;grpc-study/auth&quot;</span></span><br><span class="line">	<span class="string">&quot;grpc-study/model&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> AuthService <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewAuthService</span><span class="params">()</span></span> *AuthService &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;AuthService&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *AuthService)</span></span> Login(ctx context.Context, req *userProto.LoginRequest) (*model.UserModel, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;model.UserModel&#123;</span><br><span class="line">		Id:       <span class="number">1</span>,</span><br><span class="line">		Username: req.Username,</span><br><span class="line">		Password: req.Password,</span><br><span class="line">		Email:    <span class="string">&quot;&quot;</span>,</span><br><span class="line">	&#125;,<span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Model层实现如下：</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">model</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">UserModel</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">	Id			 </span><span style="color: #D73A49">int64</span></span>
-<span class="line"><span style="color: #24292E">	Username	 </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">	Password	 </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">	Email		 </span><span style="color: #D73A49">string</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> model</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> UserModel <span class="keyword">struct</span> &#123;</span><br><span class="line">	Id			 <span class="type">int64</span></span><br><span class="line">	Username	 <span class="type">string</span></span><br><span class="line">	Password	 <span class="type">string</span></span><br><span class="line">	Email		 <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>接下来需要将业务的注册到服务端，需要实现注册方法，<code>ctrl</code>建立文件<code>auth.go</code></p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">ctrl</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/auth</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/service</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userModelProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/user</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">log</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">AuthController</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">	userProto.UnimplementedAuthServiceServer</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">validateLoginRequest</span><span style="color: #24292E">(req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginRequest) </span><span style="color: #D73A49">error</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (c </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthController) </span><span style="color: #6F42C1">Login</span><span style="color: #24292E">(ctx context.Context, req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginRequest) (</span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.LoginResponse, </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 验证参数</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">validateLoginRequest</span><span style="color: #24292E">(req); err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E">, err</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 业务逻辑</span></span>
-<span class="line"><span style="color: #24292E">	log.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Login request received:&quot;</span><span style="color: #24292E">, req.Username, req.Password)</span></span>
-<span class="line"><span style="color: #24292E">	userModel, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> service.</span><span style="color: #005CC5">NewAuthService</span><span style="color: #24292E">().</span><span style="color: #005CC5">Login</span><span style="color: #24292E">(ctx, req)</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E">, err</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 组装响应数据</span></span>
-<span class="line"><span style="color: #24292E">	resp </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userProto.LoginResponse{</span></span>
-<span class="line"><span style="color: #24292E">		Token: </span><span style="color: #032F62">&quot;123&quot;</span><span style="color: #24292E">,</span></span>
-<span class="line"><span style="color: #24292E">		User: </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userModelProto.User{</span></span>
-<span class="line"><span style="color: #24292E">			Id:       userModel.Id,</span></span>
-<span class="line"><span style="color: #24292E">		},</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 返回参数</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> resp, </span><span style="color: #005CC5">nil</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (c </span><span style="color: #D73A49">*</span><span style="color: #24292E">AuthController) </span><span style="color: #6F42C1">Register</span><span style="color: #24292E">(ctx context.Context, req </span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.RegisterRequest) (</span><span style="color: #D73A49">*</span><span style="color: #24292E">userProto.RegisterResponse, </span><span style="color: #D73A49">error</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userProto.RegisterResponse{}, </span><span style="color: #005CC5">nil</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ctrl</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	userProto <span class="string">&quot;grpc-study/auth&quot;</span></span><br><span class="line">	<span class="string">&quot;grpc-study/service&quot;</span></span><br><span class="line">	userModelProto <span class="string">&quot;grpc-study/user&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">type</span> AuthController <span class="keyword">struct</span> &#123;</span><br><span class="line">	userProto.UnimplementedAuthServiceServer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">validateLoginRequest</span><span class="params">(req *userProto.LoginRequest)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *AuthController)</span></span> Login(ctx context.Context, req *userProto.LoginRequest) (*userProto.LoginResponse, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// 验证参数</span></span><br><span class="line">	<span class="keyword">if</span> err := validateLoginRequest(req); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 业务逻辑</span></span><br><span class="line">	log.Println(<span class="string">&quot;Login request received:&quot;</span>, req.Username, req.Password)</span><br><span class="line">	userModel, err := service.NewAuthService().Login(ctx, req)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 组装响应数据</span></span><br><span class="line">	resp := &amp;userProto.LoginResponse&#123;</span><br><span class="line">		Token: <span class="string">&quot;123&quot;</span>,</span><br><span class="line">		User: &amp;userModelProto.User&#123;</span><br><span class="line">			Id:       userModel.Id,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 返回参数</span></span><br><span class="line">	<span class="keyword">return</span> resp, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *AuthController)</span></span> Register(ctx context.Context, req *userProto.RegisterRequest) (*userProto.RegisterResponse, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;userProto.RegisterResponse&#123;&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><code>RegisterAuthServiceServer</code>用于方法的内部注册，即将我们自己定义的<code>AuthController</code>交给gRPC服务器，让将来发入的auth服务请求交给这个实例处理，其中<code>AuthController</code>是我们自己定义的，实现了<code>AuthServiceServer</code>接口要求的方法的实例</p>
 <p>最后在server端添加注册：</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6A737D">// 注册服务到服务端中</span></span>
-<span class="line"><span style="color: #24292E">authCtrl </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">ctrl.AuthController{}</span></span>
-<span class="line"><span style="color: #24292E">s </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> grpc.</span><span style="color: #005CC5">NewServer</span><span style="color: #24292E">()</span></span>
-<span class="line"><span style="color: #24292E">userProto.</span><span style="color: #005CC5">RegisterAuthServiceServer</span><span style="color: #24292E">(s, authCtrl)</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册服务到服务端中</span></span><br><span class="line">authCtrl := &amp;ctrl.AuthController&#123;&#125;</span><br><span class="line">s := grpc.NewServer()</span><br><span class="line">userProto.RegisterAuthServiceServer(s, authCtrl)</span><br></pre></td></tr></table></figure>
 <h1 id="实现一个client">实现一个Client</h1>
 <p>开一个文件夹放客户端，<code>/authclient</code>下的<code>main.go</code>文件</p>
-<figure class="shiki go"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">package</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">import</span><span style="color: #24292E"> (</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">context</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6F42C1">userProto</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">grpc-study/auth</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">fmt</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">log</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">sync</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">sync/atomic</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #032F62">&quot;</span><span style="color: #6F42C1">google.golang.org/grpc</span><span style="color: #032F62">&quot;</span></span>
-<span class="line"><span style="color: #24292E">) </span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">main</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">	cc </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">NewUserClientPool</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;localhost:8000&quot;</span><span style="color: #24292E">, </span><span style="color: #005CC5">5</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">	resp,err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> cc.</span><span style="color: #005CC5">GetClient</span><span style="color: #24292E">().</span><span style="color: #005CC5">Login</span><span style="color: #24292E">(context.</span><span style="color: #005CC5">Background</span><span style="color: #24292E">(), </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userProto.LoginRequest{</span></span>
-<span class="line"><span style="color: #24292E">		Username: </span><span style="color: #032F62">&quot;admin&quot;</span><span style="color: #24292E">,</span></span>
-<span class="line"><span style="color: #24292E">		Password: </span><span style="color: #032F62">&quot;admin&quot;</span><span style="color: #24292E">,</span></span>
-<span class="line"><span style="color: #24292E">	})</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		log.</span><span style="color: #005CC5">Fatal</span><span style="color: #24292E">(err)</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">	fmt.</span><span style="color: #005CC5">Println</span><span style="color: #24292E">(</span><span style="color: #032F62">&quot;Login response received:&quot;</span><span style="color: #24292E">, resp.Token, resp.User.Id)</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #6A737D">// 多路复用</span></span>
-<span class="line"><span style="color: #D73A49">type</span><span style="color: #24292E"> </span><span style="color: #6F42C1">userClientPool</span><span style="color: #24292E"> </span><span style="color: #D73A49">struct</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">	clients []userProto.AuthServiceClient</span></span>
-<span class="line"><span style="color: #24292E">	mu 		sync.Mutex</span></span>
-<span class="line"><span style="color: #24292E">	index 	</span><span style="color: #D73A49">int64</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> </span><span style="color: #6F42C1">NewUserClientPool</span><span style="color: #24292E">(addr </span><span style="color: #D73A49">string</span><span style="color: #24292E">, size </span><span style="color: #D73A49">int</span><span style="color: #24292E">) </span><span style="color: #D73A49">*</span><span style="color: #24292E">userClientPool {</span></span>
-<span class="line"><span style="color: #24292E">	cc, err </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> grpc.</span><span style="color: #005CC5">Dial</span><span style="color: #24292E">(addr, grpc.</span><span style="color: #005CC5">WithInsecure</span><span style="color: #24292E">())</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E"> err </span><span style="color: #D73A49">!=</span><span style="color: #24292E"> </span><span style="color: #005CC5">nil</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #005CC5">panic</span><span style="color: #24292E">(err)</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">var</span><span style="color: #24292E"> clients []userProto.AuthServiceClient</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">for</span><span style="color: #24292E"> i </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> size; i</span><span style="color: #D73A49">++</span><span style="color: #24292E"> {</span></span>
-<span class="line"><span style="color: #24292E">		clients </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">append</span><span style="color: #24292E">(clients, userProto.</span><span style="color: #005CC5">NewAuthServiceClient</span><span style="color: #24292E">(cc))</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">userClientPool{</span></span>
-<span class="line"><span style="color: #24292E">		clients: clients,</span></span>
-<span class="line"><span style="color: #24292E">		index:   </span><span style="color: #005CC5">0</span><span style="color: #24292E">,</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">func</span><span style="color: #24292E"> (p </span><span style="color: #D73A49">*</span><span style="color: #24292E">userClientPool) </span><span style="color: #6F42C1">GetClient</span><span style="color: #24292E">() userProto.AuthServiceClient {</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #6A737D">// 新增index</span></span>
-<span class="line"><span style="color: #24292E">	index </span><span style="color: #D73A49">:=</span><span style="color: #24292E"> atomic.</span><span style="color: #005CC5">AddInt64</span><span style="color: #24292E">(</span><span style="color: #D73A49">&amp;</span><span style="color: #24292E">p.index, </span><span style="color: #005CC5">1</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> p.clients[</span><span style="color: #005CC5">int</span><span style="color: #24292E">(index)</span><span style="color: #D73A49">%</span><span style="color: #005CC5">len</span><span style="color: #24292E">(p.clients)]</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	userProto <span class="string">&quot;grpc-study/auth&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">	<span class="string">&quot;sync/atomic&quot;</span></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">) </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	cc := NewUserClientPool(<span class="string">&quot;localhost:8000&quot;</span>, <span class="number">5</span>)</span><br><span class="line">	resp,err := cc.GetClient().Login(context.Background(), &amp;userProto.LoginRequest&#123;</span><br><span class="line">		Username: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">		Password: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;Login response received:&quot;</span>, resp.Token, resp.User.Id)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多路复用</span></span><br><span class="line"><span class="keyword">type</span> userClientPool <span class="keyword">struct</span> &#123;</span><br><span class="line">	clients []userProto.AuthServiceClient</span><br><span class="line">	mu 		sync.Mutex</span><br><span class="line">	index 	<span class="type">int64</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewUserClientPool</span><span class="params">(addr <span class="type">string</span>, size <span class="type">int</span>)</span></span> *userClientPool &#123;</span><br><span class="line">	cc, err := grpc.Dial(addr, grpc.WithInsecure())</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> clients []userProto.AuthServiceClient</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; size; i++ &#123;</span><br><span class="line">		clients = <span class="built_in">append</span>(clients, userProto.NewAuthServiceClient(cc))</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> &amp;userClientPool&#123;</span><br><span class="line">		clients: clients,</span><br><span class="line">		index:   <span class="number">0</span>,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *userClientPool)</span></span> GetClient() userProto.AuthServiceClient &#123;</span><br><span class="line">	<span class="comment">// 新增index</span></span><br><span class="line">	index := atomic.AddInt64(&amp;p.index, <span class="number">1</span>)</span><br><span class="line">	<span class="keyword">return</span> p.clients[<span class="type">int</span>(index)%<span class="built_in">len</span>(p.clients)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>这里采用了多路复用技术，即开一个用户池，可以开启多个连接</li>
 <li>这里实现了负载均衡，每次调用后悔从池里挑一个client发送请求</li>
@@ -485,321 +308,724 @@ message registerresponse {}</code></pre></div></div></figure>
 <h3 id="客户端">客户端</h3>
 <p>客户端在<code>main.go</code>中先使用<code>grpc.Dial()</code>建立连接，通过<code>NewUserClientPool</code>创建用户池，并从中<code>GetClient()</code>获取一个用户创建客户端stub</p>
 <p>后面调用方法<code>Login()</code>会直接把你的<code>LoginRequest</code>序列化后发送到服务端，服务端处理后再把<code>LoginResponse</code>反序列化后返回客户端，拿到想要的东西</p>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Golang/" rel="tag"># Golang</a>
-              <a href="/tags/gRPC/" rel="tag"># gRPC</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/Golang/gRPC/Protobuf/" rel="prev" title="【gRPC】Protocol Buffers">
-      <i class="fa fa-chevron-left"></i> 【gRPC】Protocol Buffers
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/Golang/gRPC/%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%9E%E7%8E%B0/" rel="next" title="【gRPC】中间件">
-      【gRPC】中间件 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+</div>
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">Protobuf文件实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAserver"><span class="nav-number">2.</span> <span class="nav-text">实现一个server</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAclient"><span class="nav-number">3.</span> <span class="nav-text">实现一个Client</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E9%93%BE%E8%B7%AF"><span class="nav-number">3.1.</span> <span class="nav-text">整体链路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A5%E5%8F%A3"><span class="nav-number">3.1.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#controller"><span class="nav-number">3.1.2.</span> <span class="nav-text">controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.1.3.</span> <span class="nav-text">客户端</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">201</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">30</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">43</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Golang/" rel="tag">Golang</a>, <a class="tag-none-link" href="/tags/gRPC/" rel="tag">gRPC</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-07-19T07:44:06.846Z" itemprop="dateModified">最后编辑：2026-07-19</time>
+                </div>
+            </div>
+        </footer>
     </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【gRPC】Protocol Buffers" href="/Golang/gRPC/Protobuf/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【gRPC】中间件" href="/Golang/gRPC/中间件的实现/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#protobuf%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">Protobuf文件实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAserver"><span class="toc-number">2.</span> <span class="toc-text">实现一个server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAclient"><span class="toc-number">3.</span> <span class="toc-text">实现一个Client</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E9%93%BE%E8%B7%AF"><span class="toc-number">3.1.</span> <span class="toc-text">整体链路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A5%E5%8F%A3"><span class="toc-number">3.1.1.</span> <span class="toc-text">入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#controller"><span class="toc-number">3.1.2.</span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.1.3.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
   </aside>
-  <div id="sidebar-dimmer"></div>
 
 
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
       </div>
-    </main>
+  </aside>
 
-    <footer class="footer">
-      <div class="footer-inner">
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
         
-
         
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">838k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">25:23</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
   </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
 
         
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
 </div>
 
 
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
 
 
 
 
 
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
+<!-- 额外的追加注入项 -->
 
 
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
 </script>
 
-    
 
-  
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
 
-<!-- hexo injector body_end start -->
-<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
 
-  <script>
-  const CODE_CONFIG = {
-    beautify: true,
-    highlightCopy: true,
-    highlightLang: true,
-    highlightHeightLimit: undefined,
-    isHighlightShrink: false,
-    copy: {
-      success: 'Copy Success',
-      error: 'Copy Error',
-      noSupport: 'Browser Not Support',
-    }
-  };
-  console.log(
-    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
-    "color: #fff; background: #5f5f5f",
-    "color: #fff; background: #80c8f8",
-    ""
-  );
-  </script>
-  <!-- hexo injector body_end end --></body>
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
 </html>

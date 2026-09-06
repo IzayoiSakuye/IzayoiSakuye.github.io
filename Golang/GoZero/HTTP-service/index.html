@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【go-zero】HTTP服务 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/Golang/GoZero/HTTP-service/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Golang, Gozero" />
+  
+  <meta name="description" content="go-zero的HTTP框架，除了基础服务端与客户端配置，还提供了多种功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【go-zero】HTTP服务">
+<meta property="og:url" content="https://izayoisakuye.github.io/Golang/GoZero/HTTP-service/index.html">
+<meta property="og:site_name" content="红魔咖啡馆">
+<meta property="og:description" content="go-zero的HTTP框架，除了基础服务端与客户端配置，还提供了多种功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
+<meta property="article:published_time" content="2026-07-20T08:20:28.157Z">
+<meta property="article:modified_time" content="2026-07-27T14:32:55.767Z">
+<meta property="article:author" content="IzayoiSakuye">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Gozero">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
+  
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【go-zero】HTTP服务","description":"go-zero的HTTP框架，除了基础服务端与客户端配置，还提供了多种功能","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2026-07-20T08:20:28.157Z","dateModified":"2026-07-27T14:32:55.767Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/Golang/GoZero/HTTP-service/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+  }
+
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
+
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/Golang/GoZero/HTTP-service/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【go-zero】HTTP服务</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2026-07-20T08:20:28.157Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2026-07-20</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~20.41K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">1.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">中间件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tracehandler"><span class="toc-number">1.2.1.</span> <span class="toc-text">TraceHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#loghandler"><span class="toc-number">1.2.2.</span> <span class="toc-text">LogHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheushandler"><span class="toc-number">1.2.3.</span> <span class="toc-text">PrometheusHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maxconnshandler"><span class="toc-number">1.2.4.</span> <span class="toc-text">MaxConnsHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-number">1.2.5.</span> <span class="toc-text">自定义中间件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">错误处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%9A%E5%8A%A1%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.1.</span> <span class="toc-text">自定义业务错误类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%9F%E4%B8%80%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-number">1.3.2.</span> <span class="toc-text">统一错误处理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8handler%E4%B8%AD%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">在handler中使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E4%BD%93"><span class="toc-number">1.4.</span> <span class="toc-text">请求体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#form%E8%A1%A8%E5%8D%95%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">1.4.1.</span> <span class="toc-text">Form表单请求参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#json%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">1.4.2.</span> <span class="toc-text">JSON请求参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#path%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">1.4.3.</span> <span class="toc-text">Path请求参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#header%E5%8F%82%E6%95%B0%E8%8E%B7%E5%8F%96"><span class="toc-number">1.4.4.</span> <span class="toc-text">Header参数获取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C"><span class="toc-number">1.4.5.</span> <span class="toc-text">参数校验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E4%BD%93"><span class="toc-number">1.5.</span> <span class="toc-text">响应体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#code-data%E7%BB%9F%E4%B8%80%E5%93%8D%E5%BA%94"><span class="toc-number">1.5.1.</span> <span class="toc-text">code-data统一响应</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#server-sent-events"><span class="toc-number">1.6.</span> <span class="toc-text">Server-Sent Events</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">1.6.1.</span> <span class="toc-text">服务端代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90"><span class="toc-number">1.6.2.</span> <span class="toc-text">代码生成</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#form%E8%AF%B7%E6%B1%82"><span class="toc-number">2.1.</span> <span class="toc-text">Form请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#json%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.</span> <span class="toc-text">Json请求</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#jwt%E8%AE%A4%E8%AF%81"><span class="toc-number">3.</span> <span class="toc-text">JWT认证</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#api%E8%A7%84%E8%8C%83"><span class="toc-number">3.1.</span> <span class="toc-text">API规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.2.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90access-token"><span class="toc-number">3.3.</span> <span class="toc-text">生成access token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E9%80%BB%E8%BE%91"><span class="toc-number">3.4.</span> <span class="toc-text">登录逻辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B7%E6%96%B0token"><span class="toc-number">3.5.</span> <span class="toc-text">刷新Token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81"><span class="toc-number">3.6.</span> <span class="toc-text">自动验证</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">4.</span> <span class="toc-text">文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#api%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">API定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hanlder%E5%B1%82"><span class="toc-number">4.2.</span> <span class="toc-text">Hanlder层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logic%E5%B1%82"><span class="toc-number">4.3.</span> <span class="toc-text">Logic层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%91%E5%AD%98%E5%82%A8"><span class="toc-number">4.4.</span> <span class="toc-text">云存储</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="服务端">服务端</h1>
+<h2 id="配置">配置</h2>
+<p>对HTTP服务主机、端口、整数进行控制</p>
+<p>这些字段都可以在yaml配置文件中定义和修改</p>
+<p>源码定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">RestConf <span class="keyword">struct</span> &#123;</span><br><span class="line">    service.ServiceConf</span><br><span class="line">    Host     <span class="type">string</span> <span class="string">`json:&quot;,default=0.0.0.0&quot;`</span></span><br><span class="line">    Port     <span class="type">int</span></span><br><span class="line">    CertFile <span class="type">string</span> <span class="string">`json:&quot;,optional&quot;`</span></span><br><span class="line">    KeyFile  <span class="type">string</span> <span class="string">`json:&quot;,optional&quot;`</span></span><br><span class="line">    Verbose  <span class="type">bool</span>   <span class="string">`json:&quot;,optional&quot;`</span></span><br><span class="line">    MaxConns <span class="type">int</span>    <span class="string">`json:&quot;,default=10000&quot;`</span></span><br><span class="line">    MaxBytes <span class="type">int64</span>  <span class="string">`json:&quot;,default=1048576&quot;`</span></span><br><span class="line">    <span class="comment">// milliseconds</span></span><br><span class="line">    Timeout      <span class="type">int64</span>         <span class="string">`json:&quot;,default=3000&quot;`</span></span><br><span class="line">    CpuThreshold <span class="type">int64</span>         <span class="string">`json:&quot;,default=900,range=[0:1000]&quot;`</span></span><br><span class="line">    Signature    SignatureConf <span class="string">`json:&quot;,optional&quot;`</span></span><br><span class="line">    Middlewares MiddlewaresConf</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>配置表格：</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 17%" />
+<col style="width: 51%" />
+<col style="width: 8%" />
+<col style="width: 9%" />
+</colgroup>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>含义</th>
+<th>默认值</th>
+<th>是否必选</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Host</td>
+<td>string</td>
+<td>监听地址</td>
+<td>0.0.0.0</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Port</td>
+<td>int</td>
+<td>监听端口</td>
+<td>无</td>
+<td>是</td>
+</tr>
+<tr>
+<td>CertFile</td>
+<td>string</td>
+<td>https证书文件</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>KeyFile</td>
+<td>string</td>
+<td>https私钥文件</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Verbose</td>
+<td>bool</td>
+<td>是否打印详细日志</td>
+<td>无</td>
+<td>否</td>
+</tr>
+<tr>
+<td>MaxConns</td>
+<td>int</td>
+<td>并发请求数</td>
+<td>10000</td>
+<td>是</td>
+</tr>
+<tr>
+<td>MaxBytes</td>
+<td>Int64</td>
+<td>最大ContentLength</td>
+<td>1048576</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>int64</td>
+<td>超时时间(ms)</td>
+<td>3000</td>
+<td>是</td>
+</tr>
+<tr>
+<td>CpuThreshold</td>
+<td>int64</td>
+<td>降载阈值，默认900(90%)，可允许设置范围0到1000</td>
+<td>900</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Signature</td>
+<td>SignatureConf</td>
+<td>签名配置</td>
+<td></td>
+<td>否</td>
+</tr>
+<tr>
+<td>Middlewares</td>
+<td>MiddlewaresConf</td>
+<td>启用中间件</td>
+<td></td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>service.ServiceConf</code>：通用服务配置，包括服务名、日志配置和运行模式等，是所有服务共有的基本设置</li>
+<li><code>Host</code>和<code>Port</code>：监听的主机IP和端口</li>
+<li><code>CertFile</code>和<code>KeyFile</code>：SSL证书文件路径和私钥文件路径，提供这两个文件可以启动HTTPS服务</li>
+<li><code>Verbose</code>：开启后会打印更详细的调试信息</li>
+<li><code>MaxConns</code>：最大并发连接数，防止请求过多服务器过载</li>
+<li><code>MaxBytes</code>：请求体的最大字节，默认1mb，防止请求过大</li>
+<li><code>CpuThreshold</code>：CPU使用率阈值，默认90%，当超过后服务会拒绝新请求，起到熔断保护</li>
+<li><code>Signature</code>：请求签名验证，包括启用状态，密钥等，用于身份校验</li>
+<li><code>Middlewares</code>：全局中间件的配置，如启用/禁用某个中间件，设置中间件参数等</li>
+</ul>
+<h2 id="中间件">中间件</h2>
+<p>go-zero中内置了如下中间件，均默认启用：</p>
+<ul>
+<li>鉴权管理中间件 AuthorizeHandler</li>
+<li>熔断中间件 BreakerHandler</li>
+<li>内容安全中间件 ContentSecurityHandler</li>
+<li>解密中间件 CryptionHandler</li>
+<li>压缩管理中间件 GunzipHandler</li>
+<li>日志中间件 LogHandler</li>
+<li>ContentLength 管理中间件 MaxBytesHandler</li>
+<li>限流中间件 MaxConnsHandler</li>
+<li>指标统计中间件 MetricHandler</li>
+<li>普罗米修斯指标中间件 PrometheusHandler</li>
+<li>panic 恢复中间件 RecoverHandler</li>
+<li>负载监控中间件 SheddingHandler</li>
+<li>超时中间件 TimeoutHandler</li>
+<li>链路追踪中间件 TraceHandler</li>
+</ul>
+<p>配置如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MiddlewaresConf <span class="keyword">struct</span> &#123;</span><br><span class="line">    Trace      <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Log        <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Prometheus <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    MaxConns   <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Breaker    <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Shedding   <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Timeout    <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Recover    <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Metrics    <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    MaxBytes   <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">    Gunzip     <span class="type">bool</span> <span class="string">`json:&quot;,default=true&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例，如果想禁用指标收集，在<code>etc/config.yaml</code>配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Name:</span> <span class="string">HelloWorld.api</span></span><br><span class="line"><span class="attr">Host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="attr">Port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">Middlewares:</span></span><br><span class="line">  <span class="attr">Metrics:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p><code>main.go</code>应用配置：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> restConf rest.RestConf</span><br><span class="line">    conf.MustLoad(<span class="string">&quot;etc/config.yaml&quot;</span>, &amp;restConf)</span><br><span class="line">    srv := rest.MustNewServer(restConf)</span><br><span class="line">    <span class="keyword">defer</span> srv.Stop()</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="tracehandler">TraceHandler</h3>
+<p>用于链路追踪，go-zero继承了Opentelemetry来标准化链路追踪，如果想把追踪信息上报jaeger，可以做如下配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Name:</span> <span class="string">HelloWorld.api</span></span><br><span class="line"><span class="attr">Host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="attr">Port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">Middlewares:</span></span><br><span class="line">  <span class="attr">Metrics:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">Telemetry:</span></span><br><span class="line">  <span class="attr">Name:</span> <span class="string">hello</span></span><br><span class="line">  <span class="attr">Endpoint:</span> <span class="string">localhost:4317</span></span><br><span class="line">  <span class="attr">Batcher:</span> <span class="string">otlpgrpc</span></span><br><span class="line">  <span class="attr">Sampler:</span> <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+<p>应用配置后，打开Jaeger就可以查看链路请求信息，默认携带<code>http.host</code>、<code>http.method</code>、<code>http.route</code>、<code>http.status_code</code>等属性</p>
+<h3 id="loghandler">LogHandler</h3>
+<p>默认每次http请求都会输出对应请求日志，格式如下，可以通过配置禁用该中间件：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;@timestamp&quot;</span>: <span class="string">&quot;2023-03-05T21:53:44.244+08:00&quot;</span>,</span><br><span class="line">  <span class="string">&quot;caller&quot;</span>: <span class="string">&quot;handler/loghandler.go:160&quot;</span>,</span><br><span class="line">  <span class="string">&quot;content&quot;</span>: <span class="string">&quot;[HTTP] 200 - GET /hello - 127.0.0.1:51499 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36&quot;</span>,</span><br><span class="line">  <span class="string">&quot;duration&quot;</span>: <span class="string">&quot;0.0ms&quot;</span>,</span><br><span class="line">  <span class="string">&quot;level&quot;</span>: <span class="string">&quot;info&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="prometheushandler">PrometheusHandler</h3>
+<p>httpserver默认集成Prometheus指标监控，用于自动收集每个HTTP请求的性能指标，默认启用</p>
+<ul>
+<li><p>请求耗时统计：指标类型为<code>Histogram</code>，指标名为<code>http_server_requests_duration_ms</code></p>
+<p>用于记录每个请求花了多少毫秒，按照path(接口路径)分组，默认buckets定义分别为
+5, 10, 25, 50, 100, 250, 500, 1000（毫秒）</p></li>
+<li><p>错误请求计数：指标类型为<code>Counter</code>，指标名为<code>http_server_requests_code_total</code></p>
+<p>记录不同HTTP状态码的请求总数，按path分组</p></li>
+</ul>
+<h3 id="maxconnshandler">MaxConnsHandler</h3>
+<p>用于限制http最大并发请求数，当超过设置值会返回<code>http.StatusServiceUnavailable</code>状态码</p>
+<h3 id="自定义中间件">自定义中间件</h3>
+<p>写函数自定义中间件，使用<code>server.Use()</code>应用自定义中间件</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">server := rest.MustNewServer(rest.RestConf&#123;&#125;)</span><br><span class="line"><span class="keyword">defer</span> server.Stop()</span><br><span class="line"></span><br><span class="line">server.Use(middleware)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义的中间件</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">middleware</span><span class="params">(next http.HandlerFunc)</span></span> http.HandlerFunc &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    w.Header().Add(<span class="string">&quot;X-Middleware&quot;</span>, <span class="string">&quot;static-middleware&quot;</span>)</span><br><span class="line">    next(w, r)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="错误处理">错误处理</h2>
+<h3 id="自定义业务错误类型">自定义业务错误类型</h3>
+<p>内部定义的错误类型<code>errors.CodeMsg</code>，包含两个字段：</p>
+<ul>
+<li>Code：业务状态码</li>
+<li>Msg：提示信息</li>
+</ul>
+<p>使用<code>errors.New()</code>创建</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;github.com/zeromicro/x/errors&quot;</span></span><br><span class="line"><span class="comment">// 在需要的地方创建带错误码和消息的错误</span></span><br><span class="line">httpx.Error(w, errors.New(<span class="number">400</span>, <span class="string">&quot;参数错误&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h3 id="统一错误处理器">统一错误处理器</h3>
+<p>调用<code>httpx.Error</code>处理响应时会执行<code>SetErrorHandler</code></p>
+<ul>
+<li>如果错误是<code>*errors.CodeMsg</code>，说明是预期的业务错误，返回200，但JSON中携带错误代码和消息</li>
+<li>其他错误统一视为服务端错误，返回500</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">httpx.SetErrorHandler(<span class="function"><span class="keyword">func</span><span class="params">(err <span class="type">error</span>)</span></span> (<span class="type">int</span>, any) &#123;</span><br><span class="line">    <span class="keyword">switch</span> e := err.(<span class="keyword">type</span>) &#123;</span><br><span class="line">    <span class="keyword">case</span> *errors.CodeMsg:</span><br><span class="line">        <span class="comment">// 业务错误 → HTTP 200，通过 Body 返回 Code+Msg</span></span><br><span class="line">        <span class="keyword">return</span> http.StatusOK, xhttp.BaseResponse[<span class="keyword">struct</span>&#123;&#125;]&#123;</span><br><span class="line">            Code: e.Code,</span><br><span class="line">            Msg:  e.Msg,</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">// 未知错误 → HTTP 500，Body 为空或通用错误</span></span><br><span class="line">        <span class="keyword">return</span> http.StatusInternalServerError, <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="在handler中使用">在handler中使用</h3>
+<ul>
+<li>成功的响应直接使用<code>httpx.OKJson</code></li>
+<li>若失败统一用<code>httpx.Error</code>，让errorhandler判断</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handle</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> req HelloRequest</span><br><span class="line">    <span class="keyword">if</span> err := httpx.Parse(r, &amp;req); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        httpx.Error(w, err)  <span class="comment">// 解析失败，触发 errorHandler，返回 500</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> req.Name == <span class="string">&quot;error&quot;</span> &#123;</span><br><span class="line">        httpx.Error(w, errors.New(<span class="number">400</span>, <span class="string">&quot;参数错误&quot;</span>)) <span class="comment">// 业务错误，返回 200 &#123;code:400&#125;</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    httpx.OkJson(w, HelloResponse&#123;Msg: <span class="string">&quot;hello &quot;</span> + req.Name&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="请求体">请求体</h2>
+<p>gozero中支持：</p>
+<ul>
+<li>通过<code>http.Request</code>的Body字段获取请求参数，只接受<code>application/json</code>格式</li>
+<li>通过<code>http.Request</code>的Form字段获取请求参数，只接受<code>application/x-www-form-urlencoded</code>格式</li>
+<li>通过<code>httpx.Parse</code>方法获取path参数和请求头参数</li>
+</ul>
+<h3 id="form表单请求参数">Form表单请求参数</h3>
+<p>可以通过结构体form
+tag定义参数名称，支持content-type为<code>application/x-www-form-urlencoded</code>的请求参数，也支持get方法的query参数</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name    <span class="type">string</span>  <span class="string">`form:&quot;name&quot;`</span> <span class="comment">// 必填参数</span></span><br><span class="line">    Age     <span class="type">int</span>     <span class="string">`form:&quot;age,optional&quot;`</span> <span class="comment">// optional定义非必填参数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> req Request</span><br><span class="line">err := httpx.Parse(r, &amp;req) <span class="comment">// 解析参数</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>x-www-form-urlencoded是一种HTTP请求格式，用于将表单数据发送到服务器，他会把键值对转换成类似URL
+query字符串的样子，特殊字符会被百分号编码，如<code>key1=value1&amp;key2=value2</code></p>
+<p>gozero的表单tag可以直接解析这种格式</p>
+</blockquote>
+<h3 id="json请求参数">JSON请求参数</h3>
+<p>JSON参数请求接收来自POST请求，content-type为<code>application/json</code>的请求参数，通过结构体json
+tag定义参数名称</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span></span><br><span class="line">    Age  <span class="type">int</span>    <span class="string">`json:&quot;age&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> req Request</span><br><span class="line">err := httpx.Parse(r, &amp;req) <span class="comment">// 解析参数</span></span><br></pre></td></tr></table></figure>
+<h3 id="path请求参数">Path请求参数</h3>
+<p>Path参数请求支持在路径上定义参数，用于获取特定的路径参数，通过结构体path
+tag定义参数变量名</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Name <span class="type">string</span> <span class="string">`path:&quot;name&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Path定义</span></span><br><span class="line">rest.Route&#123;</span><br><span class="line">    Method:  http.MethodGet,</span><br><span class="line">    Path:    <span class="string">&quot;/user/:name&quot;</span>,</span><br><span class="line">    Handler: handle,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> req Request</span><br><span class="line">err := httpx.Parse(r, &amp;req) <span class="comment">// 解析参数</span></span><br></pre></td></tr></table></figure>
+<h3 id="header参数获取">Header参数获取</h3>
+<p>用于获取特定的请求头的值，通过结构体header tag定义请求头的key值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Age <span class="type">int</span> <span class="string">`form:&quot;age,optional&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> req Request</span><br><span class="line">err := httpx.Parse(r, &amp;req) <span class="comment">// 解析参数</span></span><br></pre></td></tr></table></figure>
+<h3 id="参数校验">参数校验</h3>
+<p><strong>optional：</strong></p>
+<p>如果参数不是必填的，可以在参数后面加上<code>optional</code>关键字</p>
+<p>对于必填参数，若没有传递参数，会返回如下错误<code>field age is not set</code></p>
+<p><strong>range：</strong></p>
+<p>可以定义参数区间，在结构体参数后面加上<code>range</code>关键字，区间说明见上面</p>
+<p><strong>default：</strong></p>
+<p>通过<code>default</code>来定义参数默认值，在结构体参数后面加上<code>default</code>关键字，默认值为零值</p>
+<h2 id="响应体">响应体</h2>
+<p>gozero中支持：</p>
+<ul>
+<li>通过<code>http.ResopnseWriter</code>的<code>Write</code>方法返回相应参数</li>
+<li>通过<code>http.ResopnseWriter</code>的<code>Header</code>方法返回响应头</li>
+<li>默认支持<code>application/json</code>格式</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Response <span class="keyword">struct</span> &#123;</span><br><span class="line">  Name   <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span></span><br><span class="line">  Age    <span class="type">int</span>    <span class="string">`json:&quot;age&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">resp := &amp;Response&#123;Name: <span class="string">&quot;jack&quot;</span>, Age: <span class="number">18</span>&#125;</span><br><span class="line">httpx.OkJson(w, resp)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>httpx.OKJson(w, resp)</code>返回一个200状态的Json</li>
+<li><code>httpx.WriteJson(w, statusCode, data)</code>返回自定义状态码的Json</li>
+</ul>
+<h3 id="code-data统一响应">code-data统一响应</h3>
+<p>为了和前端达成统一的响应格式，我们通常会封装一层业务code，msg以及业务数据，格式如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;code&quot;</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;ok&quot;</span>,</span><br><span class="line">  <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过<code>zeromicro/x</code>扩展包代替默认响应写法</p>
+<ul>
+<li><code>errors.New(code int, msg string)</code>：创建一个带业务状态码的错误，而不仅仅是string</li>
+<li><code>xhttp.JsonBaseResponseCtx(ctx, w, v)</code>：将响应自动包装为统一格式，写入<code>ResponseWriter</code></li>
+</ul>
+<h2 id="server-sent-events">Server-Sent Events</h2>
+<p>用于实时数据更新，允许服务器通过持久化的HTTP连接向客户端单向推送事件，比起WebSocket它更轻量，适合简单的实时更新场景</p>
+<p>核心特点：</p>
+<ul>
+<li>单向通信：服务器主动推送，客户端被动接收</li>
+<li>简单协议：基于<code>text/event-stream</code>格式，易于实现</li>
+<li>自动重连：浏览器内置重连机制，断开后可自动尝试恢复</li>
+</ul>
+<h3 id="服务端代码">服务端代码</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;net/http&quot;</span></span><br><span class="line">  <span class="string">&quot;time&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;github.com/zeromicro/go-zero/core/logx&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/zeromicro/go-zero/rest&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> SseHandler <span class="keyword">struct</span> &#123;</span><br><span class="line">  clients <span class="keyword">map</span>[<span class="keyword">chan</span> <span class="type">string</span>]<span class="type">bool</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewSseHandler</span><span class="params">()</span></span> *SseHandler &#123;</span><br><span class="line">  <span class="keyword">return</span> &amp;SseHandler&#123;</span><br><span class="line">    clients: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">chan</span> <span class="type">string</span>]<span class="type">bool</span>),</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Serve 处理 SSE 连接</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *SseHandler)</span></span> Serve(w http.ResponseWriter, r *http.Request) &#123;</span><br><span class="line">  <span class="comment">// 设置 SSE 必需的 HTTP 头</span></span><br><span class="line">  <span class="comment">// for versions &gt; v1.8.1, no need to add 3 lines below</span></span><br><span class="line">  w.Header().Add(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;text/event-stream&quot;</span>)</span><br><span class="line">  w.Header().Add(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>)</span><br><span class="line">  w.Header().Add(<span class="string">&quot;Connection&quot;</span>, <span class="string">&quot;keep-alive&quot;</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 为每个客户端创建一个 channel</span></span><br><span class="line">  clientChan := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">string</span>)</span><br><span class="line">  h.clients[clientChan] = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 客户端断开时清理</span></span><br><span class="line">  <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="built_in">delete</span>(h.clients, clientChan)</span><br><span class="line">    <span class="built_in">close</span>(clientChan)</span><br><span class="line">  &#125;()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 持续监听并推送事件</span></span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> msg := &lt;-clientChan:</span><br><span class="line">      <span class="comment">// 发送事件数据</span></span><br><span class="line">      fmt.Fprintf(w, <span class="string">&quot;data: %s\n\n&quot;</span>, msg)</span><br><span class="line">      w.(http.Flusher).Flush()</span><br><span class="line">    <span class="keyword">case</span> &lt;-r.Context().Done():</span><br><span class="line">      <span class="comment">// 客户端断开连接</span></span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SimulateEvents 模拟周期性事件</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *SseHandler)</span></span> SimulateEvents() &#123;</span><br><span class="line">  ticker := time.NewTicker(time.Second)</span><br><span class="line">  <span class="keyword">defer</span> ticker.Stop()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> <span class="keyword">range</span> ticker.C &#123;</span><br><span class="line">    message := fmt.Sprintf(<span class="string">&quot;Server time: %s&quot;</span>, time.Now().Format(time.RFC3339))</span><br><span class="line">    <span class="comment">// 广播给所有客户端</span></span><br><span class="line">    <span class="keyword">for</span> clientChan := <span class="keyword">range</span> h.clients &#123;</span><br><span class="line">      <span class="keyword">select</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> clientChan &lt;- message:</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">// 跳过阻塞的 channel</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">// 创建 go-zero REST 服务，集成静态文件服务</span></span><br><span class="line">  server := rest.MustNewServer(rest.RestConf&#123;</span><br><span class="line">    Host: <span class="string">&quot;0.0.0.0&quot;</span>,</span><br><span class="line">    Port: <span class="number">8080</span>,</span><br><span class="line">  &#125;, rest.WithFileServer(<span class="string">&quot;/static&quot;</span>, http.Dir(<span class="string">&quot;static&quot;</span>)))</span><br><span class="line">  <span class="keyword">defer</span> server.Stop()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 初始化 SSE 处理</span></span><br><span class="line">  sseHandler := NewSseHandler()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 注册 SSE 路由</span></span><br><span class="line">  <span class="comment">// for go-zero versions &gt; v1.8.1</span></span><br><span class="line">  server.AddRoute(rest.Route&#123;</span><br><span class="line">    Method:  http.MethodGet,</span><br><span class="line">    Path:    <span class="string">&quot;/sse&quot;</span>,</span><br><span class="line">    Handler: sseHandler.Serve,</span><br><span class="line">  &#125;, rest.WithSSE())</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 在单独的 goroutine 中模拟事件</span></span><br><span class="line">  <span class="keyword">go</span> sseHandler.SimulateEvents()</span><br><span class="line"></span><br><span class="line">  logx.Info(<span class="string">&quot;Server starting on :8080&quot;</span>)</span><br><span class="line">  server.Start()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SSE服务以一个<code>SSEHandler</code>结构，其中定义了一个存储channel的映射，维护所有客户端channel，方便广播消息</li>
+<li>Serve方法用于处理channel连接：
+<ul>
+<li>首先设置SSE必须的HTTP头（gozero1.8.1往上不需要）</li>
+<li>为每个连接创建一个channel，存入clients</li>
+<li>使用select监听channel消息或客户端断开信号</li>
+<li>收到消息时格式化为SSE协议，通过<code>Flush()</code>推送</li>
+<li>最后要关闭所有channel</li>
+</ul></li>
+<li>SimulateEvents方法模拟发送持续请求：
+<ul>
+<li>通过<code>time.Ticker</code>每秒生成一个事件</li>
+<li>遍历所有channel，将消息广播到所有连接的客户端</li>
+<li>使用select+default，避免某个客户端阻塞影响整体</li>
+</ul></li>
+<li>main函数：
+<ul>
+<li>使用<code>rest.MustNewServer</code>创建服务，监听端口</li>
+<li>通过<code>rest.WithFileServer</code>配置静态文件服务，映射/static到本地static目录</li>
+<li>注册<code>/sse</code>路由，绑定<code>SseHandler.Server</code>并禁用超时，若在api文件中定义<code>SSE</code>路由，需要加上<code>timeout: 0s</code></li>
+</ul></li>
+</ul>
+<h3 id="代码生成">代码生成</h3>
+<p>在<code>@server</code>语句块下声明<code>sse:true</code></p>
+<p>其中，sse的handler模板中是一个以<code>chan</code>来传递事件的channel，而不是一个响应体</p>
+<h1 id="客户端">客户端</h1>
+<p>HTTP client是一个用于发送HTTP请求的库，支持如下功能</p>
+<ul>
+<li>content-type自动识别，仅支持 <code>application/json</code> 和
+<code>application/x-www-form-urlencoded</code> 两种格式</li>
+<li>支持将 path 参数自动填充到 url</li>
+<li>支持将结构体中 header 填充到 http 请求头</li>
+</ul>
+<h2 id="form请求">Form请求</h2>
+<p>get和post使用方式相同，只需要将结构体中tag标记form即可</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Node   <span class="type">string</span> <span class="string">`path:&quot;node&quot;`</span></span><br><span class="line">    ID     <span class="type">int</span>    <span class="string">`form:&quot;id&quot;`</span></span><br><span class="line">    Header <span class="type">string</span> <span class="string">`header:&quot;X-Header&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> domain = flag.String(<span class="string">&quot;domain&quot;</span>, <span class="string">&quot;http://localhost:3333&quot;</span>, <span class="string">&quot;the domain to request&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    flag.Parse()</span><br><span class="line"></span><br><span class="line">    req := Request&#123;</span><br><span class="line">        Node:   <span class="string">&quot;foo&quot;</span>,</span><br><span class="line">        ID:     <span class="number">1024</span>,</span><br><span class="line">        Header: <span class="string">&quot;foo-header&quot;</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    resp, err := httpc.Do(context.Background(), http.MethodGet, *domain+<span class="string">&quot;/nodes/:node&quot;</span>, req)</span><br><span class="line">    <span class="comment">// resp, err := httpc.Do(context.Background(), http.MethodPost, *domain+&quot;/nodes/:node&quot;, req)</span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    io.Copy(os.Stdout, resp.Body)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="json请求">Json请求</h2>
+<p>用法相同，只需要修改结构体tag为json即可</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Request <span class="keyword">struct</span> &#123;</span><br><span class="line">    Node   <span class="type">string</span> <span class="string">`path:&quot;node&quot;`</span></span><br><span class="line">    Foo    <span class="type">string</span> <span class="string">`json:&quot;foo&quot;`</span></span><br><span class="line">    Bar    <span class="type">string</span> <span class="string">`json:&quot;bar&quot;`</span></span><br><span class="line">    Header <span class="type">string</span> <span class="string">`header:&quot;X-Header&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> domain = flag.String(<span class="string">&quot;domain&quot;</span>, <span class="string">&quot;http://localhost:3333&quot;</span>, <span class="string">&quot;the domain to request&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    flag.Parse()</span><br><span class="line"></span><br><span class="line">    req := Request&#123;</span><br><span class="line">        Node:   <span class="string">&quot;foo&quot;</span>,</span><br><span class="line">        Header: <span class="string">&quot;foo-header&quot;</span>,</span><br><span class="line">        Foo: <span class="string">&quot;foo&quot;</span>,</span><br><span class="line">        Bar: <span class="string">&quot;bar&quot;</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    resp, err := httpc.Do(context.Background(), http.MethodPost, *domain+<span class="string">&quot;/nodes/:node&quot;</span>, req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    io.Copy(os.Stdout, resp.Body)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="jwt认证">JWT认证</h1>
+<p>api文件中的<code>@server</code>语句块中声明jwt配置后，框架会自动注入token验证中间件</p>
+<h2 id="api规范">API规范</h2>
+<p>在api文件中定义公开接口，启用jwt中间件，当客户端访问这下面的接口是，必须在请求头中携带<code>Authorization: Bearer &lt;token&gt;</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">service user-api &#123;</span><br><span class="line">    <span class="comment">// 公开接口</span></span><br><span class="line">    @handler Login</span><br><span class="line">    post /user/login (LoginReq) returns (LoginResp)</span><br><span class="line">    @handler RefreshToken</span><br><span class="line">    post /user/refresh (RefreshReq) returns (LoginResp)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@server (</span><br><span class="line">    jwt: Auth</span><br><span class="line">)</span><br><span class="line">service user-api &#123;</span><br><span class="line">    @handler GetProfile</span><br><span class="line">    get /user/profile (ProfileReq) returns (ProfileResp)</span><br><span class="line">    @handler UpdateProfile</span><br><span class="line">    put /user/profile (UpdateProfileReq) returns (UpdateProfileResp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="配置文件">配置文件</h2>
+<p>在<code>etc/user-api.yaml</code>中配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Auth:</span></span><br><span class="line">  <span class="attr">AccessSecret:</span> <span class="string">&quot;your-256-bit-secret&quot;</span></span><br><span class="line">  <span class="attr">AccessExpire:</span> <span class="number">86400</span>        <span class="comment"># Access Token 有效期：24 小时</span></span><br><span class="line"><span class="attr">RefreshSecret:</span> <span class="string">&quot;another-random-secret&quot;</span></span><br><span class="line"><span class="attr">RefreshExpire:</span> <span class="number">604800</span>        <span class="comment"># Refresh Token 有效期：7 天</span></span><br></pre></td></tr></table></figure>
+<h2 id="生成access-token">生成access token</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">generateAccessToken</span><span class="params">(secret <span class="type">string</span>, userId <span class="type">int64</span>, role <span class="type">string</span>)</span></span> (<span class="type">string</span>, <span class="type">error</span>) &#123;</span><br><span class="line">    now := time.Now()</span><br><span class="line">    claims := jwt.MapClaims&#123;</span><br><span class="line">        <span class="string">&quot;userId&quot;</span>: userId,</span><br><span class="line">        <span class="string">&quot;role&quot;</span>:   role,</span><br><span class="line">        <span class="string">&quot;iat&quot;</span>:    now.Unix(),</span><br><span class="line">        <span class="string">&quot;exp&quot;</span>:    now.Add(<span class="number">24</span> * time.Hour).Unix(),</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> jwt.NewWithClaims(jwt.SigningMethodHS256, claims).</span><br><span class="line">        SignedString([]<span class="type">byte</span>(secret))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>claim是一个<code>MapClaims</code>，可以随意添加自定义字段和标准字段</li>
+<li>定义签名算法为<code>HS256</code>，使用<code>SignedString</code>获取最终的JWT字符串</li>
+</ul>
+<h2 id="登录逻辑">登录逻辑</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *LoginLogic)</span></span> Login(req *types.LoginReq) (*types.LoginResp, <span class="type">error</span>) &#123;</span><br><span class="line">    user, err := l.svcCtx.UserModel.FindOneByUsername(l.ctx, req.Username)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errorx.NewCodeError(<span class="number">401</span>, <span class="string">&quot;用户名或密码错误&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> !checkPassword(req.Password, user.Password) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errorx.NewCodeError(<span class="number">401</span>, <span class="string">&quot;用户名或密码错误&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    accessToken, _ := generateAccessToken(</span><br><span class="line">        l.svcCtx.Config.Auth.AccessSecret, user.Id, user.Role)</span><br><span class="line">    refreshToken, _ := generateRefreshToken(</span><br><span class="line">        l.svcCtx.Config.RefreshSecret, user.Id)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &amp;types.LoginResp&#123;</span><br><span class="line">        AccessToken:  accessToken,</span><br><span class="line">        RefreshToken: refreshToken,</span><br><span class="line">        ExpiresIn:    l.svcCtx.Config.Auth.AccessExpire,</span><br><span class="line">    &#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>根据用户名查询数据库，若不存在返回401</li>
+<li>对比密码，不匹配返回401</li>
+<li>认证通过后，调用 <code>generateAccessToken</code> 和
+<code>generateRefreshToken</code> 分别生成两个 JWT</li>
+<li>返回<code>LoginResp</code>，包括两个jwt与accessToken的过期时间</li>
+</ul>
+<h2 id="刷新token">刷新Token</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *RefreshTokenLogic)</span></span> RefreshToken(req *types.RefreshReq) (*types.LoginResp, <span class="type">error</span>) &#123;</span><br><span class="line">    token, err := jwt.ParseWithClaims(req.RefreshToken, jwt.MapClaims&#123;&#125;,</span><br><span class="line">        <span class="function"><span class="keyword">func</span><span class="params">(t *jwt.Token)</span></span> (any, <span class="type">error</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> []<span class="type">byte</span>(l.svcCtx.Config.RefreshSecret), <span class="literal">nil</span></span><br><span class="line">        &#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> || !token.Valid &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errorx.NewCodeError(<span class="number">401</span>, <span class="string">&quot;Refresh Token 已失效或非法&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    claims := token.Claims.(jwt.MapClaims)</span><br><span class="line">    userId := <span class="type">int64</span>(claims[<span class="string">&quot;userId&quot;</span>].(<span class="type">float64</span>))</span><br><span class="line"></span><br><span class="line">    user, _ := l.svcCtx.UserModel.FindOne(l.ctx, userId)</span><br><span class="line">    newAccess, _ := generateAccessToken(</span><br><span class="line">        l.svcCtx.Config.Auth.AccessSecret, userId, user.Role)</span><br><span class="line">    newRefresh, _ := generateRefreshToken(</span><br><span class="line">        l.svcCtx.Config.RefreshSecret, userId)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &amp;types.LoginResp&#123;</span><br><span class="line">        AccessToken:  newAccess,</span><br><span class="line">        RefreshToken: newRefresh,</span><br><span class="line">        ExpiresIn:    l.svcCtx.Config.Auth.AccessExpire,</span><br><span class="line">    &#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>客户端发送<code>refreshReq</code>，用<code>RefreshSecret</code>解析RefreshToken</li>
+<li>若解析失败或token过期，返回401</li>
+<li>从Token的claim中取出userId，查询数据库相关信息</li>
+<li>重新生成一份新的token返回</li>
+<li>旧的refresh token就此失效</li>
+</ul>
+<h2 id="自动验证">自动验证</h2>
+<p>只要在接口声明了<code>jwt: Auth</code>，gozero生成的handler就会自动包含校验代码，类似于：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成代码中会包含类似这样的调用</span></span><br><span class="line">jwtMiddleware := jwt.NewMiddleware(svcCtx.Config.Auth)</span><br><span class="line"><span class="comment">// 然后将 handler 包裹在中间件内部</span></span><br><span class="line">handler = jwtMiddleware(handler)</span><br></pre></td></tr></table></figure>
+<p>无需再手动解析token，只需要通过<code>l.ctx.Value("UserId")</code>等上下文值就可以获取用户信息</p>
+<h1 id="文件上传">文件上传</h1>
+<p>gozero的每个handler都可以访问原始<code>http.Request</code>，所以go的multipart库可以直接用</p>
+<h2 id="api定义">API定义</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">service upload-api &#123;</span><br><span class="line">    @handler UploadFile</span><br><span class="line">    post /upload/file returns (UploadResp)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> UploadResp &#123;</span><br><span class="line">    Filename <span class="type">string</span> <span class="string">`json:&quot;filename&quot;`</span></span><br><span class="line">    Size     <span class="type">int64</span>  <span class="string">`json:&quot;size&quot;`</span></span><br><span class="line">    URL      <span class="type">string</span> <span class="string">`json:&quot;url&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>goctl生成后，UploadFileHandler是一个<code>http.HandlerFunc</code>，因此可以访问<code>http.Request</code></li>
+<li>返回结构包括原始文件名、文件大小和访问路径</li>
+</ul>
+<h2 id="hanlder层">Hanlder层</h2>
+<p>用于解析请求与校验文件类型</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">UploadFileHandler</span><span class="params">(svcCtx *svc.ServiceContext)</span></span> http.HandlerFunc &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 最多 32 MB 不落盘，超出部分自动落盘</span></span><br><span class="line">        <span class="keyword">if</span> err := r.ParseMultipartForm(<span class="number">32</span> &lt;&lt; <span class="number">20</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">            httpx.Error(w, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        file, header, err := r.FormFile(<span class="string">&quot;file&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            httpx.Error(w, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> file.Close()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通过读取前 512 字节检测 MIME 类型</span></span><br><span class="line">        buf := <span class="built_in">make</span>([]<span class="type">byte</span>, <span class="number">512</span>)</span><br><span class="line">        n, _ := file.Read(buf)</span><br><span class="line">        mimeType := http.DetectContentType(buf[:n])</span><br><span class="line">        <span class="keyword">if</span> !isAllowedType(mimeType) &#123;</span><br><span class="line">            httpx.Error(w, fmt.Errorf(<span class="string">&quot;不支持的文件类型: %s&quot;</span>, mimeType),</span><br><span class="line">                http.StatusUnsupportedMediaType)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        file.Seek(<span class="number">0</span>, io.SeekStart)</span><br><span class="line"></span><br><span class="line">        l := logic.NewUploadFileLogic(r.Context(), svcCtx)</span><br><span class="line">        resp, err := l.UploadFile(file, header)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            httpx.Error(w, err)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        httpx.OkJson(w, resp)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>设定最大缓存为32mb，超过了自动写入临时文件</p></li>
+<li><p><code>FormFile</code>返回<code>multipart.File</code>和文件头信息</p></li>
+<li><p>使用<code>http.DetectContentType</code>读取文件头512字节检测MIME类型</p>
+<p>注意：这里不要相信客户端声明的content-type或后缀名，需要自行判断，并实现<code>isAllowedType</code>来设置配型白名单</p></li>
+<li><p>读取文件后将指针<code>Seek</code>送回开头，以便后续逻辑完整写入</p></li>
+</ul>
+<h2 id="logic层">Logic层</h2>
+<p>用于在服务端校验与本地文件存储</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *UploadFileLogic)</span></span> UploadFile(file multipart.File, header *multipart.FileHeader) (*types.UploadResp, <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> maxSize = <span class="number">10</span> &lt;&lt; <span class="number">20</span> <span class="comment">// 10 MB</span></span><br><span class="line">    <span class="keyword">if</span> header.Size &gt; maxSize &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, errorx.NewCodeError(<span class="number">400</span>, <span class="string">&quot;文件超过 10 MB 限制&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    safeFilename := fmt.Sprintf(<span class="string">&quot;%d_%s&quot;</span>, time.Now().UnixNano(),</span><br><span class="line">        filepath.Base(filepath.Clean(header.Filename)))</span><br><span class="line"></span><br><span class="line">    dst, err := os.Create(filepath.Join(l.svcCtx.Config.UploadDir, safeFilename))</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> dst.Close()</span><br><span class="line"></span><br><span class="line">    size, err := io.Copy(dst, file)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &amp;types.UploadResp&#123;</span><br><span class="line">        Filename: header.Filename,</span><br><span class="line">        Size:     size,</span><br><span class="line">        URL:      <span class="string">&quot;/files/&quot;</span> + safeFilename,</span><br><span class="line">    &#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>首先校验大小，对比设定的业务上限，进行二次检查</p></li>
+<li><p><code>filepath.Base(filepath.Clean(header.Filename)))</code>用于文件名安全处理，防止攻击，前面再接入纳秒时间戳，确保文件名唯一</p></li>
+<li><p><code>l.svcCtx.Config.UploadDir</code>设定存储目录，一般放在服务配置的<code>etc/app.yaml</code>里:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">MaxBytes:</span> <span class="number">67108864</span>   <span class="comment"># 整个请求 body 大小限制 64 MB</span></span><br><span class="line"><span class="attr">UploadDir:</span> <span class="string">./uploads</span></span><br></pre></td></tr></table></figure></li>
+<li><p>最后返回的URL生成相对路径，前面需要另外的路由映射到该目录</p></li>
+</ul>
+<h2 id="云存储">云存储</h2>
+<p>一般生产环境需要上传到云存储，如AWS，阿里云等平台，下面的示例是将文件存入<code>AWS S3</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *UploadFileLogic)</span></span> uploadToS3(file multipart.File, key <span class="type">string</span>) (<span class="type">string</span>, <span class="type">error</span>) &#123;</span><br><span class="line">    _, err := l.svcCtx.S3.PutObject(l.ctx, &amp;s3.PutObjectInput&#123;</span><br><span class="line">        Bucket: aws.String(l.svcCtx.Config.S3Bucket),</span><br><span class="line">        Key:    aws.String(key),</span><br><span class="line">        Body:   file,</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>, err</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;https://%s.s3.amazonaws.com/%s&quot;</span>,</span><br><span class="line">        l.svcCtx.Config.S3Bucket, key), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</div>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Golang/" rel="tag">Golang</a>, <a class="tag-none-link" href="/tags/Gozero/" rel="tag">Gozero</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2026-07-27T14:32:55.767Z" itemprop="dateModified">最后编辑：2026-07-27</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【GORM】迁移" href="/Golang/GORM/迁移/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【go-zero】API DSL" href="/Golang/GoZero/API DSL/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">1.</span> <span class="toc-text">服务端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">中间件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tracehandler"><span class="toc-number">1.2.1.</span> <span class="toc-text">TraceHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#loghandler"><span class="toc-number">1.2.2.</span> <span class="toc-text">LogHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#prometheushandler"><span class="toc-number">1.2.3.</span> <span class="toc-text">PrometheusHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maxconnshandler"><span class="toc-number">1.2.4.</span> <span class="toc-text">MaxConnsHandler</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-number">1.2.5.</span> <span class="toc-text">自定义中间件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">错误处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%9A%E5%8A%A1%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.1.</span> <span class="toc-text">自定义业务错误类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%9F%E4%B8%80%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-number">1.3.2.</span> <span class="toc-text">统一错误处理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8handler%E4%B8%AD%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">在handler中使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E4%BD%93"><span class="toc-number">1.4.</span> <span class="toc-text">请求体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#form%E8%A1%A8%E5%8D%95%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">1.4.1.</span> <span class="toc-text">Form表单请求参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#json%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">1.4.2.</span> <span class="toc-text">JSON请求参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#path%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">1.4.3.</span> <span class="toc-text">Path请求参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#header%E5%8F%82%E6%95%B0%E8%8E%B7%E5%8F%96"><span class="toc-number">1.4.4.</span> <span class="toc-text">Header参数获取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C"><span class="toc-number">1.4.5.</span> <span class="toc-text">参数校验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E4%BD%93"><span class="toc-number">1.5.</span> <span class="toc-text">响应体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#code-data%E7%BB%9F%E4%B8%80%E5%93%8D%E5%BA%94"><span class="toc-number">1.5.1.</span> <span class="toc-text">code-data统一响应</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#server-sent-events"><span class="toc-number">1.6.</span> <span class="toc-text">Server-Sent Events</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">1.6.1.</span> <span class="toc-text">服务端代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90"><span class="toc-number">1.6.2.</span> <span class="toc-text">代码生成</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#form%E8%AF%B7%E6%B1%82"><span class="toc-number">2.1.</span> <span class="toc-text">Form请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#json%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.</span> <span class="toc-text">Json请求</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#jwt%E8%AE%A4%E8%AF%81"><span class="toc-number">3.</span> <span class="toc-text">JWT认证</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#api%E8%A7%84%E8%8C%83"><span class="toc-number">3.1.</span> <span class="toc-text">API规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.2.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90access-token"><span class="toc-number">3.3.</span> <span class="toc-text">生成access token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E9%80%BB%E8%BE%91"><span class="toc-number">3.4.</span> <span class="toc-text">登录逻辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B7%E6%96%B0token"><span class="toc-number">3.5.</span> <span class="toc-text">刷新Token</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81"><span class="toc-number">3.6.</span> <span class="toc-text">自动验证</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">4.</span> <span class="toc-text">文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#api%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">API定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hanlder%E5%B1%82"><span class="toc-number">4.2.</span> <span class="toc-text">Hanlder层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logic%E5%B1%82"><span class="toc-number">4.3.</span> <span class="toc-text">Logic层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%91%E5%AD%98%E5%82%A8"><span class="toc-number">4.4.</span> <span class="toc-text">云存储</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+
+<!-- 额外的追加注入项 -->
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
+</html>

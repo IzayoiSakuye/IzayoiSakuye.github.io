@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"izayoisakuye.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+  
+  <title>【数学】数论基础 | 红魔咖啡馆</title>
+  <link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/">
+  <meta name="author" content="IzayoiSakuye" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="数学, 数论" />
+  
   <meta name="description" content="介绍了数论的基础知识">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【数学】数论基础">
@@ -29,250 +26,248 @@
 <meta property="og:site_name" content="红魔咖啡馆">
 <meta property="og:description" content="介绍了数论的基础知识">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/image-20251223212510777.png">
-<meta property="og:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/image-20251223212850934.png">
+<meta property="og:image" content="https://izayoisakuye.github.io/images/favicon.png">
 <meta property="article:published_time" content="2025-09-28T13:00:45.149Z">
 <meta property="article:modified_time" content="2025-12-23T13:30:16.705Z">
 <meta property="article:author" content="IzayoiSakuye">
 <meta property="article:tag" content="数学">
 <meta property="article:tag" content="数论">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/image-20251223212510777.png">
-
-<link rel="canonical" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>【数学】数论基础 | 红魔咖啡馆</title>
+<meta name="twitter:image" content="https://izayoisakuye.github.io/images/favicon.png">
   
-
-
-
-
-
-
-  <noscript>
+  <!-- JSON-LD 结构化数据 -->
+  
+  
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【数学】数论基础","description":"介绍了数论的基础知识","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2025-09-28T13:00:45.149Z","dateModified":"2025-12-23T13:30:16.705Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/"}}
+    </script>
+  
+  <!-- 关键 CSS 预加载 -->
+  <link rel="preload" href="/css/kr-core.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/light.min.css" as="style" crossorigin>
+  <link rel="preload" href="/css/kr-theme/dark.min.css" as="style" crossorigin>
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all">
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all">
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)">
+  
+    <link rel="stylesheet"  id="highlight-css" href="/css/highlight/highlight.js/light.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/css/highlight/highlight.js/light.min.css"></noscript>
+  
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet"  id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css"></noscript>
+  
+    <link rel="stylesheet"  id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/nprogress@0.2.0/nprogress.css"></noscript>
+  
+  
+    <link rel="stylesheet"  href="/vendors/viewerjs@1.11.6/dist/viewer.min.css" media="print" onload="this.media='all'" onerror="this.media='all'"><noscript><link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></noscript>
+  
+  <!-- 预先加载的JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
   <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/cover.jpg');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
+  <!-- 额外的追加注入项 -->
+  
+    <style>
+  /* 让背景图只保留约 30% 的视觉强度。 */
+  @media (min-width: 768px) {
+    body.custom-background {
+      background-image:
+        linear-gradient(rgba(245, 245, 245, 0.7), rgba(245, 245, 245, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
+
+    html[data-theme="dark"] body.custom-background {
+      background-image:
+        linear-gradient(rgba(28, 28, 28, 0.7), rgba(28, 28, 28, 0.7)),
+        url("/images/cover.jpg") !important;
+    }
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+  /* Kratos 默认是指南针图标，这里改为 Font Awesome 4 的书签图标。 */
+  #krw-toc > .widget-title > .fa-compass::before {
+    content: "\f02e";
+  }
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
-<style>:root{--hl-color:#90a4ae;--hl-bg:#f6f8fa;--hltools-bg:#e6ebf1;--hltools-color:#90a4ae;--hlnumber-bg:#f6f8fa;--hlnumber-color:rgba(144,164,174,0.5);--hlscrollbar-bg:#dce4eb;--hlexpand-bg:linear-gradient(180deg,rgba(246,248,250,0.1),rgba(246,248,250,0.9))}</style><!-- hexo injector head_end end --></head>
+  #kratos-widget-area .widget.widget-kratos-categories > .category-list {
+    max-height: min(45vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-gutter: stable;
+  }
+</style>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a href="/archives/">
+                                        
+                                            
+                                                <i class="fa fa-file"></i>
+                                            
+                                            档案馆
+                                        </a>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                            <a>
+                                        
+                                            
+                                                <i class="fa fa-link"></i>
+                                            
+                                            链接
+                                        </a>
+                                        
+                                            <ul class="sub-menu">
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://github.com/IzayoiSakuye">
+                                                            
+                                                                <i class="fa fa-code"></i>
+                                                            
+                                                            代码仓库
+                                                        </a>
+                                                    </li>
+                                                
+                                                    <li>
+                                                        <a target="_blank" rel="noopener" href="https://space.bilibili.com/124721786">
+                                                            
+                                                                <i class="fa fa-television"></i>
+                                                            
+                                                            bilibili
+                                                        </a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">红魔咖啡馆</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>红魔咖啡馆</h2> <br />
+                        <span>头发越掉越多，头发越掉越少</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">红魔咖啡馆</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">头发越掉越多，头发越掉越少</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
 
 
+        
 
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
             
 
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://izayoisakuye.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="IzayoiSakuye">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="红魔咖啡馆">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          【数学】数论基础
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-09-28 21:00:45" itemprop="dateCreated datePublished" datetime="2025-09-28T21:00:45+08:00">2025-09-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-12-23 21:30:16" itemprop="dateModified" datetime="2025-12-23T21:30:16+08:00">2025-12-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">算法与数据结构</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">数学</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span id="busuanzi_value_page_pv"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>8.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>15 分钟</span>
-            </span>
-            <div class="post-description">介绍了数论的基础知识</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="整除">整除</h1>
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">【数学】数论基础</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2025-09-28T13:00:45.149Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2025-09-28</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">IzayoiSakuye</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~10.29K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B4%E9%99%A4"><span class="toc-number">1.</span> <span class="toc-text">整除</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%80%A7%E8%B4%A8"><span class="toc-number">1.1.</span> <span class="toc-text">定义与性质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%A6%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">约数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%99%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">余数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%99%E6%95%B0-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">余数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E4%BD%99%E6%95%B0%E9%99%A4%E6%B3%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">带余数除法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%99%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">余数的性质</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0%E4%B8%8E%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">最大公约数与最小公倍数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0"><span class="toc-number">2.1.</span> <span class="toc-text">最大公约数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8"><span class="toc-number">2.1.2.</span> <span class="toc-text">性质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E6%B3%95"><span class="toc-number">2.1.3.</span> <span class="toc-text">求法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="toc-number">2.1.3.1.</span> <span class="toc-text">欧几里得算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="toc-number">2.1.3.2.</span> <span class="toc-text">扩展欧几里得算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF"><span class="toc-number">2.1.3.3.</span> <span class="toc-text">更相减损术</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%92%E7%B4%A0"><span class="toc-number">2.1.4.</span> <span class="toc-text">互素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9Fgcd"><span class="toc-number">2.1.5.</span> <span class="toc-text">快速GCD</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">2.1.5.1.</span> <span class="toc-text">预处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF-1"><span class="toc-number">2.1.5.2.</span> <span class="toc-text">更相减损术</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">最小公倍数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">性质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E6%B3%95-1"><span class="toc-number">2.2.3.</span> <span class="toc-text">求法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A0%E6%95%B0%E4%B8%8E%E5%90%88%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">素数与合数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">算术基本定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AE%B9"><span class="toc-number">4.1.</span> <span class="toc-text">内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A0%E6%95%B0%E7%9A%84%E5%8F%A6%E4%B8%80%E7%A7%8D%E5%AE%9A%E4%B9%89"><span class="toc-number">4.2.</span> <span class="toc-text">素数的另一种定义</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8C%E4%BD%99"><span class="toc-number">5.</span> <span class="toc-text">同余</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-number">5.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-2"><span class="toc-number">5.2.</span> <span class="toc-text">性质</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E8%AE%BA%E5%87%BD%E6%95%B0"><span class="toc-number">6.</span> <span class="toc-text">数论函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%AF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">积性函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-number">6.1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-3"><span class="toc-number">6.1.2.</span> <span class="toc-text">性质</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E6%80%A7%E5%87%BD%E6%95%B0"><span class="toc-number">6.2.</span> <span class="toc-text">加性函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-number">6.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-4"><span class="toc-number">6.2.2.</span> <span class="toc-text">性质</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="整除">整除</h1>
 <h2 id="定义与性质">定义与性质</h2>
 <p>设<span class="math inline">\(a,b\in \Z,a\neq0\)</span>，若<span
 class="math inline">\(\exists q\in \Z\)</span>，使得<span
@@ -423,14 +418,9 @@ class="math inline">\(\gcd(a_i,a_j)=1\)</span>，则<br />
 class="math inline">\(\gcd(a,b)=\gcd(b, a\bmod{b})\)</span></p>
 <p>代码实现如下：</p>
 <p>递归版</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> b</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #D73A49">?</span><span style="color: #24292E">a</span><span style="color: #D73A49">:</span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(b,a</span><span style="color: #D73A49">%</span><span style="color: #24292E">b);</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">gcd</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> b==<span class="number">0</span>?a:<span class="built_in">gcd</span>(b,a%b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>位运算版</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">while</span><span style="color: #24292E">(b</span><span style="color: #D73A49">^=</span><span style="color: #24292E">a</span><span style="color: #D73A49">^=</span><span style="color: #24292E">b</span><span style="color: #D73A49">^=</span><span style="color: #24292E">a</span><span style="color: #D73A49">%=</span><span style="color: #24292E">b);</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">gcd</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(b^=a^=b^=a%=b);</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>多个数求gcd，答案一定是每个数的约数，那么也一定是每相邻两个数的约数。我们采用归纳法，可以证明，每次取出两个数求出答案后再放回去，不会对所需要的答案造成影响。</p>
 <h4 id="扩展欧几里得算法">扩展欧几里得算法</h4>
 <p>exgcd是用来求形如<span
@@ -442,17 +432,7 @@ y_2\)</span></p>
 class="math inline">\(\gcd(a,0)=a\)</span>，则一组解为<span
 class="math inline">\(x=1, y=0\)</span></p>
 <p>代码：</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">exgcd</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">x</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #D73A49">&amp;</span><span style="color: #E36209">y</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">if</span><span style="color: #24292E">(b</span><span style="color: #D73A49">==</span><span style="color: #005CC5">0</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">		x</span><span style="color: #D73A49">=</span><span style="color: #005CC5">1</span><span style="color: #24292E">; y</span><span style="color: #D73A49">=</span><span style="color: #005CC5">0</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">		</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a;</span></span>
-<span class="line"><span style="color: #24292E">	}</span></span>
-<span class="line"><span style="color: #24292E">	ll d</span><span style="color: #D73A49">=</span><span style="color: #6F42C1">exgcd</span><span style="color: #24292E">(b,a</span><span style="color: #D73A49">%</span><span style="color: #24292E">b,x,y);</span></span>
-<span class="line"><span style="color: #24292E">	ll t</span><span style="color: #D73A49">=</span><span style="color: #24292E">x;</span></span>
-<span class="line"><span style="color: #24292E">	x</span><span style="color: #D73A49">=</span><span style="color: #24292E">y;</span></span>
-<span class="line"><span style="color: #24292E">	y</span><span style="color: #D73A49">=</span><span style="color: #24292E">t</span><span style="color: #D73A49">-</span><span style="color: #24292E">(a</span><span style="color: #D73A49">/</span><span style="color: #24292E">b)</span><span style="color: #D73A49">*</span><span style="color: #24292E">y;</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> d;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">exgcd</span><span class="params">(ll a,ll b,ll &amp;x,ll &amp;y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(b==<span class="number">0</span>)&#123;</span><br><span class="line">		x=<span class="number">1</span>; y=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> a;</span><br><span class="line">	&#125;</span><br><span class="line">	ll d=<span class="built_in">exgcd</span>(b,a%b,x,y);</span><br><span class="line">	ll t=x;</span><br><span class="line">	x=y;</span><br><span class="line">	y=t-(a/b)*y;</span><br><span class="line">	<span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="更相减损术">更相减损术</h4>
 <p>这个方法出自九章算术：</p>
 <ol type="1">
@@ -487,48 +467,7 @@ class="math inline">\(a\)</span>是否整除<span
 class="math inline">\(y\)</span>，否则<span
 class="math inline">\((a,y)=(y\bmod a, a)\)</span>，因为<span
 class="math inline">\(a\leq \sqrt{n}\)</span>，可查表</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> T </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1000</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #D73A49">const</span><span style="color: #24292E"> </span><span style="color: #D73A49">int</span><span style="color: #24292E"> M </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1000000</span><span style="color: #24292E">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> g[T][T], fac[M][</span><span style="color: #005CC5">3</span><span style="color: #24292E">];</span></span>
-<span class="line"><span style="color: #24292E">bitset</span><span style="color: #D73A49">&lt;</span><span style="color: #24292E">M</span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> vis;</span></span>
-<span class="line"><span style="color: #24292E">vector</span><span style="color: #D73A49">&lt;int&gt;</span><span style="color: #24292E"> pri;</span></span>
-<span class="line"><span style="color: #D73A49">void</span><span style="color: #24292E"> </span><span style="color: #6F42C1">prework</span><span style="color: #24292E">() {</span></span>
-<span class="line"><span style="color: #24292E">  vis[</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> vis[</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  fac[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[</span><span style="color: #005CC5">1</span><span style="color: #24292E">][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">2</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> M; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (</span><span style="color: #D73A49">!</span><span style="color: #24292E">vis[i]) {</span></span>
-<span class="line"><span style="color: #24292E">      fac[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">      fac[i][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">      pri.</span><span style="color: #6F42C1">push_back</span><span style="color: #24292E">(i);</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j : pri) {</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">int</span><span style="color: #24292E"> mul </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i </span><span style="color: #D73A49">*</span><span style="color: #24292E"> j;</span></span>
-<span class="line"><span style="color: #24292E">      vis[mul] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">true</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">      fac[mul][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">*</span><span style="color: #24292E"> j;</span></span>
-<span class="line"><span style="color: #24292E">      fac[mul][</span><span style="color: #005CC5">1</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">1</span><span style="color: #24292E">];</span></span>
-<span class="line"><span style="color: #24292E">      fac[mul][</span><span style="color: #005CC5">2</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[i][</span><span style="color: #005CC5">2</span><span style="color: #24292E">];</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #6F42C1">sort</span><span style="color: #24292E">(fac[mul], fac[mul] </span><span style="color: #D73A49">+</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">);</span></span>
-<span class="line"><span style="color: #24292E">      </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (i </span><span style="color: #D73A49">%</span><span style="color: #24292E"> j </span><span style="color: #D73A49">==</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">)</span></span>
-<span class="line"><span style="color: #24292E">        </span><span style="color: #D73A49">break</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">    }</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> T; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i)</span></span>
-<span class="line"><span style="color: #24292E">    g[</span><span style="color: #005CC5">0</span><span style="color: #24292E">][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[i][</span><span style="color: #005CC5">0</span><span style="color: #24292E">] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> T; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i)</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">; j </span><span style="color: #D73A49">&lt;=</span><span style="color: #24292E"> i; </span><span style="color: #D73A49">++</span><span style="color: #24292E">j)</span></span>
-<span class="line"><span style="color: #24292E">      g[i][j] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[j][i] </span><span style="color: #D73A49">=</span><span style="color: #24292E"> g[j][i </span><span style="color: #D73A49">%</span><span style="color: #24292E"> j];</span></span>
-<span class="line"><span style="color: #24292E">}</span></span>
-<span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> ans </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E">;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">for</span><span style="color: #24292E"> (</span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">; i </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">3</span><span style="color: #24292E">; </span><span style="color: #D73A49">++</span><span style="color: #24292E">i) {</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">int</span><span style="color: #24292E"> _ </span><span style="color: #D73A49">=</span><span style="color: #24292E"> fac[a][i] </span><span style="color: #D73A49">&gt;</span><span style="color: #24292E"> T </span><span style="color: #D73A49">?</span><span style="color: #24292E"> (b </span><span style="color: #D73A49">%</span><span style="color: #24292E"> fac[a][i] </span><span style="color: #D73A49">?</span><span style="color: #24292E"> </span><span style="color: #005CC5">1</span><span style="color: #24292E"> </span><span style="color: #D73A49">:</span><span style="color: #24292E"> fac[a][i])</span></span>
-<span class="line"><span style="color: #24292E">                          </span><span style="color: #D73A49">:</span><span style="color: #24292E"> g[fac[a][i]][b </span><span style="color: #D73A49">%</span><span style="color: #24292E"> fac[a][i]];</span></span>
-<span class="line"><span style="color: #24292E">    b </span><span style="color: #D73A49">/=</span><span style="color: #24292E"> _;</span></span>
-<span class="line"><span style="color: #24292E">    ans </span><span style="color: #D73A49">*=</span><span style="color: #24292E"> _;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> ans;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> T = <span class="number">1000</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> M = <span class="number">1000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> g[T][T], fac[M][<span class="number">3</span>];</span><br><span class="line">bitset&lt;M&gt; vis;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; pri;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">prework</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  vis[<span class="number">0</span>] = vis[<span class="number">1</span>] = <span class="literal">true</span>;</span><br><span class="line">  fac[<span class="number">1</span>][<span class="number">0</span>] = fac[<span class="number">1</span>][<span class="number">1</span>] = fac[<span class="number">1</span>][<span class="number">2</span>] = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt; M; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!vis[i]) &#123;</span><br><span class="line">      fac[i][<span class="number">0</span>] = fac[i][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">      fac[i][<span class="number">2</span>] = i;</span><br><span class="line">      pri.<span class="built_in">push_back</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j : pri) &#123;</span><br><span class="line">      <span class="type">int</span> mul = i * j;</span><br><span class="line">      vis[mul] = <span class="literal">true</span>;</span><br><span class="line">      fac[mul][<span class="number">0</span>] = fac[i][<span class="number">0</span>] * j;</span><br><span class="line">      fac[mul][<span class="number">1</span>] = fac[i][<span class="number">1</span>];</span><br><span class="line">      fac[mul][<span class="number">2</span>] = fac[i][<span class="number">2</span>];</span><br><span class="line">      <span class="built_in">sort</span>(fac[mul], fac[mul] + <span class="number">3</span>);</span><br><span class="line">      <span class="keyword">if</span> (i % j == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; T; ++i)</span><br><span class="line">    g[<span class="number">0</span>][i] = g[i][<span class="number">0</span>] = i;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; T; ++i)</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= i; ++j)</span><br><span class="line">      g[i][j] = g[j][i] = g[j][i % j];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">gcd</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> ans = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">    <span class="type">int</span> _ = fac[a][i] &gt; T ? (b % fac[a][i] ? <span class="number">1</span> : fac[a][i])</span><br><span class="line">                          : g[fac[a][i]][b % fac[a][i]];</span><br><span class="line">    b /= _;</span><br><span class="line">    ans *= _;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h4 id="更相减损术-1">更相减损术</h4>
 <p><span class="math inline">\(O(\log{n})\)</span></p>
 <ul>
@@ -541,22 +480,7 @@ class="math inline">\((a,b)=\left(\dfrac{a}{2},b\right)\)</span></li>
 <li>若均不满足，设<span class="math inline">\(a&gt;b\)</span>, 则<span
 class="math inline">\((a,b)=(a-b,b)\)</span></li>
 </ul>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(</span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">, </span><span style="color: #D73A49">int</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">) {</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">__builtin_ctz</span><span style="color: #24292E">(a);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> j </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">__builtin_ctz</span><span style="color: #24292E">(b);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> k </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">min</span><span style="color: #24292E">(i, j);</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">int</span><span style="color: #24292E"> d;</span></span>
-<span class="line"><span style="color: #24292E">  b </span><span style="color: #D73A49">&gt;&gt;=</span><span style="color: #24292E"> j;</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">while</span><span style="color: #24292E"> (a) {</span></span>
-<span class="line"><span style="color: #24292E">    a </span><span style="color: #D73A49">&gt;&gt;=</span><span style="color: #24292E"> i;</span></span>
-<span class="line"><span style="color: #24292E">    d </span><span style="color: #D73A49">=</span><span style="color: #24292E"> b </span><span style="color: #D73A49">-</span><span style="color: #24292E"> a;</span></span>
-<span class="line"><span style="color: #24292E">    i </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #6F42C1">__builtin_ctz</span><span style="color: #24292E">(d);</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (a </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> b) b </span><span style="color: #D73A49">=</span><span style="color: #24292E"> a;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">if</span><span style="color: #24292E"> (d </span><span style="color: #D73A49">&lt;</span><span style="color: #24292E"> </span><span style="color: #005CC5">0</span><span style="color: #24292E">) a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> </span><span style="color: #D73A49">-</span><span style="color: #24292E">d;</span></span>
-<span class="line"><span style="color: #24292E">    </span><span style="color: #D73A49">else</span><span style="color: #24292E"> a </span><span style="color: #D73A49">=</span><span style="color: #24292E"> d;</span></span>
-<span class="line"><span style="color: #24292E">  }</span></span>
-<span class="line"><span style="color: #24292E">  </span><span style="color: #D73A49">return</span><span style="color: #24292E"> b </span><span style="color: #D73A49">&lt;&lt;</span><span style="color: #24292E"> k;</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">gcd</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> i = __builtin_ctz(a);</span><br><span class="line">  <span class="type">int</span> j = __builtin_ctz(b);</span><br><span class="line">  <span class="type">int</span> k = <span class="built_in">min</span>(i, j);</span><br><span class="line">  <span class="type">int</span> d;</span><br><span class="line">  b &gt;&gt;= j;</span><br><span class="line">  <span class="keyword">while</span> (a) &#123;</span><br><span class="line">    a &gt;&gt;= i;</span><br><span class="line">    d = b - a;</span><br><span class="line">    i = __builtin_ctz(d);</span><br><span class="line">    <span class="keyword">if</span> (a &lt; b) b = a;</span><br><span class="line">    <span class="keyword">if</span> (d &lt; <span class="number">0</span>) a = -d;</span><br><span class="line">    <span class="keyword">else</span> a = d;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> b &lt;&lt; k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="最小公倍数">最小公倍数</h2>
 <h3 id="定义-1">定义</h3>
 <p>一组整数的公倍数，是指同时是这组数中每一个数的倍数的数。0是任意一组整数的公倍数。</p>
@@ -596,9 +520,7 @@ lcm(a^n,b^n)=\bigl(lcm(a,b)\bigr)^n\,.\)</span></p></li>
 <p>两个数：<span class="math inline">\(\gcd(a,b)\times lcm(a,b)=a\times
 b\)</span></p>
 <p>代码</p>
-<figure class="shiki c++"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #6F42C1">lcm</span><span style="color: #24292E">(</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">a</span><span style="color: #24292E">,</span><span style="color: #6F42C1">ll</span><span style="color: #24292E"> </span><span style="color: #E36209">b</span><span style="color: #24292E">){</span></span>
-<span class="line"><span style="color: #24292E">	</span><span style="color: #D73A49">return</span><span style="color: #24292E"> a</span><span style="color: #D73A49">/</span><span style="color: #6F42C1">gcd</span><span style="color: #24292E">(a,b)</span><span style="color: #D73A49">*</span><span style="color: #24292E">b;</span><span style="color: #6A737D"> // 防止 a*b 爆 ll，所以先 /gcd 再 *b</span></span>
-<span class="line"><span style="color: #24292E">}</span></span></code></pre></div></div></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">lcm</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a/<span class="built_in">gcd</span>(a,b)*b; <span class="comment">// 防止 a*b 爆 ll，所以先 /gcd 再 *b</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>多个数：我们其实没有必要求一个共同的最大公约数再去处理，最直接的方法就是，当我们算出两个数的
 gcd，或许在求多个数的
 gcd时候，我们将它放入序列对后面的数继续求解，那么，我们转换一下，直接将最小公倍数放入序列即可。</p>
@@ -637,88 +559,9 @@ b \pmod m\]</span> 且 <span class="math display">\[d \mid m\]</span>
 d.\]</span></p></li>
 <li><p><strong>定理 2</strong> 当 <span class="math display">\[a \equiv
 b \pmod m\quad\text{且}\quad c \equiv d \pmod m\]</span> 时，有</p>
-<figure class="shiki math"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></div><div class="code"><pre><code>  a + c \equiv b + d \pmod m,\\
-  a - c \equiv b - d \pmod m,\\
-  a \times c \equiv b \times d \pmod m.
-
-- **定理 3**  当  $$ac \equiv bd \pmod m\quad\text{且}\quad \gcd(c,m)=1$$  时，有  $$a \equiv b \pmod m.$$
-  
-- **定理 4**  当  $$a \equiv b \pmod m$$  时，对于任意的 $c\neq0$，有  $$ac \equiv bc \pmod m.$$
-  
-- **定理 5**  当  $$a \equiv b \pmod m$$  时，对于任意的 $k>0$，有  $$a^k \equiv b^k \pmod m.$$
-  
-- **定理 6**  当  $$a \equiv b \pmod m$$  时，对于任意的整数 $t$，有  $$a = b + t\,m.$$
-
-## 同余原理
-
-当需要返回数据很大，超过了longlong的范围，一般需要返回一个数字对另一个数字取模的结果
-
-
-
-对于四则运算，位数（bits）固定，我们认为时间复杂度为$O(1)$，但保留中间结果的情况下，位数可能会改变，导致复杂度增加
-
-**定理：对于k位（非32、64位）整数，加减的复杂度为$O(k)$，乘除的复杂度变为$O(k^2)$**
-
-此时需要同余原理
-
-同余的数学化表示：
-
-### 加法同余
-
-对于$(a+b)\bmod{k}=c$，为了避免$a+b$得到更大的位数以出现问题，我们可以分别对$a$和$b$取模再相加取模，即$(a\bmod{k}+b\bmod{k})\bmod{k}=c'$，这样可以把$a$和$b$限制在32或64位，结果$c=c'$
-
-
-
-### 乘法同余
-
-对于$(a\times b)\bmod{k}=c$，分别对$a$和$b$取模再相乘取模，即$(a\bmod{k}\times b\bmod{k})\bmod{k}=c'$，这样可以把$a$和$b$限制在32或64位，结果$c=c'$
-
-**注意：要保证相乘时中间结果不能溢出**
-
-
-
-### 减法同余
-
-关于取模，若一个数取模后的结果是负数，**则需要加一个模数后取模**，以获得他的正数表示
-
-例如一个数%7的结果是-2，等同于这个数+7后%7的结果5，因为两者加2后分别是0和7，都可以被7整除
-
-对于$(a-b)\bmod{k}=c$，我们需要在分别模m的基础上加一个m，即$((a\bmod{k}-b\bmod{k})+m)\bmod{k}=c'$，为了避免获得负数中间结果
-
-# C/C++的整数除法与取模
-
-## 规定
-
-C/C++规定在整数除法中：
-
-- 除数为0时，行为未定义
-- 否则$\frac{a}{b}\times b+a\% b=a$
-
-即取模运算的符号取决于除法如何取整，而这是实现定义的
-
-从C++11起，规定**商向零取整**，取模的符号**与被除数相同**</code></pre></div></div></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">  a + c \equiv b + d \pmod m,\\</span><br><span class="line">  a - c \equiv b - d \pmod m,\\</span><br><span class="line">  a \times c \equiv b \times d \pmod m.</span><br><span class="line"></span><br><span class="line">- **定理 3**  当  $$ac \equiv bd \pmod m\quad\text&#123;且&#125;\quad \gcd(c,m)=1$$  时，有  $$a \equiv b \pmod m.$$</span><br><span class="line">  </span><br><span class="line">- **定理 4**  当  $$a \equiv b \pmod m$$  时，对于任意的 $c\neq0$，有  $$ac \equiv bc \pmod m.$$</span><br><span class="line">  </span><br><span class="line">- **定理 5**  当  $$a \equiv b \pmod m$$  时，对于任意的 $k&gt;0$，有  $$a^k \equiv b^k \pmod m.$$</span><br><span class="line">  </span><br><span class="line">- **定理 6**  当  $$a \equiv b \pmod m$$  时，对于任意的整数 $t$，有  $$a = b + t\,m.$$</span><br><span class="line"></span><br><span class="line">## 同余原理</span><br><span class="line"></span><br><span class="line">当需要返回数据很大，超过了longlong的范围，一般需要返回一个数字对另一个数字取模的结果</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">对于四则运算，位数（bits）固定，我们认为时间复杂度为$O(1)$，但保留中间结果的情况下，位数可能会改变，导致复杂度增加</span><br><span class="line"></span><br><span class="line">**定理：对于k位（非32、64位）整数，加减的复杂度为$O(k)$，乘除的复杂度变为$O(k^2)$**</span><br><span class="line"></span><br><span class="line">此时需要同余原理</span><br><span class="line"></span><br><span class="line">同余的数学化表示：</span><br><span class="line"></span><br><span class="line">### 加法同余</span><br><span class="line"></span><br><span class="line">对于$(a+b)\bmod&#123;k&#125;=c$，为了避免$a+b$得到更大的位数以出现问题，我们可以分别对$a$和$b$取模再相加取模，即$(a\bmod&#123;k&#125;+b\bmod&#123;k&#125;)\bmod&#123;k&#125;=c&#x27;$，这样可以把$a$和$b$限制在32或64位，结果$c=c&#x27;$</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 乘法同余</span><br><span class="line"></span><br><span class="line">对于$(a\times b)\bmod&#123;k&#125;=c$，分别对$a$和$b$取模再相乘取模，即$(a\bmod&#123;k&#125;\times b\bmod&#123;k&#125;)\bmod&#123;k&#125;=c&#x27;$，这样可以把$a$和$b$限制在32或64位，结果$c=c&#x27;$</span><br><span class="line"></span><br><span class="line">**注意：要保证相乘时中间结果不能溢出**</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 减法同余</span><br><span class="line"></span><br><span class="line">关于取模，若一个数取模后的结果是负数，**则需要加一个模数后取模**，以获得他的正数表示</span><br><span class="line"></span><br><span class="line">例如一个数%7的结果是-2，等同于这个数+7后%7的结果5，因为两者加2后分别是0和7，都可以被7整除</span><br><span class="line"></span><br><span class="line">对于$(a-b)\bmod&#123;k&#125;=c$，我们需要在分别模m的基础上加一个m，即$((a\bmod&#123;k&#125;-b\bmod&#123;k&#125;)+m)\bmod&#123;k&#125;=c&#x27;$，为了避免获得负数中间结果</span><br><span class="line"></span><br><span class="line"># C/C++的整数除法与取模</span><br><span class="line"></span><br><span class="line">## 规定</span><br><span class="line"></span><br><span class="line">C/C++规定在整数除法中：</span><br><span class="line"></span><br><span class="line">- 除数为0时，行为未定义</span><br><span class="line">- 否则$\frac&#123;a&#125;&#123;b&#125;\times b+a\% b=a$</span><br><span class="line"></span><br><span class="line">即取模运算的符号取决于除法如何取整，而这是实现定义的</span><br><span class="line"></span><br><span class="line">从C++11起，规定**商向零取整**，取模的符号**与被除数相同**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>5 % 3 == 2; 5 % -3 == 2; -5 % 3 == -2; -5 % -3 == -2;
-<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div><div class="code"><pre class="shiki github-light"><code><span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e">## 快速乘</span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e">要求模数在long long范围内的乘法取模，避免整数溢出，可以使用快速乘，能够实现$O(1)$且不需要`int128`</span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e">我们可以发现：$a\times b\bmod{m}=a\times b-\lfloor\frac{ab}{m}\rfloor\times m$</span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e">使用ull的自然溢出，可得：$a\times b\bmod{m}=a\times b-\lfloor\frac{ab}{m}\rfloor\times m=(a\times b-\lfloor\frac{ab}{m}\rfloor\times m)\bmod{2^{64}}$</span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e">对于$\lfloor\frac{ab}{m}\rfloor$，若结果r在$[0,m)$时，直接返回r，否则返回$r+m$</span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e"></span></span>
-<span class="line"><span style="color: #24292e">```c++</span></span>
-<span class="line"><span style="color: #24292e">long long binmul(long long a, long long b, long long m) {</span></span>
-<span class="line"><span style="color: #24292e">  unsigned long long c =</span></span>
-<span class="line"><span style="color: #24292e">      (unsigned long long)a * b -</span></span>
-<span class="line"><span style="color: #24292e">      (unsigned long long)((long double)a / m * b + 0.5L) * m;</span></span>
-<span class="line"><span style="color: #24292e">  if (c &lt; m) return c;</span></span>
-<span class="line"><span style="color: #24292e">  return c + m;</span></span>
-<span class="line"><span style="color: #24292e">}</span></span></code></pre></div></div></figure></p></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 快速乘</span><br><span class="line"></span><br><span class="line">要求模数在long long范围内的乘法取模，避免整数溢出，可以使用快速乘，能够实现$O(1)$且不需要`int128`</span><br><span class="line"></span><br><span class="line">我们可以发现：$a\times b\bmod&#123;m&#125;=a\times b-\lfloor\frac&#123;ab&#125;&#123;m&#125;\rfloor\times m$</span><br><span class="line"></span><br><span class="line">使用ull的自然溢出，可得：$a\times b\bmod&#123;m&#125;=a\times b-\lfloor\frac&#123;ab&#125;&#123;m&#125;\rfloor\times m=(a\times b-\lfloor\frac&#123;ab&#125;&#123;m&#125;\rfloor\times m)\bmod&#123;2^&#123;64&#125;&#125;$</span><br><span class="line"></span><br><span class="line">对于$\lfloor\frac&#123;ab&#125;&#123;m&#125;\rfloor$，若结果r在$[0,m)$时，直接返回r，否则返回$r+m$</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```c++</span><br><span class="line">long long binmul(long long a, long long b, long long m) &#123;</span><br><span class="line">  unsigned long long c =</span><br><span class="line">      (unsigned long long)a * b -</span><br><span class="line">      (unsigned long long)((long double)a / m * b + 0.5L) * m;</span><br><span class="line">  if (c &lt; m) return c;</span><br><span class="line">  return c + m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
 </ul>
 <h1 id="数论函数">数论函数</h1>
 <p>数论函数指定义域为正整数的函数，可以视为一个数列</p>
@@ -802,321 +645,724 @@ F(x)
 = \sum_i F(p_i)\,\cdot k_i\,.
 \]</span></p></li>
 </ul>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
-              <a href="/tags/%E6%95%B0%E8%AE%BA/" rel="tag"># 数论</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/CS61B/Lab6-BSTMap/" rel="prev" title="【CS61B】Lab6-BSTMap">
-      <i class="fa fa-chevron-left"></i> 【CS61B】Lab6-BSTMap
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/CS61B/Lec25%20Minimum%20Spanning%20Trees/" rel="next" title="【CS61B】Lec25 Minimum Spanning Trees">
-      【CS61B】Lec25 Minimum Spanning Trees <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+</div>
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E9%99%A4"><span class="nav-number">1.</span> <span class="nav-text">整除</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%80%A7%E8%B4%A8"><span class="nav-number">1.1.</span> <span class="nav-text">定义与性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A6%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">约数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%99%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">余数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%99%E6%95%B0-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">余数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A6%E4%BD%99%E6%95%B0%E9%99%A4%E6%B3%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">带余数除法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%99%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">余数的性质</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0%E4%B8%8E%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">最大公约数与最小公倍数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">最大公约数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-number">2.1.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E6%B3%95"><span class="nav-number">2.1.3.</span> <span class="nav-text">求法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">欧几里得算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">扩展欧几里得算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF"><span class="nav-number">2.1.3.3.</span> <span class="nav-text">更相减损术</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E7%B4%A0"><span class="nav-number">2.1.4.</span> <span class="nav-text">互素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9Fgcd"><span class="nav-number">2.1.5.</span> <span class="nav-text">快速GCD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">预处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF-1"><span class="nav-number">2.1.5.2.</span> <span class="nav-text">更相减损术</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">最小公倍数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E6%B3%95-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">求法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E4%B8%8E%E5%90%88%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">素数与合数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">算术基本定理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">4.1.</span> <span class="nav-text">内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E7%9A%84%E5%8F%A6%E4%B8%80%E7%A7%8D%E5%AE%9A%E4%B9%89"><span class="nav-number">4.2.</span> <span class="nav-text">素数的另一种定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8C%E4%BD%99"><span class="nav-number">5.</span> <span class="nav-text">同余</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="nav-number">5.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-2"><span class="nav-number">5.2.</span> <span class="nav-text">性质</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E8%AE%BA%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">数论函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%AF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.</span> <span class="nav-text">积性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="nav-number">6.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-3"><span class="nav-number">6.1.2.</span> <span class="nav-text">性质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-number">6.2.</span> <span class="nav-text">加性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="nav-number">6.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8-4"><span class="nav-number">6.2.2.</span> <span class="nav-text">性质</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IzayoiSakuye"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">IzayoiSakuye</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">201</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">30</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">43</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/IzayoiSakuye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;IzayoiSakuye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
+        
+            <div class="kratos-copyright text-center clearfix">
+                <span itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</span>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a>, <a class="tag-none-link" href="/tags/%E6%95%B0%E8%AE%BA/" rel="tag">数论</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2025-12-23T13:30:16.705Z" itemprop="dateModified">最后编辑：2025-12-23</time>
+                </div>
+            </div>
+        </footer>
     </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 【CS61B】Lab6-BSTMap" href="/CS61B/Lab6-BSTMap/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 【CS61B】Lec25 Minimum Spanning Trees" href="/CS61B/Lec25 Minimum Spanning Trees/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+        <div class="comment-post">
+            
+        </div>
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.jpg" alt="IzayoiSakuye" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                207
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                30
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                43
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B4%E9%99%A4"><span class="toc-number">1.</span> <span class="toc-text">整除</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%80%A7%E8%B4%A8"><span class="toc-number">1.1.</span> <span class="toc-text">定义与性质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%A6%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">约数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%99%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">余数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%99%E6%95%B0-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">余数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E4%BD%99%E6%95%B0%E9%99%A4%E6%B3%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">带余数除法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%99%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">余数的性质</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0%E4%B8%8E%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">最大公约数与最小公倍数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0"><span class="toc-number">2.1.</span> <span class="toc-text">最大公约数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8"><span class="toc-number">2.1.2.</span> <span class="toc-text">性质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E6%B3%95"><span class="toc-number">2.1.3.</span> <span class="toc-text">求法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="toc-number">2.1.3.1.</span> <span class="toc-text">欧几里得算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="toc-number">2.1.3.2.</span> <span class="toc-text">扩展欧几里得算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF"><span class="toc-number">2.1.3.3.</span> <span class="toc-text">更相减损术</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%92%E7%B4%A0"><span class="toc-number">2.1.4.</span> <span class="toc-text">互素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9Fgcd"><span class="toc-number">2.1.5.</span> <span class="toc-text">快速GCD</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">2.1.5.1.</span> <span class="toc-text">预处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E7%9B%B8%E5%87%8F%E6%8D%9F%E6%9C%AF-1"><span class="toc-number">2.1.5.2.</span> <span class="toc-text">更相减损术</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">最小公倍数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">性质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E6%B3%95-1"><span class="toc-number">2.2.3.</span> <span class="toc-text">求法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A0%E6%95%B0%E4%B8%8E%E5%90%88%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">素数与合数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">算术基本定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AE%B9"><span class="toc-number">4.1.</span> <span class="toc-text">内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A0%E6%95%B0%E7%9A%84%E5%8F%A6%E4%B8%80%E7%A7%8D%E5%AE%9A%E4%B9%89"><span class="toc-number">4.2.</span> <span class="toc-text">素数的另一种定义</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8C%E4%BD%99"><span class="toc-number">5.</span> <span class="toc-text">同余</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-number">5.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-2"><span class="toc-number">5.2.</span> <span class="toc-text">性质</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E8%AE%BA%E5%87%BD%E6%95%B0"><span class="toc-number">6.</span> <span class="toc-text">数论函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%AF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">积性函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-number">6.1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-3"><span class="toc-number">6.1.2.</span> <span class="toc-text">性质</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E6%80%A7%E5%87%BD%E6%95%B0"><span class="toc-number">6.2.</span> <span class="toc-text">加性函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-number">6.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8-4"><span class="toc-number">6.2.2.</span> <span class="toc-text">性质</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61A/">CS61A</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/CS61B/">CS61B</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Database/MySQL/">MySQL</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">24</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/GORM/">GORM</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/gRPC/">gRPC</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/go-zero/">go-zero</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/">奇怪的地方</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A5%87%E6%80%AA%E7%9A%84%E5%9C%B0%E6%96%B9/%E4%B9%90%E7%90%86%E5%B0%8F%E8%AF%BE%E5%A0%82/">乐理小课堂</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">49</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%88%96%E8%AE%B8%E6%98%AF-%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/">(或许是)基础算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">动态规划</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9B%BE%E8%AE%BA/">图论</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%90%9C%E7%B4%A2/">搜索</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E5%AD%A6/">数学</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9D%82%E9%A1%B9/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/">计算机组成原理</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E7%8E%8B%E9%81%93%E8%AE%A1%E7%BB%84/">王道计组</a><span class="category-list-count">7</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/">项目开发记录</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/BudgetMatch/">BudgetMatch</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/Kouoj/">Kouoj</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A2%98%E8%A7%A3/">题解</a><span class="category-list-count">1</span></li></ul>
   </aside>
-  <div id="sidebar-dimmer"></div>
 
 
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/API/" style="font-size: 0.6em;">API</a> <a href="/tags/C/" style="font-size: 0.6em;">C++</a> <a href="/tags/C-C/" style="font-size: 0.73em;">C/C++</a> <a href="/tags/CS61A/" style="font-size: 0.76em;">CS61A</a> <a href="/tags/CS61B/" style="font-size: 0.8em;">CS61B</a> <a href="/tags/CSAPP/" style="font-size: 0.62em;">CSAPP</a> <a href="/tags/CSS/" style="font-size: 0.6em;">CSS</a> <a href="/tags/DP/" style="font-size: 0.64em;">DP</a> <a href="/tags/GORM/" style="font-size: 0.67em;">GORM</a> <a href="/tags/Git/" style="font-size: 0.6em;">Git</a> <a href="/tags/Golang/" style="font-size: 0.71em;">Golang</a> <a href="/tags/Gozero/" style="font-size: 0.64em;">Gozero</a> <a href="/tags/HTML/" style="font-size: 0.6em;">HTML</a> <a href="/tags/ICPC/" style="font-size: 0.6em;">ICPC</a> <a href="/tags/Java/" style="font-size: 0.78em;">Java</a> <a href="/tags/JavaScript/" style="font-size: 0.6em;">JavaScript</a> <a href="/tags/MySQL/" style="font-size: 0.69em;">MySQL</a> <a href="/tags/OOP/" style="font-size: 0.6em;">OOP</a>
       </div>
-    </main>
+  </aside>
 
-    <footer class="footer">
-      <div class="footer-inner">
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
         
-
         
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">IzayoiSakuye</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">838k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">25:23</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/ModernFrontend/"><i class="fa fa-book"></i> 【前端】现代前端</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/%E5%89%8D%E7%AB%AF/CORS/"><i class="fa fa-book"></i> 【前端】CORS</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GMP/"><i class="fa fa-book"></i> 【Golang】GMP模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/GC/"><i class="fa fa-book"></i> 【Golang】GC垃圾回收机制</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/Golang/Golang-interview/"><i class="fa fa-book"></i> 【Golang】golang常见八股</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
   </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
 
         
-<div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="总访客量">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="总访问量">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                            <li>
+                                <a href="https://github.com/IzayoiSakuye" target="_blank" rel="nofollow">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="/atom.xml" target="_blank" rel="nofollow">
+                                    <i class="fa fa-rss"></i>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2026 红魔咖啡馆 版权所有.</li>
+                            <li>本站已在风雨中飘摇<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 <a href="https://github.com/IzayoiSakuye" target="_blank">IzayoiSakuye</a> 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                            <div>
+                                
+                                    <li>由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动</li>
+                                
+                                    <li>在 <a href="https://github.io" target="_blank">Github Pages</a> 暖心托管</li>
+                                
+                            </div>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                <!-- 额外的追加注入项 -->
+                
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
 </div>
 
 
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">赞助喵</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">非常感谢您的喜欢！ <i class="fa fa-heart" style="color:#d43f57"></i></div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+                    <img class="kr-donate-placeholder" src="https://dev.krt.moe/demo-assets/donate.webp" alt="赞助喵" />
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: skyblue;" title="模拟支付" onclick="krDonateModalShowPlatformQR('example_payment', 'skyblue')">
+                            <i class="fa fa-credit-card"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
 
 
 
 
 
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
+<!-- 额外的追加注入项 -->
 
 
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
 </script>
 
-    
 
-  
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
 
-<!-- hexo injector body_end start -->
-<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
 
-  <script>
-  const CODE_CONFIG = {
-    beautify: true,
-    highlightCopy: true,
-    highlightLang: true,
-    highlightHeightLimit: undefined,
-    isHighlightShrink: false,
-    copy: {
-      success: 'Copy Success',
-      error: 'Copy Error',
-      noSupport: 'Browser Not Support',
-    }
-  };
-  console.log(
-    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
-    "color: #fff; background: #5f5f5f",
-    "color: #fff; background: #80c8f8",
-    ""
-  );
-  </script>
-  <!-- hexo injector body_end end --></body>
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+
+    </body>
 </html>
