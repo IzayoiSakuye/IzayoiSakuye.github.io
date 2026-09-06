@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.55K
+                            ~2.48K
                         
                         字
                     </li>
@@ -340,32 +452,32 @@
 <p>子查询返回的结果是单个值（数字、字符串、日期等），最简单的形式</p>
 <p>常用操作符：= &gt; &lt; &gt;= &lt;=</p>
 <p>e.g. 将以下两个查询合并</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> id <span class="keyword">FROM</span> dept <span class="keyword">WHERE</span> name<span class="operator">=</span><span class="string">&#x27;销售部&#x27;</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> dept_id <span class="operator">=</span> <span class="number">4</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> id <span class="keyword">FROM</span> dept <span class="keyword">WHERE</span> name<span class="operator">=</span><span class="string">'销售部'</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> dept_id <span class="operator">=</span> <span class="number">4</span>;</span><br></pre></td></tr></table></figure>
 <p>可以得到</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> dept_id <span class="operator">=</span> (<span class="keyword">SELECT</span> id <span class="keyword">FROM</span> dept <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;销售部&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> dept_id <span class="operator">=</span> (<span class="keyword">SELECT</span> id <span class="keyword">FROM</span> dept <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">'销售部'</span>);</span><br></pre></td></tr></table></figure>
 <h3 id="列子查询">列子查询</h3>
 <p>子查询返回结果是一列（多行）</p>
 <p>常用操作符：</p>
 <img src="/Database/MySQL/%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/image-20260603132221759.png" class="" title="列子查询操作符">
 <p>e.g. 查询比研发部中任意一人工资高的员工信息</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> salary<span class="operator">&gt;</span><span class="keyword">ANY</span>(<span class="keyword">SELECT</span> salary <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> dept_id <span class="operator">=</span> (<span class="keyword">SELECT</span> id <span class="keyword">FROM</span> dept <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;研发部&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> salary<span class="operator">&gt;</span><span class="keyword">ANY</span>(<span class="keyword">SELECT</span> salary <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> dept_id <span class="operator">=</span> (<span class="keyword">SELECT</span> id <span class="keyword">FROM</span> dept <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">'研发部'</span>));</span><br></pre></td></tr></table></figure>
 <h3 id="行子查询">行子查询</h3>
 <p>子查询返回结果是一行（多列）</p>
 <p>常用操作符：= &lt;&gt; IN NOT IN</p>
 <p>e.g. 查询与李华薪资喝直属领导相同的员工信息</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> (salary, managerid) <span class="operator">=</span> (<span class="keyword">SELECT</span> salary, managerid <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;李华&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> (salary, managerid) <span class="operator">=</span> (<span class="keyword">SELECT</span> salary, managerid <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">'李华'</span>);</span><br></pre></td></tr></table></figure>
 <p>这里可以用括号括起多个条件，一一对应</p>
 <h3 id="表子查询">表子查询</h3>
 <p>子查询返回结果是多行多列</p>
 <p>常用操作：IN</p>
 <p>e.g. 查询与张三和李四的职位和薪资相同的员工信息</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> (job, salary) <span class="keyword">IN</span> (<span class="keyword">SELECT</span> job, salary <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> name<span class="operator">=</span><span class="string">&#x27;张三&#x27;</span> <span class="keyword">OR</span> name<span class="operator">=</span><span class="string">&#x27;李四&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> (job, salary) <span class="keyword">IN</span> (<span class="keyword">SELECT</span> job, salary <span class="keyword">FROM</span> emp <span class="keyword">WHERE</span> name<span class="operator">=</span><span class="string">'张三'</span> <span class="keyword">OR</span> name<span class="operator">=</span><span class="string">'李四'</span>);</span><br></pre></td></tr></table></figure>
 <h3 id="关联子查询">关联子查询</h3>
 <p>某些子查询中会引用外部查询中的列，与外部查询产生关联</p>
 <p>没有关联的叫做非关联子查询</p>
 <p>关联子查询对外查询中的每一行都会运行一次，有的数据库可能会对其优化</p>
 <p>e.g. 查询所有部门信息，并统计部门员工人数</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> d.id, d.name, (<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> emp e <span class="keyword">WHERE</span> e.dept_id <span class="operator">=</span> d.id) <span class="string">&#x27;人数&#x27;</span> <span class="keyword">FROM</span> dept d;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> d.id, d.name, (<span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> emp e <span class="keyword">WHERE</span> e.dept_id <span class="operator">=</span> d.id) <span class="string">'人数'</span> <span class="keyword">FROM</span> dept d;</span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

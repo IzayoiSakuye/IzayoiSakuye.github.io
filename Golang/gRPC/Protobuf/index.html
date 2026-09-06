@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~5.08K
+                            ~4.75K
                         
                         字
                     </li>
@@ -274,7 +386,7 @@ Buffers用于序列化结构化数据，它类似于JSON，但是更小更快，
 <p>Protobuf解决了这种问题，只需要一个<code>.proto</code>文件定义数据类型与结构或API接口，自带的编译器就可以根据该文件自动生成对应语言的代码</p>
 <h1 id="快速上手">快速上手</h1>
 <h2 id="编写">编写</h2>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明版本和命名空间</span></span><br><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"><span class="keyword">package</span> user;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导入包</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;google/protobuf/timestamp.proto&quot;</span>;</span><br><span class="line"><span class="comment">// 声明包名</span></span><br><span class="line"><span class="keyword">option</span> go_package = <span class="string">&quot;./user;user&quot;</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明一个结构体</span></span><br><span class="line"><span class="keyword">message </span><span class="title class_">User</span> &#123;</span><br><span class="line">  <span class="keyword">enum </span><span class="title class_">Status</span> &#123;</span><br><span class="line">    Unknown = <span class="number">0</span>;</span><br><span class="line">    Active = <span class="number">1</span>;</span><br><span class="line">    Inactive = <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int64</span> id = <span class="number">1</span>;</span><br><span class="line">  <span class="type">string</span> name = <span class="number">2</span>;</span><br><span class="line">  <span class="type">string</span> email = <span class="number">3</span>;</span><br><span class="line">  <span class="type">string</span> password = <span class="number">4</span>;</span><br><span class="line">  google.protobuf.Timestamp created_at = <span class="number">5</span>;</span><br><span class="line">  Status UserStatus = <span class="number">6</span>;</span><br><span class="line">  <span class="keyword">repeated</span> <span class="type">string</span> phone = <span class="number">7</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明版本和命名空间</span></span><br><span class="line">syntax = <span class="string">"proto3"</span>;</span><br><span class="line"><span class="keyword">package</span> user;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导入包</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"google/protobuf/timestamp.proto"</span>;</span><br><span class="line"><span class="comment">// 声明包名</span></span><br><span class="line"><span class="keyword">option</span> go_package = <span class="string">"./user;user"</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明一个结构体</span></span><br><span class="line"><span class="keyword">message </span><span class="title class_">User</span> {</span><br><span class="line">  <span class="keyword">enum </span><span class="title class_">Status</span> {</span><br><span class="line">    Unknown = <span class="number">0</span>;</span><br><span class="line">    Active = <span class="number">1</span>;</span><br><span class="line">    Inactive = <span class="number">2</span>;</span><br><span class="line">  }</span><br><span class="line">  <span class="type">int64</span> id = <span class="number">1</span>;</span><br><span class="line">  <span class="type">string</span> name = <span class="number">2</span>;</span><br><span class="line">  <span class="type">string</span> email = <span class="number">3</span>;</span><br><span class="line">  <span class="type">string</span> password = <span class="number">4</span>;</span><br><span class="line">  google.protobuf.Timestamp created_at = <span class="number">5</span>;</span><br><span class="line">  Status UserStatus = <span class="number">6</span>;</span><br><span class="line">  <span class="keyword">repeated</span> <span class="type">string</span> phone = <span class="number">7</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <ul>
 <li>首先声明使用的proto版本以及该文件下的命名空间</li>
 <li>使用import导入外部包</li>
@@ -299,7 +411,7 @@ Buffers 实现保留。</li>
 <p>成功生成<code>.pb.go</code>文件后，我们可以像使用任何普通结构体一样使用文件中的类型来构造和读写protobuf数据</p>
 <h3 id="生成的结构">生成的结构</h3>
 <p>假设proto定义如下：</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">Person</span> &#123;</span><br><span class="line">  <span class="type">string</span> name = <span class="number">1</span>;</span><br><span class="line">  <span class="type">int32</span> id = <span class="number">2</span>;</span><br><span class="line">  <span class="type">string</span> email = <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">repeated</span> PhoneNumber phones = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message </span><span class="title class_">PhoneNumber</span> &#123;</span><br><span class="line">    <span class="type">string</span> number = <span class="number">1</span>;</span><br><span class="line">    PhoneType type = <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">enum </span><span class="title class_">PhoneType</span> &#123;</span><br><span class="line">    PHONE_TYPE_UNSPECIFIED = <span class="number">0</span>;</span><br><span class="line">    PHONE_TYPE_MOBILE = <span class="number">1</span>;</span><br><span class="line">    PHONE_TYPE_HOME = <span class="number">2</span>;</span><br><span class="line">    PHONE_TYPE_WORK = <span class="number">3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">AddressBook</span> &#123;</span><br><span class="line">  <span class="keyword">repeated</span> Person people = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">Person</span> {</span><br><span class="line">  <span class="type">string</span> name = <span class="number">1</span>;</span><br><span class="line">  <span class="type">int32</span> id = <span class="number">2</span>;</span><br><span class="line">  <span class="type">string</span> email = <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">repeated</span> PhoneNumber phones = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">message </span><span class="title class_">PhoneNumber</span> {</span><br><span class="line">    <span class="type">string</span> number = <span class="number">1</span>;</span><br><span class="line">    PhoneType type = <span class="number">2</span>;</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">enum </span><span class="title class_">PhoneType</span> {</span><br><span class="line">    PHONE_TYPE_UNSPECIFIED = <span class="number">0</span>;</span><br><span class="line">    PHONE_TYPE_MOBILE = <span class="number">1</span>;</span><br><span class="line">    PHONE_TYPE_HOME = <span class="number">2</span>;</span><br><span class="line">    PHONE_TYPE_WORK = <span class="number">3</span>;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">AddressBook</span> {</span><br><span class="line">  <span class="keyword">repeated</span> Person people = <span class="number">1</span>;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>经过编译后，生成的<code>.pb.go</code>文件中会包含如下类型：</p>
 <ul>
 <li>AddressBook结构体，表示整个通讯录，包含一个<code>People []*Person</code>字段</li>
@@ -308,10 +420,10 @@ Buffers 实现保留。</li>
 <li><code>Person_PhoneType</code>类型和他的常量值，对应proto中的枚举</li>
 </ul>
 <h3 id="创建一个protobuf对象">创建一个protobuf对象</h3>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">p := pb.Person&#123;</span><br><span class="line">    Id:    <span class="number">1234</span>,</span><br><span class="line">    Name:  <span class="string">&quot;John Doe&quot;</span>,</span><br><span class="line">    Email: <span class="string">&quot;jdoe@example.com&quot;</span>,</span><br><span class="line">    Phones: []*pb.Person_PhoneNumber&#123;</span><br><span class="line">        &#123;Number: <span class="string">&quot;555-4321&quot;</span>, Type: pb.PhoneType_PHONE_TYPE_HOME&#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">p := pb.Person{</span><br><span class="line">    Id:    <span class="number">1234</span>,</span><br><span class="line">    Name:  <span class="string">"John Doe"</span>,</span><br><span class="line">    Email: <span class="string">"jdoe@example.com"</span>,</span><br><span class="line">    Phones: []*pb.Person_PhoneNumber{</span><br><span class="line">        {Number: <span class="string">"555-4321"</span>, Type: pb.PhoneType_PHONE_TYPE_HOME},</span><br><span class="line">    },</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>对象名前要加包名，这里是将导入的<code>.pb.go</code>文件起了别名</p></li>
-<li><p>Phone是切片，存放的是指针类型，所以要写<code>&amp;pb.Person_PhoneNumber&#123;...&#125;</code>或直接字面量初始化<code>[]*pb.Person_PhoneNumber&#123;&#125;</code></p></li>
+<li><p>Phone是切片，存放的是指针类型，所以要写<code>&amp;pb.Person_PhoneNumber{...}</code>或直接字面量初始化<code>[]*pb.Person_PhoneNumber{}</code></p></li>
 <li><p>枚举值会自动添加枚举名前缀</p></li>
 <li></li>
 </ul>
@@ -340,7 +452,7 @@ false。对于数字类型，默认值是零</li>
 <p>对于 map 字段，默认值是空的（通常是相应语言中的空 map）</p>
 <h2 id="枚举">枚举</h2>
 <p>在protobuf文件中使用<code>enum</code>定义枚举</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum </span><span class="title class_">Corpus</span> &#123;</span><br><span class="line">  CORPUS_UNSPECIFIED = <span class="number">0</span>;</span><br><span class="line">  CORPUS_UNIVERSAL = <span class="number">1</span>;</span><br><span class="line">  CORPUS_WEB = <span class="number">2</span>;</span><br><span class="line">  CORPUS_IMAGES = <span class="number">3</span>;</span><br><span class="line">  CORPUS_LOCAL = <span class="number">4</span>;</span><br><span class="line">  CORPUS_NEWS = <span class="number">5</span>;</span><br><span class="line">  CORPUS_PRODUCTS = <span class="number">6</span>;</span><br><span class="line">  CORPUS_VIDEO = <span class="number">7</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">SearchRequest</span> &#123;</span><br><span class="line">  <span class="type">string</span> query = <span class="number">1</span>;</span><br><span class="line">  <span class="type">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">  <span class="type">int32</span> results_per_page = <span class="number">3</span>;</span><br><span class="line">  Corpus corpus = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum </span><span class="title class_">Corpus</span> {</span><br><span class="line">  CORPUS_UNSPECIFIED = <span class="number">0</span>;</span><br><span class="line">  CORPUS_UNIVERSAL = <span class="number">1</span>;</span><br><span class="line">  CORPUS_WEB = <span class="number">2</span>;</span><br><span class="line">  CORPUS_IMAGES = <span class="number">3</span>;</span><br><span class="line">  CORPUS_LOCAL = <span class="number">4</span>;</span><br><span class="line">  CORPUS_NEWS = <span class="number">5</span>;</span><br><span class="line">  CORPUS_PRODUCTS = <span class="number">6</span>;</span><br><span class="line">  CORPUS_VIDEO = <span class="number">7</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">SearchRequest</span> {</span><br><span class="line">  <span class="type">string</span> query = <span class="number">1</span>;</span><br><span class="line">  <span class="type">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">  <span class="type">int32</span> results_per_page = <span class="number">3</span>;</span><br><span class="line">  Corpus corpus = <span class="number">4</span>;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="枚举值前缀">枚举值前缀</h3>
 <p>枚举值添加前缀时，剥离前缀后的其余名称仍应该是合法且符合样式的枚举名，如<code>DEVICE_TIER_1</code>是不对的，应该使用类似<code>DEVICE_TIER_TIER1</code>，因为前缀部分会被视为对枚举值进行作用域限定，而不是作为单个枚举值名称的一部分</p>
 <h3 id="枚举默认值">枚举默认值</h3>
@@ -351,7 +463,7 @@ false。对于数字类型，默认值是零</li>
 <p>Go中可以使用proto库中的函数来序列化和反序列化protocol buffer数据</p>
 <p>proto的结构体均默认实现了<code>proto.Message</code>接口，需要传递操作指针</p>
 <h3 id="序列化">序列化</h3>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">book := &amp;pb.AddressBook&#123;&#125;</span><br><span class="line"><span class="comment">// ... 填充 book 数据</span></span><br><span class="line"></span><br><span class="line">out, err := proto.Marshal(book)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalln(<span class="string">&quot;Failed to encode address book:&quot;</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> err := ioutil.WriteFile(fname, out, <span class="number">0644</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalln(<span class="string">&quot;Failed to write address book:&quot;</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">book := &amp;pb.AddressBook{}</span><br><span class="line"><span class="comment">// ... 填充 book 数据</span></span><br><span class="line"></span><br><span class="line">out, err := proto.Marshal(book)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> {</span><br><span class="line">    log.Fatalln(<span class="string">"Failed to encode address book:"</span>, err)</span><br><span class="line">}</span><br><span class="line"><span class="keyword">if</span> err := ioutil.WriteFile(fname, out, <span class="number">0644</span>); err != <span class="literal">nil</span> {</span><br><span class="line">    log.Fatalln(<span class="string">"Failed to write address book:"</span>, err)</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <ul>
 <li>首先创建指针类型的变量，添加数据</li>
 <li><code>proto.Marshal(book)</code>会将这个结构体按照protobuf的二进制格式编码为一串字节</li>
@@ -359,7 +471,7 @@ false。对于数字类型，默认值是零</li>
 <li>这样就可以使用<code>WriteFile()</code>写入文件</li>
 </ul>
 <h3 id="反序列化">反序列化</h3>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">in, err := ioutil.ReadFile(fname)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalln(<span class="string">&quot;Error reading file:&quot;</span>, err)</span><br><span class="line">&#125;</span><br><span class="line">book := &amp;pb.AddressBook&#123;&#125;</span><br><span class="line"><span class="keyword">if</span> err := proto.Unmarshal(in, book); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalln(<span class="string">&quot;Failed to parse address book:&quot;</span>, err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">in, err := ioutil.ReadFile(fname)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> {</span><br><span class="line">    log.Fatalln(<span class="string">"Error reading file:"</span>, err)</span><br><span class="line">}</span><br><span class="line">book := &amp;pb.AddressBook{}</span><br><span class="line"><span class="keyword">if</span> err := proto.Unmarshal(in, book); err != <span class="literal">nil</span> {</span><br><span class="line">    log.Fatalln(<span class="string">"Failed to parse address book:"</span>, err)</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <ul>
 <li>首先通过<code>ReadFile()</code>读取文件</li>
 <li>准备一个空的结构体指针，用来接收数据</li>
@@ -369,7 +481,7 @@ false。对于数字类型，默认值是零</li>
 <p>对于删除或注释掉的字段，更好的方法是使用<code>reserved</code>，<code>reserved</code>之后的字段编号会被标记为保留，若使用这些编号会报错</p>
 <p>同理字段名也可以被保留</p>
 <p>注意：不能在同一个语句中混合字段名和字段编号</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">Foo</span> &#123;</span><br><span class="line">  reserved <span class="number">2</span>, <span class="number">15</span>, <span class="number">9</span> to <span class="number">11</span>;</span><br><span class="line">  reserved <span class="string">&quot;foo&quot;</span>, <span class="string">&quot;bar&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">Foo</span> {</span><br><span class="line">  reserved <span class="number">2</span>, <span class="number">15</span>, <span class="number">9</span> to <span class="number">11</span>;</span><br><span class="line">  reserved <span class="string">"foo"</span>, <span class="string">"bar"</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="映射">映射</h2>
 <p>定义映射的语法：<code>map&lt;key_type, value_type&gt; map_field = N;</code></p>
 <p>其中<code>key_type</code>可以是任何整数或字符串类型，<code>value_type</code>可以是除另一个map之外的任何类型</p>
@@ -381,7 +493,7 @@ false。对于数字类型，默认值是零</li>
 </ul>
 <h2 id="服务">服务</h2>
 <p>若想将消息类型和rpc系统一起调用，可以在<code>.proto</code>文件中定义一个RPC服务接口，例如，如果你想定义一个RPC服务，方法接收<code>SearchRequest</code>并返回一个<code>SearchResponse</code>，可以按如下定义：</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">service </span><span class="title class_">SearchService</span> &#123;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Search(SearchRequest) <span class="keyword">returns</span> (SearchResponse)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">service </span><span class="title class_">SearchService</span> {</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Search(SearchRequest) <span class="keyword">returns</span> (SearchResponse)</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>定义时建议添加req和resp参数，并实现message</p>
 <p>编译时需要加入一个参数<code>--go-grpc_out</code>指定生成的grpc文件的位置</p>
 </div>

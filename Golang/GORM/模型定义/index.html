@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.24K
+                            ~2.11K
                         
                         字
                     </li>
@@ -269,14 +381,14 @@
             <hr />
             <div itemprop="articleBody"><h1 id="定义">定义</h1>
 <p>GORM内置了一个<code>gorm.Model</code>结构体，包含以下四个字段</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gorm.Model 定义</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">struct</span> &#123;</span><br><span class="line">  ID        <span class="type">uint</span> <span class="string">`gorm:&quot;primary_key&quot;`</span></span><br><span class="line">  CreatedAt time.Time</span><br><span class="line">  UpdatedAt time.Time</span><br><span class="line">  DeletedAt *time.Time</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gorm.Model 定义</span></span><br><span class="line"><span class="keyword">type</span> Model <span class="keyword">struct</span> {</span><br><span class="line">  ID        <span class="type">uint</span> <span class="string">`gorm:"primary_key"`</span></span><br><span class="line">  CreatedAt time.Time</span><br><span class="line">  UpdatedAt time.Time</span><br><span class="line">  DeletedAt *time.Time</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>我们使用的时候可以放入默认结构体，或者只使用自己的</p>
 <h2 id="类型与约束">类型与约束</h2>
 <p>GORM中可以使用结构体标签来指定字段的类型和约束，支持的类型如下：</p>
 <table>
 <colgroup>
-<col style="width: 23%" />
-<col style="width: 76%" />
+<col style="width: 23%">
+<col style="width: 76%">
 </colgroup>
 <thead>
 <tr>
@@ -348,8 +460,8 @@
 <p>关联相关tag：</p>
 <table>
 <colgroup>
-<col style="width: 48%" />
-<col style="width: 51%" />
+<col style="width: 48%">
+<col style="width: 51%">
 </colgroup>
 <thead>
 <tr>
@@ -411,20 +523,20 @@
 <h1 id="一些约定">一些约定</h1>
 <h2 id="主键">主键</h2>
 <p>GORM默认使用名为ID的字段作为表主键</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">    ID <span class="type">string</span></span><br><span class="line">    name <span class="type">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> {</span><br><span class="line">    ID <span class="type">string</span></span><br><span class="line">    name <span class="type">string</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="表名">表名</h2>
 <p>表名默认是结构体名称的复数，且驼峰写法改为蛇形写法</p>
 <p>重写对应表的方法<code>TableName()</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(User)</span></span> TableName()&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;profiles&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(User)</span></span> TableName(){</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"profiles"</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>可以使用<code>Table()</code>指定表名</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Table(<span class="string">&quot;your name&quot;</span>).CreateTable(&amp;User&#123;&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Table(<span class="string">"your name"</span>).CreateTable(&amp;User{})</span><br></pre></td></tr></table></figure>
 <p>使用<code>db.SingularTable(True)</code>禁用复数</p>
 <p>还可以更改默认表名称规则：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gorm.DefaultTableNameHandler = <span class="function"><span class="keyword">func</span> <span class="params">(db *gorm.DB, defaultTableName <span class="type">string</span>)</span></span> <span class="type">string</span>  &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;prefix_&quot;</span> + defaultTableName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gorm.DefaultTableNameHandler = <span class="function"><span class="keyword">func</span> <span class="params">(db *gorm.DB, defaultTableName <span class="type">string</span>)</span></span> <span class="type">string</span>  {</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"prefix_"</span> + defaultTableName;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="列名">列名</h2>
 <p>列名通过struct定义的字段名，将驼峰改为蛇形来生成</p>
 <p>可以使用结构体标签指定别名<code>gorm"column:name"</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Animal <span class="keyword">struct</span> &#123;</span><br><span class="line">  AnimalId    <span class="type">int64</span>     <span class="string">`gorm:&quot;column:beast_id&quot;`</span>         <span class="comment">// set column name to `beast_id`</span></span><br><span class="line">  Birthday    time.Time <span class="string">`gorm:&quot;column:day_of_the_beast&quot;`</span> <span class="comment">// set column name to `day_of_the_beast`</span></span><br><span class="line">  Age         <span class="type">int64</span>     <span class="string">`gorm:&quot;column:age_of_the_beast&quot;`</span> <span class="comment">// set column name to `age_of_the_beast`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Animal <span class="keyword">struct</span> {</span><br><span class="line">  AnimalId    <span class="type">int64</span>     <span class="string">`gorm:"column:beast_id"`</span>         <span class="comment">// set column name to `beast_id`</span></span><br><span class="line">  Birthday    time.Time <span class="string">`gorm:"column:day_of_the_beast"`</span> <span class="comment">// set column name to `day_of_the_beast`</span></span><br><span class="line">  Age         <span class="type">int64</span>     <span class="string">`gorm:"column:age_of_the_beast"`</span> <span class="comment">// set column name to `age_of_the_beast`</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="时间戳">时间戳</h2>
 <p>CreatedAt：若有CreatedAt字段，该字段的值会是初次创建记录的时间</p>
 <p>UpdateAt：若有UpdateAt字段，该字段的值会是最近一次更新的时间</p>

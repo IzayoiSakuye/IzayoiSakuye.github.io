@@ -119,7 +119,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -247,7 +359,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~3.95K
+                            ~3.91K
                         
                         字
                     </li>
@@ -268,22 +380,21 @@
             <div itemprop="articleBody"><p>payment-rpc 的 markPaid 已经预留回写订单状态 TODO</p>
 <p># 任务</p>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />在
+<li><label><input type="checkbox" checked="">在
 services/rpc/payment/internal/config/config.go 增加 mall RPC
 配置。</label></li>
-<li><label><input type="checkbox" checked="" />在
+<li><label><input type="checkbox" checked="">在
 services/rpc/payment/etc/config.yaml 增加 mall RPC target。</label></li>
-<li><label><input type="checkbox" checked="" />在
+<li><label><input type="checkbox" checked="">在
 services/rpc/payment/internal/svc/service_context.go 初始化 mall RPC
 client。</label></li>
-<li><label><input type="checkbox" checked="" />在 markPaid
+<li><label><input type="checkbox" checked="">在 markPaid
 成功更新支付流水后调用 mall-rpc ConfirmPayment。</label></li>
-<li><label><input type="checkbox" checked="" />确保 QueryPayment 和
+<li><label><input type="checkbox" checked="">确保 QueryPayment 和
 HandleNotify 两条路径都复用 markPaid。</label></li>
-<li><label><input type="checkbox" checked="" />处理 mall
+<li><label><input type="checkbox" checked="">处理 mall
 回写失败的日志和错误返回。</label></li>
-<li><label><input type="checkbox"
-checked="" />保持支付流水成功更新的幂等语义。</label></li>
+<li><label><input type="checkbox" checked="">保持支付流水成功更新的幂等语义。</label></li>
 </ul>
 <h1 id="实现">实现</h1>
 <p>需要实现的目标：支付宝确认收款后，不仅要把payment-rpc的支付流水修改成功，还需要<strong>同步把mall-rpc的订单从待支付改为已支付</strong></p>
@@ -346,7 +457,7 @@ JWT，并放入 gRPC metadata</p>
 <p>这样普通用户即使有合法用户JWT，也不能直接调用ConfirmPayment</p>
 <h3 id="mall限制payment回写">Mall限制Payment回写</h3>
 <p>Mall的认证拦截器将ConfirmPayment注册为服务专用接口：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;/mall.OrderService/ConfirmPayment&quot;</span>: &#123;</span><br><span class="line">  Caller:   <span class="string">&quot;payment-rpc&quot;</span>,</span><br><span class="line">  Audience: <span class="string">&quot;mall-rpc&quot;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"/mall.OrderService/ConfirmPayment"</span>: {</span><br><span class="line">  Caller:   <span class="string">"payment-rpc"</span>,</span><br><span class="line">  Audience: <span class="string">"mall-rpc"</span>,</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>拦截器对这个接口不会走普通用户JWT校验，而是走特定的校验，逻辑内部还会再次检查是否是payment调用</p>
 <h3 id="confirmpayment保证幂等">ConfirmPayment保证幂等</h3>
 <p>mall不因为请求来自payment就完全信任，还会重新查询订单并校验存在性、一致性</p>
@@ -381,13 +492,10 @@ outbox事件，任何一步失败整个事务回滚</p>
 </ol>
 <p># 测试</p>
 <ul class="task-list">
-<li><label><input type="checkbox"
-checked="" />支付宝查询确认成功后，订单状态变为已支付。</label></li>
-<li><label><input type="checkbox"
-checked="" />支付宝异步通知确认成功后，订单状态变为已支付。</label></li>
-<li><label><input type="checkbox"
-checked="" />重复查询或重复通知不会重复扣库存、重复改状态。</label></li>
-<li><label><input type="checkbox" checked="" />mall
+<li><label><input type="checkbox" checked="">支付宝查询确认成功后，订单状态变为已支付。</label></li>
+<li><label><input type="checkbox" checked="">支付宝异步通知确认成功后，订单状态变为已支付。</label></li>
+<li><label><input type="checkbox" checked="">重复查询或重复通知不会重复扣库存、重复改状态。</label></li>
+<li><label><input type="checkbox" checked="">mall
 回写失败时有明确日志，便于后续补偿。</label></li>
 </ul>
 </div>

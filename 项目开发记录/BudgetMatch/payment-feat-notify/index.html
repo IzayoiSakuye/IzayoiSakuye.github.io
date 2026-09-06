@@ -119,7 +119,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -269,19 +381,17 @@
 HandleNotify，并按支付宝协议 返回纯文本 success。</p>
 <h1 id="任务">任务</h1>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />在 cmd/app 增加无鉴权路由
+<li><label><input type="checkbox" checked="">在 cmd/app 增加无鉴权路由
 POST /api/pay/notify/alipay。</label></li>
-<li><label><input type="checkbox"
-checked="" />读取支付宝回调表单参数。</label></li>
-<li><label><input type="checkbox" checked="" />将表单参数转换为
+<li><label><input type="checkbox" checked="">读取支付宝回调表单参数。</label></li>
+<li><label><input type="checkbox" checked="">将表单参数转换为
 HandleNotifyReq。</label></li>
-<li><label><input type="checkbox" checked="" />调用 payment-rpc
+<li><label><input type="checkbox" checked="">调用 payment-rpc
 HandleNotify。</label></li>
-<li><label><input type="checkbox" checked="" />成功时返回纯文本
+<li><label><input type="checkbox" checked="">成功时返回纯文本
 success。</label></li>
-<li><label><input type="checkbox"
-checked="" />失败时返回支付宝可重试的非 success 响应。</label></li>
-<li><label><input type="checkbox" checked="" />确保该路由不经过
+<li><label><input type="checkbox" checked="">失败时返回支付宝可重试的非 success 响应。</label></li>
+<li><label><input type="checkbox" checked="">确保该路由不经过
 AuthMiddleware。</label></li>
 </ul>
 <h1 id="实现">实现</h1>
@@ -314,14 +424,11 @@ OK，但是只有在满足以下条件的时候才会返回success：</p>
 </ul>
 <h1 id="测试">测试</h1>
 <ul class="task-list">
-<li><label><input type="checkbox"
-checked="" />未登录请求可以访问回调接口。</label></li>
-<li><label><input type="checkbox"
-checked="" />验签失败不会更新支付流水。</label></li>
-<li><label><input type="checkbox" checked="" />验签成功且支付成功时返回
+<li><label><input type="checkbox" checked="">未登录请求可以访问回调接口。</label></li>
+<li><label><input type="checkbox" checked="">验签失败不会更新支付流水。</label></li>
+<li><label><input type="checkbox" checked="">验签成功且支付成功时返回
 success。</label></li>
-<li><label><input type="checkbox"
-checked="" />重复通知不会重复更新订单状态。</label></li>
+<li><label><input type="checkbox" checked="">重复通知不会重复更新订单状态。</label></li>
 </ul>
 <h2 id="未登录访问">未登录访问</h2>
 <p>使用API路由测试，使用postman发送请求，注意返回状态码为200，但响应体是failure</p>

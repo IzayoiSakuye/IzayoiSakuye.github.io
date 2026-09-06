@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            1172
+                            1122
                         
                         字
                     </li>
@@ -277,7 +389,7 @@
 <p>优先队列使用需要引入头文件queue</p>
 <p>如下代码可以声明一个优先队列，其中T为数据类型，<strong>优先队列中的数据数据类型都相同</strong></p>
 <p><strong>注意：使用结构体时，需要重载小于号或声明一个比较类并重载()运算符</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits\stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span>&#123;</span><br><span class="line">  <span class="type">int</span> x, y;</span><br><span class="line">  <span class="comment">// 使用结构体需要重载小于号</span></span><br><span class="line">  <span class="type">bool</span> <span class="keyword">operator</span> &lt; (<span class="type">const</span> node &amp;u)<span class="type">const</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x == u.x? y&lt;u.y : x&lt;u.x;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 或重载()运算符实现比较</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">cmp</span>&#123;</span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">operator</span> <span class="params">()</span><span class="params">(<span class="type">const</span> <span class="type">int</span> &amp;u, <span class="type">const</span> <span class="type">int</span> &amp;v)</span><span class="type">const</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> u&gt;v;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 声明优先队列，整型，默认大顶堆(最大元素在顶上)</span></span><br><span class="line">    <span class="comment">// 一般声明一个空优先队列  </span></span><br><span class="line">    priority_queue&lt;T&gt; pque;</span><br><span class="line">    <span class="comment">// 声明一个小顶堆,传入仿函数, 第二个参数表示优先队列底层储存容器为vector</span></span><br><span class="line">    priority_queue&lt;<span class="type">int</span>, vector&lt;<span class="type">int</span>&gt;, greater&lt;<span class="type">int</span>&gt;&gt; pque;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits\stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">node</span>{</span><br><span class="line">  <span class="type">int</span> x, y;</span><br><span class="line">  <span class="comment">// 使用结构体需要重载小于号</span></span><br><span class="line">  <span class="type">bool</span> <span class="keyword">operator</span> &lt; (<span class="type">const</span> node &amp;u)<span class="type">const</span>{</span><br><span class="line">    <span class="keyword">return</span> x == u.x? y&lt;u.y : x&lt;u.x;</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line"><span class="comment">// 或重载()运算符实现比较</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">cmp</span>{</span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">operator</span> <span class="params">()</span><span class="params">(<span class="type">const</span> <span class="type">int</span> &amp;u, <span class="type">const</span> <span class="type">int</span> &amp;v)</span><span class="type">const</span></span>{</span><br><span class="line">    <span class="keyword">return</span> u&gt;v;</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>{</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 声明优先队列，整型，默认大顶堆(最大元素在顶上)</span></span><br><span class="line">    <span class="comment">// 一般声明一个空优先队列  </span></span><br><span class="line">    priority_queue&lt;T&gt; pque;</span><br><span class="line">    <span class="comment">// 声明一个小顶堆,传入仿函数, 第二个参数表示优先队列底层储存容器为vector</span></span><br><span class="line">    priority_queue&lt;<span class="type">int</span>, vector&lt;<span class="type">int</span>&gt;, greater&lt;<span class="type">int</span>&gt;&gt; pque;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="基本操作">基本操作</h2>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 取出堆顶</span></span><br><span class="line">cout &lt;&lt; pque.<span class="built_in">top</span>() &lt;&lt; endl;</span><br><span class="line"><span class="comment">// 插入元素到队尾并执行上浮操作</span></span><br><span class="line">pque.<span class="built_in">push</span>(<span class="number">1</span>);</span><br><span class="line"><span class="comment">// 弹出堆顶</span></span><br><span class="line">pque.<span class="built_in">pop</span>();</span><br><span class="line"><span class="comment">// 返回队列元素个数</span></span><br><span class="line">cout &lt;&lt; pque.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line"><span class="comment">// 判断队列是否为空</span></span><br><span class="line">cout &lt;&lt; pque.<span class="built_in">empty</span>() &lt;&lt; endl;</span><br><span class="line"><span class="comment">//间接修改堆顶元素</span></span><br><span class="line"><span class="type">int</span> x = pque.<span class="built_in">top</span>();</span><br><span class="line">pque.<span class="built_in">pop</span>();</span><br><span class="line">pque.<span class="built_in">push</span>(x<span class="number">+1</span>);</span><br></pre></td></tr></table></figure>
 <p><strong>注意：priority_queue没有迭代器，不能用begin()，end()，auto等遍历，也不能直接修改队列中的元素</strong></p>

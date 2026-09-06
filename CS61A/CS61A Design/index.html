@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            1448
+                            1348
                         
                         字
                     </li>
@@ -268,8 +380,7 @@
             
             <hr />
             <div itemprop="articleBody"><h1 id="functional-abstraction">Functional Abstraction</h1>
-<h2
-id="lambda表达式所在的environment关系">Lambda表达式所在的environment关系</h2>
+<h2 id="lambda表达式所在的environment关系">Lambda表达式所在的environment关系</h2>
 <p>如下例子</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">1</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">g</span>):</span><br><span class="line">    a = <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">lambda</span> y:a*g(y)</span><br><span class="line">f(<span class="keyword">lambda</span> y: a+y)(a)</span><br></pre></td></tr></table></figure>
 <p>注意行4与行5的lambda函数的区别：</p>
@@ -298,9 +409,9 @@ errors：执行时由python解释器发现的错误。当这些错误发生时�
 <h2 id="decorator">Decorator</h2>
 <p>装饰器用于给现有模块（原函数）进行功能拓展，通过接受一个函数来返回一个新的函数或修改原来的函数</p>
 <p>例如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trace1</span>(<span class="params">fn</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    return a version of fn that first print before it is called</span></span><br><span class="line"><span class="string">    fn - a function of 1 argument</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">traced</span>(<span class="params">x</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Calling&quot;</span>,fn,<span class="string">&quot;on argument&quot;</span>,x)</span><br><span class="line">        <span class="keyword">return</span> fn(x)</span><br><span class="line">    <span class="keyword">return</span> traced</span><br><span class="line"></span><br><span class="line"><span class="meta">@trace1</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">square</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x*x</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trace1</span>(<span class="params">fn</span>):</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    return a version of fn that first print before it is called</span></span><br><span class="line"><span class="string">    fn - a function of 1 argument</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">traced</span>(<span class="params">x</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Calling"</span>,fn,<span class="string">"on argument"</span>,x)</span><br><span class="line">        <span class="keyword">return</span> fn(x)</span><br><span class="line">    <span class="keyword">return</span> traced</span><br><span class="line"></span><br><span class="line"><span class="meta">@trace1</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">square</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x*x</span><br></pre></td></tr></table></figure>
 <p>等同于</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trace1</span>(<span class="params">fn</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    return a version of fn that first print before it is called</span></span><br><span class="line"><span class="string">    fn - a function of 1 argument</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">traced</span>(<span class="params">x</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Calling&quot;</span>,fn,<span class="string">&quot;on argument&quot;</span>,x)</span><br><span class="line">        <span class="keyword">return</span> fn(x)</span><br><span class="line">    <span class="keyword">return</span> traced</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">square</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">square = trace1(square)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">trace1</span>(<span class="params">fn</span>):</span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    return a version of fn that first print before it is called</span></span><br><span class="line"><span class="string">    fn - a function of 1 argument</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">traced</span>(<span class="params">x</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Calling"</span>,fn,<span class="string">"on argument"</span>,x)</span><br><span class="line">        <span class="keyword">return</span> fn(x)</span><br><span class="line">    <span class="keyword">return</span> traced</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">square</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">square = trace1(square)</span><br></pre></td></tr></table></figure>
 <p>返回值都相同</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; square(5)</span><br><span class="line">Calling &lt;function square at 0x000001C1247A9240&gt; on argument 5</span><br><span class="line">25</span><br></pre></td></tr></table></figure>
 </div>

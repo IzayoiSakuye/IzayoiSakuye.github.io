@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.28K
+                            ~1.94K
                         
                         字
                     </li>
@@ -270,21 +382,21 @@
             <div itemprop="articleBody"><h1 id="删除操作">删除操作</h1>
 <h2 id="删除一条记录">删除一条记录</h2>
 <p>删除对象需要指定主键或用<code>Where</code>指定额外条件</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Email 的 ID 是 `10`</span></span><br><span class="line">db.Delete(&amp;email)</span><br><span class="line"><span class="comment">// DELETE from emails where id = 10;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 带额外条件的删除</span></span><br><span class="line">db.Where(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>).Delete(&amp;email)</span><br><span class="line"><span class="comment">// DELETE from emails where id = 10 AND name = &quot;jinzhu&quot;;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Email 的 ID 是 `10`</span></span><br><span class="line">db.Delete(&amp;email)</span><br><span class="line"><span class="comment">// DELETE from emails where id = 10;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 带额外条件的删除</span></span><br><span class="line">db.Where(<span class="string">"name = ?"</span>, <span class="string">"jinzhu"</span>).Delete(&amp;email)</span><br><span class="line"><span class="comment">// DELETE from emails where id = 10 AND name = "jinzhu";</span></span><br></pre></td></tr></table></figure>
 <h2 id="根据主键删除">根据主键删除</h2>
 <p>可以根据主键和内联条件删除对象，作为函数参数传入</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.Delete(&amp;User&#123;&#125;, <span class="number">10</span>)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;User&#123;&#125;, <span class="string">&quot;10&quot;</span>)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;users, []<span class="type">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id IN (1,2,3);</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.Delete(&amp;User{}, <span class="number">10</span>)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;User{}, <span class="string">"10"</span>)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id = 10;</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;users, []<span class="type">int</span>{<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>})</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id IN (1,2,3);</span></span><br></pre></td></tr></table></figure>
 <p>可以定义一个主键切片传给delete，以便高效删除数据</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users = []User&#123;&#123;ID: <span class="number">1</span>&#125;, &#123;ID: <span class="number">2</span>&#125;, &#123;ID: <span class="number">3</span>&#125;&#125;</span><br><span class="line">db.Delete(&amp;users)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id IN (1,2,3);</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users = []User{{ID: <span class="number">1</span>}, {ID: <span class="number">2</span>}, {ID: <span class="number">3</span>}}</span><br><span class="line">db.Delete(&amp;users)</span><br><span class="line"><span class="comment">// DELETE FROM users WHERE id IN (1,2,3);</span></span><br></pre></td></tr></table></figure>
 <h2 id="批量删除">批量删除</h2>
 <p>如果指定的值不包含主键，那么会删除所有匹配的记录</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;email LIKE ?&quot;</span>, <span class="string">&quot;%jinzhu%&quot;</span>).Delete(&amp;Email&#123;&#125;)</span><br><span class="line"><span class="comment">// DELETE from emails where email LIKE &quot;%jinzhu%&quot;;</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;Email&#123;&#125;, <span class="string">&quot;email LIKE ?&quot;</span>, <span class="string">&quot;%jinzhu%&quot;</span>)</span><br><span class="line"><span class="comment">// DELETE from emails where email LIKE &quot;%jinzhu%&quot;;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.Where(<span class="string">"email LIKE ?"</span>, <span class="string">"%jinzhu%"</span>).Delete(&amp;Email{})</span><br><span class="line"><span class="comment">// DELETE from emails where email LIKE "%jinzhu%";</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;Email{}, <span class="string">"email LIKE ?"</span>, <span class="string">"%jinzhu%"</span>)</span><br><span class="line"><span class="comment">// DELETE from emails where email LIKE "%jinzhu%";</span></span><br></pre></td></tr></table></figure>
 <h3 id="阻止全局删除">阻止全局删除</h3>
 <p>当试图执行不带任何条件的批量删除时，GORM会返回错误，如果一定要做，必须添加一些条件或者使用原生SQL</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.Delete(&amp;User&#123;&#125;).Error <span class="comment">// gorm.ErrMissingWhereClause</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;[]User&#123;&#123;Name: <span class="string">&quot;jinzhu1&quot;</span>&#125;, &#123;Name: <span class="string">&quot;jinzhu2&quot;</span>&#125;&#125;).Error <span class="comment">// gorm.ErrMissingWhereClause</span></span><br><span class="line"></span><br><span class="line">db.Where(<span class="string">&quot;1 = 1&quot;</span>).Delete(&amp;User&#123;&#125;)</span><br><span class="line"><span class="comment">// DELETE FROM `users` WHERE 1=1</span></span><br><span class="line"></span><br><span class="line">db.Exec(<span class="string">&quot;DELETE FROM users&quot;</span>)</span><br><span class="line"><span class="comment">// DELETE FROM users</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.Delete(&amp;User{}).Error <span class="comment">// gorm.ErrMissingWhereClause</span></span><br><span class="line"></span><br><span class="line">db.Delete(&amp;[]User{{Name: <span class="string">"jinzhu1"</span>}, {Name: <span class="string">"jinzhu2"</span>}}).Error <span class="comment">// gorm.ErrMissingWhereClause</span></span><br><span class="line"></span><br><span class="line">db.Where(<span class="string">"1 = 1"</span>).Delete(&amp;User{})</span><br><span class="line"><span class="comment">// DELETE FROM `users` WHERE 1=1</span></span><br><span class="line"></span><br><span class="line">db.Exec(<span class="string">"DELETE FROM users"</span>)</span><br><span class="line"><span class="comment">// DELETE FROM users</span></span><br></pre></td></tr></table></figure>
 <h2 id="软删除">软删除</h2>
 <p>若model包含<code>gorm.DeleteAt</code>字段，则该model会获得软删除的能力，当调用delete时，GORM不会从数据库中删除该记录，而是会将<code>DeleteAt</code>字段设置为当前时间，而后的一般方法无法查找到这条记录</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// user&#x27;s ID is `111`</span></span><br><span class="line">db.Delete(&amp;user)</span><br><span class="line"><span class="comment">// UPDATE users SET deleted_at=&quot;2013-10-29 10:23&quot; WHERE id = 111;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Batch Delete</span></span><br><span class="line">db.Where(<span class="string">&quot;age = ?&quot;</span>, <span class="number">20</span>).Delete(&amp;User&#123;&#125;)</span><br><span class="line"><span class="comment">// UPDATE users SET deleted_at=&quot;2013-10-29 10:23&quot; WHERE age = 20;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Soft deleted records will be ignored when querying</span></span><br><span class="line">db.Where(<span class="string">&quot;age = 20&quot;</span>).Find(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE age = 20 AND deleted_at IS NULL;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// user's ID is `111`</span></span><br><span class="line">db.Delete(&amp;user)</span><br><span class="line"><span class="comment">// UPDATE users SET deleted_at="2013-10-29 10:23" WHERE id = 111;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Batch Delete</span></span><br><span class="line">db.Where(<span class="string">"age = ?"</span>, <span class="number">20</span>).Delete(&amp;User{})</span><br><span class="line"><span class="comment">// UPDATE users SET deleted_at="2013-10-29 10:23" WHERE age = 20;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Soft deleted records will be ignored when querying</span></span><br><span class="line">db.Where(<span class="string">"age = 20"</span>).Find(&amp;user)</span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE age = 20 AND deleted_at IS NULL;</span></span><br></pre></td></tr></table></figure>
 <p>使用<code>db.Unscoped().Find()</code>查找被软删除的记录</p>
 <p>使用<code>db.Unscoped().Delete()</code>永久删除记录</p>
 <h3 id="删除标志">删除标志</h3>

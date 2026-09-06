@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~3.31K
+                            ~3.24K
                         
                         字
                     </li>
@@ -289,7 +401,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">s, v</span>):</span><br><span class="line">    <span class="keyword">assert</span> s <span class="keyword">is</span> <span class="keyword">not</span> Link.empty</span><br><span class="line">    <span class="keyword">if</span> s.first &gt; v:</span><br><span class="line">        s.first, s.rest = v, Link(s.first, s.rest)</span><br><span class="line">    <span class="keyword">elif</span> s.first &lt; v <span class="keyword">and</span> s.rest <span class="keyword">is</span> Link.empty:</span><br><span class="line">        s.rest = Link(v)</span><br><span class="line">    <span class="keyword">elif</span> s.first &lt; v:</span><br><span class="line">        add(s.rest, v)</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
 <h2 id="tree-class">Tree Class</h2>
 <p>使用类实现树 ### 创建树</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Tree</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, label, branches = []</span>):</span><br><span class="line">        <span class="variable language_">self</span>.label = label</span><br><span class="line">        <span class="keyword">for</span> branch <span class="keyword">in</span> branches:</span><br><span class="line">            <span class="keyword">assert</span> <span class="built_in">isinstance</span>(branch, Tree)</span><br><span class="line">        <span class="variable language_">self</span>.branches = <span class="built_in">list</span>(branches)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.branches:</span><br><span class="line">            branches_str = <span class="string">&#x27;, &#x27;</span>+ <span class="built_in">repr</span>(<span class="variable language_">self</span>.branches)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            branch_str = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;Tree(&#123;0&#125;&#123;1&#125;)&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">repr</span>(<span class="variable language_">self</span>.label), branch_str)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;\n&#x27;</span>.join(<span class="variable language_">self</span>.indented())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">indented</span>(<span class="params">self</span>):</span><br><span class="line">        lines = []</span><br><span class="line">        <span class="keyword">for</span> b <span class="keyword">in</span> <span class="variable language_">self</span>.branches:</span><br><span class="line">            <span class="keyword">for</span> line <span class="keyword">in</span> b.indented():</span><br><span class="line">                lines.append(<span class="string">&#x27;    &#x27;</span>+line)</span><br><span class="line">        <span class="keyword">return</span> [<span class="built_in">str</span>(<span class="variable language_">self</span>.label)] + lines</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_leaf</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> <span class="variable language_">self</span>.branches</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Tree</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, label, branches = []</span>):</span><br><span class="line">        <span class="variable language_">self</span>.label = label</span><br><span class="line">        <span class="keyword">for</span> branch <span class="keyword">in</span> branches:</span><br><span class="line">            <span class="keyword">assert</span> <span class="built_in">isinstance</span>(branch, Tree)</span><br><span class="line">        <span class="variable language_">self</span>.branches = <span class="built_in">list</span>(branches)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.branches:</span><br><span class="line">            branches_str = <span class="string">', '</span>+ <span class="built_in">repr</span>(<span class="variable language_">self</span>.branches)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            branch_str = <span class="string">''</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Tree({0}{1})'</span>.<span class="built_in">format</span>(<span class="built_in">repr</span>(<span class="variable language_">self</span>.label), branch_str)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'\n'</span>.join(<span class="variable language_">self</span>.indented())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">indented</span>(<span class="params">self</span>):</span><br><span class="line">        lines = []</span><br><span class="line">        <span class="keyword">for</span> b <span class="keyword">in</span> <span class="variable language_">self</span>.branches:</span><br><span class="line">            <span class="keyword">for</span> line <span class="keyword">in</span> b.indented():</span><br><span class="line">                lines.append(<span class="string">'    '</span>+line)</span><br><span class="line">        <span class="keyword">return</span> [<span class="built_in">str</span>(<span class="variable language_">self</span>.label)] + lines</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">is_leaf</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> <span class="variable language_">self</span>.branches</span><br></pre></td></tr></table></figure>
 <h3 id="实现一些操作">实现一些操作</h3>
 <p>如下代码实现了创建斐波那契树以及输出叶子节点</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib_tree</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">if</span> n==<span class="number">0</span> <span class="keyword">or</span> n==<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> Tree(n)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        left = fib_tree(n-<span class="number">2</span>)</span><br><span class="line">        right = fib_tree(n-<span class="number">1</span>)</span><br><span class="line">        fib_n = left.label + right.label</span><br><span class="line">        <span class="keyword">return</span> Tree(fib_n, [left, right])</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">leaves</span>(<span class="params">t</span>):</span><br><span class="line">    <span class="keyword">if</span> t.is_leaf():</span><br><span class="line">        <span class="keyword">return</span> [t.label]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        all_leaves = []</span><br><span class="line">        <span class="keyword">for</span> b <span class="keyword">in</span> t.branches:</span><br><span class="line">            all_leaves.extend(leaves(b))</span><br><span class="line">        <span class="keyword">return</span> all_leaves</span><br></pre></td></tr></table></figure>

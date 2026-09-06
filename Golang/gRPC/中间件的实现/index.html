@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~4.91K
+                            ~4.37K
                         
                         字
                     </li>
@@ -268,13 +380,13 @@
             
             <hr />
             <div itemprop="articleBody"><h1 id="洋葱模型">洋葱模型</h1>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/461dbf9917634fe1a1b578237ad78600~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" alt="img" style="zoom: 33%;" /></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/461dbf9917634fe1a1b578237ad78600~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" alt="img" style="zoom: 33%;"></p>
 <p>洋葱模型中，每一层相当于一个中间件，用于处理特定功能</p>
 <p>假设洋葱中间是我们的handler处理程序，则处理顺序应该是：</p>
 <p>handler前请求→handler→handler后响应</p>
 <p>也就是<strong>每个中间件都有两次处理时机</strong></p>
 <p>因此我们一般将一些需要前置处理的，比如拦截登录token之类的请求，放在handler前面，而需要后置处理的，比如收集方法耗时之类的信息，放在handler后面，如以下代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">authCtrl := &amp;ctrl.AuthController&#123;&#125;</span><br><span class="line">	s := grpc.NewServer(</span><br><span class="line">		grpc.ChainUnaryInterceptor(</span><br><span class="line">			<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>&#123;&#125;, err <span class="type">error</span>) &#123;</span><br><span class="line">				log.Println(<span class="string">&quot;login1 before&quot;</span>)</span><br><span class="line">				resp, err = handler(ctx, req)</span><br><span class="line">				log.Println(<span class="string">&quot;login1 after&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span> resp, err</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>&#123;&#125;, err <span class="type">error</span>) &#123;</span><br><span class="line">				log.Println(<span class="string">&quot;login2 before&quot;</span>)</span><br><span class="line">				resp, err = handler(ctx, req)</span><br><span class="line">				log.Println(<span class="string">&quot;login2 after&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span> resp, err</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>&#123;&#125;, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>&#123;&#125;, err <span class="type">error</span>) &#123;</span><br><span class="line">				log.Println(<span class="string">&quot;login3 before&quot;</span>)</span><br><span class="line">				resp, err = handler(ctx, req)</span><br><span class="line">				log.Println(<span class="string">&quot;login3 after&quot;</span>)</span><br><span class="line">				<span class="keyword">return</span> resp, err</span><br><span class="line">			&#125;,</span><br><span class="line">		),</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">authCtrl := &amp;ctrl.AuthController{}</span><br><span class="line">	s := grpc.NewServer(</span><br><span class="line">		grpc.ChainUnaryInterceptor(</span><br><span class="line">			<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>{}, err <span class="type">error</span>) {</span><br><span class="line">				log.Println(<span class="string">"login1 before"</span>)</span><br><span class="line">				resp, err = handler(ctx, req)</span><br><span class="line">				log.Println(<span class="string">"login1 after"</span>)</span><br><span class="line">				<span class="keyword">return</span> resp, err</span><br><span class="line">			},</span><br><span class="line">			<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>{}, err <span class="type">error</span>) {</span><br><span class="line">				log.Println(<span class="string">"login2 before"</span>)</span><br><span class="line">				resp, err = handler(ctx, req)</span><br><span class="line">				log.Println(<span class="string">"login2 after"</span>)</span><br><span class="line">				<span class="keyword">return</span> resp, err</span><br><span class="line">			},</span><br><span class="line">			<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, req <span class="keyword">interface</span>{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler)</span></span> (resp <span class="keyword">interface</span>{}, err <span class="type">error</span>) {</span><br><span class="line">				log.Println(<span class="string">"login3 before"</span>)</span><br><span class="line">				resp, err = handler(ctx, req)</span><br><span class="line">				log.Println(<span class="string">"login3 after"</span>)</span><br><span class="line">				<span class="keyword">return</span> resp, err</span><br><span class="line">			},</span><br><span class="line">		),</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
 <p>输出为</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2026/07/16 20:42:04 login1 before</span><br><span class="line">2026/07/16 20:42:04 login2 before</span><br><span class="line">2026/07/16 20:42:04 login3 before</span><br><span class="line">2026/07/16 20:42:04 Login request received: admin admin</span><br><span class="line">2026/07/16 20:42:04 login3 after</span><br><span class="line">2026/07/16 20:42:04 login2 after</span><br><span class="line">2026/07/16 20:42:04 login1 after</span><br></pre></td></tr></table></figure>
 <h1 id="功能">功能</h1>
@@ -287,14 +399,14 @@
 <p>执行顺序按照洋葱模型</p>
 <h2 id="例-auth中间件">例-auth中间件</h2>
 <p>以下是一个验证登录的中间件，服务端代码</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">s := grpc.NewServer(</span><br><span class="line">    grpc.UnaryInterceptor(</span><br><span class="line">        auth.UnaryServerInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context)</span></span>(context.Context, <span class="type">error</span>) &#123;</span><br><span class="line">            <span class="comment">// 从ctx中取出token</span></span><br><span class="line">            md, ok := metadata.FromIncomingContext(ctx)</span><br><span class="line">            <span class="keyword">if</span> !ok &#123;</span><br><span class="line">                <span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">&quot;no Authorized&quot;</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            token := md.Get(<span class="string">&quot;token&quot;</span>)</span><br><span class="line">            key := md.Get(<span class="string">&quot;key&quot;</span>)</span><br><span class="line">            fmt.Println(<span class="string">&quot;token:&quot;</span>, token, <span class="string">&quot;key:&quot;</span>, key)</span><br><span class="line">            <span class="comment">// 验证token</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">len</span>(token)&gt;<span class="number">0</span>)&#123;</span><br><span class="line">                tk := token[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">if</span> tk==<span class="string">&quot;123&quot;</span> &#123;</span><br><span class="line">                    <span class="comment">// 拦截</span></span><br><span class="line">                    <span class="keyword">return</span> ctx, <span class="literal">nil</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 放过</span></span><br><span class="line">            <span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">&quot;no Authorized&quot;</span>)</span><br><span class="line">        &#125;),</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">s := grpc.NewServer(</span><br><span class="line">    grpc.UnaryInterceptor(</span><br><span class="line">        auth.UnaryServerInterceptor(<span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context)</span></span>(context.Context, <span class="type">error</span>) {</span><br><span class="line">            <span class="comment">// 从ctx中取出token</span></span><br><span class="line">            md, ok := metadata.FromIncomingContext(ctx)</span><br><span class="line">            <span class="keyword">if</span> !ok {</span><br><span class="line">                <span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">"no Authorized"</span>)</span><br><span class="line">            }</span><br><span class="line">            token := md.Get(<span class="string">"token"</span>)</span><br><span class="line">            key := md.Get(<span class="string">"key"</span>)</span><br><span class="line">            fmt.Println(<span class="string">"token:"</span>, token, <span class="string">"key:"</span>, key)</span><br><span class="line">            <span class="comment">// 验证token</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">len</span>(token)&gt;<span class="number">0</span>){</span><br><span class="line">                tk := token[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">if</span> tk==<span class="string">"123"</span> {</span><br><span class="line">                    <span class="comment">// 拦截</span></span><br><span class="line">                    <span class="keyword">return</span> ctx, <span class="literal">nil</span></span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            <span class="comment">// 放过</span></span><br><span class="line">            <span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">"no Authorized"</span>)</span><br><span class="line">        }),</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <ul>
 <li>通过metadata的方法取出需要的中间件</li>
 <li>验证token，若长度大于0则取出判断是不是需要的，若是则拦截</li>
 <li>否则放过</li>
 </ul>
 <p>客户端代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">md := metadata.Pairs(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;value&quot;</span>,<span class="string">&quot;token&quot;</span>, <span class="string">&quot;123&quot;</span>)</span><br><span class="line">ctx := metadata.NewOutgoingContext(context.Background(), md)</span><br><span class="line">resp,err := cc.GetClient().Login(ctx, &amp;userProto.LoginRequest&#123;</span><br><span class="line">    Username: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">    Password: <span class="string">&quot;admin&quot;</span>,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">md := metadata.Pairs(<span class="string">"key"</span>, <span class="string">"value"</span>,<span class="string">"token"</span>, <span class="string">"123"</span>)</span><br><span class="line">ctx := metadata.NewOutgoingContext(context.Background(), md)</span><br><span class="line">resp,err := cc.GetClient().Login(ctx, &amp;userProto.LoginRequest{</span><br><span class="line">    Username: <span class="string">"admin"</span>,</span><br><span class="line">    Password: <span class="string">"admin"</span>,</span><br><span class="line">})</span><br></pre></td></tr></table></figure>
 <ul>
 <li>使用pair可以创建多个metadata，奇数为key，偶数为value</li>
 <li>出站使用outgoing获取带有token的context，并传入login</li>
@@ -318,7 +430,7 @@ token，request ID等数据，这些数据就是用metadata来承载的</p>
 <p>若服务端实现了<code>authFuncOverride</code>方法，我们的中间件就会直接调用服务端实现的auth方法</p>
 <p>在<code>ctrl/middleware.go</code>中实现该方法，就可以绕过<code>authFunc</code></p>
 <p>实现此方法的原因是我们需要对不同的方法进行不同操作，如Login方法不需要鉴权，而其他方法需要</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(AuthController)</span></span> AuthFuncOverride(ctx context.Context, fullMethodName <span class="type">string</span>) (context.Context, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="comment">// 放过登录接口</span></span><br><span class="line">	<span class="keyword">if</span> fullMethodName == <span class="string">&quot;/auth.AuthService/Login&quot;</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> ctx, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 从ctx中取出token</span></span><br><span class="line">	md, ok := metadata.FromIncomingContext(ctx)</span><br><span class="line">	<span class="keyword">if</span> !ok &#123;</span><br><span class="line">		<span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">&quot;no Authorized&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	token := md.Get(<span class="string">&quot;token&quot;</span>)</span><br><span class="line">	key := md.Get(<span class="string">&quot;key&quot;</span>)</span><br><span class="line">	fmt.Println(<span class="string">&quot;token:&quot;</span>, token, <span class="string">&quot;key:&quot;</span>, key)</span><br><span class="line">	<span class="comment">// 验证token</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">len</span>(token)&gt;<span class="number">0</span>)&#123;</span><br><span class="line">		tk := token[<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">if</span> tk==<span class="string">&quot;123&quot;</span> &#123;</span><br><span class="line">			<span class="comment">// 拦截</span></span><br><span class="line">			<span class="keyword">return</span> ctx, <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 放过</span></span><br><span class="line">	<span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">&quot;no Authorized&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> userInfoKey <span class="keyword">struct</span>&#123;&#125;	</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">newUserContext</span><span class="params">(ctx context.Context, userinfo *model.UserModel)</span></span> context.Context &#123;</span><br><span class="line">	<span class="keyword">return</span> context.WithValue(ctx, userInfoKey&#123;&#125;, userinfo)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">userFromContext</span><span class="params">(ctx context.Context)</span></span> (*model.UserModel, <span class="type">error</span>) &#123;</span><br><span class="line">	um, ok := ctx.Value(userInfoKey&#123;&#125;).(*model.UserModel)</span><br><span class="line">	<span class="keyword">if</span> !ok &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, status.Error(codes.NotFound, <span class="string">&quot;user not found&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> um, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(AuthController)</span></span> AuthFuncOverride(ctx context.Context, fullMethodName <span class="type">string</span>) (context.Context, <span class="type">error</span>) {</span><br><span class="line">	<span class="comment">// 放过登录接口</span></span><br><span class="line">	<span class="keyword">if</span> fullMethodName == <span class="string">"/auth.AuthService/Login"</span> {</span><br><span class="line">		<span class="keyword">return</span> ctx, <span class="literal">nil</span></span><br><span class="line">	}</span><br><span class="line">	<span class="comment">// 从ctx中取出token</span></span><br><span class="line">	md, ok := metadata.FromIncomingContext(ctx)</span><br><span class="line">	<span class="keyword">if</span> !ok {</span><br><span class="line">		<span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">"no Authorized"</span>)</span><br><span class="line">	}</span><br><span class="line">	token := md.Get(<span class="string">"token"</span>)</span><br><span class="line">	key := md.Get(<span class="string">"key"</span>)</span><br><span class="line">	fmt.Println(<span class="string">"token:"</span>, token, <span class="string">"key:"</span>, key)</span><br><span class="line">	<span class="comment">// 验证token</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">len</span>(token)&gt;<span class="number">0</span>){</span><br><span class="line">		tk := token[<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">if</span> tk==<span class="string">"123"</span> {</span><br><span class="line">			<span class="comment">// 拦截</span></span><br><span class="line">			<span class="keyword">return</span> ctx, <span class="literal">nil</span></span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">	<span class="comment">// 放过</span></span><br><span class="line">	<span class="keyword">return</span> ctx, status.Error(codes.Unauthenticated, <span class="string">"no Authorized"</span>)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> userInfoKey <span class="keyword">struct</span>{}	</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">newUserContext</span><span class="params">(ctx context.Context, userinfo *model.UserModel)</span></span> context.Context {</span><br><span class="line">	<span class="keyword">return</span> context.WithValue(ctx, userInfoKey{}, userinfo)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">userFromContext</span><span class="params">(ctx context.Context)</span></span> (*model.UserModel, <span class="type">error</span>) {</span><br><span class="line">	um, ok := ctx.Value(userInfoKey{}).(*model.UserModel)</span><br><span class="line">	<span class="keyword">if</span> !ok {</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, status.Error(codes.NotFound, <span class="string">"user not found"</span>)</span><br><span class="line">	}</span><br><span class="line">	<span class="keyword">return</span> um, <span class="literal">nil</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h1 id="链路追踪">链路追踪</h1>
 </div>
         </div>

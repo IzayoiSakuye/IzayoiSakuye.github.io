@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~1.64K
+                            ~1.63K
                         
                         字
                     </li>
@@ -283,12 +395,12 @@
 <li>Span：一次调用过程</li>
 <li>SpanContext：Trace的全局上下文信息</li>
 </ul>
-<style>.xbuhrgrvrwmt{zoom:50%;}</style>
-<img src="/Golang/gRPC/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/v2-0946c97f2a419eebec6d6fa8ae87bb82_1440w.jpg" class="xbuhrgrvrwmt" alt="链路追踪">
+<style>.lrtbzmyntdxg{zoom:50%;}</style>
+<img src="/Golang/gRPC/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/v2-0946c97f2a419eebec6d6fa8ae87bb82_1440w.jpg" class="lrtbzmyntdxg" alt="链路追踪">
 <p>如图，一次下单的完整请求就是一个Trace，TraceID是请求的全局标识，内部的一次调用被称为一个Span，每个Span都要带上全局的TraceID，这样才能把全局TraceID和每个调用关联起来，这个TraceID需要通过SpanContext传输，遵守协议调用</p>
 <h2 id="如何采集">如何采集</h2>
-<style>.umhorkvnezpl{zoom:50%;}</style>
-<img src="/Golang/gRPC/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/v2-3b6b0e29e49cae01f3ffc3f2d472fad1_1440w.jpg" class="umhorkvnezpl" alt="采集信息">
+<style>.sgxkwfrwhsly{zoom:50%;}</style>
+<img src="/Golang/gRPC/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/v2-3b6b0e29e49cae01f3ffc3f2d472fad1_1440w.jpg" class="sgxkwfrwhsly" alt="采集信息">
 <p>可以发现有一个collector负责一种收集数据，每次调用collector会获得如下信息：</p>
 <ul>
 <li>全局TraceID：将每个子调用和最初的请求关联</li>
@@ -316,7 +428,7 @@
 <p>接下来就可以通过<code>cfg.NewTracer(config.Logger(jaeger.StdLogger))</code>启动一个新tracer，若想在某个服务追踪，直接在对应main函数入口处<code>tracing.Init()</code>并传入服务名，设置全局收集器<code>opentracing.SetGlobalTracer()</code>，后面都是通过opentracer的实现控制追踪的开启结束</p>
 <p>同样span也可以在方法内部开启，追踪方法间的调用关系和时间</p>
 <p>其中这个span属于当前按trace的一个子span，使用child</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spContext := sp.Context()</span><br><span class="line">    sp = opentracing.StartSpan(<span class="string">&quot;queryGoods&quot;</span>,</span><br><span class="line">        opentracing.ChildOf(spContext),</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spContext := sp.Context()</span><br><span class="line">    sp = opentracing.StartSpan(<span class="string">"queryGoods"</span>,</span><br><span class="line">        opentracing.ChildOf(spContext),</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
 <h2 id="常用方法">常用方法</h2>
 <ul>
 <li><p><code>WithFilterFunc()</code>：过滤器，指定给予的请求会不会被收集</p></li>

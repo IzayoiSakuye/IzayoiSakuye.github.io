@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~4.29K
+                            ~4.10K
                         
                         字
                     </li>
@@ -289,10 +401,10 @@
 <p>这种方法也有局限性，若两个表不在同一个服务器就无法直接JOIN</p>
 <h2 id="自行控制子查询">自行控制子查询</h2>
 <p>比如将多次查询封装成一次查询：查询一次用户列表，将id存入列表，为其他微服务提供批量查询接口，并用map在调用方组装数据</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">productIDs := <span class="built_in">make</span>([]<span class="type">string</span>, <span class="built_in">len</span>(orders))</span><br><span class="line"><span class="keyword">for</span> i, order := <span class="keyword">range</span> orders &#123;</span><br><span class="line">    productIDs[i] = order.ProductID</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一次批量请求</span></span><br><span class="line">products, _ := productClient.ListProductsByIDs(ctx, productIDs)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内存映射</span></span><br><span class="line">productMap := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]Product, <span class="built_in">len</span>(products))</span><br><span class="line"><span class="keyword">for</span> _, p := <span class="keyword">range</span> products &#123;</span><br><span class="line">    productMap[p.ID] = p</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, order := <span class="keyword">range</span> orders &#123;</span><br><span class="line">    orders[i].Product = productMap[order.ProductID]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">productIDs := <span class="built_in">make</span>([]<span class="type">string</span>, <span class="built_in">len</span>(orders))</span><br><span class="line"><span class="keyword">for</span> i, order := <span class="keyword">range</span> orders {</span><br><span class="line">    productIDs[i] = order.ProductID</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一次批量请求</span></span><br><span class="line">products, _ := productClient.ListProductsByIDs(ctx, productIDs)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内存映射</span></span><br><span class="line">productMap := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]Product, <span class="built_in">len</span>(products))</span><br><span class="line"><span class="keyword">for</span> _, p := <span class="keyword">range</span> products {</span><br><span class="line">    productMap[p.ID] = p</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, order := <span class="keyword">range</span> orders {</span><br><span class="line">    orders[i].Product = productMap[order.ProductID]</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="聚合层bff">聚合层BFF</h2>
 <p>若某个前端页面需要来自多个微服务的数据，不要再前端或客户端一个个调，而是建立一个BFF层，BFF层内部可以通过批量调用或goroutine并发提升效率</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    users    []User</span><br><span class="line">    orders   []Order</span><br><span class="line">    products []Product</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">g, ctx := errgroup.WithContext(ctx)</span><br><span class="line"></span><br><span class="line">g.Go(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    users, err = userClient.ListUsers(ctx, userIDs)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;)</span><br><span class="line">g.Go(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    orders, err = orderClient.ListOrders(ctx, orderIDs)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;)</span><br><span class="line">g.Go(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    products, err = productClient.ListProducts(ctx, productIDs)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> err := g.Wait(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="comment">// 处理错误</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    users    []User</span><br><span class="line">    orders   []Order</span><br><span class="line">    products []Product</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">g, ctx := errgroup.WithContext(ctx)</span><br><span class="line"></span><br><span class="line">g.Go(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> {</span><br><span class="line">    users, err = userClient.ListUsers(ctx, userIDs)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">})</span><br><span class="line">g.Go(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> {</span><br><span class="line">    orders, err = orderClient.ListOrders(ctx, orderIDs)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">})</span><br><span class="line">g.Go(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> {</span><br><span class="line">    products, err = productClient.ListProducts(ctx, productIDs)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> err := g.Wait(); err != <span class="literal">nil</span> {</span><br><span class="line">    <span class="comment">// 处理错误</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="数据冗余">数据冗余</h2>
 <p>如果某些数据要经常被一起读取，可以允许部分数据在多个服务内冗余存储</p>
 <p>比如订单服务存储商品id与名称，不用每次去商品服务查，当商品服务修改商品名称时，发出一条更新事件，订单服务消费事件更新自己的冗余字段</p>
@@ -311,15 +423,15 @@
 <p>我们需要查询所有用户与他们的所有订单</p>
 <h2 id="n1">n+1</h2>
 <p>以下这种写法是典型的n+1查询：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1 次查询所有用户</span></span><br><span class="line">rows, _ := db.Query(<span class="string">&quot;SELECT id, name FROM users&quot;</span>)</span><br><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">    <span class="keyword">var</span> u User</span><br><span class="line">    rows.Scan(&amp;u.ID, &amp;u.Name)</span><br><span class="line">    users = <span class="built_in">append</span>(users, u)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于每个用户，再发 1 次查询获取订单 (N 次)</span></span><br><span class="line"><span class="keyword">for</span> i, u := <span class="keyword">range</span> users &#123;</span><br><span class="line">    rows, _ := db.Query(<span class="string">&quot;SELECT id, amount FROM orders WHERE user_id = ?&quot;</span>, u.ID)</span><br><span class="line">    <span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">        <span class="keyword">var</span> o Order</span><br><span class="line">        rows.Scan(&amp;o.ID, &amp;o.Amount)</span><br><span class="line">        users[i].Orders = <span class="built_in">append</span>(users[i].Orders, o)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1 次查询所有用户</span></span><br><span class="line">rows, _ := db.Query(<span class="string">"SELECT id, name FROM users"</span>)</span><br><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line"><span class="keyword">for</span> rows.Next() {</span><br><span class="line">    <span class="keyword">var</span> u User</span><br><span class="line">    rows.Scan(&amp;u.ID, &amp;u.Name)</span><br><span class="line">    users = <span class="built_in">append</span>(users, u)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于每个用户，再发 1 次查询获取订单 (N 次)</span></span><br><span class="line"><span class="keyword">for</span> i, u := <span class="keyword">range</span> users {</span><br><span class="line">    rows, _ := db.Query(<span class="string">"SELECT id, amount FROM orders WHERE user_id = ?"</span>, u.ID)</span><br><span class="line">    <span class="keyword">for</span> rows.Next() {</span><br><span class="line">        <span class="keyword">var</span> o Order</span><br><span class="line">        rows.Scan(&amp;o.ID, &amp;o.Amount)</span><br><span class="line">        users[i].Orders = <span class="built_in">append</span>(users[i].Orders, o)</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>一次查用户+每个用户查一次订单，共n次</p>
 <p>因此总计1+n次查询，日志中会体现为执行了大量结构相同，参数不同的sql语句</p>
 <p>这样写会极大浪费网络开销</p>
 <h2 id="正确做法">正确做法</h2>
 <p>可以使用join一次性得到所有数据</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一次 JOIN 查询</span></span><br><span class="line">rows, _ := db.Query(<span class="string">`</span></span><br><span class="line"><span class="string">    SELECT u.id, u.name, o.id, o.amount</span></span><br><span class="line"><span class="string">    FROM users u</span></span><br><span class="line"><span class="string">    LEFT JOIN orders o ON u.id = o.user_id</span></span><br><span class="line"><span class="string">    ORDER BY u.id</span></span><br><span class="line"><span class="string">`</span>)</span><br><span class="line"><span class="comment">// 用 map 在应用层合并数据</span></span><br><span class="line">userMap := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">int</span>]*User)</span><br><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">    <span class="keyword">var</span> uID, oID <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> uName <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> oAmount sql.NullFloat64  <span class="comment">// 可能没有订单，用 Null 类型</span></span><br><span class="line">    rows.Scan(&amp;uID, &amp;uName, &amp;oID, &amp;oAmount)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果用户还没放进 map，创建一个</span></span><br><span class="line">    <span class="keyword">if</span> _, ok := userMap[uID]; !ok &#123;</span><br><span class="line">        userMap[uID] = &amp;User&#123;ID: uID, Name: uName&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果有订单数据，追加进去</span></span><br><span class="line">    <span class="keyword">if</span> oAmount.Valid &#123;</span><br><span class="line">        userMap[uID].Orders = <span class="built_in">append</span>(userMap[uID].Orders, Order&#123;ID: oID, Amount: oAmount.Float64&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">users := <span class="built_in">make</span>([]*User, <span class="number">0</span>, <span class="built_in">len</span>(userMap))</span><br><span class="line"><span class="keyword">for</span> _, u := <span class="keyword">range</span> userMap &#123;</span><br><span class="line">    users = <span class="built_in">append</span>(users, u)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一次 JOIN 查询</span></span><br><span class="line">rows, _ := db.Query(<span class="string">`</span></span><br><span class="line"><span class="string">    SELECT u.id, u.name, o.id, o.amount</span></span><br><span class="line"><span class="string">    FROM users u</span></span><br><span class="line"><span class="string">    LEFT JOIN orders o ON u.id = o.user_id</span></span><br><span class="line"><span class="string">    ORDER BY u.id</span></span><br><span class="line"><span class="string">`</span>)</span><br><span class="line"><span class="comment">// 用 map 在应用层合并数据</span></span><br><span class="line">userMap := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">int</span>]*User)</span><br><span class="line"><span class="keyword">for</span> rows.Next() {</span><br><span class="line">    <span class="keyword">var</span> uID, oID <span class="type">int</span></span><br><span class="line">    <span class="keyword">var</span> uName <span class="type">string</span></span><br><span class="line">    <span class="keyword">var</span> oAmount sql.NullFloat64  <span class="comment">// 可能没有订单，用 Null 类型</span></span><br><span class="line">    rows.Scan(&amp;uID, &amp;uName, &amp;oID, &amp;oAmount)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果用户还没放进 map，创建一个</span></span><br><span class="line">    <span class="keyword">if</span> _, ok := userMap[uID]; !ok {</span><br><span class="line">        userMap[uID] = &amp;User{ID: uID, Name: uName}</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// 如果有订单数据，追加进去</span></span><br><span class="line">    <span class="keyword">if</span> oAmount.Valid {</span><br><span class="line">        userMap[uID].Orders = <span class="built_in">append</span>(userMap[uID].Orders, Order{ID: oID, Amount: oAmount.Float64})</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line">users := <span class="built_in">make</span>([]*User, <span class="number">0</span>, <span class="built_in">len</span>(userMap))</span><br><span class="line"><span class="keyword">for</span> _, u := <span class="keyword">range</span> userMap {</span><br><span class="line">    users = <span class="built_in">append</span>(users, u)</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>首先用一次JOIN得到所有数据，然后在应用层用map合并数据，当然用preload会更省代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line">db.Preload(<span class="string">&quot;Orders&quot;</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users []User</span><br><span class="line">db.Preload(<span class="string">"Orders"</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

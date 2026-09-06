@@ -120,7 +120,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -248,7 +360,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~7.13K
+                            ~6.84K
                         
                         字
                     </li>
@@ -296,14 +408,14 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@handler CreatePayment</span><br><span class="line">  post /orders/:id/pay (MallCreatePaymentReq) returns</span><br><span class="line">  (MallCreatePaymentResp)</span><br></pre></td></tr></table></figure>
 <p>描述：<code>POST /api/mall/orders/:id/pay</code></p>
 <p>protobuf定义：</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">service </span><span class="title class_">PaymentService</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">rpc</span> CreatePayment(CreatePaymentReq) <span class="keyword">returns</span> (CreatePaymentResp)</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">service </span><span class="title class_">PaymentService</span> {</span><br><span class="line">    <span class="function"><span class="keyword">rpc</span> CreatePayment(CreatePaymentReq) <span class="keyword">returns</span> (CreatePaymentResp)</span>;</span><br><span class="line">  }</span><br></pre></td></tr></table></figure>
 <p>描述：<code>/payment.PaymentService/CreatePayment</code></p>
 <p>把这两套接口真正连接起来的是网关logic中的代码：</p>
 <p><code>l.svcCtx.PaymentClient.CreatePayment(...)</code></p>
 <h2 id="api生成http网关代码">API生成HTTP网关代码</h2>
 <p>HTTP接口定义在<code>.api</code>中，执行代码后，goctl会根据文件生成<code>routes.go</code>，<code>handler</code>和<code>types.go</code></p>
 <p>路由结构类似：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  Method:  http.MethodPost,</span><br><span class="line">  Path:    <span class="string">&quot;/orders/:id/pay&quot;</span>,</span><br><span class="line">  Handler: mall.CreatePaymentHandler(serverCtx),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  Method:  http.MethodPost,</span><br><span class="line">  Path:    <span class="string">"/orders/:id/pay"</span>,</span><br><span class="line">  Handler: mall.CreatePaymentHandler(serverCtx),</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>再加上统一前缀：<code>rest.WithPrefix("/api/mall")</code></p>
 <p>得到最终接口：<code>POST /api/mall/orders/:id/pay</code></p>
 <h2 id="proto生成rpc代码">proto生成RPC代码</h2>
@@ -318,7 +430,7 @@
 <h2 id="payment-rpc启动注册服务">payment-rpc启动注册服务</h2>
 <p>payment-rpc入口在services下对应的<code>main.go</code>，负责创建gRPC
 Server：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s := zrpc.MustNewServer(c.RpcServerConf, <span class="function"><span class="keyword">func</span><span class="params">(grpcServer *grpc.Server)</span></span> &#123;</span><br><span class="line">  pb.RegisterPaymentServiceServer(</span><br><span class="line">      grpcServer,</span><br><span class="line">      paymentserviceServer.NewPaymentServiceServer(ctx),</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s := zrpc.MustNewServer(c.RpcServerConf, <span class="function"><span class="keyword">func</span><span class="params">(grpcServer *grpc.Server)</span></span> {</span><br><span class="line">  pb.RegisterPaymentServiceServer(</span><br><span class="line">      grpcServer,</span><br><span class="line">      paymentserviceServer.NewPaymentServiceServer(ctx),</span><br><span class="line">  )</span><br><span class="line">})</span><br></pre></td></tr></table></figure>
 <p><code>pb.RegisterPaymentServiceServer</code>是protobuf生成的代码，用于告诉gRPC
 Server，收到对应的gRPC接口时（<code>/payment.PaymentService/CreatePayment</code>），调用对应的<code>PaymentServiceServer.CreatePayment</code>方法</p>
 <h2 id="app网关创建grpc客户端">APP网关创建gRPC客户端</h2>
@@ -329,9 +441,9 @@ Server，收到对应的gRPC接口时（<code>/payment.PaymentService/CreatePaym
 <p>负责根据配置或etcd找到paymentrpc，并连接gRPC，同时处理超时、状态和服务发现，以及执行拦截器</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paymentClient := paymentservice.NewPaymentService(rpcClient)</span><br></pre></td></tr></table></figure>
 <p>将底层连接包装成强类型接口</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> PaymentService <span class="keyword">interface</span> &#123;</span><br><span class="line">  CreatePayment(</span><br><span class="line">      ctx context.Context,</span><br><span class="line">      in *CreatePaymentReq,</span><br><span class="line">      opts ...grpc.CallOption,</span><br><span class="line">  ) (*CreatePaymentResp, <span class="type">error</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> PaymentService <span class="keyword">interface</span> {</span><br><span class="line">  CreatePayment(</span><br><span class="line">      ctx context.Context,</span><br><span class="line">      in *CreatePaymentReq,</span><br><span class="line">      opts ...grpc.CallOption,</span><br><span class="line">  ) (*CreatePaymentResp, <span class="type">error</span>)</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>最后把客户端保存到依赖容器</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServiceContext <span class="keyword">struct</span> &#123;</span><br><span class="line">  PaymentClient paymentservice.PaymentService</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServiceContext <span class="keyword">struct</span> {</span><br><span class="line">  PaymentClient paymentservice.PaymentService</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>这样所有网关logic都可以通过<code>l.svcCtx.PaymentClient</code>调用支付服务，不用每次重新连接</p>
 <h1 id="http请求进入网关">HTTP请求进入网关</h1>
 <p>假设用户请求：</p>
@@ -339,7 +451,7 @@ Server，收到对应的gRPC接口时（<code>/payment.PaymentService/CreatePaym
 <h2 id="路由找到handler并解析">路由找到handler并解析</h2>
 <p><code>routes.go</code>会将该URL映射到对应handler，位于cmd层的handler中</p>
 <p>handler负责解析HTTP参数，通过<code>httpx.Parse()</code>将路径中的参数解析为types文件中之前定义好的请求体（通过api文件定义的）</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">types.MallCreatePaymentReq&#123;</span><br><span class="line">  Id: <span class="string">&quot;order-001&quot;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">types.MallCreatePaymentReq{</span><br><span class="line">  Id: <span class="string">"order-001"</span>,</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="handler调用网关logic">handler调用网关logic</h2>
 <p>handler通过</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">l := mall.NewCreatePaymentLogic(ctx, svcCtx)</span><br><span class="line">resp, err := l.CreatePayment(in)</span><br></pre></td></tr></table></figure>
@@ -354,21 +466,21 @@ Server，收到对应的gRPC接口时（<code>/payment.PaymentService/CreatePaym
 <p>等操作</p>
 <h1 id="http转换为protobuf类型">HTTP转换为Protobuf类型</h1>
 <p>网关完成校验后调用：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rpcResp, err := l.svcCtx.PaymentClient.CreatePayment(</span><br><span class="line">  l.ctx,</span><br><span class="line">  &amp;paymentpb.CreatePaymentReq&#123;</span><br><span class="line">      OrderId: order.Id,</span><br><span class="line">      UserId:  userID,</span><br><span class="line">      Amount:  order.PayAmount,</span><br><span class="line">  &#125;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rpcResp, err := l.svcCtx.PaymentClient.CreatePayment(</span><br><span class="line">  l.ctx,</span><br><span class="line">  &amp;paymentpb.CreatePaymentReq{</span><br><span class="line">      OrderId: order.Id,</span><br><span class="line">      UserId:  userID,</span><br><span class="line">      Amount:  order.PayAmount,</span><br><span class="line">  },</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>这里由HTTP请求类型，通过网关读取订单补充数据转为RPC请求类型</p>
 <p>因为请求中只携带了<code>order_id</code>，而发给rpc的数据又添加了userid和amount，前者来自登录状态，后者来自mall-rpc，而不是从前端获取数据</p>
 <h1 id="paymentclient内部">PaymentClient内部</h1>
 <p>PaymentClient实现于<code>payment_service.go</code></p>
 <p><code>l.svcCtx.PaymentClient.CreatePayment</code>进入了该Client的实现：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *defaultPaymentService)</span></span> CreatePayment(</span><br><span class="line">  ctx context.Context,</span><br><span class="line">  in *CreatePaymentReq,</span><br><span class="line">  opts ...grpc.CallOption,</span><br><span class="line">) (*CreatePaymentResp, <span class="type">error</span>) &#123;</span><br><span class="line">  client := pb.NewPaymentServiceClient(m.cli.Conn())</span><br><span class="line">  <span class="keyword">return</span> client.CreatePayment(ctx, in, opts...)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *defaultPaymentService)</span></span> CreatePayment(</span><br><span class="line">  ctx context.Context,</span><br><span class="line">  in *CreatePaymentReq,</span><br><span class="line">  opts ...grpc.CallOption,</span><br><span class="line">) (*CreatePaymentResp, <span class="type">error</span>) {</span><br><span class="line">  client := pb.NewPaymentServiceClient(m.cli.Conn())</span><br><span class="line">  <span class="keyword">return</span> client.CreatePayment(ctx, in, opts...)</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>这里又包装了一层gozero的paymentService客户端，用于统一调用方式、对接zrpc连接、提供更方便的接口和集成服务发现、超时、拦截器等功能，执行RPC请求的是<code>pb.NewPaymentServiceClient(m.cli.Conn())</code></p>
 <h1 id="发送网络请求">发送网络请求</h1>
 <p>protobuf生成的<code>_grpc.pb.go</code>中的CreatePayment方法用于发送网络请求：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *paymentServiceClient)</span></span> CreatePayment(</span><br><span class="line">  ctx context.Context,</span><br><span class="line">  in *CreatePaymentReq,</span><br><span class="line">  opts ...grpc.CallOption,</span><br><span class="line">) (*CreatePaymentResp, <span class="type">error</span>) &#123;</span><br><span class="line">  out := <span class="built_in">new</span>(CreatePaymentResp)</span><br><span class="line"></span><br><span class="line">  err := c.cc.Invoke(</span><br><span class="line">      ctx,</span><br><span class="line">      <span class="string">&quot;/payment.PaymentService/CreatePayment&quot;</span>,</span><br><span class="line">      in,</span><br><span class="line">      out,</span><br><span class="line">      opts...,</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> out, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c.cc.Invoke(</span><br><span class="line">      ctx,</span><br><span class="line">      <span class="string">&quot;/payment.PaymentService/CreatePayment&quot;</span>,</span><br><span class="line">      in,</span><br><span class="line">      out,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *paymentServiceClient)</span></span> CreatePayment(</span><br><span class="line">  ctx context.Context,</span><br><span class="line">  in *CreatePaymentReq,</span><br><span class="line">  opts ...grpc.CallOption,</span><br><span class="line">) (*CreatePaymentResp, <span class="type">error</span>) {</span><br><span class="line">  out := <span class="built_in">new</span>(CreatePaymentResp)</span><br><span class="line"></span><br><span class="line">  err := c.cc.Invoke(</span><br><span class="line">      ctx,</span><br><span class="line">      <span class="string">"/payment.PaymentService/CreatePayment"</span>,</span><br><span class="line">      in,</span><br><span class="line">      out,</span><br><span class="line">      opts...,</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> {</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> out, <span class="literal">nil</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c.cc.Invoke(</span><br><span class="line">      ctx,</span><br><span class="line">      <span class="string">"/payment.PaymentService/CreatePayment"</span>,</span><br><span class="line">      in,</span><br><span class="line">      out,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>用于拼成gRPC方法，接下来gRPC会根据protobuf定义序列化req，通过gRPC连接发送到payment-rpc，等待服务端响应后将响应反序列化为resp</p>
 <p>我们的请求对象如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&amp;paymentpb.CreatePaymentReq&#123;</span><br><span class="line">  OrderId: <span class="string">&quot;order-001&quot;</span>,</span><br><span class="line">  UserId:  <span class="string">&quot;user-001&quot;</span>,</span><br><span class="line">  Amount:  <span class="number">480000</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&amp;paymentpb.CreatePaymentReq{</span><br><span class="line">  OrderId: <span class="string">"order-001"</span>,</span><br><span class="line">  UserId:  <span class="string">"user-001"</span>,</span><br><span class="line">  Amount:  <span class="number">480000</span>,</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>protobuf在网络传输时主要依赖字段编号，而不是字段名称，因此字段编号一旦发布就不能随意更改含义</p>
 <h1 id="拦截器传递身份">拦截器传递身份</h1>
 <p>创建客户端时调用了</p>
@@ -378,20 +490,20 @@ Server，收到对应的gRPC接口时（<code>/payment.PaymentService/CreatePaym
 <p>因此调用RPC时需要传递当前请求的context：<code>PaymentClient.CreatePayment(l.ctx, req)</code></p>
 <h1 id="rpc服务找到对应方法">RPC服务找到对应方法</h1>
 <p>服务器收到<code>/payment.PaymentService/CreatePayment</code>后，通过protobuf生成代码中注册的服务描述：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> PaymentService_ServiceDesc = grpc.ServiceDesc&#123;</span><br><span class="line">  ServiceName: <span class="string">&quot;payment.PaymentService&quot;</span>,</span><br><span class="line">  Methods: []grpc.MethodDesc&#123;</span><br><span class="line">      &#123;</span><br><span class="line">          MethodName: <span class="string">&quot;CreatePayment&quot;</span>,</span><br><span class="line">          Handler: _PaymentService_CreatePayment_Handler,</span><br><span class="line">      &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> PaymentService_ServiceDesc = grpc.ServiceDesc{</span><br><span class="line">  ServiceName: <span class="string">"payment.PaymentService"</span>,</span><br><span class="line">  Methods: []grpc.MethodDesc{</span><br><span class="line">      {</span><br><span class="line">          MethodName: <span class="string">"CreatePayment"</span>,</span><br><span class="line">          Handler: _PaymentService_CreatePayment_Handler,</span><br><span class="line">      },</span><br><span class="line">  },</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>找到对应handler：<code>_PaymentService_CreatePayment_Handler</code>，负责将protobuf中的二进制数据反序列化为<code>*pb.CreatePaymentReq</code>并调用<code>srv.(PaymentServiceServer).CreatePayment(ctx, in)</code></p>
 <p>注意：正式进入业务方法之前，请求会通过<code>AddUnaryInterceptors</code>执行各种中间件和拦截器，负责业务前的日志记录、链路追踪、jwt验证、身份信息注入metadata等，其中支付宝异步被排除认证，因为没有jwt</p>
 <h1 id="goctl生成server适配层">goctl生成server适配层</h1>
 <p>gRPC最终调用<code>PaymentServiceServer.CreatePayment(ctx, in)</code>，由<code>payment_service_server.go</code>：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *PaymentServiceServer)</span></span> CreatePayment(</span><br><span class="line">  ctx context.Context,</span><br><span class="line">  in *pb.CreatePaymentReq,</span><br><span class="line">) (*pb.CreatePaymentResp, <span class="type">error</span>) &#123;</span><br><span class="line">  l := paymentservicelogic.NewCreatePaymentLogic(ctx, s.svcCtx)</span><br><span class="line">  <span class="keyword">return</span> l.CreatePayment(in)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *PaymentServiceServer)</span></span> CreatePayment(</span><br><span class="line">  ctx context.Context,</span><br><span class="line">  in *pb.CreatePaymentReq,</span><br><span class="line">) (*pb.CreatePaymentResp, <span class="type">error</span>) {</span><br><span class="line">  l := paymentservicelogic.NewCreatePaymentLogic(ctx, s.svcCtx)</span><br><span class="line">  <span class="keyword">return</span> l.CreatePayment(in)</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>它本身不写具体业务，主要负责通过gRPC请求构造和调用logic，使得业务进入<code>l.CreatePayment</code>，进而执行具体逻辑</p>
 <h1 id="响应回到前端">响应回到前端</h1>
 <p>payment-rpc返回resp后，响应沿着反方向返回：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">payment-rpc logic</span><br><span class="line">  ↓</span><br><span class="line">PaymentServiceServer</span><br><span class="line">  ↓</span><br><span class="line">protobuf序列化</span><br><span class="line">  ↓</span><br><span class="line">gRPC网络</span><br><span class="line">  ↓</span><br><span class="line">网关PaymentClient</span><br><span class="line">  ↓</span><br><span class="line">rpcResp</span><br></pre></td></tr></table></figure>
 <p>网关再把protobuf响应转换为HTTP响应</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &amp;types.MallCreatePaymentResp&#123;</span><br><span class="line">  OutTradeNo: rpcResp.OutTradeNo,</span><br><span class="line">  QrCode:     rpcResp.QrCode,</span><br><span class="line">  Status:     rpcResp.Status,</span><br><span class="line">&#125;, <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &amp;types.MallCreatePaymentResp{</span><br><span class="line">  OutTradeNo: rpcResp.OutTradeNo,</span><br><span class="line">  QrCode:     rpcResp.QrCode,</span><br><span class="line">  Status:     rpcResp.Status,</span><br><span class="line">}, <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
 <p>最后执行</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;out_trade_no&quot;</span>: <span class="string">&quot;abc123&quot;</span>,</span><br><span class="line"><span class="string">&quot;qr_code&quot;</span>: <span class="string">&quot;https://qr.alipay.com/...&quot;</span>,</span><br><span class="line"><span class="string">&quot;status&quot;</span>: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"out_trade_no"</span>: <span class="string">"abc123"</span>,</span><br><span class="line"><span class="string">"qr_code"</span>: <span class="string">"https://qr.alipay.com/..."</span>,</span><br><span class="line"><span class="string">"status"</span>: <span class="number">0</span></span><br></pre></td></tr></table></figure>
 <p>完整的数据类型转换：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">HTTP JSON</span><br><span class="line">  ↓</span><br><span class="line">types.MallCreatePaymentReq</span><br><span class="line">  ↓</span><br><span class="line">pb.CreatePaymentReq</span><br><span class="line">  ↓</span><br><span class="line">protobuf二进制</span><br><span class="line">  ↓</span><br><span class="line">pb.CreatePaymentReq</span><br><span class="line">  ↓</span><br><span class="line">payment-rpc业务处理</span><br><span class="line">  ↓</span><br><span class="line">pb.CreatePaymentResp</span><br><span class="line">  ↓</span><br><span class="line">protobuf二进制</span><br><span class="line">  ↓</span><br><span class="line">pb.CreatePaymentResp</span><br><span class="line">  ↓</span><br><span class="line">types.MallCreatePaymentResp</span><br><span class="line">  ↓</span><br><span class="line">HTTP JSON</span><br></pre></td></tr></table></figure>
 </div>

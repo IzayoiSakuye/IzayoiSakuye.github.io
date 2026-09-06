@@ -120,7 +120,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -248,7 +360,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~4.26K
+                            ~3.85K
                         
                         字
                     </li>
@@ -270,7 +382,7 @@
 <p>终端命令curl用于在终端内向网站发送请求并获取响应</p>
 <p>适合访问、测试API</p>
 <p>匿名调用：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">&#x27;http://example.com&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">'http://example.com'</span></span><br></pre></td></tr></table></figure>
 <p>非匿名调用：</p>
 <p>如调用大模型API，需要获取API key，根据官方文档的样例调用API</p>
 <h1 id="api">API</h1>
@@ -291,7 +403,7 @@
 </ul>
 <h3 id="定义接口">定义接口</h3>
 <p>以Golang为例，interface定义在service块的前面，在service块中通过<code>@service</code>注解来引用</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义 interface</span></span><br><span class="line"><span class="keyword">interface</span> 接口名 &#123;</span><br><span class="line">    <span class="comment">// 这里可以放一些公共的注解，如 @doc、@handler 的前缀等</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 service 中应用</span></span><br><span class="line">service 服务名 &#123;</span><br><span class="line">    @server(</span><br><span class="line">        <span class="comment">// 引用 interface，通常写 interface: 接口名</span></span><br><span class="line">        <span class="keyword">interface</span>: 接口名</span><br><span class="line">    )</span><br><span class="line">    <span class="comment">// 这个@server下面的所有handler都会受该interface的控制</span></span><br><span class="line">    @handler 处理器名</span><br><span class="line">    post /api/user/login (LoginReq) returns (LoginResp)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义 interface</span></span><br><span class="line"><span class="keyword">interface</span> 接口名 {</span><br><span class="line">    <span class="comment">// 这里可以放一些公共的注解，如 @doc、@handler 的前缀等</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 service 中应用</span></span><br><span class="line">service 服务名 {</span><br><span class="line">    @server(</span><br><span class="line">        <span class="comment">// 引用 interface，通常写 interface: 接口名</span></span><br><span class="line">        <span class="keyword">interface</span>: 接口名</span><br><span class="line">    )</span><br><span class="line">    <span class="comment">// 这个@server下面的所有handler都会受该interface的控制</span></span><br><span class="line">    @handler 处理器名</span><br><span class="line">    post /api/user/login (LoginReq) returns (LoginResp)</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="rest-api">REST API</h2>
 <p>REST，即Representational State
 Transfer，是一种设计网络程序API的风格，而REST
@@ -310,7 +422,7 @@ Interface）</strong></p>
 <li>使用名词而非动词表示资源</li>
 <li>使用小写字母和连字符</li>
 <li>避免文件扩展名</li>
-<li>分层次表示关系，如<code>/users/&#123;id&#125;/orders</code></li>
+<li>分层次表示关系，如<code>/users/{id}/orders</code></li>
 </ul>
 <p><strong>HTTP方法使用：</strong></p>
 <ul>
@@ -343,7 +455,7 @@ Interface）</strong></p>
 </ul>
 <p>例如：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /products?limit=<span class="number">20</span>&amp;offset=<span class="number">40</span></span><br><span class="line">GET /products?page=<span class="number">3</span>&amp;size=<span class="number">20</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>...<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pagination&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">523</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;pages&quot;</span><span class="punctuation">:</span> <span class="number">27</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;current_page&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;per_page&quot;</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;next&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/products?page=4&amp;size=20&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;prev&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/products?page=2&amp;size=20&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">{</span></span><br><span class="line">  <span class="attr">"data"</span><span class="punctuation">:</span> <span class="punctuation">[</span>...<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">"pagination"</span><span class="punctuation">:</span> <span class="punctuation">{</span></span><br><span class="line">    <span class="attr">"total"</span><span class="punctuation">:</span> <span class="number">523</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"pages"</span><span class="punctuation">:</span> <span class="number">27</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"current_page"</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"per_page"</span><span class="punctuation">:</span> <span class="number">20</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"next"</span><span class="punctuation">:</span> <span class="string">"/products?page=4&amp;size=20"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"prev"</span><span class="punctuation">:</span> <span class="string">"/products?page=2&amp;size=20"</span></span><br><span class="line">  <span class="punctuation">}</span></span><br><span class="line"><span class="punctuation">}</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>游标分页是基于游标的分页方式，使用上一页最后一条记录的标识来确定下一页的起始数据</p>
 <p>如靠自增主键id来确定起始位置：</p>
@@ -372,7 +484,7 @@ Interface）</strong></p>
 <li>包含链接上下文信息，如HTTP方法</li>
 <li>根据用户权限动态生成链接，只显示当前用户可用操作</li>
 </ul>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">123</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John Doe&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;links&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;self&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/users/123&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;orders&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/users/123/orders&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;update&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;href&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/users/123&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;method&quot;</span><span class="punctuation">:</span> <span class="string">&quot;PUT&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;delete&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;href&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/users/123&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;method&quot;</span><span class="punctuation">:</span> <span class="string">&quot;DELETE&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">{</span></span><br><span class="line">  <span class="attr">"data"</span><span class="punctuation">:</span> <span class="punctuation">{</span></span><br><span class="line">    <span class="attr">"id"</span><span class="punctuation">:</span> <span class="number">123</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"name"</span><span class="punctuation">:</span> <span class="string">"John Doe"</span></span><br><span class="line">  <span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">"links"</span><span class="punctuation">:</span> <span class="punctuation">{</span></span><br><span class="line">    <span class="attr">"self"</span><span class="punctuation">:</span> <span class="string">"/users/123"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"orders"</span><span class="punctuation">:</span> <span class="string">"/users/123/orders"</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"update"</span><span class="punctuation">:</span> <span class="punctuation">{</span><span class="attr">"href"</span><span class="punctuation">:</span> <span class="string">"/users/123"</span><span class="punctuation">,</span> <span class="attr">"method"</span><span class="punctuation">:</span> <span class="string">"PUT"</span><span class="punctuation">}</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">"delete"</span><span class="punctuation">:</span> <span class="punctuation">{</span><span class="attr">"href"</span><span class="punctuation">:</span> <span class="string">"/users/123"</span><span class="punctuation">,</span> <span class="attr">"method"</span><span class="punctuation">:</span> <span class="string">"DELETE"</span><span class="punctuation">}</span></span><br><span class="line">  <span class="punctuation">}</span></span><br><span class="line"><span class="punctuation">}</span></span><br></pre></td></tr></table></figure>
 <p><strong>安全性：</strong></p>
 <ul>
 <li>API Key：服务器间通信</li>
@@ -405,7 +517,7 @@ Interface）</strong></p>
 <li>使用ETags和If-None-Match头</li>
 <li>设置适当的Cache-Control指令</li>
 </ul>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control<span class="punctuation">:</span> max-age=<span class="number">3600</span><span class="punctuation">,</span> must-revalidate</span><br><span class="line">ETag<span class="punctuation">:</span> <span class="string">&quot;33a64df551425fcc55e4d42a148795d9f25f89d4&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control<span class="punctuation">:</span> max-age=<span class="number">3600</span><span class="punctuation">,</span> must-revalidate</span><br><span class="line">ETag<span class="punctuation">:</span> <span class="string">"33a64df551425fcc55e4d42a148795d9f25f89d4"</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>根据资源类型设置不同缓存策略：
 <ul>

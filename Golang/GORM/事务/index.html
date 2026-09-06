@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~4.15K
+                            ~3.65K
                         
                         字
                     </li>
@@ -302,37 +414,37 @@
 <h2 id="创建操作">创建操作</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 开始事务</span><br><span class="line">BeforeSave</span><br><span class="line">BeforeCreate</span><br><span class="line">// 关联前的 save</span><br><span class="line">// 插入记录至 db</span><br><span class="line">// 关联后的 save</span><br><span class="line">AfterCreate</span><br><span class="line">AfterSave</span><br><span class="line">// 提交或回滚事务</span><br></pre></td></tr></table></figure>
 <p>示例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自动生成uuid+数据校验，检查字段合法性</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeCreate(tx *gorm.DB) (err <span class="type">error</span>) &#123;</span><br><span class="line">  u.UUID = uuid.New()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> !u.IsValid() &#123;</span><br><span class="line">    err = errors.New(<span class="string">&quot;can&#x27;t save invalid data&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把第一个用户设置为管理员</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterCreate(tx *gorm.DB) (err <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> u.ID == <span class="number">1</span> &#123;</span><br><span class="line">    tx.Model(u).Update(<span class="string">&quot;role&quot;</span>, <span class="string">&quot;admin&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自动生成uuid+数据校验，检查字段合法性</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeCreate(tx *gorm.DB) (err <span class="type">error</span>) {</span><br><span class="line">  u.UUID = uuid.New()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> !u.IsValid() {</span><br><span class="line">    err = errors.New(<span class="string">"can't save invalid data"</span>)</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把第一个用户设置为管理员</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterCreate(tx *gorm.DB) (err <span class="type">error</span>) {</span><br><span class="line">  <span class="keyword">if</span> u.ID == <span class="number">1</span> {</span><br><span class="line">    tx.Model(u).Update(<span class="string">"role"</span>, <span class="string">"admin"</span>)</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p><strong>注意：GORM中保存和删除操作默认运行在事务上，在事务完成之前事务中所作更改是不可见的，若hook发生错误，修改将回滚</strong></p>
 <h2 id="更新操作">更新操作</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 开始事务</span><br><span class="line">BeforeSave</span><br><span class="line">BeforeUpdate</span><br><span class="line">// 关联前的 save</span><br><span class="line">// 更新 db</span><br><span class="line">// 关联后的 save</span><br><span class="line">AfterUpdate</span><br><span class="line">AfterSave</span><br><span class="line">// 提交或回滚事务</span><br></pre></td></tr></table></figure>
 <p>示例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 阻止某些readonly的数据被更新</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeUpdate(tx *gorm.DB) (err <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> u.readonly() &#123;</span><br><span class="line">    err = errors.New(<span class="string">&quot;read only user&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在同一个事务中更新数据，保证原子性</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterUpdate(tx *gorm.DB) (err <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> u.Confirmed &#123;</span><br><span class="line">    tx.Model(&amp;Address&#123;&#125;).Where(<span class="string">&quot;user_id = ?&quot;</span>, u.ID).Update(<span class="string">&quot;verfied&quot;</span>, <span class="literal">true</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 阻止某些readonly的数据被更新</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeUpdate(tx *gorm.DB) (err <span class="type">error</span>) {</span><br><span class="line">  <span class="keyword">if</span> u.readonly() {</span><br><span class="line">    err = errors.New(<span class="string">"read only user"</span>)</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在同一个事务中更新数据，保证原子性</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterUpdate(tx *gorm.DB) (err <span class="type">error</span>) {</span><br><span class="line">  <span class="keyword">if</span> u.Confirmed {</span><br><span class="line">    tx.Model(&amp;Address{}).Where(<span class="string">"user_id = ?"</span>, u.ID).Update(<span class="string">"verfied"</span>, <span class="literal">true</span>)</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="删除操作">删除操作</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 开始事务</span><br><span class="line">BeforeDelete</span><br><span class="line">// 删除 db 中的数据</span><br><span class="line">AfterDelete</span><br><span class="line">// 提交或回滚事务</span><br></pre></td></tr></table></figure>
 <p>示例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在同一个事务中更新数据，保证原子性</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterDelete(tx *gorm.DB) (err <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> u.Confirmed &#123;</span><br><span class="line">    tx.Model(&amp;Address&#123;&#125;).Where(<span class="string">&quot;user_id = ?&quot;</span>, u.ID).Update(<span class="string">&quot;invalid&quot;</span>, <span class="literal">false</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在同一个事务中更新数据，保证原子性</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterDelete(tx *gorm.DB) (err <span class="type">error</span>) {</span><br><span class="line">  <span class="keyword">if</span> u.Confirmed {</span><br><span class="line">    tx.Model(&amp;Address{}).Where(<span class="string">"user_id = ?"</span>, u.ID).Update(<span class="string">"invalid"</span>, <span class="literal">false</span>)</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="查询操作">查询操作</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 从 db 中加载数据</span><br><span class="line">// Preloading (eager loading)</span><br><span class="line">AfterFind</span><br></pre></td></tr></table></figure>
 <p>示例：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterFind(tx *gorm.DB) (err <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> u.MemberShip == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">    u.MemberShip = <span class="string">&quot;user&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> AfterFind(tx *gorm.DB) (err <span class="type">error</span>) {</span><br><span class="line">  <span class="keyword">if</span> u.MemberShip == <span class="string">""</span> {</span><br><span class="line">    u.MemberShip = <span class="string">"user"</span></span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="修改当前操作">修改当前操作</h2>
 <p>通过<code>tx.Statement</code>修改接下来执行的操作</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeCreate(tx *gorm.DB) <span class="type">error</span> &#123;</span><br><span class="line">  <span class="comment">// 通过 tx.Statement 修改当前操作，例如：</span></span><br><span class="line">  tx.Statement.Select(<span class="string">&quot;Name&quot;</span>, <span class="string">&quot;Age&quot;</span>)</span><br><span class="line">  tx.Statement.AddClause(clause.OnConflict&#123;DoNothing: <span class="literal">true</span>&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeCreate(tx *gorm.DB) <span class="type">error</span> {</span><br><span class="line">  <span class="comment">// 通过 tx.Statement 修改当前操作，例如：</span></span><br><span class="line">  tx.Statement.Select(<span class="string">"Name"</span>, <span class="string">"Age"</span>)</span><br><span class="line">  tx.Statement.AddClause(clause.OnConflict{DoNothing: <span class="literal">true</span>})</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>这里限定了接下来的操作只对name和age两个字段起作用，且若发生冲突则跳过</p>
 <h2 id="事务中查询其他表">事务中查询其他表</h2>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeCreate(tx *gorm.DB) <span class="type">error</span> &#123;</span><br><span class="line">  <span class="comment">// tx 是带有 `NewDB` 选项的新会话模式 </span></span><br><span class="line">  <span class="comment">// 基于 tx 的操作会在同一个事务中，但不会带上任何当前的条件</span></span><br><span class="line">  err := tx.First(&amp;role, <span class="string">&quot;name = ?&quot;</span>, user.Role).Error</span><br><span class="line">  <span class="comment">// SELECT * FROM roles WHERE name = &quot;admin&quot;</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> BeforeCreate(tx *gorm.DB) <span class="type">error</span> {</span><br><span class="line">  <span class="comment">// tx 是带有 `NewDB` 选项的新会话模式 </span></span><br><span class="line">  <span class="comment">// 基于 tx 的操作会在同一个事务中，但不会带上任何当前的条件</span></span><br><span class="line">  err := tx.First(&amp;role, <span class="string">"name = ?"</span>, user.Role).Error</span><br><span class="line">  <span class="comment">// SELECT * FROM roles WHERE name = "admin"</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">return</span> err</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>tx是hook传入的会话，和即将执行的insert共享一个事务，<code>tx.First</code>会在该事务中执行SELECT查询roles表，获取角色信息</p>
 <p>可以基于查询结果继续执行逻辑</p>
 <h1 id="事务">事务</h1>
 <h2 id="默认事务">默认事务</h2>
 <p>GORM会在事务里执行写入操作（创建更新删除），若没有要求，可以在初始化时禁用它，可以获得30%+性能提升</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局禁用</span></span><br><span class="line">db, err := gorm.Open(sqlite.Open(<span class="string">&quot;gorm.db&quot;</span>), &amp;gorm.Config&#123;</span><br><span class="line">  SkipDefaultTransaction: <span class="literal">true</span>,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 持续会话模式</span></span><br><span class="line">tx := db.Session(&amp;Session&#123;SkipDefaultTransaction: <span class="literal">true</span>&#125;)</span><br><span class="line">tx.First(&amp;user, <span class="number">1</span>)</span><br><span class="line">tx.Find(&amp;users)</span><br><span class="line">tx.Model(&amp;user).Update(<span class="string">&quot;Age&quot;</span>, <span class="number">18</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局禁用</span></span><br><span class="line">db, err := gorm.Open(sqlite.Open(<span class="string">"gorm.db"</span>), &amp;gorm.Config{</span><br><span class="line">  SkipDefaultTransaction: <span class="literal">true</span>,</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="comment">// 持续会话模式</span></span><br><span class="line">tx := db.Session(&amp;Session{SkipDefaultTransaction: <span class="literal">true</span>})</span><br><span class="line">tx.First(&amp;user, <span class="number">1</span>)</span><br><span class="line">tx.Find(&amp;users)</span><br><span class="line">tx.Model(&amp;user).Update(<span class="string">"Age"</span>, <span class="number">18</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="语法">语法</h2>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">db.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx *gorm.DB)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">  <span class="comment">// 在事务中执行一些 db 操作（从这里开始，您应该使用 &#x27;tx&#x27; 而不是 &#x27;db&#x27;）</span></span><br><span class="line">  <span class="keyword">if</span> err := tx.Create(&amp;Animal&#123;Name: <span class="string">&quot;Giraffe&quot;</span>&#125;).Error; err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="comment">// 返回任何错误都会回滚事务</span></span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> err := tx.Create(&amp;Animal&#123;Name: <span class="string">&quot;Lion&quot;</span>&#125;).Error; err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回 nil 提交事务</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">db.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx *gorm.DB)</span></span> <span class="type">error</span> {</span><br><span class="line">  <span class="comment">// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）</span></span><br><span class="line">  <span class="keyword">if</span> err := tx.Create(&amp;Animal{Name: <span class="string">"Giraffe"</span>}).Error; err != <span class="literal">nil</span> {</span><br><span class="line">    <span class="comment">// 返回任何错误都会回滚事务</span></span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> err := tx.Create(&amp;Animal{Name: <span class="string">"Lion"</span>}).Error; err != <span class="literal">nil</span> {</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回 nil 提交事务</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">})</span><br></pre></td></tr></table></figure>
 <h2 id="嵌套事务">嵌套事务</h2>
 <p>支持嵌套事务，可以回滚大事务中的一部分操作</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">db.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx *gorm.DB)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">  tx.Create(&amp;user1)</span><br><span class="line">  tx.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx2 *gorm.DB)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    tx2.Create(&amp;user2)</span><br><span class="line">    <span class="keyword">return</span> errors.New(<span class="string">&quot;rollback user2&quot;</span>) <span class="comment">// Rollback user2</span></span><br><span class="line">  &#125;)</span><br><span class="line">  tx.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx3 *gorm.DB)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    tx3.Create(&amp;user3)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Commit user1, user3</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">db.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx *gorm.DB)</span></span> <span class="type">error</span> {</span><br><span class="line">  tx.Create(&amp;user1)</span><br><span class="line">  tx.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx2 *gorm.DB)</span></span> <span class="type">error</span> {</span><br><span class="line">    tx2.Create(&amp;user2)</span><br><span class="line">    <span class="keyword">return</span> errors.New(<span class="string">"rollback user2"</span>) <span class="comment">// Rollback user2</span></span><br><span class="line">  })</span><br><span class="line">  tx.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx3 *gorm.DB)</span></span> <span class="type">error</span> {</span><br><span class="line">    tx3.Create(&amp;user3)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">  })</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="comment">// Commit user1, user3</span></span><br></pre></td></tr></table></figure>
 <h2 id="手动事务">手动事务</h2>
 <p>可以手动控制事务开启关闭的方法</p>
 <ul>
@@ -344,7 +456,7 @@
 <h2 id="保存点">保存点</h2>
 <p>可以通过 <code>SavePoint</code>、<code>Rollbackto</code>
 方法创建保存点和回滚至保存点</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tx := db.Begin()</span><br><span class="line">tx.Create(&amp;user1)</span><br><span class="line"></span><br><span class="line">tx.SavePoint(<span class="string">&quot;sp1&quot;</span>)</span><br><span class="line">tx.Create(&amp;user2)</span><br><span class="line">tx.RollbackTo(<span class="string">&quot;sp1&quot;</span>) <span class="comment">// Rollback user2</span></span><br><span class="line"></span><br><span class="line">tx.Commit() <span class="comment">// Commit user1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tx := db.Begin()</span><br><span class="line">tx.Create(&amp;user1)</span><br><span class="line"></span><br><span class="line">tx.SavePoint(<span class="string">"sp1"</span>)</span><br><span class="line">tx.Create(&amp;user2)</span><br><span class="line">tx.RollbackTo(<span class="string">"sp1"</span>) <span class="comment">// Rollback user2</span></span><br><span class="line"></span><br><span class="line">tx.Commit() <span class="comment">// Commit user1</span></span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

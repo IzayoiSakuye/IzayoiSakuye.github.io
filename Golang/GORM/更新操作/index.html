@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.34K
+                            ~1.84K
                         
                         字
                     </li>
@@ -270,7 +382,7 @@
             <div itemprop="articleBody"><h1 id="更新操作">更新操作</h1>
 <h2 id="save">Save</h2>
 <p>使用<code>db.Save()</code>，将这之前修改过的值保存下来</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.First(&amp;user)</span><br><span class="line">user.Name = <span class="string">&quot;jinzhu 2&quot;</span></span><br><span class="line">user.Age = <span class="number">100</span></span><br><span class="line">db.Save(&amp;user)</span><br><span class="line"><span class="comment">// UPDATE users SET name=&#x27;jinzhu 2&#x27;, age=100, birthday=&#x27;2016-01-01&#x27;, updated_at=&#x27;2013-11-17 21:34:10&#x27; WHERE id=111;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.First(&amp;user)</span><br><span class="line">user.Name = <span class="string">"jinzhu 2"</span></span><br><span class="line">user.Age = <span class="number">100</span></span><br><span class="line">db.Save(&amp;user)</span><br><span class="line"><span class="comment">// UPDATE users SET name='jinzhu 2', age=100, birthday='2016-01-01', updated_at='2013-11-17 21:34:10' WHERE id=111;</span></span><br></pre></td></tr></table></figure>
 <p>注意：保存的是所有字段，包括没更新的，包括零值</p>
 <p>save方法会根据主键状态来判断是update还是insert：</p>
 <ul>
@@ -282,18 +394,18 @@
 <h2 id="update">Update</h2>
 <p>update一次更新一列，需要指定Model或Table来指定操作的目标表和条件，假设传入的model指定了主键id</p>
 <p>更新单个字段：<code>db.Update</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Update(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>)</span><br><span class="line"><span class="comment">// UPDATE users SET name=&#x27;jinzhu&#x27;, updated_at=&#x27;...&#x27; WHERE id = 111;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Update(<span class="string">"name"</span>, <span class="string">"jinzhu"</span>)</span><br><span class="line"><span class="comment">// UPDATE users SET name='jinzhu', updated_at='...' WHERE id = 111;</span></span><br></pre></td></tr></table></figure>
 <p>更新多个字段：<code>db.Updates</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Updates(User&#123;Name: <span class="string">&quot;hello&quot;</span>, Age: <span class="number">18</span>&#125;)</span><br><span class="line"><span class="comment">// UPDATE users SET name=&#x27;hello&#x27;, age=18, updated_at=&#x27;...&#x27; WHERE id = 111;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Updates(User{Name: <span class="string">"hello"</span>, Age: <span class="number">18</span>})</span><br><span class="line"><span class="comment">// UPDATE users SET name='hello', age=18, updated_at='...' WHERE id = 111;</span></span><br></pre></td></tr></table></figure>
 <p>update更新时零值会被忽略，如果想要更新成零值：</p>
 <p>使用Select</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;Age&quot;</span>).Updates(User&#123;Age: <span class="number">0</span>, Name: <span class="string">&quot;hello&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Select(<span class="string">"Age"</span>).Updates(User{Age: <span class="number">0</span>, Name: <span class="string">"hello"</span>})</span><br></pre></td></tr></table></figure>
 <p>使用map</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">0</span>&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;user).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>{}{<span class="string">"name"</span>: <span class="string">"hello"</span>, <span class="string">"age"</span>: <span class="number">0</span>})</span><br></pre></td></tr></table></figure>
 <p>若没有Model或Where限定条件，Update会对整张表起作用</p>
 <h2 id="更新选定字段">更新选定字段</h2>
 <p>使用<code>Select</code>和<code>Omit</code>选择或忽略某些字段</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 选择 Map 的字段</span></span><br><span class="line"><span class="comment">// User 的 ID 是 `111`:</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;name&quot;</span>).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>, <span class="string">&quot;active&quot;</span>: <span class="literal">false</span>&#125;)</span><br><span class="line"><span class="comment">// UPDATE users SET name=&#x27;hello&#x27; WHERE id=111;</span></span><br><span class="line"></span><br><span class="line">db.Model(&amp;user).Omit(<span class="string">&quot;name&quot;</span>).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;hello&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>, <span class="string">&quot;active&quot;</span>: <span class="literal">false</span>&#125;)</span><br><span class="line"><span class="comment">// UPDATE users SET age=18, active=false, updated_at=&#x27;2013-11-17 21:34:10&#x27; WHERE id=111;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择 Struct 的字段（会选中零值的字段）</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;Name&quot;</span>, <span class="string">&quot;Age&quot;</span>).Updates(User&#123;Name: <span class="string">&quot;new_name&quot;</span>, Age: <span class="number">0</span>&#125;)</span><br><span class="line"><span class="comment">// UPDATE users SET name=&#x27;new_name&#x27;, age=0 WHERE id=111;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择所有字段（选择包括零值字段的所有字段）</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;*&quot;</span>).Updates(User&#123;Name: <span class="string">&quot;jinzhu&quot;</span>, Role: <span class="string">&quot;admin&quot;</span>, Age: <span class="number">0</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择除 Role 外的所有字段（包括零值字段的所有字段）</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">&quot;*&quot;</span>).Omit(<span class="string">&quot;Role&quot;</span>).Updates(User&#123;Name: <span class="string">&quot;jinzhu&quot;</span>, Role: <span class="string">&quot;admin&quot;</span>, Age: <span class="number">0</span>&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 选择 Map 的字段</span></span><br><span class="line"><span class="comment">// User 的 ID 是 `111`:</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">"name"</span>).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>{}{<span class="string">"name"</span>: <span class="string">"hello"</span>, <span class="string">"age"</span>: <span class="number">18</span>, <span class="string">"active"</span>: <span class="literal">false</span>})</span><br><span class="line"><span class="comment">// UPDATE users SET name='hello' WHERE id=111;</span></span><br><span class="line"></span><br><span class="line">db.Model(&amp;user).Omit(<span class="string">"name"</span>).Updates(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>{}{<span class="string">"name"</span>: <span class="string">"hello"</span>, <span class="string">"age"</span>: <span class="number">18</span>, <span class="string">"active"</span>: <span class="literal">false</span>})</span><br><span class="line"><span class="comment">// UPDATE users SET age=18, active=false, updated_at='2013-11-17 21:34:10' WHERE id=111;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择 Struct 的字段（会选中零值的字段）</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">"Name"</span>, <span class="string">"Age"</span>).Updates(User{Name: <span class="string">"new_name"</span>, Age: <span class="number">0</span>})</span><br><span class="line"><span class="comment">// UPDATE users SET name='new_name', age=0 WHERE id=111;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择所有字段（选择包括零值字段的所有字段）</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">"*"</span>).Updates(User{Name: <span class="string">"jinzhu"</span>, Role: <span class="string">"admin"</span>, Age: <span class="number">0</span>})</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择除 Role 外的所有字段（包括零值字段的所有字段）</span></span><br><span class="line">db.Model(&amp;user).Select(<span class="string">"*"</span>).Omit(<span class="string">"Role"</span>).Updates(User{Name: <span class="string">"jinzhu"</span>, Role: <span class="string">"admin"</span>, Age: <span class="number">0</span>})</span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

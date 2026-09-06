@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.58K
+                            ~2.46K
                         
                         字
                     </li>
@@ -282,15 +394,15 @@
 <p>如例子中P的Next数组为0 0 0 0 1 2 3 0 ，如下表</p>
 <table>
 <colgroup>
-<col style="width: 21%" />
-<col style="width: 4%" />
-<col style="width: 4%" />
-<col style="width: 4%" />
-<col style="width: 4%" />
-<col style="width: 15%" />
-<col style="width: 16%" />
-<col style="width: 17%" />
-<col style="width: 9%" />
+<col style="width: 21%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 15%">
+<col style="width: 16%">
+<col style="width: 17%">
+<col style="width: 9%">
 </colgroup>
 <thead>
 <tr>
@@ -361,9 +473,9 @@
 <p>当找到对应模式串在主串出现时，通过<code>i-len(p)+1</code>计算起始位置</p>
 <p><strong>注意：整个匹配过程中主串指针不会后退，只会停留；而模式串指针根据next数组反复横条</strong></p>
 <h2 id="板子-1">板子-1</h2>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Next_pre</span><span class="params">(string p, vector&lt;<span class="type">int</span>&gt; &amp;Next)</span></span>&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>,j=<span class="number">0</span>;i&lt;p.<span class="built_in">size</span>();i++)&#123; <span class="comment">// i是当前遍历到的后缀</span></span><br><span class="line">    <span class="keyword">while</span>(j&amp;&amp;p[i]!=p[j]) j=Next[j<span class="number">-1</span>]; <span class="comment">// 两指针指向不同时按Next中值跳转直到跳到0</span></span><br><span class="line">    <span class="keyword">if</span>(p[i]==p[j])j++; <span class="comment">// 前后缀一样时，前缀向后移动</span></span><br><span class="line">    Next[i]=j;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">kmp</span><span class="params">(string s,string p,<span class="type">int</span> begin)</span></span>&#123; <span class="comment">// begin表示从哪里开始匹配</span></span><br><span class="line">  <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">Next</span><span class="params">(p.size())</span></span>;</span><br><span class="line">  <span class="built_in">Next_pre</span>(p,Next);</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i = begin,j=<span class="number">0</span>;i&lt;s.<span class="built_in">size</span>();i++)&#123;</span><br><span class="line">    <span class="keyword">while</span>(j&amp;&amp;s[i]!=p[j]) j=Next[j<span class="number">-1</span>]; <span class="comment">// 两指针指向不同时按Next中值跳转直到跳到0</span></span><br><span class="line">    <span class="keyword">if</span> (s[i]==p[j])j++; <span class="comment">// 前后缀一样时，前缀向后移动</span></span><br><span class="line">    <span class="keyword">if</span> (j==p.<span class="built_in">size</span>())&#123; <span class="comment">// 匹配成功后的操作</span></span><br><span class="line">    <span class="comment">// 该部分操作按题目要求</span></span><br><span class="line">      <span class="keyword">return</span> i-p.<span class="built_in">size</span>()<span class="number">+1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  string s,p;</span><br><span class="line">  cin &gt;&gt; s &gt;&gt; p;</span><br><span class="line">  cout &lt;&lt; <span class="built_in">kmp</span>(s,p,<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Next_pre</span><span class="params">(string p, vector&lt;<span class="type">int</span>&gt; &amp;Next)</span></span>{</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>,j=<span class="number">0</span>;i&lt;p.<span class="built_in">size</span>();i++){ <span class="comment">// i是当前遍历到的后缀</span></span><br><span class="line">    <span class="keyword">while</span>(j&amp;&amp;p[i]!=p[j]) j=Next[j<span class="number">-1</span>]; <span class="comment">// 两指针指向不同时按Next中值跳转直到跳到0</span></span><br><span class="line">    <span class="keyword">if</span>(p[i]==p[j])j++; <span class="comment">// 前后缀一样时，前缀向后移动</span></span><br><span class="line">    Next[i]=j;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">kmp</span><span class="params">(string s,string p,<span class="type">int</span> begin)</span></span>{ <span class="comment">// begin表示从哪里开始匹配</span></span><br><span class="line">  <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">Next</span><span class="params">(p.size())</span></span>;</span><br><span class="line">  <span class="built_in">Next_pre</span>(p,Next);</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i = begin,j=<span class="number">0</span>;i&lt;s.<span class="built_in">size</span>();i++){</span><br><span class="line">    <span class="keyword">while</span>(j&amp;&amp;s[i]!=p[j]) j=Next[j<span class="number">-1</span>]; <span class="comment">// 两指针指向不同时按Next中值跳转直到跳到0</span></span><br><span class="line">    <span class="keyword">if</span> (s[i]==p[j])j++; <span class="comment">// 前后缀一样时，前缀向后移动</span></span><br><span class="line">    <span class="keyword">if</span> (j==p.<span class="built_in">size</span>()){ <span class="comment">// 匹配成功后的操作</span></span><br><span class="line">    <span class="comment">// 该部分操作按题目要求</span></span><br><span class="line">      <span class="keyword">return</span> i-p.<span class="built_in">size</span>()<span class="number">+1</span>;</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>{</span><br><span class="line">  string s,p;</span><br><span class="line">  cin &gt;&gt; s &gt;&gt; p;</span><br><span class="line">  cout &lt;&lt; <span class="built_in">kmp</span>(s,p,<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="板子-2">板子-2</h2>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">kmp</span><span class="params">(string s,string p)</span></span>&#123;</span><br><span class="line">  <span class="type">int</span> n = s.<span class="built_in">size</span>();</span><br><span class="line">  <span class="type">int</span> m = p.<span class="built_in">size</span>();</span><br><span class="line">  string mer = p+<span class="string">&#x27;#&#x27;</span>+s;</span><br><span class="line">  <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">Next</span><span class="params">(mer.size())</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>;i&lt;mer.<span class="built_in">size</span>();i++)&#123;</span><br><span class="line">    <span class="type">int</span> len = Next[i<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">while</span>(len&amp;&amp;mer[i]!=mer[len]) len = Next[len<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">if</span> (mer[i]==mer[len])&#123;</span><br><span class="line">      Next[i]=len<span class="number">+1</span>;</span><br><span class="line">      <span class="keyword">if</span> (Next[i]==m)&#123;</span><br><span class="line">        <span class="keyword">return</span> i-m*<span class="number">2</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  string s,p;</span><br><span class="line">  cin &gt;&gt; s&gt;&gt;p;</span><br><span class="line">  cout &lt;&lt; <span class="built_in">kmp</span>(s,p);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">kmp</span><span class="params">(string s,string p)</span></span>{</span><br><span class="line">  <span class="type">int</span> n = s.<span class="built_in">size</span>();</span><br><span class="line">  <span class="type">int</span> m = p.<span class="built_in">size</span>();</span><br><span class="line">  string mer = p+<span class="string">'#'</span>+s;</span><br><span class="line">  <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">Next</span><span class="params">(mer.size())</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>;i&lt;mer.<span class="built_in">size</span>();i++){</span><br><span class="line">    <span class="type">int</span> len = Next[i<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">while</span>(len&amp;&amp;mer[i]!=mer[len]) len = Next[len<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">if</span> (mer[i]==mer[len]){</span><br><span class="line">      Next[i]=len<span class="number">+1</span>;</span><br><span class="line">      <span class="keyword">if</span> (Next[i]==m){</span><br><span class="line">        <span class="keyword">return</span> i-m*<span class="number">2</span>;</span><br><span class="line">      }</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>{</span><br><span class="line">  string s,p;</span><br><span class="line">  cin &gt;&gt; s&gt;&gt;p;</span><br><span class="line">  cout &lt;&lt; <span class="built_in">kmp</span>(s,p);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

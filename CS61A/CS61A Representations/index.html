@@ -39,7 +39,7 @@
   
   
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【CS61A】CS61A——Representations","description":"Representations\r\nString Representations\r\n字符串用来表达语言与程序\r\nPython中，有两种字符串表达...","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2025-05-18T13:40:12.509Z","dateModified":"2025-07-31T09:52:23.703Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/CS61A/CS61A%20Representations/"}}
+    {"@context":"https://schema.org","@type":"BlogPosting","headline":"【CS61A】CS61A——Representations","description":"Representations\r\nString Representations\r\n字符串用来表达语言与程序\r\nPython中，有两种字符串表达 -...","image":"https://izayoisakuye.github.io/images/avatar.jpg","author":{"@type":"Person","name":"IzayoiSakuye"},"publisher":{"@type":"Organization","name":"红魔咖啡馆","logo":{"@type":"ImageObject","url":"https://izayoisakuye.github.io/images/avatar.jpg"}},"datePublished":"2025-05-18T13:40:12.509Z","dateModified":"2025-07-31T09:52:23.703Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://izayoisakuye.github.io/CS61A/CS61A%20Representations/"}}
     </script>
   
   <!-- 关键 CSS 预加载 -->
@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.60K
+                            ~2.47K
                         
                         字
                     </li>
@@ -269,29 +381,29 @@
             <hr />
             <div itemprop="articleBody"><h1 id="representations">Representations</h1>
 <h2 id="string-representations">String Representations</h2>
-<p>字符串用来表达语言与程序<br />
+<p>字符串用来表达语言与程序<br>
 Python中，有两种字符串表达 - <code>str</code>：对人类可读 -
-<code>repr</code>：对解释器刻可读 这两种一般相同，但也有不同之处<br />
+<code>repr</code>：对解释器刻可读 这两种一般相同，但也有不同之处<br>
 ### repr String for an Object
-repr函数返回一个python表达式(字符串)，该表达式会评估为一个等同的对象<br />
-对一个对象的repr调用eval会给你一个与原始对象等价的对象<br />
+repr函数返回一个python表达式(字符串)，该表达式会评估为一个等同的对象<br>
+对一个对象的repr调用eval会给你一个与原始对象等价的对象<br>
 调用repr的结果与在python交互界面输出的结果相同</p>
 <h3 id="str-string-for-an-object">str String for an Object</h3>
-<p>str函数接受任何对象，返回一个字符串，字符串是原始对象的人类可以解释的表示<br />
+<p>str函数接受任何对象，返回一个字符串，字符串是原始对象的人类可以解释的表示<br>
 对表达式调用str的结果与调用print时输出的结果相同</p>
 <h2 id="f-strings">F-strings</h2>
 <h3 id="string-interpolation">String Interpolation</h3>
 <p>字符串插值包括对一些含有表达式的字符串字面量求值 -
 可以使用+进行字符串连接实现 <code>'pi starts with'+str(pi)+'...'</code>
 - 也可以使用f-string功能实现字符串插值
-<code>f'pi starts with &#123;pi&#125;'</code>
+<code>f'pi starts with {pi}'</code>
 花括号中的将会作为表达式看待并给出计算结果 f-string的计算结果包括str
 string和子表达式的值</p>
 <h2 id="polymorphic-functions">Polymorphic Functions</h2>
-<p>多态函数是一种适用于多种数据类型的函数<br />
-如str和repr函数都是多态函数，它们接受任何类型的对象<br />
-原理：repr调用了一个零参数方法<code>__repr__</code>以便在参数上获取他返回的repr字符串<br />
-str同样调用一个 零参数方法<code>__str__</code><br />
+<p>多态函数是一种适用于多种数据类型的函数<br>
+如str和repr函数都是多态函数，它们接受任何类型的对象<br>
+原理：repr调用了一个零参数方法<code>__repr__</code>以便在参数上获取他返回的repr字符串<br>
+str同样调用一个 零参数方法<code>__str__</code><br>
 对于repr函数：</p>
 <ul>
 <li>repr函数内部只调用了一个名为repr的类属性，而实例属性<code>__repr__</code>被忽略了</li>
@@ -301,12 +413,12 @@ str同样调用一个 零参数方法<code>__str__</code><br />
 <p>对于str函数： - 实例属性<code>__str__</code>被忽略了 -
 若类上根本没有<code>__str__</code>属性，则调用str只会返回repr返回的内容</p>
 <h3 id="interface">Interface</h3>
-<p>对象传递信息的方式：通过互相查找属性或方法<br />
+<p>对象传递信息的方式：通过互相查找属性或方法<br>
 属性的查找规则允许不同数据类型通过具有相同属性名称来响应相同信息</p>
-<p>共享信息：在许多不同类上引起相似行为的属性名称<br />
+<p>共享信息：在许多不同类上引起相似行为的属性名称<br>
 接口：一组共享信息与一些规范（表示其含义）</p>
 <p>如实现__repr__与__str__的类实现了一个接口，一下是用类来展示该接口的代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ratio</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, n, d</span>):</span><br><span class="line">        <span class="variable language_">self</span>.numer = n</span><br><span class="line">        <span class="variable language_">self</span>.denom = d</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;Ratio(&#123;0&#125;, &#123;1&#125;)&#x27;</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#123;0&#125;/&#123;1&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ratio</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, n, d</span>):</span><br><span class="line">        <span class="variable language_">self</span>.numer = n</span><br><span class="line">        <span class="variable language_">self</span>.denom = d</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Ratio({0}, {1})'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'{0}/{1}'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>当我们令<code>half = Ratio(1,2)</code>，直接打印half，输出为可读版本，而直接在解释器展示half，就会输出python表达式</p>
 <h2 id="special-method-names">Special Method Names</h2>
 <p>python中，以两个下划线包围的名字表示它们具有某种内置行为 -
@@ -316,7 +428,7 @@ str同样调用一个 零参数方法<code>__str__</code><br />
 <code>__bool__</code>：用于将一个对象转换为布尔值 -
 <code>__float__</code>：用于将一个对象转换为实数
 同时，以下代码实现了将两个对象相加</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ratio</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, n, d</span>):</span><br><span class="line">        <span class="variable language_">self</span>.numer = n</span><br><span class="line">        <span class="variable language_">self</span>.denom = d</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;Ratio(&#123;0&#125;, &#123;1&#125;)&#x27;</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#123;0&#125;/&#123;1&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__add__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(other, <span class="built_in">int</span>):</span><br><span class="line">            n = <span class="variable language_">self</span>.numer+<span class="variable language_">self</span>.denom*other</span><br><span class="line">            d = <span class="variable language_">self</span>.denom</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">isinstance</span>(other, Ratio):</span><br><span class="line">            n = <span class="variable language_">self</span>.numer*other.denom +<span class="variable language_">self</span>.denom*other.numer</span><br><span class="line">            d = <span class="variable language_">self</span>.denom*other.denom</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">isinstance</span>(other, <span class="built_in">float</span>):</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">float</span>(<span class="variable language_">self</span>)+other</span><br><span class="line">        g = gcd(n,d)</span><br><span class="line">        <span class="keyword">return</span> Ratio(n//g, d//g)</span><br><span class="line">    __radd__ = __add__</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__float__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.numer/<span class="variable language_">self</span>.denom</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gcd</span>(<span class="params">n, d</span>):</span><br><span class="line">    <span class="keyword">while</span> n!=d:</span><br><span class="line">        n, d = <span class="built_in">min</span>(n, d), <span class="built_in">abs</span>(n-d)</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Ratio</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, n, d</span>):</span><br><span class="line">        <span class="variable language_">self</span>.numer = n</span><br><span class="line">        <span class="variable language_">self</span>.denom = d</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Ratio({0}, {1})'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'{0}/{1}'</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.numer, <span class="variable language_">self</span>.denom)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__add__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(other, <span class="built_in">int</span>):</span><br><span class="line">            n = <span class="variable language_">self</span>.numer+<span class="variable language_">self</span>.denom*other</span><br><span class="line">            d = <span class="variable language_">self</span>.denom</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">isinstance</span>(other, Ratio):</span><br><span class="line">            n = <span class="variable language_">self</span>.numer*other.denom +<span class="variable language_">self</span>.denom*other.numer</span><br><span class="line">            d = <span class="variable language_">self</span>.denom*other.denom</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">isinstance</span>(other, <span class="built_in">float</span>):</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">float</span>(<span class="variable language_">self</span>)+other</span><br><span class="line">        g = gcd(n,d)</span><br><span class="line">        <span class="keyword">return</span> Ratio(n//g, d//g)</span><br><span class="line">    __radd__ = __add__</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__float__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.numer/<span class="variable language_">self</span>.denom</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gcd</span>(<span class="params">n, d</span>):</span><br><span class="line">    <span class="keyword">while</span> n!=d:</span><br><span class="line">        n, d = <span class="built_in">min</span>(n, d), <span class="built_in">abs</span>(n-d)</span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

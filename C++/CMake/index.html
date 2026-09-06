@@ -120,7 +120,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -248,7 +360,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~12.39K
+                            ~11.51K
                         
                         字
                     </li>
@@ -301,8 +413,8 @@
 <p>本质上是设置了该目标的SOURCES属性，即传给编译器的源文件信息</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">target_source(demo</span><br><span class="line">	PRIVATE</span><br><span class="line">		main.cpp</span><br><span class="line">		<span class="keyword">test</span>.cpp</span><br><span class="line">		<span class="keyword">test</span>.h</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>以下属性均为目标的属性，可以调用对应的target的函数设置</p>
-<style>.qlcyhkvknkwu{zoom:67%;}</style>
-<img src="/C++/CMake/image-20250807135236097.png" class="qlcyhkvknkwu" alt="目标属性">
+<style>.olwewnnlqjwf{zoom:67%;}</style>
+<img src="/C++/CMake/image-20250807135236097.png" class="olwewnnlqjwf" alt="目标属性">
 <h2 id="添加库">添加库</h2>
 <ul>
 <li><p>使用<code>add_library</code>用于定义一个库类型的目标，根据设置的属性来创建静态或动态库</p></li>
@@ -328,17 +440,17 @@
 <p>使用<code>set(变量名)</code>或<code>unset(变量名)</code>将一个变量取消定义</p>
 <p>当使用一个未定义变量时，返回一个空串，但与<code>set(myVar "")</code>的空串仍有区别</p>
 <h3 id="使用">使用</h3>
-<p>引用变量：<code>$&#123;变量名&#125;</code></p>
+<p>引用变量：<code>${变量名}</code></p>
 <p>打印：<code>message()</code></p>
 <p>还可以用一个变量定义另一个变量，也可以嵌套引用</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar <span class="string">&quot;hello world&quot;</span>)</span><br><span class="line"><span class="keyword">message</span>(<span class="string">&quot;myVar = $&#123;myVar&#125;&quot;</span>) <span class="comment"># myVar = hello world</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>(myVar pet)</span><br><span class="line"><span class="keyword">set</span>(<span class="variable">$&#123;myVar&#125;</span> cat)</span><br><span class="line"><span class="keyword">message</span>(<span class="string">&quot;$&#123;myVar&#125; = $&#123;$&#123;myVar&#125;&#125;&quot;</span>) <span class="comment"># myVar = &quot;pet&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar <span class="string">"hello world"</span>)</span><br><span class="line"><span class="keyword">message</span>(<span class="string">"myVar = ${myVar}"</span>) <span class="comment"># myVar = hello world</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>(myVar pet)</span><br><span class="line"><span class="keyword">set</span>(<span class="variable">${myVar}</span> cat)</span><br><span class="line"><span class="keyword">message</span>(<span class="string">"${myVar} = ${${myVar}}"</span>) <span class="comment"># myVar = "pet"</span></span><br></pre></td></tr></table></figure>
 <h3 id="环境变量">环境变量</h3>
-<p>设置：<code>set(ENV&#123;varName&#125; value)</code></p>
+<p>设置：<code>set(ENV{varName} value)</code></p>
 <p>这种方法只会临时添加环境变量，而不会改变系统环境变量</p>
 <h3 id="缓存变量">缓存变量</h3>
 <p>缓存变量存放在CMakeCache.txt中，这意味着每次需要重新编译一遍CMakefile才可以获得变量更新</p>
 <p>定义：</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(</span><br><span class="line">	varName</span><br><span class="line">	value...</span><br><span class="line">	CACHE</span><br><span class="line">	type</span><br><span class="line">	<span class="string">&quot;说明变量用途&quot;</span></span><br><span class="line">	[FORCE]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(</span><br><span class="line">	varName</span><br><span class="line">	value...</span><br><span class="line">	CACHE</span><br><span class="line">	type</span><br><span class="line">	<span class="string">"说明变量用途"</span></span><br><span class="line">	[FORCE]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>type用于图形界面的处理，不用类型有不同显示方式</p>
 <p>如BOOL以勾选框形式表示</p>
@@ -364,13 +476,13 @@
 <li>局部：函数、子目录</li>
 </ul>
 <p>局部作用域：使用<code>block()</code>与<code>endblock()</code>设置</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar cat)</span><br><span class="line"><span class="keyword">block</span>()</span><br><span class="line">	<span class="keyword">set</span>(myVar dog)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;myVar=$&#123;myVar&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endblock</span>()</span><br><span class="line"><span class="keyword">message</span>(<span class="string">&quot;myVar=$&#123;myVar&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar cat)</span><br><span class="line"><span class="keyword">block</span>()</span><br><span class="line">	<span class="keyword">set</span>(myVar dog)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"myVar=${myVar}"</span>)</span><br><span class="line"><span class="keyword">endblock</span>()</span><br><span class="line"><span class="keyword">message</span>(<span class="string">"myVar=${myVar}"</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">myVar=dog</span><br><span class="line">myVar=cat</span><br></pre></td></tr></table></figure>
 <p>若在set中使用了PARENT_SCOPE，则设置的是外层同名变量</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar cat)</span><br><span class="line"><span class="keyword">block</span>()</span><br><span class="line">	<span class="keyword">set</span>(myVar dog PARENT_SCOPE)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;[block]myVar=$&#123;myVar&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endblock</span>()</span><br><span class="line"><span class="keyword">message</span>(<span class="string">&quot;[outer]myVar=$&#123;myVar&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar cat)</span><br><span class="line"><span class="keyword">block</span>()</span><br><span class="line">	<span class="keyword">set</span>(myVar dog PARENT_SCOPE)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"[block]myVar=${myVar}"</span>)</span><br><span class="line"><span class="keyword">endblock</span>()</span><br><span class="line"><span class="keyword">message</span>(<span class="string">"[outer]myVar=${myVar}"</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[block]myVar=cat</span><br><span class="line">[outer]myVar=dog</span><br></pre></td></tr></table></figure>
 <p>也可以在block中使用PROPAGATE关键字，后面跟着的变量都是上级作用域变量中的引用</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar cat)</span><br><span class="line"><span class="keyword">block</span>(SCOPE_FOR VARIABLES PROPAGATE myVar)</span><br><span class="line">	<span class="keyword">set</span>(myVar dog)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;[block]myVar=$&#123;myVar&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endblock</span>()</span><br><span class="line"><span class="keyword">message</span>(<span class="string">&quot;[outer]myVar=$&#123;myVar&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(myVar cat)</span><br><span class="line"><span class="keyword">block</span>(SCOPE_FOR VARIABLES PROPAGATE myVar)</span><br><span class="line">	<span class="keyword">set</span>(myVar dog)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"[block]myVar=${myVar}"</span>)</span><br><span class="line"><span class="keyword">endblock</span>()</span><br><span class="line"><span class="keyword">message</span>(<span class="string">"[outer]myVar=${myVar}"</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="常用cmake内置变量">常用CMake内置变量</h3>
 <ul>
 <li><p><code>PROJECT_NAME</code> ：项目名称</p></li>
@@ -407,21 +519,21 @@
 <p>若表达式是变量，则当变量值不为假值是判断为真，注意单纯变量与${Var}的区别</p>
 <p>可以使用逻辑运算符AND、OR或NOT</p>
 <p>比较运算符：</p>
-<style>.hvxbdhnciylg{zoom: 50%;}</style>
-<img src="/C++/CMake/image-20250808113847896.png" class="hvxbdhnciylg" alt="比较运算符">
+<style>.yscwcjjusorf{zoom: 50%;}</style>
+<img src="/C++/CMake/image-20250808113847896.png" class="yscwcjjusorf" alt="比较运算符">
 <p>文件操作：</p>
-<style>.hhtrfteixaas{zoom:50%;}</style>
-<img src="/C++/CMake/image-20250808114503007.png" class="hhtrfteixaas" alt="文件操作">
+<style>.bzyyqraushjc{zoom:50%;}</style>
+<img src="/C++/CMake/image-20250808114503007.png" class="bzyyqraushjc" alt="文件操作">
 <p>存在性测试：</p>
 <img src="/C++/CMake/image-20250808114632225.png" class="" title="存在性测试">
 <p>预定义变量：有些变量是内置预定义的</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(MSVC)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;build with MSVC&quot;</span>)</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (MINGW)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;build with MINGW&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>()</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;build with other compiler&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(MSVC)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"build with MSVC"</span>)</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (MINGW)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"build with MINGW"</span>)</span><br><span class="line"><span class="keyword">else</span>()</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"build with other compiler"</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
 <p>Option变量：可以使用option设置缓存变量实现条件编译</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span>(BUILD_MYLIB <span class="string">&quot;构建MyLib目标&quot;</span>)</span><br><span class="line"><span class="keyword">if</span>(BUILD_MYLIB)</span><br><span class="line">	<span class="keyword">add_library</span>(MyLib mylib.cpp)</span><br><span class="line"><span class="keyword">else</span>()</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;忽略构建MyLib目标&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span>(BUILD_MYLIB <span class="string">"构建MyLib目标"</span>)</span><br><span class="line"><span class="keyword">if</span>(BUILD_MYLIB)</span><br><span class="line">	<span class="keyword">add_library</span>(MyLib mylib.cpp)</span><br><span class="line"><span class="keyword">else</span>()</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"忽略构建MyLib目标"</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
 <p>若在命令行使用<code>-D</code>设置为on</p>
 <p><code>cmake . -DBUILD_MYLIB=in</code>则会编译生成MYLIB库</p>
 <p>实例：常用的条件判断代码，放在文件开头，用于防止在CMakeLists文件所在的源路径中进行构建</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="string">&quot;$&#123;CMAKE_SOURCE_DIR&#125;&quot;</span> <span class="keyword">STREQUAL</span> <span class="string">&quot;$&#123;CMAKE_BINARY_DIR&#125;&quot;</span>)</span><br><span class="line">	<span class="keyword">message</span>(FATAL_ERROR <span class="string">&quot;错误：禁止源码内编译 请为构建文件创建一个单独的目录&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="string">"${CMAKE_SOURCE_DIR}"</span> <span class="keyword">STREQUAL</span> <span class="string">"${CMAKE_BINARY_DIR}"</span>)</span><br><span class="line">	<span class="keyword">message</span>(FATAL_ERROR <span class="string">"错误：禁止源码内编译 请为构建文件创建一个单独的目录"</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
 <ul>
 <li>CMAKE_SOURCE_DIR表示源树顶层路径</li>
 <li>CMAKE_BINARY_DIR表示生成树顶层路径</li>
@@ -431,10 +543,10 @@
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>(&lt;loop_var&gt; &lt;items&gt;)</span><br><span class="line">	&lt;commands&gt;</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br></pre></td></tr></table></figure>
 <p>可以使用IN LISTS与IN ITEMS关键字遍历列表，使用IN
 ZIP_LISTS合并遍历两个列表</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>(v IN ITEMS <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;v=$&#123;v&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>(list1 <span class="number">2</span> <span class="number">4</span> <span class="number">6</span> <span class="number">8</span>)</span><br><span class="line"><span class="keyword">set</span>(list2 <span class="number">1</span> <span class="number">3</span> <span class="number">5</span> <span class="number">7</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(v IN LISTS list1)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;v=$&#123;v&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(v IN ZIP_LISTS list1 list2)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;v=($&#123;v_0&#125;,$&#123;v_1&#125;)&quot;</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>(v IN ITEMS <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"v=${v}"</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>(list1 <span class="number">2</span> <span class="number">4</span> <span class="number">6</span> <span class="number">8</span>)</span><br><span class="line"><span class="keyword">set</span>(list2 <span class="number">1</span> <span class="number">3</span> <span class="number">5</span> <span class="number">7</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(v IN LISTS list1)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"v=${v}"</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(v IN ZIP_LISTS list1 list2)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"v=(${v_0},${v_1})"</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br></pre></td></tr></table></figure>
 <p>也可以使用RANGE指定开始结束与步长（默认为1）</p>
-<p><code>foreach(v RANGE $&#123;start&#125; $&#123;end&#125; $&#123;step&#125;)</code></p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(start <span class="number">1</span>)</span><br><span class="line"><span class="keyword">set</span>(end <span class="number">8</span>)</span><br><span class="line"><span class="keyword">set</span>(step <span class="number">2</span>)</span><br><span class="line"><span class="keyword">foreach</span>(v RANGE <span class="variable">$&#123;start&#125;</span> <span class="variable">$&#123;end&#125;</span> <span class="variable">$&#123;step&#125;</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;v=$&#123;v&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br></pre></td></tr></table></figure>
+<p><code>foreach(v RANGE ${start} ${end} ${step})</code></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(start <span class="number">1</span>)</span><br><span class="line"><span class="keyword">set</span>(end <span class="number">8</span>)</span><br><span class="line"><span class="keyword">set</span>(step <span class="number">2</span>)</span><br><span class="line"><span class="keyword">foreach</span>(v RANGE <span class="variable">${start}</span> <span class="variable">${end}</span> <span class="variable">${step}</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"v=${v}"</span>)</span><br><span class="line"><span class="keyword">endforeach</span>()</span><br></pre></td></tr></table></figure>
 <h3 id="while">while</h3>
 <p>语法：</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(&lt;condition&gt;)</span><br><span class="line">	&lt;commands&gt;</span><br><span class="line"><span class="keyword">endwhile</span>()</span><br></pre></td></tr></table></figure>
@@ -449,7 +561,7 @@ ZIP_LISTS合并遍历两个列表</p>
 <h3 id="传参方式">传参方式</h3>
 <ul>
 <li><p>命名参数：</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(f a, b)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;a:$&#123;a&#125;,b:$&#123;b&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(f a, b)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"a:${a},b:${b}"</span>)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br></pre></td></tr></table></figure>
 <p>函数中可以直接引用这两个参数</p></li>
 <li><p>未命名参数：</p></li>
 </ul>
@@ -459,7 +571,7 @@ ZIP_LISTS合并遍历两个列表</p>
 <p>​
 参数列表：ARGV，使用ARGVn表示第n个参数（n大于ARGC时为未定义行为）</p>
 <p>​ 未命名参数列表：ARGN</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(f a, b)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;a:$&#123;a&#125;,b:$&#123;b&#125;&quot;</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;argc:$&#123;ARGC&#125;&quot;</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;argv:$&#123;ARGV&#125;&quot;</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;argv0:$&#123;ARGV0&#125;, argv1:$&#123;ARGV1&#125;&quot;</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">&quot;argn:$&#123;ARGN&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br><span class="line"></span><br><span class="line">f(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(f a, b)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"a:${a},b:${b}"</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"argc:${ARGC}"</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"argv:${ARGV}"</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"argv0:${ARGV0}, argv1:${ARGV1}"</span>)</span><br><span class="line">	<span class="keyword">message</span>(<span class="string">"argn:${ARGN}"</span>)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br><span class="line"></span><br><span class="line">f(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a:1,b:2</span><br><span class="line">argc:5</span><br><span class="line">argv:1;2;3;4;5</span><br><span class="line">argv0:1,argv1:2</span><br><span class="line">argn:3;4;5</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>关键字参数：</p>
@@ -481,7 +593,7 @@ ZIP_LISTS合并遍历两个列表</p>
 <li>one_value_keywords/multi_value_keyworlds分别对应单个值关键字多值关键字</li>
 <li>args即为要解析的参数列表，通常使用ARGN</li>
 </ul>
-<p><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(my_functionz targetName)</span><br><span class="line">    <span class="keyword">set</span>(options USE_MYLIB)</span><br><span class="line">    <span class="keyword">set</span>(oneValueArgs MYLIB_PATH)</span><br><span class="line">    <span class="keyword">set</span>(multiValueArgs SOURCES INCLUDES)</span><br><span class="line">    <span class="keyword">cmake_parse_arguments</span>(arg_myfunction2 <span class="string">&quot;$&#123;options&#125;&quot;</span> <span class="string">&quot;$&#123;oneValueArgs&#125;&quot;</span> <span class="string">&quot;$&#123;multiValueArgs&#125;&quot;</span> <span class="variable">$&#123;ARGN&#125;</span>)</span><br><span class="line">    <span class="keyword">message</span>(<span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    USE_MYLIB:$&#123;arg_myfunction2_USE_MYLIB&#125;</span></span><br><span class="line"><span class="string">    MYLIB_PATH:$&#123;arg_myfunction2_MYLIB_PATH&#125;</span></span><br><span class="line"><span class="string">    SOURCES: $&#123;arg_myfunction2_SOURCES&#125;</span></span><br><span class="line"><span class="string">    INCLUDES:$&#123;arg_myfunction2_INCLUDES&#125;</span></span><br><span class="line"><span class="string">    targetName: $&#123;targetName&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br></pre></td></tr></table></figure></p>
+<p><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(my_functionz targetName)</span><br><span class="line">    <span class="keyword">set</span>(options USE_MYLIB)</span><br><span class="line">    <span class="keyword">set</span>(oneValueArgs MYLIB_PATH)</span><br><span class="line">    <span class="keyword">set</span>(multiValueArgs SOURCES INCLUDES)</span><br><span class="line">    <span class="keyword">cmake_parse_arguments</span>(arg_myfunction2 <span class="string">"${options}"</span> <span class="string">"${oneValueArgs}"</span> <span class="string">"${multiValueArgs}"</span> <span class="variable">${ARGN}</span>)</span><br><span class="line">    <span class="keyword">message</span>(<span class="string">"</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    USE_MYLIB:${arg_myfunction2_USE_MYLIB}</span></span><br><span class="line"><span class="string">    MYLIB_PATH:${arg_myfunction2_MYLIB_PATH}</span></span><br><span class="line"><span class="string">    SOURCES: ${arg_myfunction2_SOURCES}</span></span><br><span class="line"><span class="string">    INCLUDES:${arg_myfunction2_INCLUDES}</span></span><br><span class="line"><span class="string">    targetName: ${targetName}"</span>)</span><br><span class="line"><span class="keyword">endfunction</span>()</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">USE MYLIB: FALSE</span><br><span class="line">MYLIB PATH:/usr/local/lib</span><br><span class="line">SOURCES: main. cpp</span><br><span class="line">INCLUDES:/include;/include2</span><br><span class="line">targetName:hello</span><br></pre></td></tr></table></figure>
 <p>还有两个关键字：</p>
 <ul>
@@ -520,14 +632,14 @@ ZIP_LISTS合并遍历两个列表</p>
 <p>cmake中可以使用file进行文件操作</p>
 <img src="/C++/CMake/image-20250818110958516.png" class="" title="FILE">
 <p>例：获得源目录中cpp文件列表并添加到目标中（不建议使用）</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">file</span>(GLOB varFilelist LIST_DIRECTORIES <span class="keyword">false</span> CONFIGURE_DEPENDS RELATIVE <span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span> <span class="string">&quot;*.cpp&quot;</span>)</span><br><span class="line"><span class="keyword">message</span>(<span class="string">&quot;varFilelist: $&#123;varFilelist&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_executable</span>(MyApp <span class="variable">$&#123;varFilelist&#125;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">file</span>(GLOB varFilelist LIST_DIRECTORIES <span class="keyword">false</span> CONFIGURE_DEPENDS RELATIVE <span class="variable">${CMAKE_SOURCE_DIR}</span> <span class="string">"*.cpp"</span>)</span><br><span class="line"><span class="keyword">message</span>(<span class="string">"varFilelist: ${varFilelist}"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_executable</span>(MyApp <span class="variable">${varFilelist}</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="生成器表达式">生成器表达式</h3>
 <p>格式：<code>$&lt;...&gt;</code>，里面是一些与逻辑有关的表达式</p>
 <p>生成器表达式是在构建时才会生成的值</p>
 <p>若想要把他们的值输出，可以使用file命令：</p>
 <p><code>file(GENERATE OUTPUT generatorExam.txt CONTENT "platform=$&lt;PLATFORM_ID&gt;" TARGET myApp)</code></p>
 <p>或者是自己提供一个目标</p>
-<p><code>add_custom_target(MyTarget ALL COMMAND $&#123;CMAKE_COMMAND&#125; -E echo "platform = $&lt;PLATFORM_ID&gt;")</code></p>
+<p><code>add_custom_target(MyTarget ALL COMMAND ${CMAKE_COMMAND} -E echo "platform = $&lt;PLATFORM_ID&gt;")</code></p>
 <p>常见的生成器表达式：</p>
 <ul>
 <li><code>$&lt;PLATFORM_ID&gt;</code>：生成的平台</li>
@@ -580,18 +692,18 @@ ZIP_LISTS合并遍历两个列表</p>
 <p>对应的<strong>target_link_directories</strong>是对于库而言的</p>
 <h3 id="aux_source_directory">aux_source_directory</h3>
 <p>扫描第一个参数的目录并将所有源文件放到第二个参数定义的变量名中，第一个参数只能是文件夹</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">aux_source_directory</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span> SRC)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">aux_source_directory</span>(<span class="variable">${PROJECT_SOURCE_DIR}</span> SRC)</span><br></pre></td></tr></table></figure>
 <h3 id="file-1">file</h3>
 <p>掌握有关文件系统的几乎所有功能</p>
 <p>常用于获取文件到变量中</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">file</span>(GLOB SRC <span class="string">&quot;$&#123;PROJECT_SOURCE_DIR&#125;/*.cpp&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">file</span>(GLOB SRC <span class="string">"${PROJECT_SOURCE_DIR}/*.cpp"</span>)</span><br></pre></td></tr></table></figure>
 <p>GLOB会产生一个所有匹配后面表达式的文件组成的列表保存到第二个参数的变量中</p>
 <p>若改为<code>GLOB_RECURSE</code>则上述命令会递归的搜寻其子目录所有符合条件的文件，而不仅仅是一层</p>
 <h3 id="execute_process">execute_process</h3>
 <p>用于执行外部命令</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> git clone https://github.com/&lt;username&gt;/&lt;repository&gt;.git</span><br><span class="line">                WORKING_DIRECTORY <span class="variable">$&#123;CMAKE_BINARY_DIR&#125;</span>/deps/&lt;repository&gt;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> git clone https://github.com/&lt;username&gt;/&lt;repository&gt;.git</span><br><span class="line">                WORKING_DIRECTORY <span class="variable">${CMAKE_BINARY_DIR}</span>/deps/&lt;repository&gt;)</span><br></pre></td></tr></table></figure>
 <p>如该代码执行了git
-clone命令，工作目录为<code>$&#123;CMAKE_BINARY_DIR&#125;/deps</code></p>
+clone命令，工作目录为<code>${CMAKE_BINARY_DIR}/deps</code></p>
 <h3 id="find_package">find_package</h3>
 <p>查找外界的package，其实是查找对应的<code>&lt;package&gt;Config.cmake</code>
 和 <code>Find&lt;package&gt;.cmake</code>

@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~1.80K
+                            1363
                         
                         字
                     </li>
@@ -271,29 +383,29 @@
 <p>使用<code>db.Create(&amp;name)</code>创建一条数据</p>
 <h2 id="批量插入">批量插入</h2>
 <p>若想创建多条数据，可以创建一个切片并把数据填进去</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">users := []*User&#123;</span><br><span class="line">    &#123;Name: <span class="string">&quot;Jinzhu&quot;</span>, Age: <span class="number">18</span>, Birthday: time.Now()&#125;,</span><br><span class="line">    &#123;Name: <span class="string">&quot;Jackson&quot;</span>, Age: <span class="number">19</span>, Birthday: time.Now()&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">result := db.Create(users)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">users := []*User{</span><br><span class="line">    {Name: <span class="string">"Jinzhu"</span>, Age: <span class="number">18</span>, Birthday: time.Now()},</span><br><span class="line">    {Name: <span class="string">"Jackson"</span>, Age: <span class="number">19</span>, Birthday: time.Now()},</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">result := db.Create(users)</span><br></pre></td></tr></table></figure>
 <p>可以用<code>db.CreateInBatches()</code>来指定插入批次的大小</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users = []User&#123;&#123;Name: <span class="string">&quot;jinzhu_1&quot;</span>&#125;, ...., &#123;Name: <span class="string">&quot;jinzhu_10000&quot;</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// batch size 100</span></span><br><span class="line">db.CreateInBatches(users, <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users = []User{{Name: <span class="string">"jinzhu_1"</span>}, ...., {Name: <span class="string">"jinzhu_10000"</span>}}</span><br><span class="line"></span><br><span class="line"><span class="comment">// batch size 100</span></span><br><span class="line">db.CreateInBatches(users, <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="用指定字段创建数据">用指定字段创建数据</h2>
 <p>用Select创建为指定字段赋值的记录：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Select(<span class="string">&quot;Name&quot;</span>, <span class="string">&quot;Age&quot;</span>, <span class="string">&quot;CreatedAt&quot;</span>).Create(&amp;user)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Select(<span class="string">"Name"</span>, <span class="string">"Age"</span>, <span class="string">"CreatedAt"</span>).Create(&amp;user)</span><br></pre></td></tr></table></figure>
 <p>用Omit创建忽略指定字段值的记录：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Omit(<span class="string">&quot;Name&quot;</span>, <span class="string">&quot;Age&quot;</span>, <span class="string">&quot;CreatedAt&quot;</span>).Create(&amp;user)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Omit(<span class="string">"Name"</span>, <span class="string">"Age"</span>, <span class="string">"CreatedAt"</span>).Create(&amp;user)</span><br></pre></td></tr></table></figure>
 <h2 id="根据map创建数据">根据Map创建数据</h2>
-<p>支持通过 <code>map[string]interface&#123;&#125;</code> 与
-<code>[]map[string]interface&#123;&#125;&#123;&#125;</code>来创建</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;User&#123;&#125;).Create(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">  <span class="string">&quot;Name&quot;</span>: <span class="string">&quot;jinzhu&quot;</span>, <span class="string">&quot;Age&quot;</span>: <span class="number">18</span>,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// batch insert from `[]map[string]interface&#123;&#125;&#123;&#125;`</span></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Create([]<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">  &#123;<span class="string">&quot;Name&quot;</span>: <span class="string">&quot;jinzhu_1&quot;</span>, <span class="string">&quot;Age&quot;</span>: <span class="number">18</span>&#125;,</span><br><span class="line">  &#123;<span class="string">&quot;Name&quot;</span>: <span class="string">&quot;jinzhu_2&quot;</span>, <span class="string">&quot;Age&quot;</span>: <span class="number">20</span>&#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>支持通过 <code>map[string]interface{}</code> 与
+<code>[]map[string]interface{}{}</code>来创建</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;User{}).Create(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>{}{</span><br><span class="line">  <span class="string">"Name"</span>: <span class="string">"jinzhu"</span>, <span class="string">"Age"</span>: <span class="number">18</span>,</span><br><span class="line">})</span><br><span class="line"></span><br><span class="line"><span class="comment">// batch insert from `[]map[string]interface{}{}`</span></span><br><span class="line">db.Model(&amp;User{}).Create([]<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>{}{</span><br><span class="line">  {<span class="string">"Name"</span>: <span class="string">"jinzhu_1"</span>, <span class="string">"Age"</span>: <span class="number">18</span>},</span><br><span class="line">  {<span class="string">"Name"</span>: <span class="string">"jinzhu_2"</span>, <span class="string">"Age"</span>: <span class="number">20</span>},</span><br><span class="line">})</span><br></pre></td></tr></table></figure>
 <h2 id="默认值">默认值</h2>
 <p>在结构体中添加tag<code>gorm:"default:'value'"</code>以设定默认值</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">	ID	<span class="type">int64</span> </span><br><span class="line">	Name <span class="type">string</span> <span class="string">`gorm:&quot;default:&#x27;issac&#x27;&quot;`</span></span><br><span class="line">	Age <span class="type">int64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> {</span><br><span class="line">	ID	<span class="type">int64</span> </span><br><span class="line">	Name <span class="type">string</span> <span class="string">`gorm:"default:'issac'"`</span></span><br><span class="line">	Age <span class="type">int64</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>这样在创建一条数据的时候，不传入的部分将会设定为默认的值，若没有默认值则会传入零值</p>
 <p>注意：所有字段的零值都不会保存到数据库里，若有默认值则会使用他们的默认值，若想传入控制可以考虑使用指针或实现<code>Scanner/Valuer</code>接口</p>
-<p>例如，假设按上面定义，则<code>u:=User&#123;Name:"", Age:1&#125;</code>创建的Name仍为上面定义的默认值</p>
+<p>例如，假设按上面定义，则<code>u:=User{Name:"", Age:1}</code>创建的Name仍为上面定义的默认值</p>
 <p>指针：即定义字段时用指针类型</p>
 <p>接口：类型值使用NullType，这种类型自然实现了这两个接口，传入的时候结构体内value要为true</p>
 <h2 id="扩展创建">扩展创建</h2>
 <p>PostgreSQL中可以使用下面的方式实现有则更新，无则插入：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Set(<span class="string">&quot;gorm:insert_option&quot;</span>, <span class="string">&quot;ON CONFLICT&quot;</span>).Create(&amp;product)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Set(<span class="string">"gorm:insert_option"</span>, <span class="string">"ON CONFLICT"</span>).Create(&amp;product)</span><br></pre></td></tr></table></figure>
 </div>
         </div>
         

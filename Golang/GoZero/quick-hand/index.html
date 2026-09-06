@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~4.85K
+                            ~4.51K
                         
                         字
                     </li>
@@ -283,7 +395,7 @@
 <h1 id="api服务">API服务</h1>
 <p>以一个用户服务为例</p>
 <h2 id="编写api-dsl">编写API DSL</h2>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;v1&quot;</span></span><br><span class="line"></span><br><span class="line">type (</span><br><span class="line">    LoginReq &#123;</span><br><span class="line">        Username <span class="type">string</span> `json:<span class="string">&quot;username&quot;</span>`</span><br><span class="line">        Password <span class="type">string</span> `json:<span class="string">&quot;password&quot;</span>`</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    LoginResp &#123;</span><br><span class="line">        Token <span class="type">string</span> `json:<span class="string">&quot;token&quot;</span>`</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    UserInfoReq &#123;</span><br><span class="line">        Id <span class="type">int64</span> `path:<span class="string">&quot;id&quot;</span>`</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    UserInfoResp &#123;</span><br><span class="line">        Id       <span class="type">int64</span>  `json:<span class="string">&quot;id&quot;</span>`</span><br><span class="line">        Username <span class="type">string</span> `json:<span class="string">&quot;username&quot;</span>`</span><br><span class="line">        Email    <span class="type">string</span> `json:<span class="string">&quot;email&quot;</span>`</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">user</span>-api &#123;</span><br><span class="line">    @handler Login</span><br><span class="line">    post /user/login (LoginReq) returns (LoginResp)</span><br><span class="line"></span><br><span class="line">    @handler GetUserInfo</span><br><span class="line">    get /user/:id (UserInfoReq) returns (UserInfoResp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"v1"</span></span><br><span class="line"></span><br><span class="line">type (</span><br><span class="line">    LoginReq {</span><br><span class="line">        Username <span class="type">string</span> `json:<span class="string">"username"</span>`</span><br><span class="line">        Password <span class="type">string</span> `json:<span class="string">"password"</span>`</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    LoginResp {</span><br><span class="line">        Token <span class="type">string</span> `json:<span class="string">"token"</span>`</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    UserInfoReq {</span><br><span class="line">        Id <span class="type">int64</span> `path:<span class="string">"id"</span>`</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    UserInfoResp {</span><br><span class="line">        Id       <span class="type">int64</span>  `json:<span class="string">"id"</span>`</span><br><span class="line">        Username <span class="type">string</span> `json:<span class="string">"username"</span>`</span><br><span class="line">        Email    <span class="type">string</span> `json:<span class="string">"email"</span>`</span><br><span class="line">    }</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">user</span>-api {</span><br><span class="line">    @handler Login</span><br><span class="line">    post /user/login (LoginReq) returns (LoginResp)</span><br><span class="line"></span><br><span class="line">    @handler GetUserInfo</span><br><span class="line">    get /user/:id (UserInfoReq) returns (UserInfoResp)</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="生成服务">生成服务</h2>
 <p>使用命令生成服务：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">goctl api go -api user.api -<span class="built_in">dir</span> .</span><br><span class="line">go mod init user-api</span><br><span class="line">go mod tidy</span><br></pre></td></tr></table></figure>
@@ -293,42 +405,42 @@
 <h2 id="实现逻辑">实现逻辑</h2>
 <p>在<code>internal/logic</code>中实现业务逻辑</p>
 <p>编辑<code>loginlogic.go</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *LoginLogic)</span></span> Login(req *types.LoginReq) (resp *types.LoginResp, err <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> req.Username == <span class="string">&quot;admin&quot;</span> &amp;&amp; req.Password == <span class="string">&quot;123456&quot;</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> &amp;types.LoginResp&#123;</span><br><span class="line">			Token: <span class="string">&quot;mock-jwt-token-for-&quot;</span> + req.Username,</span><br><span class="line">		&#125;, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">&quot;invalid username or password&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *LoginLogic)</span></span> Login(req *types.LoginReq) (resp *types.LoginResp, err <span class="type">error</span>) {</span><br><span class="line">	<span class="keyword">if</span> req.Username == <span class="string">"admin"</span> &amp;&amp; req.Password == <span class="string">"123456"</span> {</span><br><span class="line">		<span class="keyword">return</span> &amp;types.LoginResp{</span><br><span class="line">			Token: <span class="string">"mock-jwt-token-for-"</span> + req.Username,</span><br><span class="line">		}, <span class="literal">nil</span></span><br><span class="line">	}</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"invalid username or password"</span>)</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>编辑<code>getuserinfologic.go</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *GetUserInfoLogic)</span></span> GetUserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;types.UserInfoResp&#123;</span><br><span class="line">		Id:       req.Id,</span><br><span class="line">		Username: <span class="string">&quot;alice&quot;</span>,</span><br><span class="line">		Email:    <span class="string">&quot;alice@example.com&quot;</span>,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *GetUserInfoLogic)</span></span> GetUserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err <span class="type">error</span>) {</span><br><span class="line">	<span class="keyword">return</span> &amp;types.UserInfoResp{</span><br><span class="line">		Id:       req.Id,</span><br><span class="line">		Username: <span class="string">"alice"</span>,</span><br><span class="line">		Email:    <span class="string">"alice@example.com"</span>,</span><br><span class="line">	}, <span class="literal">nil</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="运行测试">运行测试</h2>
 <p>使用<code>go run user.go</code>运行，并通过测试工具测试</p>
 <p>在postman中填入raw json，发送后可以收到200 OK，并读到我们的token</p>
 <blockquote>
 <p>注意，标签是json时需要自己写raw json，而不是填query参数</p>
 </blockquote>
-<style>.xminnhpauhjr{zoom:50%;}</style>
-<img src="/Golang/GoZero/quick-hand/image-20260720134726039.png" class="xminnhpauhjr" alt="postman">
+<style>.fumsrhgqrhfd{zoom:50%;}</style>
+<img src="/Golang/GoZero/quick-hand/image-20260720134726039.png" class="fumsrhgqrhfd" alt="postman">
 <h1 id="rpc服务">RPC服务</h1>
 <h2 id="创建项目">创建项目</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">goctl rpc new user</span><br><span class="line"><span class="built_in">cd</span> user</span><br><span class="line">go mod tidy</span><br></pre></td></tr></table></figure>
 <p>生成服务骨架如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">user/</span><br><span class="line">├── etc/</span><br><span class="line">│   └── user.yaml</span><br><span class="line">├── internal/</span><br><span class="line">│   ├── config/config.go</span><br><span class="line">│   ├── logic/</span><br><span class="line">│   │   └── getuserlogic.go      # ← 在这里实现</span><br><span class="line">│   ├── server/userserver.go   # gRPC 服务端适配器</span><br><span class="line">│   └── svc/servicecontext.go</span><br><span class="line">├── user/</span><br><span class="line">│   └── user.pb.go             # 生成的 protobuf 类型</span><br><span class="line">│   └── user_grpc.pb.go        # 生成的 gRPC 桩代码</span><br><span class="line">├── user.go                  # 主入口</span><br><span class="line">└── user.proto               # 源定义</span><br></pre></td></tr></table></figure>
 <p>并且会自动生成protobuf文件</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> user;</span><br><span class="line"><span class="keyword">option</span> go_package=<span class="string">&quot;./user&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">Request</span> &#123;</span><br><span class="line">  <span class="type">string</span> ping = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">Response</span> &#123;</span><br><span class="line">  <span class="type">string</span> pong = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">User</span> &#123;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Ping(Request) <span class="keyword">returns</span>(Response)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"proto3"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> user;</span><br><span class="line"><span class="keyword">option</span> go_package=<span class="string">"./user"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">Request</span> {</span><br><span class="line">  <span class="type">string</span> ping = <span class="number">1</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">Response</span> {</span><br><span class="line">  <span class="type">string</span> pong = <span class="number">1</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">User</span> {</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Ping(Request) <span class="keyword">returns</span>(Response)</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>若protobuf变更后重新生成，使用</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">goctl rpc protoc user.proto \</span><br><span class="line">    --go_out=./user \</span><br><span class="line">    --go-grpc_out=./user \</span><br><span class="line">    --zrpc_out=.</span><br></pre></td></tr></table></figure>
 <h2 id="实现逻辑-1">实现逻辑</h2>
 <p>编辑<code>internal/logic</code>文件夹下的文件实现逻辑</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *GetUserLogic)</span></span> GetUser(in *user.GetUserRequest) (*user.GetUserResponse, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;user.GetUserResponse&#123;</span><br><span class="line">		Id:   in.Id,</span><br><span class="line">		Name: <span class="string">&quot;alice&quot;</span>,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *GetUserLogic)</span></span> GetUser(in *user.GetUserRequest) (*user.GetUserResponse, <span class="type">error</span>) {</span><br><span class="line">	<span class="keyword">return</span> &amp;user.GetUserResponse{</span><br><span class="line">		Id:   in.Id,</span><br><span class="line">		Name: <span class="string">"alice"</span>,</span><br><span class="line">	}, <span class="literal">nil</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <h2 id="配置运行">配置运行</h2>
 <p>配置文件位于<code>etc/user.yaml</code>，可以看到rpc服务名称、监听端口等</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Name:</span> <span class="string">user.rpc</span></span><br><span class="line"><span class="attr">ListenOn:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">:8080</span></span><br></pre></td></tr></table></figure>
 <p>使用<code>go run user.go</code> 运行，通过接口测试工具测试</p>
-<style>.skbtclfbfmzy{zoom:50%;}</style>
-<img src="/Golang/GoZero/quick-hand/image-20260720140928034.png" class="skbtclfbfmzy" alt="postman">
+<style>.xakozeipgucd{zoom:50%;}</style>
+<img src="/Golang/GoZero/quick-hand/image-20260720140928034.png" class="xakozeipgucd" alt="postman">
 <h2 id="从api服务中调用">从api服务中调用</h2>
 <p>使用以下指令生成api网关使用的RPC客户端桩代码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">goctl rpc protoc user.proto \</span><br><span class="line">    --go_out=./user \</span><br><span class="line">    --go-grpc_out=./user \</span><br><span class="line">    --zrpc_out=./client</span><br></pre></td></tr></table></figure>
 <p>然后在<code>servicecontext.go</code>中导入client包</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServiceContext <span class="keyword">struct</span> &#123;</span><br><span class="line">    Config  config.Config</span><br><span class="line">    UserRpc userclient.User  <span class="comment">// 从生成的 client 包中引入</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServiceContext <span class="keyword">struct</span> {</span><br><span class="line">    Config  config.Config</span><br><span class="line">    UserRpc userclient.User  <span class="comment">// 从生成的 client 包中引入</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>这样就可以在业务逻辑中像调用本地方法一样发起rpc调用</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resp, err := l.svcCtx.UserRpc.GetUser(l.ctx, &amp;user.GetUserRequest&#123;Id: <span class="number">1</span>&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resp, err := l.svcCtx.UserRpc.GetUser(l.ctx, &amp;user.GetUserRequest{Id: <span class="number">1</span>})</span><br></pre></td></tr></table></figure>
 <p>且可以自动处理连接池、负载均衡和熔断</p>
 </div>
         </div>

@@ -121,7 +121,119 @@
 </style>
 
   
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
     <body class="custom-background">
         <div id="kratos-wrapper">
@@ -249,7 +361,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~2.84K
+                            ~2.62K
                         
                         字
                     </li>
@@ -288,12 +400,12 @@ API来满足向后兼容或不支持gRPC的客户端时，gRPC-gateway
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">v2</span></span><br><span class="line"><span class="attr">plugins:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">local:</span> <span class="string">protoc-gen-go</span></span><br><span class="line">    <span class="attr">out:</span> <span class="string">gen/go</span></span><br><span class="line">    <span class="attr">opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">paths=source_relative</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">local:</span> <span class="string">protoc-gen-go-grpc</span></span><br><span class="line">    <span class="attr">out:</span> <span class="string">gen/go</span></span><br><span class="line">    <span class="attr">opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">paths=source_relative</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">local:</span> <span class="string">protoc-gen-grpc-gateway</span></span><br><span class="line">    <span class="attr">out:</span> <span class="string">gen/go</span></span><br><span class="line">    <span class="attr">opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">paths=source_relative</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">generate_unbound_methods=true</span></span><br></pre></td></tr></table></figure>
 <p>若需要修改URL，则需要引入<code>google.api.http</code>，protobuf文件添加<code>import "google/api/annotations.proto"</code></p>
 <p>定义service如下：</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">service </span><span class="title class_">YourService</span> &#123;</span><br><span class="line"> <span class="function"><span class="keyword">rpc</span> Echo(StringMessage) <span class="keyword">returns</span> (StringMessage) </span>&#123;</span><br><span class="line">   <span class="keyword">option</span> (google.api.http) = &#123;</span><br><span class="line">     post: <span class="string">&quot;/v1/example/echo&quot;</span></span><br><span class="line">     body: <span class="string">&quot;*&quot;</span></span><br><span class="line">   &#125;;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">service </span><span class="title class_">YourService</span> {</span><br><span class="line"> <span class="function"><span class="keyword">rpc</span> Echo(StringMessage) <span class="keyword">returns</span> (StringMessage) </span>{</span><br><span class="line">   <span class="keyword">option</span> (google.api.http) = {</span><br><span class="line">     post: <span class="string">"/v1/example/echo"</span></span><br><span class="line">     body: <span class="string">"*"</span></span><br><span class="line">   };</span><br><span class="line"> }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p><code>buf.yaml</code>文件下也需要加入对应的依赖：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">v2</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">buf.build/yourorg/myprotos</span></span><br><span class="line"><span class="attr">deps:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">buf.build/googleapis/googleapis</span></span><br></pre></td></tr></table></figure>
 <p>添加依赖后运行<code>buf dep update</code></p>
 <h2 id="编写entrypoint">编写entrypoint</h2>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;context&quot;</span></span><br><span class="line">  <span class="string">&quot;flag&quot;</span></span><br><span class="line">  <span class="string">&quot;net/http&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;github.com/grpc-ecosystem/grpc-gateway/v2/runtime&quot;</span></span><br><span class="line">  <span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">  <span class="string">&quot;google.golang.org/grpc/credentials/insecure&quot;</span></span><br><span class="line">  <span class="string">&quot;google.golang.org/grpc/grpclog&quot;</span></span><br><span class="line"></span><br><span class="line">  gw <span class="string">&quot;github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service&quot;</span>  <span class="comment">// 你的网关代码包</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">  grpcServerEndpoint = flag.String(<span class="string">&quot;grpc-server-endpoint&quot;</span>,  <span class="string">&quot;localhost:9090&quot;</span>, <span class="string">&quot;gRPC server endpoint&quot;</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">run</span><span class="params">()</span></span> <span class="type">error</span> &#123;</span><br><span class="line">  ctx := context.Background()</span><br><span class="line">  ctx, cancel := context.WithCancel(ctx)</span><br><span class="line">  <span class="keyword">defer</span> cancel()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建HTTP mux，用来注册路由</span></span><br><span class="line">  mux := runtime.NewServeMux()</span><br><span class="line">  <span class="comment">// 设置连接gRPC的选项</span></span><br><span class="line">  opts := []grpc.DialOption&#123;grpc.WithTransportCredentials(insecure.NewCredentials())&#125;</span><br><span class="line">  <span class="comment">// 注册所有需要转发的服务处理函数</span></span><br><span class="line">  err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 启动服务并监听代理</span></span><br><span class="line">  <span class="keyword">return</span> http.ListenAndServe(<span class="string">&quot;:8081&quot;</span>, mux)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  flag.Parse()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> err := run(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    grpclog.Fatal(err)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">"context"</span></span><br><span class="line">  <span class="string">"flag"</span></span><br><span class="line">  <span class="string">"net/http"</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"</span></span><br><span class="line">  <span class="string">"google.golang.org/grpc"</span></span><br><span class="line">  <span class="string">"google.golang.org/grpc/credentials/insecure"</span></span><br><span class="line">  <span class="string">"google.golang.org/grpc/grpclog"</span></span><br><span class="line"></span><br><span class="line">  gw <span class="string">"github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"</span>  <span class="comment">// 你的网关代码包</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">  grpcServerEndpoint = flag.String(<span class="string">"grpc-server-endpoint"</span>,  <span class="string">"localhost:9090"</span>, <span class="string">"gRPC server endpoint"</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">run</span><span class="params">()</span></span> <span class="type">error</span> {</span><br><span class="line">  ctx := context.Background()</span><br><span class="line">  ctx, cancel := context.WithCancel(ctx)</span><br><span class="line">  <span class="keyword">defer</span> cancel()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建HTTP mux，用来注册路由</span></span><br><span class="line">  mux := runtime.NewServeMux()</span><br><span class="line">  <span class="comment">// 设置连接gRPC的选项</span></span><br><span class="line">  opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}</span><br><span class="line">  <span class="comment">// 注册所有需要转发的服务处理函数</span></span><br><span class="line">  err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> {</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 启动服务并监听代理</span></span><br><span class="line">  <span class="keyword">return</span> http.ListenAndServe(<span class="string">":8081"</span>, mux)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> {</span><br><span class="line">  flag.Parse()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> err := run(); err != <span class="literal">nil</span> {</span><br><span class="line">    grpclog.Fatal(err)</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 </div>
         </div>
         
