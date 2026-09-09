@@ -24605,4 +24605,393 @@ created_at datetime 创建时间</p>
         <category>Kouoj</category>
       </categories>
   </entry>
+  <entry>
+    <title>【杂项】Docker</title>
+    <url>/%E6%9D%82%E9%A1%B9/Docker/</url>
+    <content><![CDATA[<h1 id="基本概念">基本概念</h1>
+<p>Docker给每个程序封装一套独立的运行环境，每套环境称为容器，运行在的机器称为宿主机，各个容器共用同一内核</p>
+<p>镜像是容器的模板，容器是实际的软件，类似于类和实例的关系，镜像可以存放放在镜像仓库中</p>
+<p>docker使用的是linux内核中自带的功能实现的容器化：</p>
+<ul>
+<li>Cgroups：可以隔离和限制进程的资源使用</li>
+<li>Namespace：用来隔离进程的资源视图</li>
+</ul>
+<p>每个容器类似于一个独立的linux环境</p>
+<h1 id="常用命令">常用命令</h1>
+<ul>
+<li><p><code>docker pull 地址</code>：拉取镜像</p>
+<p><code>--platform=xxx</code>可以指定拉取特定架构的镜像</p>
+<p>地址的命名格式如下：<code>docker仓库的注册表地址/命名空间/镜像名:版本号</code></p>
+<ul>
+<li>注册表地址表示在哪个仓库下载，如果是docker.io表示是官方仓库，可省略</li>
+<li>命名空间表示作者，如果是官方仓库则为library，可省略</li>
+<li>版本号不写默认为latest</li>
+</ul></li>
+<li><p><code>docker images</code>：查看拥有的镜像</p></li>
+<li><p><code>docker rmi 名字/id</code> ：删除镜像</p></li>
+<li><p><code>docker rm 名字/id</code> ：删除容器</p></li>
+<li><p><code>docker create 名字/id</code>：创建容器不启动</p></li>
+<li><p><code>docker run 名字/id</code>：使用镜像创建并运行容器</p>
+<ul>
+<li>flags <code>-d</code>可以以分离模式后台运行</li>
+<li>flags
+<code>-p</code>可以用于宿主机到容器的端口转发，<code>宿主机端口:容器内端口</code></li>
+<li>flags
+<code>-v</code>可以将宿主机与容器的文件目录绑定，两者互相影响，这种目录称为挂载卷，可以用于持久化保存数据，<code>宿主机目录:容器目录</code>，若直接指定目录，称为绑定挂载，若使用<code>docker volume</code>创建命名卷，用其挂载则称为命名卷挂载，第一次使用时会将两边目录同步</li>
+<li>flags <code>-e</code>可以往容器里传环境变量</li>
+<li>flags <code>--name</code>可以自定义容器名</li>
+<li>flags <code>-it</code>可以让终端进入控制台交互</li>
+<li>flags <code>--rm</code>可以在容器停止时将容器删除</li>
+<li>flags
+<code>--restart</code>容器停止时的策略，常用的有always：停止后立即重启，unless-stopped：除非手动停止不然重启</li>
+<li>若不pull直接run会自动获取镜像再运行</li>
+</ul></li>
+<li><p><code>docker ps</code>：查看当前执行的容器，<code>-a</code>可以查看所有的</p></li>
+<li><p><code>docker volume create</code> ：创建一个卷</p></li>
+<li><p><code>docker volume inspect 名字</code>
+：显示指定卷的信息</p></li>
+<li><p><code>docker volume list</code> ：查看创建的卷</p></li>
+<li><p><code>docker volume rm</code> ：删除一个卷</p></li>
+<li><p><code>docker volume prune -a</code>
+：删除所有没有容器在用的卷</p></li>
+<li><p><code>docker start/stop 名字/id</code>：启动/停止一个容器</p></li>
+<li><p><code>docker inspect id</code>：查看容器详细信息</p></li>
+<li><p><code>docker logs id</code>：查看容器日志，<code>-f</code>可以追踪输出</p></li>
+<li><p><code>docker exec id/名字 linux命令</code>：在容器内执行Linux命令</p>
+<p>如：<code>docker exec -it id/名字 /bin/sh</code>可以直接在容器内交互</p></li>
+<li><p><code>docker build</code>：创建一个镜像，<code>-t</code>自定义名字</p></li>
+</ul>
+<h1 id="dockerfile">Dockerfile</h1>
+<p>制作镜像的图纸，创建一个Dockerfile，无后缀，可以有以下的参数使用：</p>
+<table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 84%">
+</colgroup>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FROM</td>
+<td>指定基础镜像，用于后续的指令构建</td>
+</tr>
+<tr>
+<td>LABEL</td>
+<td>添加镜像的元数据，使用键值对的形式</td>
+</tr>
+<tr>
+<td>RUN</td>
+<td>在构建过程中在镜像中执行命令</td>
+</tr>
+<tr>
+<td>CMD</td>
+<td>指定容器创建时的默认命令（可以被覆盖）</td>
+</tr>
+<tr>
+<td>ENTRYPOINT</td>
+<td>设置容器创建时的主要命令（不可被覆盖）</td>
+</tr>
+<tr>
+<td>EXPOSE</td>
+<td>声明容器运行时监听的特定网络端口</td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>在容器内部设置环境变量</td>
+</tr>
+<tr>
+<td>ADD</td>
+<td>将文件、目录或远程URL复制到镜像中</td>
+</tr>
+<tr>
+<td>COPY</td>
+<td>将文件或目录复制到镜像中</td>
+</tr>
+<tr>
+<td>VOLUME</td>
+<td>为容器创建挂载点或声明卷</td>
+</tr>
+<tr>
+<td>WORKDIR</td>
+<td>设置后续指令的工作目录</td>
+</tr>
+<tr>
+<td>USER</td>
+<td>指定后续指令的用户上下文</td>
+</tr>
+<tr>
+<td>ARG</td>
+<td>定义在构建过程中传递给构建器的变量，可使用 “docker build”
+命令设置</td>
+</tr>
+<tr>
+<td>ONBUILD</td>
+<td>当该镜像被用作另一个构建过程的基础时，添加触发器</td>
+</tr>
+<tr>
+<td>STOPSIGNAL</td>
+<td>设置发送给容器以退出的系统调用信号</td>
+</tr>
+<tr>
+<td>HEALTHCHECK</td>
+<td>定义周期性检查容器健康状态的命令</td>
+</tr>
+<tr>
+<td>SHELL</td>
+<td>覆盖Docker中默认的shell，用于RUN、CMD和ENTRYPOINT指令</td>
+</tr>
+</tbody>
+</table>
+<h1 id="docker网络">Docker网络</h1>
+<h2 id="桥接模式">桥接模式</h2>
+<p>docker网络默认是桥接模式，所有容器默认连接到该网络，在同一个网络中容器间可以互相访问，但宿主机和容器网络是隔离的</p>
+<p><code>docker network create 名字</code>创建子网，可以让容器加入不同子网，同一子网中的容器可以互相访问，且只需要使用容器名字访问（自带DNS机制）</p>
+<p><code>docker network remove 名字</code>删除子网</p>
+<p>run的时候<code>--network</code> 可以指定子网</p>
+<h2 id="host模式">Host模式</h2>
+<p>docker容器在这种模式下可以直接共享宿主机的网络，而且端口无需映射，可以直接用宿主机的端口</p>
+<p>run的时候<code>--network host</code>可以更改到这个模式</p>
+<h1 id="docker-compose">Docker Compose</h1>
+<p>如果一个项目需要多个docker镜像，则可以使用docker
+compose这个容器编排技术，它使用yml文件管理多个容器，定义了容器如何创建，如何协作</p>
+<p>多个docker命令和一个compose文件对应关系如下：</p>
+
+<ul>
+<li>service表示一个服务，容器别名直接是服务名</li>
+<li>image定义了镜像名</li>
+<li>environment定义了环境变量</li>
+<li>volumes定义了挂载卷</li>
+<li>ports定义了端口映射</li>
+<li>depends_on表示依赖关系，可以定义容器启动顺序</li>
+<li>一个docker-compose文件自动处于一个子网下</li>
+</ul>
+<p>使用<code>docker compose up/down</code>即可运行/停止容器并删除</p>
+<p>使用<code>docker compose start/stop</code>可以开始/停止容器而不删除</p>
+<p>使用<code>-f</code> 指定非标准配置文件名</p>
+]]></content>
+      <categories>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【杂项】Linux</title>
+    <url>/%E6%9D%82%E9%A1%B9/Linux/</url>
+    <content><![CDATA[<h1 id="常用命令">常用命令</h1>
+<ul>
+<li><p><code>pwd</code>：展示现在所在目录</p></li>
+<li><p><code>ls</code>
+：查看目录下文件，<code>-l</code>显示详细信息，<code>lh</code>显示易读的文件大小，<code>-a</code>显示所有文件，包括隐藏文件</p></li>
+<li><p><code>cd</code>：移动到某个目录，<code>-</code>或<code>..</code>返回上一级，<code>~</code>返回家目录</p></li>
+<li><p><code>mkdir</code>：创建新文件夹</p></li>
+<li><p><code>alias</code>：给其他命令或命令组合起别名</p></li>
+<li><p><code>which</code>：查询某个可执行文件或命令的地址或介绍</p></li>
+<li><p><code>whereis</code>：查询某个命令的执行文件和文档</p></li>
+<li><p><code>man</code>：查询某个命令的用法</p></li>
+<li><p><code>whatis</code>：命令的简要说明</p></li>
+<li><p><code>touch</code>：创建新文件</p></li>
+<li><p><code>echo</code>：输出指定内容的字符串</p></li>
+<li><p><code>cat</code>：输出文件内容</p></li>
+<li><p><code>less</code>：输出文件内容，在终端内分页</p></li>
+<li><p><code>cp</code>：复制文件到指定位置</p></li>
+<li><p><code>mv</code>：移动文件或重命名文件</p></li>
+<li><p><code>rm</code>：删除文件</p></li>
+<li><p><code>rmdir</code>：删除文件夹，<code>-r</code>递归删除内部文件，<code>-i</code>删除前会确认操作</p></li>
+<li><p><code>cmp</code>：逐字节比较文件内容，输出不同的位置</p></li>
+<li><p><code>diff</code>：逐字节比较文件内容，输出内容差异</p></li>
+<li><p><code>whoami</code>：输出用户名</p></li>
+<li><p><code>adduser</code>：添加用户</p></li>
+<li><p><code>su</code>：切换用户</p></li>
+<li><p><code>userdel</code>：删除用户，<code>-r</code>递归删除其家目录</p></li>
+<li><p><code>neofetch</code>：显示详细的系统信息（需要apt下载）</p></li>
+<li><p><code>wget</code>：下载网上的文件</p></li>
+<li><p><code>grep</code>：以指定模式在文件或输出中查找信息</p>
+<p>例子：<code>ls -l | grep xxx</code>，可以筛选只查看某个文件的详细信息</p></li>
+<li><p><code>chmod</code>：修改文件权限</p></li>
+<li><p><code>ln</code>：对文件建立符号链接，需要参数<code>-s</code>，<code>ln -s 文件目录 符号链接所在目录</code></p></li>
+<li><p>如果想在所有位置都可以运行某些可执行文件，需要把他放在系统的PATH路径下，使用<code>echo $PATH</code>查询路径，将文件移动或建立符号链接即可</p></li>
+<li><p><code>curl</code>：可以用于下载文件或测试接口</p></li>
+<li><p><code>jq</code>：格式化json输出（需要apt下载）</p></li>
+<li><p><code>awk</code>：提取文本的工具，具体格式<code>awk 'pattern {action}' filename</code></p>
+<p>如使用<code>awk '{print $3, $5}' filename</code>输出第三列和第五列的内容</p></li>
+<li><p><code>sed</code>：处理文本的工具，用于替换，删除插入等</p></li>
+<li><p><code>zip/unzip</code>：压缩/解压文件</p></li>
+<li><p><code>find</code>：寻找文件，<code>find 起始目录 -name 文件名称</code>，-name表示按名字搜索</p></li>
+<li><p><code>free</code>：查看系统内存使用情况，<code>-h</code>更直观</p></li>
+<li><p><code>df</code>：查看磁盘使用情况，<code>-h</code>更直观</p></li>
+<li><p><code>ps</code>：查看运行的进程，加入<code>aux</code>格式化输出</p></li>
+<li><p><code>kill</code>：杀死指定进程，具体格式<code>kill 信号 进程id</code>，信号如-9是强制结束进程</p></li>
+<li><p><code>pkill</code>：按名称杀死指定进程</p></li>
+<li><p><code>top</code>：动态查看进程，或下载htop查看更好格式的</p></li>
+<li><p><code>systemctl</code>：用于控制systemd系统和服务管理器的命令</p></li>
+<li><p><code>history</code>：查看用过的命令历史</p></li>
+</ul>
+]]></content>
+      <categories>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【杂项】SSH</title>
+    <url>/%E6%9D%82%E9%A1%B9/SSH/</url>
+    <content><![CDATA[<h1 id="ssh">SSH</h1>
+<p>SSH全程Secure
+Shell，是一种用于安全的访问远程服务器的协议，通常用于传输字符等，和其他远程桌面比起来，它不需要压缩画面为视频一整个传输，所以会比较快速</p>
+<h2 id="基础指令">基础指令</h2>
+<ul>
+<li>连接：<code>ssh 用户名@IP地址</code>，IP地址可以被DNS解析</li>
+</ul>
+<p>若是第一次连接到其他主机，会提示暂时不能连接，并会提供主机的指纹，是一个SHA256的字符串，可以防止主机篡改</p>
+<p>如果想继续连接，敲击yes后该IP会被加入已知的hosts列表</p>
+<ul>
+<li>发送一条指令：<code>ssh 用户名@IP地址 指令</code>，加的指令会直接在远程主机执行，并把结果以stdout输出到本机</li>
+</ul>
+<h2 id="非对称加密">非对称加密</h2>
+<p>为避免每次登录都需要输入密码，可以使用SSH的公私钥非对称加密，具体来说，可以在本机生成一份公钥一份私钥，只要将公钥传到远程主机，私钥留在本地，就可以免于输入密码</p>
+<ul>
+<li><p><code>ssh-keygen</code>用于生成一对公私钥</p>
+<p>若将本机公钥传给远程，就可以实现免密登录：</p>
+<ul>
+<li><code>cat ./ssh/id_rsa.pub | ssh 远程IP保存位置 tee 本地公钥位置</code></li>
+<li><code>ssh-copy-id 用户名@IP</code>，将当前机器的对应私钥的公钥拷贝到对方机器中，免密登录，要求事先通过密码登录</li>
+<li><code>scp 本地文件 用户名@IP:远程路径</code>，安全将文件复制到远程路径</li>
+<li><code>rsync -avP 文件路径 用户名@IP:远程路径</code>，可以快速将大文件同步到远程主机</li>
+</ul></li>
+<li><p>使用<code>ssh -v 地址</code>来获取更详细的数据</p></li>
+<li><p>若公钥权限太高，远程主机会拒绝访问该文件</p></li>
+<li></li>
+</ul>
+<h2 id="config">config</h2>
+<p>在<code>.ssh/config</code>下有客户端的ssh的配置文件，默认为空，配置文件用Host块和配置项组成：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 注释以 # 开头，整行生效</span><br><span class="line"> </span><br><span class="line"># Host 块：定义一组主机的配置（支持通配符）</span><br><span class="line">Host &lt;主机别名/匹配模式&gt;</span><br><span class="line">  &lt;配置项1&gt; &lt;值1&gt;   # 配置项与值之间用空格分隔，缩进可选（建议缩进2-4空格增强可读性）</span><br><span class="line">  &lt;配置项2&gt; &lt;值2&gt;</span><br><span class="line"> </span><br><span class="line"># 全局配置（对所有主机生效，需放在所有 Host 块之前）</span><br><span class="line">Host *</span><br><span class="line">  &lt;全局配置项&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Host ：主机别名</li>
+<li>Hostname：主机地址</li>
+<li>User：用户名</li>
+<li>Port：端口号</li>
+<li>Proxycommand：</li>
+</ul>
+<p>这样可以直接用主机别名登录远程主机</p>
+<p>在<code>/etc/ssh/sshd_config</code>中有服务端的ssh配置文件，需要以管理员修改</p>
+<p>常用字段：</p>
+<ul>
+<li>Port：远程端口</li>
+<li>PermitRootLogin：是否允许root登录，默认设置为prohibit-password，即仅限于非对称加密登录，还有yes和no</li>
+</ul>
+<p>改完文件后生效<code>service sshd reload</code>或重启</p>
+<h1 id="端口转发">端口转发</h1>
+<p>假设我们的服务器只开放了22一个端口，而其他应用程序如jupyter会监听在8080端口监听一个HTTP协议，这时就需要端口转发</p>
+<h2 id="本地转发">本地转发</h2>
+<p>本地转发是将应用对本地主机A指定端口X的访问请求转发给主机B，交给主机B对另一指定主机C的指定端口Z发起访问</p>
+<p>指令：<code>ssh -L [收听接口:]端口X:主机C:端口Z 主机B</code></p>
+<ul>
+<li><strong>A</strong> = <strong>本地主机</strong>（即你运行
+<code>ssh</code> 命令的这台机器，也叫 SSH 客户端）</li>
+<li><strong>B</strong> = <strong>SSH 服务器</strong>（跳板机），即命令中
+<code>username@hostname</code> 对应的主机。它负责接收从 A
+转发来的加密流量，并代替 A 去连接最终目标</li>
+<li><strong>C</strong> =
+<strong>最终目标主机</strong>（实际提供服务的服务器），即命令中
+<code>主机C:主机C端口Z</code> 里的“主机C”，也可以是B自身</li>
+<li>收听端口默认值为0.0.0.0，一般不写，意味着ssh隧道会收听所有端口，接收来自任何地址的应用访问请求并进行转发，若填写了绑定地址，ssh连接就只会处理来自绑定地址的应用请求</li>
+</ul>
+<p>当主机C在某端口提供服务时，主机A需要使用却无法是访问主机C或该端口时，如果发现有A→B的ssh连接，且主机B能够直接访问主机C的该端口，本地端口转发就可以派上用场</p>
+
+<p>举个例子，台式机B上运行着虚拟机C，虚拟机使用虚拟机软件搭建的虚拟网络与其宿主——主机B相连接，但在主机B以外无法直接访问该虚拟网络。想要通过SSH，用与台式机B处于同一WiFi下的笔记本A来远程控制虚拟机C，（在A上）执行端口转发命令：<code>ssh -L 22022:10.0.2.15:22 desktop_user@192.168.1.11</code></p>
+<p>其中，22022号端口是随便选的一个没被占用的端口；192.168.1.11是台式机B在WiFi中的IP；desktop_user是主机B上的用户名；10.0.2.15是虚拟机C在主机B为其搭建的虚拟网络中的IP；22号端口是默认的SSH端口。已知virtual_user是虚拟机C上的用户名，这时在笔记本A上执行应用的访问请求命令：<code>ssh -p 22022 virtual_user@localhost</code></p>
+<h2 id="远程转发">远程转发</h2>
+<p>当主机C在某端口提供某服务，主机B需要使用该服务但无法直接访问主机C或该端口时，如果有A→B的ssh连接，且A可以访问主机C的该端口，远程端口转发就可以派上用场</p>
+<p>即：<strong>你（A）希望让 B 能访问到某个只有 A
+才能访问的内部服务</strong></p>
+<p>与本地转发的区别是，访问请求在主机B一侧发生，而ssh连接仍为A→B</p>
+<p>远程端口转发是对于远程主机B的指定端口Y的访问请求转发给主机A，交由主机A对另一指定主机C的指定端口Z发起访问</p>
+<p>指令：<code>ssh -R 端口Y:主机C:端口Z 主机A</code></p>
+<ul>
+<li><strong>A</strong> = SSH
+客户端（你运行命令的机器），也是实际访问最终目标 C 的机器</li>
+<li><strong>B</strong> = SSH 服务器（命令中的
+<code>username@hostname</code>），作为中转站，对外暴露端口 Y</li>
+<li><strong>C</strong> = 最终目标服务，必须能被 A 直接访问，甚至可以是 A
+自身（<code>localhost</code>）</li>
+</ul>
+
+<p>举个例子：</p>
+<p>台式机A上运行着虚拟机C，虚拟机使用虚拟机软件搭建的虚拟网络与宿主主机A相连接，但在主机A以外无法直接访问该虚拟网络。想要通过SFTP，用与台式机A处于同一WiFi下的笔记本B来向虚拟机C传输文件，（在A上）执行端口转发命令：</p>
+<p><code>ssh -R 22122:10.0.2.16:22 laptop_user@192.168.1.233</code></p>
+<p>其中，22122号端口是随便选的一个没被占用的端口；192.168.1.233是笔记本B在WiFi中的IP；laptop_user是主机B上的用户名；10.0.2.16是虚拟机C在主机A为其搭建的虚拟网络中的IP；22号端口是默认的SFTP端口。已知virtual_user是虚拟机C上的用户名，这时在笔记本B上执行应用的访问请求命令：</p>
+<p><code>sftp -P 22122 virtual_user@localhost</code></p>
+]]></content>
+      <categories>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>SSH</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【杂项】内网穿透</title>
+    <url>/%E6%9D%82%E9%A1%B9/NAT/</url>
+    <content><![CDATA[<p>### 临时测试：Quick Tunnel</p>
+<p>先确保服务已启动：</p>
+<p>make dev</p>
+<p>另开一个终端：</p>
+<p>cloudflared tunnel –url http://127.0.0.1:10002</p>
+<p>启动成功后会显示类似：</p>
+<p>https://random-name.trycloudflare.com</p>
+<p>Cloudflare Quick Tunnel 会生成随机 trycloudflare.com
+地址，仅适合开发测试，每次重启地址可能改变。Cloudflare Quick Tunnel 文档
+(https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/)</p>
+<p>把 .env 改为：</p>
+<p>ALIPAY_NOTIFY_URL=https://random-name.trycloudflare.com/api/pay/notify/alipay</p>
+<p>然后重启服务，使 payment-rpc 重新加载配置：</p>
+<p>make dev-stop make dev</p>
+<p>cloudflared 所在的终端不要关闭。</p>
+<p>### 验证隧道是否通畅</p>
+<p>执行：</p>
+<p>curl -i -X POST<br>
+‘https://random-name.trycloudflare.com/api/pay/notify/alipay’<br>
+-H ‘Content-Type: application/x-www-form-urlencoded’<br>
+-d ‘test=1’</p>
+<p>预期：</p>
+<p>HTTP/2 200 failure</p>
+<p>返回 failure 是正确的，因为测试参数没有支付宝签名。它证明：</p>
+<p>公网 Cloudflare → 本机 app:10002 → /api/pay/notify/alipay →
+payment-rpc</p>
+<p>整条网络链路已经通了。</p>
+<p>常见错误：</p>
+<ul>
+<li>404：回调路径写错，必须是 /api/pay/notify/alipay</li>
+<li>502 Bad Gateway：本地 10002 没启动</li>
+<li>Cloudflare 1033：隧道进程已停止</li>
+<li>一直没有支付宝回调：修改 .env 后没有重启
+payment-rpc，或者二维码是在配置新地址之前创建的</li>
+</ul>
+<p>配置完成后，最好重新发起一笔新的支付宝沙箱预下单，再扫码支付。</p>
+<p>### 如果 Quick Tunnel 启动失败</p>
+<p>如果提示存在 ~/.cloudflared/config.yml，Quick Tunnel
+可能与已有配置冲突；Cloudflare 官方也说明 Quick Tunnel
+不支持同时存在该配置文件。可以使用一个临时空配置，或者改用已有的命名
+Tunnel。</p>
+<p>如果你已有固定域名，长期使用应配置命名 Tunnel，将例如：</p>
+<p>pay.example.com</p>
+<p>指向：</p>
+<p>http://127.0.0.1:10002</p>
+<p>最终回调地址就是：</p>
+<p>ALIPAY_NOTIFY_URL=https://pay.example.com/api/pay/notify/alipay</p>
+<p>生产环境建议用固定命名 Tunnel；Quick Tunnel
+只用于本地支付宝沙箱联调。</p>
+]]></content>
+      <categories>
+        <category>杂项</category>
+      </categories>
+  </entry>
 </search>
